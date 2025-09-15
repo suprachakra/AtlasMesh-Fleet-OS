@@ -1,0 +1,150 @@
+{
+  "$schema": "../../base/schema/capability_manifest_schema.json",
+  "vehicle_id": "ugv_themis",
+  "vehicle_class": "ugv",
+  "dimensions": {
+    "length": 2.5,
+    "width": 1.8,
+    "height": 1.5,
+    "wheelbase": 1.8
+  },
+  "weight": {
+    "empty": 1200,
+    "max_gross": 2200,
+    "max_payload": 1000
+  },
+  "max_speed": 25,
+  "max_payload": 1000,
+  "max_grade": 30,
+  "drive_by_wire": {
+    "steering": {
+      "available": true,
+      "min_angle": -30,
+      "max_angle": 30,
+      "resolution": 0.1
+    },
+    "throttle": {
+      "available": true,
+      "min_position": 0,
+      "max_position": 100,
+      "resolution": 0.1
+    },
+    "brake": {
+      "available": true,
+      "min_pressure": 0,
+      "max_pressure": 100,
+      "abs_available": true,
+      "emergency_brake": true
+    },
+    "gear": {
+      "available": true,
+      "gears": ["park", "neutral", "drive", "reverse"],
+      "automatic": true
+    },
+    "parking_brake": true,
+    "turn_signals": true
+  },
+  "sensors": [
+    {
+      "type": "lidar",
+      "model": "velodyne_vlp16",
+      "manufacturer": "Velodyne",
+      "count": 1,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 1.5,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0
+      },
+      "field_of_view": {
+        "horizontal": 360,
+        "vertical": 30
+      },
+      "range": {
+        "min": 0.5,
+        "max": 100
+      },
+      "frame_rate": 10
+    },
+    {
+      "type": "camera",
+      "model": "flir_blackfly_s",
+      "manufacturer": "FLIR",
+      "count": 6,
+      "resolution": "1920x1080",
+      "frame_rate": 30
+    },
+    {
+      "type": "radar",
+      "model": "continental_ars308",
+      "manufacturer": "Continental",
+      "count": 4,
+      "range": {
+        "min": 0.2,
+        "max": 200
+      }
+    },
+    {
+      "type": "imu",
+      "model": "vectornav_vn100",
+      "manufacturer": "VectorNav",
+      "count": 1
+    },
+    {
+      "type": "gps",
+      "model": "novatel_pwrpak7",
+      "manufacturer": "NovAtel",
+      "count": 1
+    }
+  ],
+  "compute": {
+    "platform": "nvidia_jetson_agx_orin",
+    "cpu_cores": 8,
+    "cpu_arch": "aarch64",
+    "memory_gb": 32,
+    "gpu_memory_gb": 32,
+    "storage_gb": 1000,
+    "storage_type": "ssd_nvme",
+    "ai_accelerator": "nvidia_ampere_gpu"
+  },
+  "power": {
+    "type": "battery",
+    "capacity": "50kWh",
+    "voltage": "48V",
+    "max_power": "2kW",
+    "charging_types": ["ccs2", "type2"],
+    "backup_power": false
+  },
+  "operating_conditions": {
+    "temperature": {
+      "min": -20,
+      "max": 55
+    },
+    "humidity": {
+      "min": 0,
+      "max": 95
+    },
+    "altitude": {
+      "min": -500,
+      "max": 3000
+    },
+    "ingress_protection": "IP67",
+    "vibration_class": "MIL-STD-810G",
+    "dust_resistance": true,
+    "water_resistance": true
+  },
+  "supported_odds": [
+    "mining_site",
+    "port_yard", 
+    "military_base",
+    "construction_site"
+  ],
+  "certifications": [
+    "ce_marking",
+    "fcc_part_15",
+    "mil_std_810g"
+  ],
+  "safety_integrity_level": "sil2"
+}

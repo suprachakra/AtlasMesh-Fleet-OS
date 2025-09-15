@@ -1,0 +1,165 @@
+# AtlasMesh Fleet OS Documentation
+
+site_name: AtlasMesh Fleet Operating System
+site_description: Vehicle-agnostic, Platform-agnostic, Sector-agnostic L4 Fleet Management System
+site_author: AtlasMesh Team
+site_url: https://docs.atlasmesh.ai
+
+# Repository
+repo_name: AtlasMesh-Fleet-OS
+repo_url: https://github.com/atlasmesh/fleet-os
+edit_uri: edit/main/docs/
+
+# Configuration
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.code.copy
+    - content.action.edit
+  palette:
+    - scheme: default
+      primary: blue
+      accent: orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  logo: assets/images/atlasmesh-logo.png
+  favicon: assets/images/favicon.ico
+
+# Navigation
+nav:
+  - Home: index.md
+  
+  - Strategy:
+    - Executive Summary: strategy/01_executive_summary_and_vision.md
+    - Market Analysis: strategy/02_market_and_user_insights.md
+    - OKRs: strategy/03_okrs.md
+    - Product Strategy: strategy/04_product_and_marketplace_strategy.md
+    - Roadmap: strategy/05_roadmap_and_milestones.md
+    - Risk Management: strategy/06_risk_and_governance.md
+    - Change Management: strategy/07_change_management.md
+    - Marketing Plan: strategy/08_marketing_plan.md
+    - Finance Model: strategy/09_finance_cost_model.md
+    - Launch Strategy: strategy/10_launch_strategy.md
+    - Onboarding: strategy/11_onboarding.md
+    - User Training: strategy/12_user_training.md
+    
+  - Technical:
+    - Architecture: technical/01_architecture.md
+    - Epics & Alignment: technical/02_epics_and_portfolio_alignment.md
+    - Requirements: technical/03_requirements_frs_nfrs.md
+    - Data & Analytics: technical/04_data_and_analytics_integration.md
+    - AI Models: technical/05_ai_model_documentation.md
+    - QA & Testing: technical/06_qa_and_test_automation.md
+    - Security: technical/07_security_implementation.md
+    - DevOps: technical/08_devops_pipeline_and_deployment.md
+    - APIs: technical/09_api_documentation.md
+    - UX Design: technical/10_ux_wireframes.md
+    - Integration: technical/11_integration_and_contribution_guidelines.md
+    - FAQ & Changes: technical/12_faq_and_change_log.md
+    
+  - Sector Packs:
+    - Defense: sector-packs/defense.md
+    - Mining: sector-packs/mining.md
+    - Logistics: sector-packs/logistics_supply_chain.md
+    - Ride Hailing: sector-packs/ride_hail.md
+    
+  - Vehicle Integration:
+    - UGV Themis: vehicle-packs/ugv_themis.md
+    
+  - Regional Operations:
+    - Abu Dhabi: city-odd/abu_dhabi.md
+    
+  - Safety & Compliance:
+    - Safety Case: safety/README.md
+    - Compliance: compliance/README.md
+    
+  - Operations:
+    - Runbooks: runbooks/README.md
+    - RFCs: rfcs/README.md
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: atlasmesh
+      repo: fleet-os
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Plugins
+plugins:
+  - search:
+      lang: en
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      type: date
+  - awesome-pages
+  - mermaid2
+
+# Extra
+extra:
+  version:
+    provider: mike
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/atlasmesh/fleet-os
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/orgs/atlasmesh
+    - icon: fontawesome/solid/envelope
+      link: mailto:team@atlasmesh.ai
+
+extra_css:
+  - assets/css/custom.css
+
+extra_javascript:
+  - assets/js/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://unpkg.com/mermaid/dist/mermaid.min.js

@@ -1,0 +1,279 @@
+---
+# Thermal Derating Configuration for Extreme Weather Operations
+# Designed for Middle East operations with temperatures up to 55°C
+
+# Temperature-based derating curves
+temperature_derating:
+  # Operating temperature thresholds in Celsius
+  thresholds:
+    normal_operation_max: 40
+    performance_derating_start: 45
+    safety_derating_start: 50
+    emergency_shutdown: 55
+    
+  # Speed derating based on ambient temperature
+  speed_derating:
+    40_to_45c:
+      factor: 1.0        # No derating
+      max_speed_factor: 1.0
+      
+    45_to_50c:
+      factor: 0.9        # 10% speed reduction
+      max_speed_factor: 0.9
+      additional_restrictions:
+        - "increase_following_distance_20_percent"
+        - "avoid_steep_grades"
+        - "prefer_shaded_routes"
+        
+    50_to_55c:
+      factor: 0.7        # 30% speed reduction
+      max_speed_factor: 0.8
+      additional_restrictions:
+        - "increase_following_distance_50_percent"
+        - "mandatory_rest_stops_every_30_minutes"
+        - "avoid_grades_over_10_percent"
+        - "route_to_cooling_zones"
+        - "enhanced_thermal_monitoring"
+        
+    above_55c:
+      factor: 0.0        # No operations
+      action: "emergency_shutdown"
+      additional_actions:
+        - "route_to_immediate_shelter"
+        - "activate_emergency_cooling"
+        - "notify_operations_center"
+
+# Component-specific thermal limits
+component_limits:
+  # Battery thermal management
+  battery:
+    operating_range:
+      min_celsius: -10
+      max_celsius: 50
+      optimal_range: [20, 35]
+      
+    derating_curve:
+      35_to_40c:
+        max_charge_rate: 0.8    # 80% of normal
+        max_discharge_rate: 0.9  # 90% of normal
+        
+      40_to_45c:
+        max_charge_rate: 0.6    # 60% of normal
+        max_discharge_rate: 0.8  # 80% of normal
+        cooling_priority: "high"
+        
+      45_to_50c:
+        max_charge_rate: 0.3    # 30% of normal
+        max_discharge_rate: 0.7  # 70% of normal
+        cooling_priority: "critical"
+        thermal_protection: "active"
+        
+      above_50c:
+        max_charge_rate: 0.0    # No charging
+        max_discharge_rate: 0.5  # Emergency power only
+        action: "thermal_shutdown_protection"
+
+  # Compute platform thermal management
+  compute:
+    operating_range:
+      min_celsius: -20
+      max_celsius: 85   # Junction temperature
+      throttling_start: 70
+      
+    derating_curve:
+      70_to_75c:
+        cpu_frequency: 0.9      # 90% of max frequency
+        gpu_frequency: 0.9
+        fan_speed: "maximum"
+        
+      75_to_80c:
+        cpu_frequency: 0.8      # 80% of max frequency  
+        gpu_frequency: 0.8
+        workload_reduction: 0.1  # Reduce non-critical tasks
+        
+      80_to_85c:
+        cpu_frequency: 0.6      # 60% of max frequency
+        gpu_frequency: 0.6
+        workload_reduction: 0.3  # Significant task reduction
+        
+      above_85c:
+        action: "emergency_thermal_shutdown"
+        preserve_critical_functions_only: true
+
+  # Sensor thermal protection
+  sensors:
+    lidar:
+      operating_range: [-40, 60]
+      derating_start: 50
+      protective_actions:
+        - "reduce_scan_frequency"
+        - "activate_cooling_fan"
+        - "protective_housing_ventilation"
+        
+    cameras:
+      operating_range: [-30, 65]  
+      derating_start: 55
+      protective_actions:
+        - "reduce_frame_rate"
+        - "adjust_exposure_compensation"
+        - "activate_lens_heating_prevention"
+        
+    radar:
+      operating_range: [-40, 70]
+      derating_start: 60
+      protective_actions:
+        - "reduce_transmission_power"
+        - "increase_scan_interval"
+
+# Cooling strategies by vehicle class
+cooling_strategies:
+  ugv:
+    passive_cooling:
+      - "increased_airflow_routing"
+      - "thermal_mass_optimization"
+      - "reflective_surface_coatings"
+      
+    active_cooling:
+      - "variable_speed_fans"
+      - "liquid_cooling_circulation" 
+      - "peltier_cooling_elements"
+      
+    emergency_cooling:
+      - "emergency_coolant_injection"
+      - "thermal_load_shedding"
+      - "seek_immediate_shelter"
+      
+  mining_truck:
+    passive_cooling:
+      - "large_thermal_mass"
+      - "enhanced_airflow_design"
+      - "heat_dissipation_fins"
+      
+    active_cooling:
+      - "high_capacity_radiators"
+      - "multiple_cooling_circuits"
+      - "cabin_thermal_management"
+      
+    emergency_cooling:
+      - "water_spray_system"
+      - "emergency_engine_shutdown"
+      - "thermal_refuge_positioning"
+
+# Environmental factors affecting thermal performance
+environmental_factors:
+  solar_loading:
+    high_solar_irradiance_wm2: 1000
+    solar_derating_factor: 1.2   # 20% additional thermal load
+    mitigation_strategies:
+      - "route_planning_shade_preference"
+      - "solar_reflective_surfaces"
+      - "scheduled_operations_dawn_dusk"
+      
+  humidity_effects:
+    high_humidity_threshold: 80  # percent
+    cooling_efficiency_reduction: 0.8  # 20% reduction
+    mitigation_strategies:
+      - "dehumidification_systems"
+      - "extended_cooling_periods"
+      
+  wind_effects:
+    beneficial_wind_speed_ms: 3.0
+    cooling_enhancement_factor: 1.3  # 30% improvement
+    dust_storm_protection:
+      - "sealed_cooling_systems"
+      - "filtration_systems"
+
+# Thermal management policies
+thermal_policies:
+  # Predictive thermal management
+  predictive_actions:
+    forecast_horizon_minutes: 60
+    temperature_trend_threshold: 2  # degrees per hour
+    proactive_cooling_trigger: 42   # Start cooling at 42°C
+    
+  # Route optimization for thermal management
+  thermal_routing:
+    shade_preference_weight: 0.3
+    altitude_cooling_bonus: 1.0      # degree per 100m elevation
+    thermal_refuge_planning: true
+    cooling_station_integration: true
+    
+  # Maintenance scheduling
+  thermal_maintenance:
+    cooling_system_inspection_frequency: "weekly_summer"
+    air_filter_replacement_frequency: "bi_weekly_dusty_conditions" 
+    thermal_sensor_calibration: "monthly"
+    emergency_coolant_level_checks: "daily_extreme_heat"
+
+# Vehicle-specific thermal configurations
+vehicle_configurations:
+  ugv_themis:
+    max_operating_temp: 55
+    thermal_mass_kg: 150
+    cooling_capacity_kw: 2.0
+    emergency_thermal_budget_minutes: 10
+    
+  haul_truck_cat:
+    max_operating_temp: 50   # Lower due to size and power
+    thermal_mass_kg: 5000
+    cooling_capacity_kw: 25.0
+    emergency_thermal_budget_minutes: 30
+
+# Monitoring and alerting
+thermal_monitoring:
+  sensor_locations:
+    - "battery_pack"
+    - "compute_unit"
+    - "motor_controller"
+    - "cabin_ambient"
+    - "external_ambient"
+    - "radiator_inlet"
+    - "radiator_outlet"
+    
+  alert_thresholds:
+    temperature_rise_rate_per_minute: 2.0  # degrees
+    cooling_system_pressure_drop: 10       # percent
+    fan_rpm_deviation: 15                   # percent
+    
+  data_collection:
+    sampling_rate_hz: 1.0
+    data_retention_days: 90
+    thermal_event_logging: "comprehensive"
+
+# Emergency procedures
+emergency_procedures:
+  thermal_emergency_indicators:
+    - "component_temperature_over_limit"
+    - "cooling_system_failure"
+    - "thermal_runaway_detected"
+    - "ambient_temperature_critical"
+    
+  immediate_actions:
+    - "reduce_power_consumption"
+    - "activate_emergency_cooling"
+    - "navigate_to_thermal_refuge"
+    - "notify_operations_center"
+    - "prepare_for_system_shutdown"
+    
+  thermal_refuge_criteria:
+    min_shade_coverage: 80        # percent
+    max_distance_meters: 5000     # 5km maximum
+    cooling_infrastructure: "preferred"
+    emergency_services_access: "required"
+
+# Integration with weather services
+weather_integration:
+  temperature_forecast_sources:
+    - "local_meteorological_service"
+    - "vehicle_mounted_sensors"  
+    - "weather_api_providers"
+    
+  thermal_planning:
+    daily_thermal_forecast: true
+    hourly_temperature_updates: true
+    extreme_weather_alerts: "real_time"
+    
+  adaptive_scheduling:
+    peak_heat_avoidance: "1100_1500_local_time"
+    optimal_operation_windows: "dawn_dusk_priority"
+    emergency_schedule_override: "thermal_critical"
