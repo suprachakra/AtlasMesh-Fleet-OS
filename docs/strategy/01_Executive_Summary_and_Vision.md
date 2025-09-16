@@ -1,4 +1,4 @@
-# AtlasMesh Fleet OS - Summary
+# Executive Summary
 
 ### 1) One-page executive vision
 
@@ -346,6 +346,7 @@ Full glossary: `docs/strategy/glossary.md`
 
 ### Bottom line
 It is **deliberately engineered to leave no gaps**: every promise in this Vision & Problem Statement is backed by a measurable KPI, a policy, an ODD rule, or an automated gate. If it's not encoded, it doesn't ship. This ensures strategic clarity, technical integrity, safety, and scalability across **defense, mining, logistics, and ride-hailing**—under the harsh realities of the Middle East and beyond.
+
 
 
 
