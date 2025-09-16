@@ -113,6 +113,8 @@
 
 ## 7) Competitive Analysis & Response Strategy
 
+### 7.1) Competitive Landscape Matrix
+
 | Segment | Key Competitors | Their Strengths | Their Weaknesses | AtlasMesh Differentiation | Competitive Response Strategy | Win/Loss Metrics |
 | --- | --- | --- | --- | --- | --- | --- |
 | Mining autonomy | CAT Command, Komatsu AHS, Hexagon | OEM integration; established install base; hardware reliability | Single-OEM lock-in; limited harsh-env performance; high TCO | Multi-OEM retrofit + Fleet OS governance; superior heat/dust handling; 15-20% lower TCO | Focus on mixed fleets; dust/heat performance demos; TCO calculator | Win rate vs. incumbents; displacement success rate |
@@ -120,11 +122,133 @@
 | Defense UGV | Milrem, Rheinmetall, Anduril | Defense credentials; specialized hardware; security clearance | Limited civilian crossover; high unit costs; proprietary systems | Kit+OS that spans logistics + patrol + mapping with evidence ledger; commercial scale advantages | Target logistics first; emphasize multi-domain; evidence-based safety | Defense contract win rate; cross-sector leverage |
 | Robotaxi | Waymo, Baidu Apollo, WeRide, Motional | Urban mapping depth; consumer UX; regulatory relationships | High infrastructure dependency; limited harsh-env capability; high operational costs | Controlled ODD focus; industrial-grade resilience; cross-sector technology leverage | Avoid direct competition; target controlled environments first; emphasize reliability | Controlled-ODD win rate; expansion velocity |
 
+### 7.2) Customer Journey Maps
+
+#### **Defense Sector Customer Journey**
+
+**Awareness Stage (3-6 months)**
+- **Trigger**: Regulatory requirement or operational challenge
+- **Activities**: Market research, vendor evaluation, requirement definition
+- **Stakeholders**: Defense Procurement, Technical Lead, Compliance Officer
+- **Pain Points**: Security clearance requirements, procurement complexity, regulatory uncertainty
+- **AtlasMesh Touchpoints**: Industry conferences, white papers, security-cleared personnel
+
+**Consideration Stage (6-12 months)**
+- **Trigger**: RFP issuance or pilot program approval
+- **Activities**: Technical evaluation, security assessment, pilot planning
+- **Stakeholders**: Technical Lead, Safety Officer, Operations Team
+- **Pain Points**: Technology validation, security compliance, integration complexity
+- **AtlasMesh Touchpoints**: Technical demos, security briefings, pilot proposals
+
+**Purchase Stage (3-6 months)**
+- **Trigger**: Budget approval and procurement authorization
+- **Activities**: Contract negotiation, security clearance, final approval
+- **Stakeholders**: Defense Procurement, Legal Team, Executive Sponsor
+- **Pain Points**: Contract complexity, security requirements, approval delays
+- **AtlasMesh Touchpoints**: Contract negotiation, security documentation, executive briefings
+
+**Deployment Stage (3-6 months)**
+- **Trigger**: Contract signature and project kickoff
+- **Activities**: Site preparation, system installation, training delivery
+- **Stakeholders**: Operations Team, Technical Support, Training Team
+- **Pain Points**: Site readiness, integration challenges, training effectiveness
+- **AtlasMesh Touchpoints**: Implementation team, training programs, technical support
+
+**Operation Stage (Ongoing)**
+- **Trigger**: System go-live and mission execution
+- **Activities**: Mission execution, performance monitoring, incident response
+- **Stakeholders**: Operations Team, Mission Commander, Technical Support
+- **Pain Points**: Performance optimization, incident management, ongoing support
+- **AtlasMesh Touchpoints**: Operations center, technical support, performance reviews
+
+**Renewal Stage (Annual)**
+- **Trigger**: Contract renewal period or expansion opportunity
+- **Activities**: Performance review, contract renewal, expansion planning
+- **Stakeholders**: Defense Procurement, Operations Team, Executive Sponsor
+- **Pain Points**: Performance validation, budget approval, expansion justification
+- **AtlasMesh Touchpoints**: Performance reports, renewal discussions, expansion proposals
+
+#### **Mining Sector Customer Journey**
+
+**Awareness Stage (1-3 months)**
+- **Trigger**: Productivity challenge or safety incident
+- **Activities**: Industry conference attendance, peer recommendations, ROI calculation
+- **Stakeholders**: Mine Manager, Operations Director, Finance Director
+- **Pain Points**: ROI uncertainty, technology complexity, operational disruption
+- **AtlasMesh Touchpoints**: Industry events, case studies, ROI calculators
+
+**Consideration Stage (3-6 months)**
+- **Trigger**: Executive approval for evaluation
+- **Activities**: Site assessment, pilot planning, business case development
+- **Stakeholders**: Operations Director, Safety Manager, Technical Team
+- **Pain Points**: Site suitability, safety compliance, integration challenges
+- **AtlasMesh Touchpoints**: Site assessments, safety briefings, technical evaluations
+
+**Purchase Stage (2-4 months)**
+- **Trigger**: Business case approval and budget allocation
+- **Activities**: Procurement process, contract negotiation, executive approval
+- **Stakeholders**: Procurement Team, Finance Director, Mine Manager
+- **Pain Points**: Procurement complexity, contract terms, budget constraints
+- **AtlasMesh Touchpoints**: Proposal development, contract negotiation, executive presentations
+
+**Deployment Stage (2-4 months)**
+- **Trigger**: Contract execution and project initiation
+- **Activities**: Site preparation, equipment installation, operator training
+- **Stakeholders**: Operations Director, Technical Team, Training Team
+- **Pain Points**: Site preparation, equipment integration, training effectiveness
+- **AtlasMesh Touchpoints**: Implementation team, equipment installation, training programs
+
+**Operation Stage (Ongoing)**
+- **Trigger**: System commissioning and production start
+- **Activities**: Production monitoring, safety compliance, performance optimization
+- **Stakeholders**: Operations Director, Mine Manager, Safety Manager
+- **Pain Points**: Performance optimization, safety compliance, continuous improvement
+- **AtlasMesh Touchpoints**: Operations support, performance monitoring, optimization services
+
+**Renewal Stage (Annual)**
+- **Trigger**: Contract renewal or expansion opportunity
+- **Activities**: ROI validation, contract extension, expansion planning
+- **Stakeholders**: Mine Manager, Finance Director, Operations Director
+- **Pain Points**: ROI demonstration, contract terms, expansion justification
+- **AtlasMesh Touchpoints**: Performance reviews, ROI validation, expansion proposals
+
+### 7.3) Journey Pain Points & Solutions
+
+#### **Common Pain Points Across Sectors**
+1. **Regulatory Uncertainty** → **Solution**: Jurisdiction packs with pre-validated compliance frameworks
+2. **Integration Complexity** → **Solution**: Adapter marketplace with certified connectors and contract testing
+3. **Safety Concerns** → **Solution**: Evidence-based safety case with automated generation and validation
+4. **ROI Validation** → **Solution**: Pilot programs with guaranteed performance metrics and baseline comparison
+5. **Vendor Lock-in** → **Solution**: Agnostic architecture with multi-vendor support and open interfaces
+
+#### **Sector-Specific Solutions**
+
+**Defense Sector**
+- **Security Clearance Delays** → **Solution**: Pre-cleared personnel and secure development practices
+- **Procurement Complexity** → **Solution**: Streamlined procurement process and government contracting expertise
+- **Mission Criticality** → **Solution**: Offline-first operation and mission assurance frameworks
+
+**Mining Sector**
+- **Harsh Environment Concerns** → **Solution**: Ruggedized hardware and proven harsh environment operation
+- **Safety Regulatory Compliance** → **Solution**: Mining-specific safety frameworks and automated compliance reporting
+- **Productivity Pressure** → **Solution**: Real-time optimization and predictive maintenance capabilities
+
+**Logistics Sector**
+- **System Integration Challenges** → **Solution**: Pre-built WMS/TOS integrations and API-first architecture
+- **Operational Disruption** → **Solution**: Phased rollout and parallel operation capabilities
+- **Cost Pressure** → **Solution**: Efficiency optimization and cost reduction guarantees
+
+**Ride-hail Sector**
+- **Passenger Safety Concerns** → **Solution**: Comprehensive safety monitoring and transparent safety reporting
+- **Regulatory Approval Process** → **Solution**: Regulatory expertise and proven compliance frameworks
+- **Service Quality Requirements** → **Solution**: Advanced dispatch optimization and real-time monitoring
+
 **Competitive Intelligence Program**:
 - Monthly competitor product update analysis
-- Quarterly win/loss review with root cause analysis
+- Quarterly win/loss review with root cause analysis  
 - Annual competitive landscape reassessment
 - Continuous monitoring of competitive pilot results
+- Customer journey optimization based on competitive insights
 
 ## 8) Pricing & Packaging (detailed structure)
 

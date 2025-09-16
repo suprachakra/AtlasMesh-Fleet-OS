@@ -9,7 +9,7 @@
 
 ## 0) One-page executive vision
 
-**Vision.** Build the world's most **agnostic Fleet OS** for Level-4 autonomous operations—**vehicle-agnostic, platform-agnostic, sector-agnostic, geography-aware**—that can plan, dispatch, monitor, and continuously improve fleets across **defense, mining, logistics/supply chain, and ride-hailing** in **extreme Middle-East conditions** (desert, high heat, dust, intermittent comms), with **zero hand-tuning** per program.
+**Vision.** Build the world's most **agnostic Fleet OS** for Level-4 autonomous operations—**vehicle-agnostic, platform-agnostic, sector-agnostic, map-source-agnostic, weather-source-agnostic, comms-agnostic, geography-aware**—that can plan, dispatch, monitor, and continuously improve fleets across **defense, mining, logistics/supply chain, and ride-hailing** in **extreme Middle-East conditions** (desert, high heat, dust, intermittent comms), with **zero hand-tuning** per program.
 
 **North star.** Within 12 months of first deployment, any customer can:
 
@@ -19,11 +19,11 @@
 
 **What we ship.**
 
-1. **AV Kit (hardware/software)** that retrofits diverse vehicles (UGVs, haul trucks, yard tractors, vans/robotaxis).
-2. **AtlasMesh Fleet OS** (control center, policy engine, routing/dispatch, energy, telemetry, OTA, HIL/SIL sim gates).
-3. **Data & Safety stack** (provenance-aware geospatial store, scenario bank, KPI registry, safety case evidence automation).
+1. **AV Kit (hardware/software)** that retrofits diverse vehicles (UGVs, haul trucks, yard tractors, vans/robotaxis) with **ROS2-based Edge Stack**.
+2. **AtlasMesh Fleet OS** (control center, policy engine, routing/dispatch, energy, telemetry, OTA, **CARLA/Gazebo simulation gates**).
+3. **Data & Safety stack** (provenance-aware geospatial store with **Lanelet2/OpenDRIVE support**, scenario bank, KPI registry, safety case evidence automation).
 
-**Why we win.** One codebase, policy-driven overlays (sector/vehicle/city/tenant), and **self-auditing CI/CD gates** eliminate hidden integration work, reduce time-to-revenue, and scale safely.
+**Why we win.** One codebase, policy-driven overlays (sector/vehicle/city/tenant), **Hybrid Decision Framework** (behavior trees + rules + learned priors), and **twin-gated CI/CD** eliminate hidden integration work, reduce time-to-revenue, and scale safely.
 
 ---
 
@@ -247,10 +247,11 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 ## 13) Engineering architecture (SVP Eng view)
 
 * **Services**: policy engine, dispatch, routing, rebalancing, energy, fleet-health, predictive-maint, map, weather, v2x, OTA, alerts.
-* **Edge**: vehicle agent (heartbeat, diag, commands), tele-assist client (Q&A only), diag agent (snapshots, SBOM).
-* **Reliability:** idempotent APIs, backpressure, circuit breakers; **offline-first** modes.
-* **Security:** SBOMs per release, image signing, mTLS, secret rotation; **zero-trust** network.
-* **Observability:** golden signals per service; SLOs enforced; incident playbooks pre-wired.
+* **Edge**: **ROS2-based** vehicle agent with **containerized nodes**, tele-assist client (Q&A only), diagnostics agent (snapshots, SBOM).
+* **Decision Framework**: **Hybrid approach** with behavior trees, rule-based safety arbitration, and learned priors; explainable decisions.
+* **Reliability:** idempotent APIs, backpressure, circuit breakers; **offline-first** modes with 45-minute autonomy.
+* **Security:** SBOMs per release, image signing, mTLS, secret rotation; **zero-trust** network with ISO 21434 compliance.
+* **Observability:** golden signals per service; SLOs enforced; incident playbooks pre-wired; ROS2 node monitoring.
 
 ---
 
@@ -268,7 +269,8 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ## 15) QA & Safety (SVP QA/Safety view)
 
-* **CI sim gates:** scenario bank must pass sector/ODD minimums; regression diffs gated.
+* **Twin-Gated CI/CD:** **CARLA/Gazebo simulation** scenarios must pass sector/ODD minimums; regression diffs gated.
+* **Scenario Bank:** Comprehensive OpenSCENARIO-based test scenarios across sectors, vehicle types, and environmental conditions.
 * **E2E tests:** create→dispatch→route→complete across overlays; soak tests in heat/dust sims.
 * **Assist analysis:** taxonomy + root-cause pipeline with weekly auto-report; red threshold creates blocking ticket.
 * **HARA/STPA:** hazards documented; mitigations prove measurable risk reduction.
@@ -340,6 +342,10 @@ Each gate enforced by CI "twin-gates" job + Program Board sign-off.
 * **PdM:** Predictive maintenance; RUL: remaining useful life.
 * **Safe-stop:** System-initiated halt in validated safe area.
 * **ADR:** Architecture Decision Record (non-code policy).
+* **ROS2:** Robot Operating System 2; framework for on-vehicle software.
+* **Behavior Tree:** Hierarchical structure for decision-making logic.
+* **Twin-Gated CI/CD:** Pipeline requiring simulation scenario validation.
+* **Lanelet2/OpenDRIVE:** Standard HD map formats supported by the system.
 
 Full glossary: `docs/strategy/glossary.md`
 
