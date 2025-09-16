@@ -1,6 +1,6 @@
-# AtlasMesh Fleet OS — Market & User Insights
+## Market & User Insights
 
-## 1) Standards & Regulatory Landscape (by applicability)
+### 1) Standards & Regulatory Landscape (by applicability)
 
 | Standard/Regulation | Applicability | AtlasMesh Capability | Compliance Verification Method | Compliance Owner | Gap Closure Timeline |
 | --- | --- | --- | --- | --- | --- |
@@ -13,7 +13,7 @@
 
 > AtlasMesh ships **jurisdiction packs** (policy-as-code + evidence mapping) selectable at deploy time. Each pack includes **compliance gap analysis** with remediation plan for customer-specific requirements.
 
-## 2) Primary Personas & Jobs-to-be-Done
+### 2) Primary Personas & Jobs-to-be-Done
 
 | Persona | Sector(s) | JTBD | Pain Points | Impact Metrics | AtlasMesh Solution | Success Validation |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -29,7 +29,7 @@
 | Data/ML Lead | All | Model improvement | Data hygiene, drift | 20-30% data unusable; 5-10% model drift/month | Provenance, drift sentry, canary/shadow | Data quality metrics; drift detection effectiveness |
 | DevOps/SRE | All | Keep it up | Fragmented telemetry | 4-8hr MTTR; incomplete observability | SLOs, golden signals, runbooks | MTTR reduction; incident response effectiveness |
 
-## 3) Market Sizing (methodology & validation)
+### 3) Market Sizing (methodology & validation)
 
 **TAM Calculation Methodology**:
 1. **Bottom-up vehicle count**: Sector-specific asset databases × retrofit eligibility % × average unit economics
@@ -60,7 +60,7 @@
 
 > Action: `docs/Strategy/09_Finance_and_Cost_Model.md` includes a calculator; CI will recompute with linked datasets.
 
-### 3.1 Bottom-up method (per sector / region)
+#### 3.1 Bottom-up method (per sector / region)
 
 **Units in ODD × Adoption% × Attach rate × ASP = SAM revenue.**
 
@@ -69,7 +69,7 @@
 * **Attach rate**: fraction using both **CoreX Kit** *and* **AtlasMesh** (some may use FMS only).
 * **ASP** (blended, 3-yr TCV): **CoreX** kit \$85–250k (vehicle class) + **AtlasMesh** \$250–800/vehicle/mo + site fees.
 
-### 3.2 Planning numbers (illustrative, conservative, MEA 3-year)
+#### 3.2 Planning numbers (illustrative, conservative, MEA 3-year)
 
 | Sector                                 |              Addressable units in ODD | Year-3 adoption | Attach rate |      3-yr TCV/vehicle | 3-yr SAM (illustrative) |
 | -------------------------------------- | ------------------------------------: | --------------: | ----------: | --------------------: | ----------------------: |
@@ -78,7 +78,7 @@
 | **Defense (UGV logistics/security)**   |            2,500 UGV/converted trucks |             15% |         80% |     \$220k + \$36k SW |             **\$0.88B** |
 | **Ride-hail (pilot corridors)**        |                        4,000 vehicles |              8% |         65% |     \$140k + \$30k SW |             **\$0.41B** |
 
-## 4) Gaps → Solutions (Cross-sector)
+### 4) Gaps → Solutions (Cross-sector)
 
 | Gap                    | Observable Symptom         | AtlasMesh Capability                         | Metric of Success                    |
 | ---------------------- | -------------------------- | -------------------------------------------- | ------------------------------------ |
@@ -90,7 +90,7 @@
 | Enterprise integration | Weeks/months to wire       | Certified adapters (WMS/TOS/ERP/MAP/Weather) | Go-live ≤ 4 weeks                    |
 | Unit economics         | High idle/misroutes        | Rebalancing, energy queues, PdM              | −10–15% cost per km/ton              |
 
-## 5) Sector Snapshots (MENA first)
+### 5) Sector Snapshots (MENA first)
 
 **Defense**: border/base patrol, convoy logistics, route clearance, ISR. Buyers: MoD branches, border agencies. Selection drivers: compliance, local hosting, ROE policy-as-code.
 
@@ -100,7 +100,7 @@
 
 **Ride-Hailing Ops**: dispatch/routing/control center for AV partner fleets. Buyers: mobility operators, cities. Drivers: ETA/CSAT, incident response, city compliance.
 
-## 6) Decision Drivers (buying criteria) & AtlasMesh proof points
+### 6) Decision Drivers (buying criteria) & AtlasMesh proof points
 
 | Driver                                | What buyers test                           | Our proof                                                    |
 | ------------------------------------- | ------------------------------------------ | ------------------------------------------------------------ |
@@ -111,9 +111,9 @@
 | **TCO & ROI**                         | Cost/ton, dwell, wait times                | KPI ledger with before/after baselines                       |
 | **Vendor lock-in risk**               | Sensor/OEM/cloud neutrality                | "agnostic by design": vehicle, sensor, cloud, map            |
 
-## 7) Competitive Analysis & Response Strategy
+### 7) Competitive Analysis & Response Strategy
 
-### 7.1) Competitive Landscape Matrix
+#### 7.1) Competitive Landscape Matrix
 
 | Segment | Key Competitors | Their Strengths | Their Weaknesses | AtlasMesh Differentiation | Competitive Response Strategy | Win/Loss Metrics |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -122,7 +122,7 @@
 | Defense UGV | Milrem, Rheinmetall, Anduril | Defense credentials; specialized hardware; security clearance | Limited civilian crossover; high unit costs; proprietary systems | Kit+OS that spans logistics + patrol + mapping with evidence ledger; commercial scale advantages | Target logistics first; emphasize multi-domain; evidence-based safety | Defense contract win rate; cross-sector leverage |
 | Robotaxi | Waymo, Baidu Apollo, WeRide, Motional | Urban mapping depth; consumer UX; regulatory relationships | High infrastructure dependency; limited harsh-env capability; high operational costs | Controlled ODD focus; industrial-grade resilience; cross-sector technology leverage | Avoid direct competition; target controlled environments first; emphasize reliability | Controlled-ODD win rate; expansion velocity |
 
-### 7.2) Customer Journey Maps
+#### 7.2) Customer Journey Maps
 
 #### **Defense Sector Customer Journey**
 
@@ -250,7 +250,7 @@
 - Continuous monitoring of competitive pilot results
 - Customer journey optimization based on competitive insights
 
-## 8) Pricing & Packaging (detailed structure)
+### 8) Pricing & Packaging (detailed structure)
 
 **Value-Based Pricing Framework**:
 | Offering | Components | Value Metrics | Price Structure | Competitive Position |
@@ -312,3 +312,4 @@
 ## 13) What Proof We'll Show (buy-side validation)
 
 * **30-day KPI delta** vs baseline per pilot; regulator ride-alongs; safety case bundle; red-team drills; mean-time-to-explain (MTTX) < 10 min.
+
