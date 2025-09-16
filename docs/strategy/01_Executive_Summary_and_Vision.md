@@ -1,8 +1,6 @@
 # AtlasMesh Fleet OS — Vision & Problem Statement 
 
----
-
-## 0) One-page executive vision
+### 1) One-page executive vision
 
 **Vision.** Build the world's most **agnostic Fleet OS** for Level-4 autonomous operations—**vehicle-agnostic, platform-agnostic, sector-agnostic, map-source-agnostic, weather-source-agnostic, comms-agnostic, geography-aware**—that can plan, dispatch, monitor, and continuously improve fleets across **defense, mining, logistics/supply chain, and ride-hailing** in **extreme Middle-East conditions** (desert, high heat, dust, intermittent comms), with **zero hand-tuning** per program.
 
@@ -22,7 +20,7 @@
 
 ---
 
-## 1) Strategic context & market definition (ME focus)
+### 2) Strategic context & market definition (ME focus)
 
 **Sectors & ODD realities (Middle East).**
 
@@ -41,7 +39,7 @@
 
 ---
 
-## 2) Problem landscape (by sector) → measurable outcomes
+### 3) Problem landscape (by sector) → measurable outcomes
 
 | Sector           | Today's Problems (ME)                                                                   | Impacts                                                 | Measurable Outcome Targets (12–18 mo)                                                                                                                       |
 | ---------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -54,7 +52,7 @@
 
 ---
 
-## 3) Value proposition & differentiation
+### 4) Value proposition & differentiation
 
 **Agnostic by design.**
 
@@ -71,7 +69,7 @@
 
 ---
 
-## 4) Scope, non-goals, boundaries
+### 5) Scope, non-goals, boundaries
 
 **In-scope.** L4 geofenced autonomy; retrofit kits; Fleet OS; tele-assist **Q&A** (no joystick drive); safety case; ops tooling; integrations (WMS/TOS/ERP/V2X); rider/mission UX.
 
@@ -99,7 +97,7 @@
 
 ---
 
-## 5) ODD (Operational Design Domain) definition
+### 6) ODD (Operational Design Domain) definition
 
 **Axes.** Geography (tiles), road classes, weather (heat/dust/wind/visibility), time of day, traffic density, comms bands, **GNSS integrity**, legal constraints.
 
@@ -113,7 +111,7 @@
 
 ---
 
-## 6) Users & stakeholders (personas)
+### 7) Users & stakeholders (personas)
 
 * **Dispatcher (Ops).** Needs SLA-tight assignment, incident triage.
 * **Rider Support (RH).** Needs live trip context, safe-stop flows, UX scripts.
@@ -127,7 +125,7 @@
 
 ---
 
-## 7) Top-line success metrics & OKR linkage
+### 8) Top-line success metrics & OKR linkage
 
 **North-star metric families** (registered & alert-backed):
 
@@ -147,7 +145,7 @@
 
 ---
 
-## 8) Problem statements → metrics
+### 9) Problem statements → metrics
 
 ### Defense
 
@@ -187,7 +185,7 @@
 
 ---
 
-## 9) Design principles & hard trade-offs (with policies)
+### 10) Design principles & hard trade-offs (with policies)
 
 1. **Provenance vs. Freshness.**
    **Policy:** score incoming geo/weather data on `credibility × freshness`; workflows prefer **credible** unless freshness surpasses threshold *and* risk score < policy limit. All decisions logged.
@@ -209,7 +207,7 @@
 
 ---
 
-## 10) Ethics & guardrails
+### 11) Ethics & guardrails
 
 * **Do-no-harm:** geofences and ROE encoded; no lethal payload control.
 * **Privacy-by-default:** least data; retention limits; PII masking on edge; audit trails.
@@ -220,7 +218,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 11) Regulatory posture (adaptive)
+### 12) Regulatory posture (adaptive)
 
 * **Safety case automation:** evidence bundles **auto-generated** per release (`compliance/audit-bundles/`).
 * **Jurisdiction overlays:** local speed, lane rules, AV permits in `rules/regulatory/*`.
@@ -239,7 +237,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 13) Engineering architecture
+### 13) Engineering architecture
 
 * **Services**: policy engine, dispatch, routing, rebalancing, energy, fleet-health, predictive-maint, map, weather, v2x, OTA, alerts.
 * **Edge**: **ROS2-based** vehicle agent with **containerized nodes**, tele-assist client (Q&A only), diagnostics agent (snapshots, SBOM).
@@ -250,7 +248,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 14) UX/HMI
+### 14) UX/HMI
 
 * **Control Center.** Left rail (trip types, statuses), live map, fleet timeline, quick filters (ODD breaches, assists), **RTL & Arabic** support, WCAG 2.2 AA.
 * **Vehicle detail.** VIN, auto/manual, today's L4 hours & km, heartbeat, MPI, event feed.
@@ -262,7 +260,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 15) QA & Safety
+### 15) QA & Safety
 
 * **Twin-Gated CI/CD:** **CARLA/Gazebo simulation** scenarios must pass sector/ODD minimums; regression diffs gated.
 * **Scenario Bank:** Comprehensive OpenSCENARIO-based test scenarios across sectors, vehicle types, and environmental conditions.
@@ -273,7 +271,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 16) Risks, mitigations, contingencies, fail-fast
+### 16) Risks, mitigations, contingencies, fail-fast
 
 | Risk | Likelihood/Impact | Impact Metrics | Mitigation (designed-in) | Contingency | Tripwire (auto) | Mitigation Timeline |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -286,7 +284,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 17) Assumptions (versioned) & dependencies
+### 17) Assumptions (versioned) & dependencies
 
 * **L4 only** in geofenced ODDs with tele-assist Q&A allowed within policy.
 * **Vehicle interfaces** available (DBW or kit adapters).
@@ -298,7 +296,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 18) Validation plan (cross-functional "no-loopholes")
+### 18) Validation plan
 
 | Function | Validation Responsibility | Validation Method | Success Criteria | Failure Response |
 | --- | --- | --- | --- | --- |
@@ -316,7 +314,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 19) Success criteria & phase gates
+### 19) Success criteria & phase gates
 
 1. **Alpha (internal):** All core services up; sim gates green; ODD for first sector encoded; no forking.
 2. **Pilot-A (closed site):** ≥20 vehicles; **≥97% uptime**, assists ≤0.7/1k km; safety evidence bundle pass.
@@ -328,7 +326,7 @@ Each gate enforced by CI "twin-gates" job + Program Board sign-off.
 
 ---
 
-## 20) Glossary (excerpt)
+### 20) Glossary (excerpt)
 
 * **ODD:** Operational Design Domain.
 * **Assist:** Human tele-assist Q&A input incorporated by autonomy; **no remote driving**.
@@ -346,7 +344,8 @@ Full glossary: `docs/strategy/glossary.md`
 
 ---
 
-## Bottom line
+### Bottom line
 It is **deliberately engineered to leave no gaps**: every promise in this Vision & Problem Statement is backed by a measurable KPI, a policy, an ODD rule, or an automated gate. If it's not encoded, it doesn't ship. This ensures strategic clarity, technical integrity, safety, and scalability across **defense, mining, logistics, and ride-hailing**—under the harsh realities of the Middle East and beyond.
+
 
 
