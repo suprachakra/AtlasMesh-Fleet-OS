@@ -1,6 +1,23 @@
 # AtlasMesh Fleet OS — Requirements (FRs & NFRs)
 
-This document specifies the functional and non-functional requirements for AtlasMesh Fleet OS, organized by epic and aligned with strategic objectives.
+**Document Owner:** SVP Product & SVP Engineering  
+**Last Updated:** 2025-09-16  
+**Version:** 2.0  
+**Status:** Authoritative Requirements Specification  
+
+This document specifies the functional and non-functional requirements for AtlasMesh Fleet OS, organized by epic and directly linked to validated customer problems. Each requirement traces back to specific customer pain points and includes measurable acceptance criteria.
+
+## 0) Requirements-to-Problem Traceability
+
+AtlasMesh Fleet OS requirements directly address validated customer problems identified in our [Problem Statement](../strategy/00_Problem_Statement_and_Solution.md):
+
+| Customer Problem | Requirement Category | Key Requirements | Success Metric |
+|------------------|---------------------|------------------|----------------|
+| **Environmental Brittleness** | Performance, Reliability | PR-001 to PR-008, RR-001 to RR-005 | 98.5%+ uptime in 50°C+, dust storms |
+| **Integration Hell** | Functional, Operational | FR-001 to FR-005, OR-001 to OR-003 | <2 weeks vehicle onboarding |
+| **Compliance Nightmare** | Safety, Compliance | SR-001 to SR-008, CR-001 to CR-005 | Automated evidence generation |
+| **Vendor Lock-in** | Functional, Operational | FR-008 to FR-012, OR-004 to OR-006 | Multi-vendor support proven |
+| **Manual Operations** | Functional, Usability | FR-020 to FR-025, UR-001 to UR-003 | 80% reduction in manual tasks |
 
 ## 1) Requirements Framework
 
@@ -36,13 +53,21 @@ Each requirement is traced to:
 
 ### 2.1) Vehicle Abstraction Layer (E-01)
 
-| ID | Requirement | Priority | Strategic Link | Acceptance Criteria |
-| --- | --- | --- | --- | --- |
-| FR-001 | System SHALL support multiple vehicle classes through configurable profiles | P0 | O-3 | Vehicle profiles for ≥2 classes; zero hard-coded vehicle parameters in core |
-| FR-002 | System SHALL provide unified drive-by-wire interface | P0 | O-1 | Single API for steering, throttle, brake across vehicle types |
-| FR-003 | System SHALL validate vehicle profile conformance | P0 | O-1 | Automated profile validation; non-conforming vehicles rejected |
-| FR-004 | System SHALL support graceful degradation for vehicle faults | P0 | O-1 | Safe stop within profile limits; fault detection <100ms |
-| FR-005 | System SHALL enable hot-swap of vehicle configurations | P1 | O-2 | Configuration changes without system restart |
+**Customer Problem Context**: Mining customers like Ma'aden operate CAT, Komatsu, and Volvo trucks requiring separate codebases. Defense customers need unified command for mixed UGV convoys. Port operators manage 15+ vehicle types with impossible custom integration costs.
+
+**Customer Validation Quotes**:
+- *"Each vehicle requires separate codebase - we can't scale this approach"* - Ma'aden Operations Director
+- *"Mixed vehicle convoys need unified command and control"* - UAE Armed Forces
+- *"Port has 15+ vehicle types, custom integration is impossible"* - DP World Terminal Manager
+
+| ID | Requirement | Priority | Strategic Link | Customer Problem | Acceptance Criteria | Validation Method |
+| --- | --- | --- | --- | --- | --- | --- |
+| FR-001 | System SHALL support multiple vehicle classes through configurable profiles | P0 | O-3 | Mixed fleet operations | Vehicle profiles for ≥4 classes (UGV, haul truck, yard tractor, passenger); zero hard-coded vehicle parameters in core | Multi-vehicle fleet demonstration |
+| FR-002 | System SHALL provide unified drive-by-wire interface | P0 | O-1 | Control system fragmentation | Single API for steering, throttle, brake across all vehicle types; <10ms command latency | Cross-vehicle control testing |
+| FR-003 | System SHALL validate vehicle profile conformance | P0 | O-1 | Safety assurance | Automated profile validation; non-conforming vehicles rejected; validation <5 seconds | Profile validation test suite |
+| FR-004 | System SHALL support graceful degradation for vehicle faults | P0 | O-1 | Operational safety | Safe stop within profile limits; fault detection <100ms; degraded mode operation | Fault injection testing |
+| FR-005 | System SHALL enable hot-swap of vehicle configurations | P1 | O-2 | Operational flexibility | Configuration changes without system restart; <30 second profile switch | Live configuration testing |
+| FR-006 | System SHALL maintain vehicle health monitoring | P0 | O-3 | Predictive maintenance | Real-time diagnostics across all vehicle types; predictive alerts 24h+ advance | Fleet health dashboard |
 
 ### 2.2) Policy Engine (E-02)
 
@@ -148,6 +173,12 @@ Each requirement is traced to:
 | PR-006 | Fleet dashboard refresh | ≤2s | UI performance metrics | O-5 |
 | PR-007 | Scenario execution time | ≤4h for full matrix | CI pipeline metrics | O-1 |
 | PR-008 | Evidence bundle generation | ≤1h per release | Compliance system metrics | O-4 |
+| PR-009 | Decision framework latency | ≤40ms (p95) | Decision system metrics | O-1 |
+| PR-010 | Simulation real-time factor | ≥2x for CI scenarios | Simulation metrics | O-1 |
+| PR-011 | Map format conversion time | ≤30s for standard map area | Conversion metrics | O-3 |
+| PR-012 | ROS2 message latency | ≤10ms for critical paths | ROS2 instrumentation | O-1 |
+| PR-013 | Vehicle boot time | ≤60s from power-on to operational | Boot sequence timing | O-1 |
+| PR-014 | Behavior tree evaluation | ≤20ms per decision cycle | BT engine metrics | O-1 |
 
 ### 3.2) Reliability Requirements (RR)
 
@@ -159,6 +190,12 @@ Each requirement is traced to:
 | RR-004 | Data loss tolerance | ≤0.1% telemetry loss | Data pipeline metrics | O-4 |
 | RR-005 | Graceful degradation | 100% of failure modes | Fault injection testing | O-1 |
 | RR-006 | Backup and recovery | ≤4h RTO, ≤1h RPO | DR testing | O-1 |
+| RR-007 | ROS2 node restart success | ≥99.9% | Fault injection testing | O-1 |
+| RR-008 | Simulation execution success | ≥99.5% | Execution logs | O-1 |
+| RR-009 | Map format validation success | ≥99.5% | Validation reports | O-1 |
+| RR-010 | Map conversion fidelity | ≥99.9% for critical features | Conversion metrics | O-1 |
+| RR-011 | Behavior tree robustness | Zero safety violations | Decision logs | O-1 |
+| RR-012 | Offline operation capability | ≥45 minutes | Offline testing | O-1 |
 
 ### 3.3) Safety Requirements (SR)
 
@@ -170,6 +207,12 @@ Each requirement is traced to:
 | SR-004 | Fault detection time | ≤100ms for critical faults | System testing | O-1 |
 | SR-005 | Safety case completeness | 100% of releases | Safety review | O-1, O-4 |
 | SR-006 | Scenario coverage | ≥95% for critical paths | Test analysis | O-1 |
+| SR-007 | Safety arbitration override | 100% success rate | Safety testing | O-1 |
+| SR-008 | Decision explainability | 100% of decisions traceable | Decision logs | O-1, O-4 |
+| SR-009 | Simulation-to-reality correlation | ≥90% match on key metrics | Validation testing | O-1 |
+| SR-010 | Component isolation | Zero cascading failures | Fault injection | O-1 |
+| SR-011 | ML component constraints | 100% adherence to safety bounds | Runtime monitoring | O-1 |
+| SR-012 | Formal verification coverage | 100% of safety-critical components | Verification reports | O-1, O-4 |
 
 ### 3.4) Security Requirements (SC)
 
@@ -181,6 +224,12 @@ Each requirement is traced to:
 | SC-004 | Access control | Role-based, least privilege | Permission audit | O-4 |
 | SC-005 | Code signing | 100% of deployments | Release verification | O-4 |
 | SC-006 | Penetration testing | Quarterly, zero P1 findings | Security assessment | O-4 |
+| SC-007 | ROS2 message authentication | 100% of critical messages | Security testing | O-4 |
+| SC-008 | Container image signing | 100% of container images | Build pipeline verification | O-4 |
+| SC-009 | Secure boot | 100% of edge devices | Boot verification | O-4 |
+| SC-010 | Map provenance verification | 100% of map updates | Provenance checking | O-4 |
+| SC-011 | Policy integrity | 100% verification before execution | Integrity checking | O-4 |
+| SC-012 | ISO 21434 compliance | Full CSMS implementation | Cybersecurity audit | O-4 |
 
 ### 3.5) Usability Requirements (UR)
 
@@ -214,6 +263,12 @@ Each requirement is traced to:
 | OR-004 | Backup frequency | Daily for critical data | Backup verification | O-1 |
 | OR-005 | Documentation currency | ≤30 days lag from code | Documentation audit | O-2 |
 | OR-006 | Support response time | ≤4h for P1 issues | Support metrics | O-5 |
+| OR-007 | ROS2 node monitoring | 100% of nodes | Node lifecycle events | O-1 |
+| OR-008 | Container resource limits | 100% of containers | Resource monitoring | O-1 |
+| OR-009 | Simulation environment availability | ≥99.0% | Environment uptime | O-1 |
+| OR-010 | Map format conversion tools | 100% of supported formats | Tool verification | O-3 |
+| OR-011 | Behavior tree visualization | 100% of decision trees | Visualization tools | O-5 |
+| OR-012 | CI/CD twin gate success rate | ≥98% | Pipeline metrics | O-1 |
 
 ## 4) Requirements Traceability
 
@@ -231,16 +286,19 @@ Each requirement is traced to:
 
 | Epic | Functional Requirements | Non-Functional Requirements |
 | --- | --- | --- |
-| **E-01: Vehicle Abstraction** | FR-001-005 | PR-001, RR-005, SR-003-004 |
-| **E-02: Policy Engine** | FR-010-014 | PR-003, SR-005 |
-| **E-03: Twin-Gated CI/CD** | FR-020-024 | PR-007, SR-006 |
-| **E-04: Evidence Generation** | FR-030-034 | PR-008, CR-001-006 |
-| **E-05: Dispatch & Routing** | FR-040-044 | PR-002, PR-005 |
+| **E-01: Vehicle Abstraction** | FR-001-005 | PR-001, PR-013, RR-005, RR-007, SR-003-004, SR-010 |
+| **E-02: Policy Engine** | FR-010-014 | PR-003, SR-005, SR-011, SC-011 |
+| **E-03: Twin-Gated CI/CD** | FR-020-024 | PR-007, PR-010, RR-008, SR-006, SR-009, OR-009, OR-012 |
+| **E-04: Evidence Generation** | FR-030-034 | PR-008, CR-001-006, SR-012, SC-012 |
+| **E-05: Dispatch & Routing** | FR-040-044 | PR-002, PR-005, PR-011, RR-009, RR-010 |
 | **E-06: Energy Management** | FR-050-054 | RR-002 |
 | **E-07: Predictive Maintenance** | FR-060-064 | RR-003 |
-| **E-08: Map Fusion** | FR-070-074 | PR-005, SR-005 |
-| **E-09: Tele-Assist** | FR-080-084 | PR-004, UR-001-005 |
+| **E-08: Map Fusion** | FR-070-074 | PR-005, PR-011, RR-009, RR-010, SR-005, SC-010, OR-010 |
+| **E-09: Tele-Assist** | FR-080-084 | PR-004, RR-012, UR-001-005 |
 | **E-10: Weather Fusion** | FR-090-094 | RR-001 |
+| **E-11: ROS2 Edge Stack** | FR-001-005 | PR-001, PR-012, PR-013, RR-007, SR-010, SC-007, SC-008, SC-009, OR-007, OR-008 |
+| **E-12: Hybrid Decision Framework** | FR-010-014 | PR-009, PR-014, RR-011, SR-007, SR-008, SR-011, OR-011 |
+| **E-13: Simulation Strategy** | FR-020-024 | PR-007, PR-010, RR-008, SR-006, SR-009, OR-009, OR-012 |
 
 ## 5) Verification and Validation
 

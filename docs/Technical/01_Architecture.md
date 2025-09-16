@@ -230,6 +230,110 @@ flowchart TD
     RS -->|Routes| VA
 ```
 
+### 4.1 ROS2-Based Edge Architecture
+
+```mermaid
+flowchart TD
+    subgraph "Vehicle Hardware"
+        Sensors[Sensors]
+        Actuators[Actuators]
+        Compute[Edge Compute]
+    end
+
+    subgraph "ROS2 Middleware"
+        DDS[DDS/RTPS]
+        NodeMgr[Node Lifecycle Manager]
+        QoS[QoS Policies]
+    end
+
+    subgraph "ROS2 Nodes"
+        PerceptionNodes[Perception Nodes]
+        LocalizationNodes[Localization Nodes]
+        DecisionNodes[Decision Nodes]
+        ControlNodes[Control Nodes]
+        DiagNodes[Diagnostics Nodes]
+        CommsNodes[Communication Nodes]
+    end
+
+    subgraph "Cloud Bridge"
+        MsgTranslator[Message Translator]
+        SecurityBridge[Security Bridge]
+        StoreForward[Store & Forward]
+    end
+
+    Sensors -->|Driver Nodes| PerceptionNodes
+    PerceptionNodes -->|Object Data| DecisionNodes
+    Sensors -->|Raw Data| LocalizationNodes
+    LocalizationNodes -->|Position| DecisionNodes
+    DecisionNodes -->|Trajectory| ControlNodes
+    ControlNodes -->|Commands| Actuators
+    
+    PerceptionNodes -.->|Messages| DDS
+    LocalizationNodes -.->|Messages| DDS
+    DecisionNodes -.->|Messages| DDS
+    ControlNodes -.->|Messages| DDS
+    DiagNodes -.->|Messages| DDS
+    CommsNodes -.->|Messages| DDS
+    
+    NodeMgr -->|Lifecycle| PerceptionNodes
+    NodeMgr -->|Lifecycle| LocalizationNodes
+    NodeMgr -->|Lifecycle| DecisionNodes
+    NodeMgr -->|Lifecycle| ControlNodes
+    NodeMgr -->|Lifecycle| DiagNodes
+    NodeMgr -->|Lifecycle| CommsNodes
+    
+    QoS -.->|Policies| DDS
+    
+    CommsNodes -->|Telemetry| MsgTranslator
+    MsgTranslator -->|Protocol Translation| SecurityBridge
+    SecurityBridge -->|Secure Comms| Cloud[Cloud Services]
+    CommsNodes -->|Offline Data| StoreForward
+    StoreForward -.->|Reconnection| SecurityBridge
+```
+
+### 4.2 Behavior Tree Decision Framework
+
+```mermaid
+flowchart TD
+    subgraph "Decision Framework"
+        BT[Behavior Tree Engine]
+        SA[Safety Arbitrator]
+        ML[ML Priors]
+        PE[Policy Engine]
+    end
+
+    subgraph "Inputs"
+        Perception[Perception Data]
+        Localization[Localization Data]
+        Mission[Mission Parameters]
+        Map[Map Data]
+        Weather[Weather Data]
+    end
+
+    subgraph "Outputs"
+        Trajectory[Trajectory]
+        VehicleState[Vehicle State]
+        Diagnostics[Diagnostics]
+    end
+
+    Perception --> BT
+    Localization --> BT
+    Mission --> BT
+    Map --> BT
+    Weather --> BT
+    
+    BT -->|Decision| SA
+    ML -->|Optimization Hints| BT
+    PE -->|Constraints| SA
+    
+    SA -->|Verified Decision| Trajectory
+    SA -->|State Transition| VehicleState
+    BT -->|Performance Metrics| Diagnostics
+    
+    Trajectory -->|Feedback| ML
+    VehicleState -->|Feedback| ML
+```
+
 ## 5) Deployment Architecture
 
 AtlasMesh Fleet OS supports multiple deployment topologies to accommodate different operational requirements:
@@ -416,6 +520,172 @@ AtlasMesh Fleet OS is designed with resilience in mind, with the following failu
 | Event Bus | Event distribution | Kafka | Exactly-once; ordered; durable |
 | Policy Evaluation | Rule enforcement | OPA/Rego | Versioned; auditable; testable |
 
+### 7.3 Edge-Cloud Interface
+
+```mermaid
+sequenceDiagram
+    participant VA as Vehicle Agent
+    participant CB as Cloud Bridge
+    participant API as API Gateway
+    participant FM as Fleet Manager
+    participant TI as Telemetry Ingest
+    participant ES as Event Store
+
+    Note over VA,ES: Normal Operation (Connected)
+    VA->>CB: Telemetry (gRPC stream)
+    CB->>TI: Forward telemetry (MQTT)
+    TI->>ES: Store events (Kafka)
+    FM->>API: Command request
+    API->>CB: Command (gRPC)
+    CB->>VA: Forward command
+    VA-->>CB: Command ACK
+    CB-->>API: Forward ACK
+    API-->>FM: Command result
+
+    Note over VA,ES: Degraded Operation (Intermittent)
+    VA->>VA: Store telemetry locally
+    VA->>VA: Execute cached policies
+    VA->>CB: Connectivity restored
+    CB->>TI: Buffered telemetry (batch)
+    TI->>ES: Store events (Kafka)
+
+    Note over VA,ES: Offline Operation
+    VA->>VA: Store telemetry locally
+    VA->>VA: Execute cached policies
+    VA->>VA: Autonomous decision-making
+    VA->>VA: Safe operational boundaries
+```
+
+### 7.4 Data Contracts
+
+#### Vehicle Telemetry Contract
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Vehicle Telemetry",
+  "type": "object",
+  "required": ["vehicle_id", "timestamp", "sequence", "position", "status"],
+  "properties": {
+    "vehicle_id": {
+      "type": "string",
+      "description": "Unique identifier for the vehicle"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of the telemetry data"
+    },
+    "sequence": {
+      "type": "integer",
+      "description": "Monotonically increasing sequence number"
+    },
+    "position": {
+      "type": "object",
+      "required": ["latitude", "longitude", "heading"],
+      "properties": {
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "heading": { "type": "number" },
+        "altitude": { "type": "number" },
+        "speed": { "type": "number" },
+        "accuracy": { "type": "number" }
+      }
+    },
+    "status": {
+      "type": "object",
+      "required": ["operational_state", "energy_level"],
+      "properties": {
+        "operational_state": {
+          "type": "string",
+          "enum": ["READY", "BUSY", "CHARGING", "MAINTENANCE", "ERROR"]
+        },
+        "energy_level": { "type": "number", "minimum": 0, "maximum": 100 },
+        "health_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "assist_state": {
+          "type": "string",
+          "enum": ["NONE", "REQUESTED", "ACTIVE"]
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "properties": {
+        "cpu_usage": { "type": "number" },
+        "memory_usage": { "type": "number" },
+        "disk_usage": { "type": "number" },
+        "temperature": { "type": "number" },
+        "network_quality": { "type": "number" }
+      }
+    },
+    "mission": {
+      "type": "object",
+      "properties": {
+        "mission_id": { "type": "string" },
+        "route_id": { "type": "string" },
+        "progress": { "type": "number", "minimum": 0, "maximum": 100 },
+        "eta": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}
+```
+
+#### Vehicle Command Contract
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Vehicle Command",
+  "type": "object",
+  "required": ["command_id", "vehicle_id", "timestamp", "command_type"],
+  "properties": {
+    "command_id": {
+      "type": "string",
+      "description": "Unique identifier for the command"
+    },
+    "vehicle_id": {
+      "type": "string",
+      "description": "Target vehicle identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of the command"
+    },
+    "command_type": {
+      "type": "string",
+      "enum": [
+        "ASSIGN_MISSION", "CANCEL_MISSION", "PAUSE", "RESUME", 
+        "SAFE_STOP", "EMERGENCY_STOP", "CHANGE_OPERATIONAL_MODE", 
+        "UPDATE_ROUTE", "DIAGNOSTICS", "OTA_UPDATE"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["LOW", "NORMAL", "HIGH", "CRITICAL"],
+      "default": "NORMAL"
+    },
+    "expiration": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the command expires"
+    },
+    "payload": {
+      "type": "object",
+      "description": "Command-specific parameters"
+    },
+    "authentication": {
+      "type": "object",
+      "properties": {
+        "issuer": { "type": "string" },
+        "signature": { "type": "string" }
+      }
+    }
+  }
+}
+```
+
 ## 8) Observability & Monitoring
 
 AtlasMesh Fleet OS implements a comprehensive observability strategy:
@@ -450,11 +720,18 @@ The compliance architecture ensures regulatory adherence:
 
 | ADR ID | Decision | Rationale | Alternatives Considered |
 |--------|----------|-----------|-------------------------|
-| ADR-001 | Monorepo with Bazel | Consistent builds; atomic changes; cross-service testing | Polyrepo; Nx |
-| ADR-002 | Event Sourcing | Audit trail; temporal queries; resilience | CRUD; synchronous APIs |
-| ADR-003 | Policy as Code | Versioned rules; testable policies; separation of concerns | Hardcoded rules; config files |
-| ADR-004 | Multi-Stage Deployment | Progressive rollout; canary testing; fast rollback | Direct production deployment |
-| ADR-005 | Offline-First Edge | Resilience to connectivity issues; local autonomy | Cloud-dependent operation |
+| ADR-0001 | Vehicle-Agnostic Architecture | Support multiple vehicle classes; reduce dependency on specific hardware | Vehicle-specific implementations; fork per vehicle type |
+| ADR-0002 | Platform-Agnostic Architecture | Cloud-neutral deployment; avoid vendor lock-in | Cloud-specific optimizations; native services |
+| ADR-0003 | Sector-Agnostic Architecture | Shared backbone with sector overlays; code reuse | Sector-specific forks; separate products |
+| ADR-0004 | Sensor-Agnostic Architecture | Support multiple sensor configurations; certified packs | Hard-coded sensor integration; fixed sensor suite |
+| ADR-0005 | Map-Source-Agnostic Architecture | Multiple map providers; provenance tracking | Single map provider; custom map format |
+| ADR-0006 | Weather-Source-Agnostic Architecture | Multi-source weather fusion; confidence scoring | Single weather source; simple integration |
+| ADR-0007 | Communications-Agnostic Architecture | Multi-path communications; offline-first | Single communication channel; cloud dependency |
+| ADR-0008 | ROS2-Based Edge Stack | Industry standard; component isolation; real-time | Custom middleware; direct hardware access |
+| ADR-0009 | Hybrid Decision Framework | Behavior trees + rules + ML; explainability | Pure ML approach; pure rule-based system |
+| ADR-0010 | Simulation Strategy | CARLA + Gazebo; scenario-based validation | Single simulator; minimal simulation |
+| ADR-011 | Event Sourcing | Audit trail; temporal queries; resilience | CRUD; synchronous APIs |
+| ADR-012 | Policy as Code | Versioned rules; testable policies; separation of concerns | Hardcoded rules; config files |
 
 ## 12) Architecture Evolution & Roadmap
 
@@ -478,6 +755,8 @@ The architecture governance process ensures quality and alignment:
 
 - [System Requirements](03_Requirements_FRs_NFRs.md)
 - [API Documentation](09_API_Documentation.md)
-- [Security Implementation](07_Security_Implementation.md)
+- [Security & Compliance](05_Security_and_Compliance.md)
+- [Operations & Runbooks](06_Operations_and_Runbooks.md)
 - [DevOps Pipeline](08_DevOps_Pipeline_and_Deployment.md)
 - [Data & Analytics Integration](04_Data_and_Analytics_Integration.md)
+- [Architecture Decision Records](../ADR/README.md)
