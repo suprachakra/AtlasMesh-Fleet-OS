@@ -17,6 +17,9 @@ An Architecture Decision Record is a document that captures an important archite
 | [ADR-0005](0005-map-source-agnostic.md) | Map-Source-Agnostic Architecture | Accepted | 2025-09-14 | Defines how the system integrates multiple map sources with provenance tracking and conflict resolution |
 | [ADR-0006](0006-weather-source-agnostic.md) | Weather-Source-Agnostic Architecture | Accepted | 2025-09-14 | Establishes the approach for fusing multiple weather data sources with confidence scoring |
 | [ADR-0007](0007-comms-agnostic.md) | Communications-Agnostic Architecture | Accepted | 2025-09-14 | Defines the multi-path communications architecture with offline-first capabilities |
+| [ADR-0008](0008-ros2-edge-stack.md) | ROS2-Based Edge Stack Architecture | Accepted | 2025-09-15 | Establishes ROS2 as the foundation for on-vehicle software with containerization and standardized interfaces |
+| [ADR-0009](0009-hybrid-decision-framework.md) | Hybrid Decision Framework | Accepted | 2025-09-15 | Defines a combined approach using behavior trees, rule-based safety arbitration, and learned priors |
+| [ADR-0010](0010-simulation-strategy.md) | Simulation Strategy | Accepted | 2025-09-15 | Establishes a comprehensive simulation approach using CARLA and Gazebo with twin-gated CI/CD |
 
 ## ADR Template
 

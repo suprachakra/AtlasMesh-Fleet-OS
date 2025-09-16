@@ -24,13 +24,19 @@ We will implement a **map-source-agnostic architecture** with the following key 
    - Custom site maps (mines, ports, bases)
    - Converting between provider formats and our internal representation
 
-3. **Map Fusion System** - A conflict resolution framework that:
+3. **Map Format Standards** - Support for industry-standard formats:
+   - **Lanelet2** as primary operational format (internal representation)
+   - **OpenDRIVE** as exchange format (import/export)
+   - Conversion utilities between formats
+   - Validation tools for format compliance
+
+4. **Map Fusion System** - A conflict resolution framework that:
    - Combines data from multiple sources with provenance tracking
    - Applies credibility weighting based on source and freshness
    - Resolves conflicts with clear policies
    - Provides human-in-the-loop escalation for critical conflicts
 
-4. **Versioned Road Graph** - A system that:
+5. **Versioned Road Graph** - A system that:
    - Maintains immutable, versioned map snapshots
    - Associates each trip with a specific map version
    - Enables reproducibility and audit trails
@@ -42,18 +48,26 @@ We will implement a **map-source-agnostic architecture** with the following key 
 2. **Credibility Over Freshness** - Prefer reliable data over newer but unverified updates
 3. **Conflict Resolution** - Clear policies for handling contradictory map information
 4. **Safety Boundaries** - Prevent operation in areas with insufficient map quality
+5. **Format Compliance** - All maps must validate against Lanelet2/OpenDRIVE specifications
+6. **Version Control** - Git-style branching for site-specific maps with automated QA
 
 ## KPIs/SLOs
 
 1. Route correctness ≥99.x% on golden corridors
 2. ETA median error within target band for each sector
 3. Map conflict MTTResolve ≤24h for site maps, ≤48h for city maps
+4. Format validation success rate ≥99.5% for imported maps
+5. Conversion fidelity ≥99.9% for critical map features between formats
+6. Weekly map update cadence with semantic + geometry versioning
 
 ## Implementation Paths
 
 1. `/services/map-service/*` - Core map management and versioning
 2. `/services/routing/*` - Route planning using map data
 3. `/rules/policy/*` - Policies for map usage and conflict resolution
+4. `/configs/map/formats/*` - Format specifications and schemas
+5. `/tools/map-converter/*` - Conversion utilities between map formats
+6. `/tools/map-validator/*` - Validation tools for map quality and format compliance
 
 ## Consequences
 
@@ -63,6 +77,8 @@ We will implement a **map-source-agnostic architecture** with the following key 
 2. Reduces dependency on any single map source
 3. Allows for custom maps in specialized environments
 4. Provides clear audit trails for safety cases
+5. Standardizes on industry-accepted formats (Lanelet2, OpenDRIVE) for interoperability
+6. Enables ecosystem of tools that support these standard formats
 
 ### Negative
 
