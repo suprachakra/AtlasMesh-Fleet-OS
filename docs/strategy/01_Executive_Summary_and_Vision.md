@@ -1,9 +1,4 @@
-# AtlasMesh Fleet OS — Vision & Problem Statement (PRD • Section 01)
-
-**Repo path:** `docs/strategy/01_Executive_Summary_and_Vision.md`  
-**Doc owner:** SVP Product (accountable) • Eng/Design/Data/QA/Ops (responsible)  
-**Doc state:** v1.0 (authoritative baseline)  
-**Linked artifacts:** KPIs (`data/contracts/kpis.yaml`) • ODD rules (`rules/odd/*`) • Policy (`rules/policy/*`) • Safety case index (`compliance/safety-case/*`) • ADRs (`ADR/*`)
+# AtlasMesh Fleet OS — Vision & Problem Statement 
 
 ---
 
@@ -152,9 +147,9 @@
 
 ---
 
-## 8) Problem statements → metrics (detailed)
+## 8) Problem statements → metrics
 
-### Defense (illustrative)
+### Defense
 
 * **P-D1:** Convoys fail in GNSS-denied segments.
   **Metric:** `% GNSS-denied km with maintained localization ≥ X confidence`.
@@ -234,7 +229,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 12) Data strategy (SVP Data view)
+## 12) Data strategy
 
 * **Geospatial database** with **immutable provenance**, multi-resolution tiles, conflict resolution (source credibility graph), freshness SLAs.
 * **Telemetry contract**: versioned schemas (Avro/Proto), backward-compat tests.
@@ -244,7 +239,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 13) Engineering architecture (SVP Eng view)
+## 13) Engineering architecture
 
 * **Services**: policy engine, dispatch, routing, rebalancing, energy, fleet-health, predictive-maint, map, weather, v2x, OTA, alerts.
 * **Edge**: **ROS2-based** vehicle agent with **containerized nodes**, tele-assist client (Q&A only), diagnostics agent (snapshots, SBOM).
@@ -255,7 +250,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 14) UX/HMI (SVP Design view)
+## 14) UX/HMI
 
 * **Control Center.** Left rail (trip types, statuses), live map, fleet timeline, quick filters (ODD breaches, assists), **RTL & Arabic** support, WCAG 2.2 AA.
 * **Vehicle detail.** VIN, auto/manual, today's L4 hours & km, heartbeat, MPI, event feed.
@@ -267,7 +262,7 @@ Compliance hooks live in `docs/safety/` and `compliance/`.
 
 ---
 
-## 15) QA & Safety (SVP QA/Safety view)
+## 15) QA & Safety
 
 * **Twin-Gated CI/CD:** **CARLA/Gazebo simulation** scenarios must pass sector/ODD minimums; regression diffs gated.
 * **Scenario Bank:** Comprehensive OpenSCENARIO-based test scenarios across sectors, vehicle types, and environmental conditions.
@@ -351,14 +346,6 @@ Full glossary: `docs/strategy/glossary.md`
 
 ---
 
-## 21) How this document is kept airtight (no loopholes)
-
-* **Automated linting:** Docs linter checks for KPI references, broken links, and unmapped claims.
-* **KPI binding:** Any metric named here must exist in `kpis.yaml`; PRs fail if missing.
-* **Policy binding:** Any scope/ODD claim must map to a rule/overlay; CI fails otherwise.
-* **Staleness alarms:** Assumptions auto-age with reminders; stale → yellow; overdue → red gate.
-* **Evidence auto-build:** Release pipeline packages safety/compliance bundles; missing artifact → block.
-
 ---
 
 ### Appendices & repo mapping
@@ -374,3 +361,4 @@ Full glossary: `docs/strategy/glossary.md`
 
 ## Bottom line
 It is **deliberately engineered to leave no gaps**: every promise in this Vision & Problem Statement is backed by a measurable KPI, a policy, an ODD rule, or an automated gate. If it's not encoded, it doesn't ship. This ensures strategic clarity, technical integrity, safety, and scalability across **defense, mining, logistics, and ride-hailing**—under the harsh realities of the Middle East and beyond.
+
