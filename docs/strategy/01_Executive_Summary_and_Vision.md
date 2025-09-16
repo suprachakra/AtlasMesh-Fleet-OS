@@ -346,19 +346,7 @@ Full glossary: `docs/strategy/glossary.md`
 
 ---
 
----
-
-### Appendices & repo mapping
-
-* This doc → `docs/strategy/01_Executive_Summary_and_Vision.md`
-* Market/user insights → `docs/strategy/02_Market_and_User_Insights.md`
-* OKRs → `docs/strategy/03_Objectives_and_Key_Results_OKRs.md`
-* Risk & governance → `docs/strategy/06_Risk_and_Governance.md`
-* Technical architecture → `docs/technical/01_Architecture.md`
-* Requirements (FR/NFR) → `docs/technical/03_Requirements_FRs_NFRs.md`
-
----
-
 ## Bottom line
 It is **deliberately engineered to leave no gaps**: every promise in this Vision & Problem Statement is backed by a measurable KPI, a policy, an ODD rule, or an automated gate. If it's not encoded, it doesn't ship. This ensures strategic clarity, technical integrity, safety, and scalability across **defense, mining, logistics, and ride-hailing**—under the harsh realities of the Middle East and beyond.
+
 
