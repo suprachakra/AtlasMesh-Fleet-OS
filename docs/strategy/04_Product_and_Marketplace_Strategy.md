@@ -1,12 +1,14 @@
-# AtlasMesh Fleet OS — Product & Marketplace Strategy
+## Product & Marketplace Strategy
 
-## 0) One-liner Positioning (external)
+**AtlasMesh Fleet OS** is the **vehicle-, platform-, and sector-agnostic AV kit + Fleet OS** for **harsh and regulated operations** (defense, mining, logistics, ride-hail), delivering **audited safety, offline resilience, and adapter-first interoperability**- without vendor lock-in.
 
-**AtlasMesh Fleet OS** is the **vehicle-, platform-, and sector-agnostic AV kit + Fleet OS** for **harsh and regulated operations** (defense, mining, logistics, ride-hail), delivering **audited safety, offline resilience, and adapter-first interoperability**—without vendor lock-in.
+### 1) Product Positioning
 
-## 1) Product Positioning (internal)
-
-**Unique objective:** become the **default AV + FMS** when customers need to (1) operate in **GNSS-denied/thermal/dusty** environments, (2) **pass audits** with replayable evidence, (3) integrate with **WMS/TOS/ERP** in **weeks**, and (4) **scale multi-sector** without code forks.
+**Unique objective:** become the **default AV + FMS** when customers need to <br>
+(1) operate in **GNSS-denied/thermal/dusty** environments, <br>
+(2) **pass audits** with replayable evidence, <br>
+(3) integrate with **WMS/TOS/ERP** in **weeks**, and <br>
+(4) **scale multi-sector** without code forks.<br>
 
 **Pillars**
 
@@ -15,14 +17,14 @@
 * **Offline-first:** up to **45–60 min** autonomy continuity; store-and-forward logs.
 * **Adapter marketplace:** certified connectors with **contract tests** and version pinning.
 
-## 2) Unique Value Proposition
+### 2) Unique Value Proposition
 
 * **Operational excellence:** higher availability, lower assists, stable ETA/cycle times; robust in desert/industrial/contested domains.
 * **Governance excellence:** signed **Safety Bundles**; **Jurisdiction Packs** (policy+evidence mapped to regs); decision traceability.
 * **Economics:** measurable **\$ / ton** (mining), **crane idle** (ports), **human-mile** reduction (defense logistics), **ETA/cancel** hits (ride-hail).
 * **Strategic freedom:** multi-map, multi-weather, multi-cloud, multi-BOM—**no lock-in**.
 
-## 3) Target Market (tiers)
+### 3) Target Market (tiers)
 
 | Tier          | Description                                                                                                    | Annual Volume (planning) | Governance Value                                                    |
 | ------------- | -------------------------------------------------------------------------------------------------------------- | -----------------------: | ------------------------------------------------------------------- |
@@ -32,7 +34,7 @@
 
 > Finance workbook holds bottom-up unit models; this table is for portfolio planning and OKR targets.
 
-## 4) Audience & Goals
+### 4) Audience & Goals
 
 | Audience               | Role & Goals                                | Governance Benefits                            |
 | ---------------------- | ------------------------------------------- | ---------------------------------------------- |
@@ -45,9 +47,9 @@
 | CIO/CTO                | Avoid lock-in; stable roadmap               | Multi-X adapters; evidence gates               |
 | Finance/Procure        | Predictable TCO; resilient vendor           | BOM options; SLA tiers; ROI cases              |
 
-## 5) Value Prop (deep)
+### 5) Value Prop (deep)
 
-### 5.1 Operational excellence (sector KPIs)
+#### 5.1 Operational excellence (sector KPIs)
 
 * **Availability:** ≥**99.0%** Y1 → **99.5%** Y2.
 * **Assist SLA:** p50 <**30s**; **≤2 / 1,000 km**.
@@ -56,20 +58,20 @@
 * **Ride-hail:** **ETA p50 ≤8 min**; **cancels ≤2%**.
 * **Defense logistics:** **human-miles −30%** on resupply corridors.
 
-### 5.2 Governance excellence
+#### 5.2 Governance excellence
 
 * **Jurisdiction Packs:** policy + evidence mapped to local standards.
 * **Safety Bundles:** replays, STPA/HARA sims, model/policy hashes, SBOMs—signed per release.
 * **Change Controls:** digital twin gates; immutable audit log; auto evidence collation.
 
-### 5.3 Competitive MOAT
+#### 5.3 Competitive MOAT
 
 * **No-fork architecture** (sector/vehicle/city = overlays).
 * **Evidence-coupled CI/CD** (bundles block release).
 * **Offline-first edge** budgets & safe-harbor SOP.
 * **Adapter marketplace** with **contract-test certification**.
 
-## 6) Competitive Analysis
+### 6) Competitive Analysis
 
 | Player           | Offering                 | Gap                                  | AtlasMesh Advantage                           |
 | ---------------- | ------------------------ | ------------------------------------ | --------------------------------------------- |
@@ -84,7 +86,7 @@
 | OEM AV suites    | OEM-tied                 | Lock-in                              | Vehicle-agnostic                              |
 | FMS vendors      | Telematics/dispatch      | No L4 + safety                       | Integrated AV + safety case                   |
 
-## 7) Pricing & Packaging (indicative structure)
+### 7) Pricing & Packaging (indicative structure)
 
 * **AtlasMesh Kit** (hardware BOMs): *Rugged* (mining/defense), *Industrial* (ports/yards), *Urban* (ride-hail). Alt-BOMs certified.
 * **AtlasMesh Fleet OS** (SaaS/per-vehicle-mo):
@@ -96,7 +98,7 @@
 
 > Final pricing controlled in Finance; this defines shippable bundles for Sales/Legal.
 
-## 8) GTM Motions
+### 8) GTM Motions
 
 **Phase 1 – Prove (0–6 mo)**
 Lighthouse in **1 defense base, 1 open-pit mine, 1 port, 1 city ops room**.
@@ -114,7 +116,7 @@ SI/reseller program; sector templates; **Evidence Cloud** read-only for external
 
 * *Exit criteria:* multi-region footprint; <1% critical policy violations per quarter.
 
-## 9) Risk Mitigation & Contingency
+### 9) Risk Mitigation & Contingency
 
 | Risk              | Impact             | Enhanced mitigation                         | Contingency                       |
 | ----------------- | ------------------ | ------------------------------------------- | --------------------------------- |
@@ -125,13 +127,3 @@ SI/reseller program; sector templates; **Evidence Cloud** read-only for external
 | Thermal/dust      | Perception fail    | Ruggedization; cleaning SOP                 | Degrade modes; safe stop          |
 | Assist overload   | SLA breach         | Assist budgets; triage templates            | Burst ops cells; defer low-prio   |
 | Trust incident    | Adoption risk      | Evidence transparency; LE playbooks         | Joint comms; rolling audit bundle |
-
-## 10) Loophole Sweep (by function)
-
-* **Product:** every promise → KPI with owner + evidence path. No vague claims.
-* **Design:** progressive disclosure in Ops UI; RTL/Arabic parity enforced in CI.
-* **Brand/Comms:** regulator-safe language; claim = reproducible metric; crisis templates ready.
-* **Engineering:** overlays not forks; release blocked on twin/evidence gates; alt-BOMs ready.
-* **Data:** lineage (dbt), drift sentry, PII defaults off; retention per tenant.
-* **QA:** contract tests for adapters; axe/accessibility in CI; scenario banks for harsh env.
-* **Safety/Legal:** Jurisdiction Packs; signed bundles; immutable logs; approval workflows.
