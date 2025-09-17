@@ -33,8 +33,8 @@ AtlasMesh Fleet OS's go-to-market strategy is designed to establish market leade
 
 ### 1) Defense & Military Logistics
 
-**Target Customers:** UAE Armed Forces; Saudi Arabian National Guard; Qatar Armed Forces; regional defense contractors
-**Value Proposition:** Enhanced operational security; reduced personnel risk; improved supply chain efficiency; compliance with military standards
+**Target Customers:** UAE Armed Forces; Saudi Arabian National Guard; Qatar Armed Forces; regional defense contractors<br>
+**Value Proposition:** Enhanced operational security; reduced personnel risk; improved supply chain efficiency; compliance with military standards<br>
 
 | Field               | Details                                                                                                                         |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -43,8 +43,8 @@ AtlasMesh Fleet OS's go-to-market strategy is designed to establish market leade
 
 ### 2) Mining Operations
 
-**Target Customers:** Saudi Aramco; Ma'aden; Emirates Global Aluminium; regional mining contractors
-**Value Proposition:** Increased productivity & throughput; enhanced safety; reduced operational costs; improved environmental compliance
+**Target Customers:** Saudi Aramco; Ma'aden; Emirates Global Aluminium; regional mining contractors<br>
+**Value Proposition:** Increased productivity & throughput; enhanced safety; reduced operational costs; improved environmental compliance<br>
 
 | Field               | Details                                                                                   |
 | ------------------- | ----------------------------------------------------------------------------------------- |
@@ -53,8 +53,8 @@ AtlasMesh Fleet OS's go-to-market strategy is designed to establish market leade
 
 ### 3) Logistics & Supply Chain
 
-**Target Customers:** DP World; AD Ports Group; Aramex; regional logistics providers
-**Value Proposition:** Optimized planning/execution; reduced empty miles & fuel; improved accuracy & timing; supply‑chain visibility
+**Target Customers:** DP World; AD Ports Group; Aramex; regional logistics providers<br>
+**Value Proposition:** Optimized planning/execution; reduced empty miles & fuel; improved accuracy & timing; supply‑chain visibility<br>
 
 | Field               | Details                                                                            |
 | ------------------- | ---------------------------------------------------------------------------------- |
@@ -63,8 +63,8 @@ AtlasMesh Fleet OS's go-to-market strategy is designed to establish market leade
 
 ### 4) Ride‑hail & Urban Mobility
 
-**Target Customers:** Careem; ZedMobility; RTA; regional operators; public transit authorities; corporate shuttles
-**Value Proposition:** Reliability & safety; better passenger experience; reduced cost; compliance assurance
+**Target Customers:** Careem; ZedMobility; RTA; regional operators; public transit authorities; corporate shuttles<br>
+**Value Proposition:** Reliability & safety; better passenger experience; reduced cost; compliance assurance<br>
 
 | Field               | Details                                                                            |
 | ------------------- | ---------------------------------------------------------------------------------- |
@@ -508,4 +508,5 @@ This go-to-market strategy provides a comprehensive roadmap for establishing Atl
 The strategy is designed to be flexible and adaptable, allowing for rapid response to market changes and opportunities. Regular review and adjustment ensure we remain on track to achieve our ambitious but achievable goals.
 
 ---
+
 
