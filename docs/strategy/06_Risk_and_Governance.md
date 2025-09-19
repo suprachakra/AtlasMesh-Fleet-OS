@@ -1,10 +1,10 @@
-# AtlasMesh Fleet OS — Risk & Governance
+## Risk & Governance
 
-## 1) Risk Management Framework
+## 1. Risk Management Framework
 
 AtlasMesh Fleet OS adopts a comprehensive risk management framework that spans technical, operational, commercial, and compliance domains. This framework ensures risks are systematically identified, assessed, mitigated, and monitored throughout the product lifecycle.
 
-### 1.1) Risk Categories
+### 1.1. Risk Categories
 
 | Category | Description | Examples | Owner |
 | --- | --- | --- | --- |
@@ -376,3 +376,4 @@ AtlasMesh maintains dashboards for governance visibility:
 - **Incident Response Plan**: `docs/Operations/incident_response_plan.md`
 - **Compliance Framework**: `docs/Compliance/compliance_framework.md`
 - **Governance Charter**: `docs/Corporate/governance_charter.md`
+
