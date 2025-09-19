@@ -1,9 +1,4 @@
-# AtlasMesh Fleet OS - Product Roadmap
-
-**Document Owner:** SVP Product Management  
-**Last Updated:** 2025-09-15  
-**Version:** 2.0  
-**Status:** Active Development  
+# Product Roadmap
 
 ## Executive Summary
 
@@ -316,3 +311,4 @@ The roadmap is a living document that will be updated regularly based on market 
 **Next Review Date:** 2025-10-15  
 **Document Owner:** SVP Product Management  
 **Approval:** CEO, CTO, CFO
+
