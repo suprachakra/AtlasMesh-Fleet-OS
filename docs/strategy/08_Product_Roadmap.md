@@ -308,7 +308,5 @@ The roadmap is a living document that will be updated regularly based on market 
 
 ---
 
-**Next Review Date:** 2025-10-15  
-**Document Owner:** SVP Product Management  
-**Approval:** CEO, CTO, CFO
+
 
