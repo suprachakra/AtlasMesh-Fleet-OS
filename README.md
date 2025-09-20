@@ -9,7 +9,7 @@
 
 ## What Sets Us Apart
 
-- **Agnostic by Design**: One codebase, many overlays (sector/vehicle/city/tenant) — no forks
+- **Agnostic by Design**: One codebase, many overlays (sector/vehicle/city/tenant) - no forks
 - **Safety & Compliance as Code**: Evidence-gated releases with auditable bundles
 - **Extreme Weather Resilience**: Heat, dust, GPS-denied operation with graceful degradation
 - **Adapter Marketplace**: Certified connectors for WMS/TOS/ERP with contract tests
