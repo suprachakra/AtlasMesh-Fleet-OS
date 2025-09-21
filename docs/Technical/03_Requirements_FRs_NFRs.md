@@ -94,160 +94,202 @@ Fleet operators struggle with environmental brittleness (98% uptime lost to weat
 
 ---
 
-## 3) Functional Requirements
+## Scope & Intent
 
-### FR Template (Applied Throughout)
-| ID | Functional Requirement (behavioral "shall") | Rationale / Persona | Priority | Acceptance Criteria (BDD) | Telemetry (events/fields) | Dependencies |
+A vendor-neutral, vehicle-agnostic, sector-agnostic platform spanning **ride-hailing, logistics, mining, defense, micro-transit**, supporting **Waymo, SteerAI, Pony.ai, WeRide, Motional, Baidu Apollo Go, Wayve, Gatik, Ohmio, Nutonomy/GM Cruise**, and mixed human/autonomous fleets.
 
-### 3.1) Vehicle Abstraction Layer (E-01)
+### Success Criteria (OKRs)
 
-| ID | Functional Requirement | Rationale / Persona | Priority | Acceptance Criteria (BDD) | Telemetry (events/fields) | Dependencies |
-|---|---|---|---|---|---|---|
-| FR-001 | The system SHALL load vehicle profiles within 30 seconds of profile selection | P2: Mission Commander needs rapid vehicle onboarding | Must | **Given** a mission requiring UGV profile **When** commander selects "UGV-Heavy" profile **Then** vehicle shows "Profile: Loaded" within 30s and displays mass/dimensions/capabilities. **Negative:** Invalid profile → blocked with "Profile validation failed: [reason]" | `vehicle.profile_load_start`, `vehicle.profile_loaded`, `profile_load_duration_ms`, `profile_validation_result=true/false` | Vehicle profile repository; Profile validation service |
-| FR-002 | The system SHALL abstract drive-by-wire commands across all vehicle types with unified API | P1: Fleet Ops Manager operates mixed CAT/Komatsu/Volvo fleet | Must | **Given** mixed fleet with different OEMs **When** dispatcher sends "move_to(lat, lon, speed)" command **Then** all vehicles execute with same API regardless of OEM, command latency ≤10ms. **Negative:** Unsupported vehicle → command rejected with specific error | `command.sent`, `command.received`, `command_latency_ms`, `vehicle_oem`, `command_success=true/false` | Vehicle HAL; CAN/J1939 adapters; Vehicle manufacturer APIs |
-| FR-003 | The system SHALL validate vehicle configuration against operational design domain before mission start | P4: Safety Officer ensures safe operations | Must | **Given** vehicle with loaded profile **When** mission starts in mining ODD **Then** system validates vehicle capabilities vs ODD requirements, blocks if incompatible with "ODD validation failed: [specific constraint]". **Negative:** Missing capability → mission blocked | `odd.validation_start`, `odd.validation_result`, `odd_constraints_met[]`, `validation_duration_ms` | ODD definition service; Policy engine; Vehicle profile service |
-| FR-004 | The system SHALL transition vehicles to safe state within vehicle-specific limits when faults detected | P1: Fleet Ops Manager needs predictable fault handling | Must | **Given** vehicle operating normally **When** critical fault detected (e.g., brake system) **Then** vehicle executes safe stop within profile-defined deceleration limits (≤2.5m/s² for haul trucks), fault logged. **Negative:** Fault during safe stop → emergency protocols activated | `fault.detected`, `safe_stop.initiated`, `safe_stop.completed`, `fault_type`, `deceleration_actual`, `safe_stop_duration_ms` | Fault detection system; Vehicle safety systems; Emergency protocols |
-| FR-005 | The system SHALL enable hot-swap of vehicle configurations without system restart during maintenance windows | P3: Terminal Manager needs operational flexibility | Should | **Given** vehicle in maintenance mode **When** operator selects new configuration **Then** vehicle loads new config within 30s without restart, validates compatibility. **Negative:** Incompatible config → swap blocked with reason | `config.swap_initiated`, `config.swap_completed`, `config_validation_result`, `swap_duration_ms`, `downtime_seconds` | Configuration management; Validation service; Maintenance scheduler |
+* **Safety:** ≤0.3 assists / 1,000 km (target), SLA ≤0.5; 0 critical incidents/quarter.
+* **Time-to-Value:** ≤90 days site go-live; ≤2 weeks new sensor; ≤3 weeks new map provider.
+* **Scale & Cost:** 15% efficiency gains; 100k AVs / 2M+ daily events.
+* **Regulatory:** 100% audit pass; evidence complete every release.
+* **UX:** SUS ≥80; operator proficiency <3h.
 
-### 3.2) Policy Engine (E-02)
+### Owner Codes
 
-| ID | Functional Requirement | Rationale / Persona | Priority | Acceptance Criteria (BDD) | Telemetry (events/fields) | Dependencies |
-|---|---|---|---|---|---|---|
-| FR-010 | The system SHALL evaluate all routing decisions against sector-specific policies in real-time | P2: Mission Commander needs policy compliance | Must | **Given** route request in defense sector **When** routing service calculates path **Then** all waypoints evaluated against defense policies (no-fly zones, security buffers), violations blocked with policy ID and reason. **Negative:** Policy conflict → route rejected | `policy.evaluation_start`, `policy.evaluation_result`, `policy_id`, `evaluation_latency_ms`, `violations[]` | Policy repository; Sector configuration; Routing service |
-| FR-011 | The system SHALL maintain immutable audit log of all policy evaluations with decision rationale | P4: Safety Officer needs compliance evidence | Must | **Given** any system decision **When** policy evaluation occurs **Then** system logs timestamp, policy version, input parameters, decision, rationale with cryptographic signature. **Negative:** Audit log corruption → system alerts, backup logs activated | `audit.policy_decision`, `policy_version`, `decision_rationale`, `crypto_signature`, `audit_integrity_check` | Audit logging service; Cryptographic signing; Backup systems |
-| FR-012 | The system SHALL support policy versioning with rollback capability within 24 hours | P4: Safety Officer needs policy change control | Should | **Given** active policy version 2.1 **When** critical policy issue discovered **Then** system can rollback to version 2.0 within 5 minutes, all affected decisions re-evaluated. **Negative:** Rollback failure → manual override mode activated | `policy.version_change`, `rollback.initiated`, `rollback.completed`, `affected_decisions_count`, `rollback_duration_ms` | Version control system; Policy storage; Decision re-evaluation engine |
-| FR-013 | The system SHALL validate policy consistency before deployment with conflict detection | P4: Safety Officer prevents policy conflicts | Should | **Given** new policy update **When** deployment attempted **Then** system validates against existing policies, detects conflicts, blocks deployment if conflicts found with specific conflict description. **Negative:** Unresolved conflict → deployment blocked | `policy.validation_start`, `policy.conflicts_detected[]`, `validation_result`, `conflict_descriptions[]` | Policy validation engine; Conflict detection algorithms; Policy repository |
-
-### 3.3) Evidence Generation (E-04)
-
-| ID | Functional Requirement | Rationale / Persona | Priority | Acceptance Criteria (BDD) | Telemetry (events/fields) | Dependencies |
-|---|---|---|---|---|---|---|
-| FR-030 | The system SHALL automatically collect compliance evidence throughout vehicle lifecycle with provenance tracking | P4: Safety Officer needs automated evidence | Must | **Given** vehicle operating in production **When** any safety-relevant event occurs **Then** system automatically captures evidence (logs, telemetry, decisions) with timestamp, source, and digital signature. **Negative:** Evidence collection failure → backup collection activated, alert sent | `evidence.collected`, `evidence_type`, `source_system`, `digital_signature`, `collection_timestamp`, `provenance_chain[]` | Telemetry systems; Digital signing; Evidence storage; Backup systems |
-| FR-031 | The system SHALL generate audit-ready evidence bundles per release with 100% traceability | P4: Safety Officer needs audit preparation | Must | **Given** software release candidate **When** CI/CD pipeline completes **Then** system generates evidence bundle with requirements→design→code→test→evidence links, bundle completeness score 100%. **Negative:** Missing evidence → release blocked with gap analysis | `evidence.bundle_generated`, `bundle_completeness_pct`, `missing_evidence_types[]`, `traceability_links_count`, `generation_duration_ms` | CI/CD pipeline; Requirements management; Test results; Design artifacts |
-| FR-032 | The system SHALL auto-generate safety case artifacts (HARA, FMEA, safety arguments) from operational data | P4: Safety Officer needs safety case maintenance | Must | **Given** operational vehicle data **When** safety case generation triggered **Then** system generates HARA updates, FMEA analysis, safety arguments with statistical validation from field data. **Negative:** Insufficient data → partial generation with data gaps identified | `safety_case.generated`, `hara_items_updated`, `fmea_analysis_complete`, `statistical_confidence_pct`, `data_gaps[]` | Operational telemetry; Safety analysis engines; Statistical validation; Field data |
+BE=Backend, FE=Frontend, Edge=On-Vehicle, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-## 4) System Interfaces
+## Functional Requirements (FRs)
 
-### 4.1) APIs & Events
+**Columns:** ID · Description · Acceptance Criteria (condensed BDD) · Risks & Mitigations · Telemetry · Depts · Priority · Sector Alignment
 
-**Vehicle Control API**
-```yaml
-POST /v1/vehicles/{id}/commands
-Request: {"command": "move_to", "lat": 25.123, "lon": 55.456, "speed_mps": 5.0}
-Response: {"command_id": "cmd-123", "status": "accepted", "eta_seconds": 180}
-Error Codes: 400 (Invalid coordinates), 403 (ODD violation), 409 (Vehicle busy)
-Idempotency: Command ID prevents duplicate execution
-```
-
-**Policy Evaluation API**
-```yaml
-POST /v1/policies/evaluate
-Request: {"decision_type": "routing", "context": {...}, "sector": "defense"}
-Response: {"allowed": true, "policy_ids": ["DEF-001"], "rationale": "..."}
-Error Codes: 400 (Invalid context), 500 (Policy engine unavailable)
-```
-
-**Evidence Collection Events**
-```yaml
-Event: evidence.collected
-Fields: {
-  "timestamp": "2025-09-16T10:30:00Z",
-  "source": "vehicle.telemetry",
-  "evidence_type": "safety_event",
-  "vehicle_id": "veh-001",
-  "signature": "sha256:...",
-  "metadata": {...}
-}
-```
-
----
-
-## 5) Data
-
-### 5.1) Core Entities
-
-| Entity | Attributes | Retention | PII Flags | Residency | Lineage |
-|---|---|---|---|---|---|
-| **Vehicle** | id, profile_id, location, status, capabilities | 7 years | Location (indirect PII) | Customer jurisdiction | Vehicle manufacturer → Profile service → Fleet management |
-| **Mission** | id, vehicle_ids, route, objectives, status | 5 years | None | Customer jurisdiction | Mission planner → Route optimizer → Vehicle assignment |
-| **Policy** | id, version, rules, sector, jurisdiction | Indefinite | None | Global replication | Regulatory source → Policy engine → Decision logs |
-| **Evidence** | id, type, source, content, signature, timestamp | 10 years | Depends on content | Customer jurisdiction | Source system → Evidence collector → Audit bundle |
-| **Assist Session** | id, operator_id, vehicle_id, duration, resolution | 3 years | Operator ID (PII) | Customer jurisdiction | Assist request → Operator assignment → Session logs |
-
----
-
-## 6) Error/Degradation Behavior
-
-### 6.1) Timeout & Retry Policies
-
-| Service | Timeout | Retry Policy | Circuit Breaker | Fallback |
-|---|---|---|---|---|
-| **Vehicle Command** | 5s | 3 retries, exponential backoff | 5 failures in 60s | Safe stop, operator alert |
-| **Policy Evaluation** | 10ms | 2 retries, immediate | 10 failures in 30s | Conservative policy, manual override |
-| **Route Calculation** | 30s | 1 retry | 3 failures in 5min | Last known good route, manual routing |
-| **Evidence Collection** | 60s | 5 retries, exponential | 20 failures in 10min | Local storage, batch upload |
-
-### 6.2) Degraded Operation Modes
-
-**Network Degraded Mode**
-- **Trigger**: Packet loss >5% OR latency >300ms
-- **Behavior**: Switch to cached data, reduce telemetry frequency, enable store-and-forward
-- **User Impact**: Delayed updates, simplified interface, offline mode indicators
-- **Recovery**: Network quality stable for >5 minutes
-
-**Sensor Limited Mode**  
-- **Trigger**: Sensor confidence <85% OR sensor failure
-- **Behavior**: Reduce speed, increase safety margins, activate redundant sensors
-- **User Impact**: Speed restrictions, route limitations, safety alerts
-- **Recovery**: Sensor confidence >90% OR sensor replacement
+| FR ID | Description | Acceptance Criteria (Given/When/Then + a negative) | Risks & Mitigations | Telemetry (events/fields) | Depts | Pri | Sector |
+|-------|-------------|-------------------------------------------------------|-------------------------|---------------|-----------|---------|--------|
+| FR-001 | Vehicle profile load ≤30s for any supported model (agnostic HAL) | Given a vehicle connects When operator selects a profile Then profile loads ≤30s and shows mass/dimensions/capabilities; Neg: invalid profile → "validation failed: reason" and blocked | Risk: vendor drift; Mit: schema-versioned profiles + conformance tests | `vehicle.profile_load_start`, `profile_load_duration_ms`, `profile_validation_result` | Edge, BE, QA | P0 | CORE |
+| FR-002 | Unified drive-by-wire API across OEMs | When `move_to(lat,lon,speed)` sent Then all vehicles execute with ≤10ms API overhead; Neg: unsupported capability → typed error with fallback suggestion | Risk: hidden OEM quirks; Mit: adapter shims + golden tests per OEM | `hal.command_sent`, `hal.command_ack_ms`, `hal.error_type` | Edge, BE, QA | P0 | CORE |
+| FR-003 | ODD compliance gate pre-mission | When mission starts Then ODD checker validates constraints (speed, grade, surface, weather) and blocks with explicit clause on mismatch | Risk: false blocks; Mit: explainable rules, override audit | `mission.odd_check_start`, `odd.validation_result`, `odd.blocked_reason` | BE, UX, Gov | P0 | CORE |
+| FR-004 | Safe-stop within limits on critical fault | When brake/steer fault Then safe stop within vehicle profile decel (e.g., ≤2.5 m/s² haul truck); Neg: if stop fails → emergency protocol tier-2 | Risk: terrain variance; Mit: terrain-aware curves | `fault.critical_detected`, `safe_stop.initiated`, `safe_stop.deceleration_ms2`, `emergency_protocol.triggered` | Edge, QA | P0 | CORE |
+| FR-005 | Hot-swap configs in maintenance mode (no reboot) | When new config selected Then applied ≤30s with validation; Neg: incompatible → blocked with diff | Risk: partial apply; Mit: transactional apply, rollback | `config.swap_initiated`, `config.apply_duration_ms`, `config.validation_result` | Edge, BE | P1 | CORE |
+| FR-006 | Trip lifecycle FSM (draft→scheduled→en-route→hold→complete→archived) | When status transitions Then allowed paths only; Neg: illegal transition → 409 + rationale | Risk: state explosion; Mit: single FSM lib, idempotency | `trip.status_transition`, `trip.status_from`, `trip.status_to`, `trip.transition_error` | BE, FE, QA | P0 | CORE |
+| FR-007 | Trip create form fields (type, vehicle ID, start/end, driver email, hours, biz type, duration, static map ver, obsolete-by, take-orders flag, experimental routes, city, VPN, road-graph ver) | When user saves Then validation on each field, version pins stored, audit entry written | Risk: bad defaults; Mit: per-sector templates | `trip.create_form_submit`, `form.validation_status`, `trip.audit_entry_id` | FE, BE, UX | P0 | CORE |
+| FR-008 | Trip types supported (release run, ops run, rebalancing, charging, maintenance, mapping, calibration, test, pickup, dropoff, deadhead) | Given create dialog Then list is filterable by sector; Neg: unknown type → reject | Risk: type creep; Mit: central enum w/ RFC gate | `trip.type_selected`, `trip.type_filter_applied` | PM, BE | P0 | CORE |
+| FR-009 | Policy engine enforces sector/jurisdiction rules on routing/dispatch | When route/assign evaluates Then decision includes policy IDs & rationale; Neg: conflict → blocked + alternative | Risk: perf; Mit: P99 ≤10ms, in-mem cache | `policy.evaluation_start`, `policy.decision_result`, `policy.blocked_reason` | BE, Sec, Gov | P0 | CORE |
+| FR-010 | Policy versioning + rollback ≤5 min | When rollback requested Then prior version active ≤5 min, affected decisions re-evaluated | Risk: blast radius; Mit: shadow eval + diff report | `policy.rollback_initiated`, `policy.rollback_duration_ms`, `policy.version_active` | BE, SRE | P1 | CORE |
+| FR-011 | Immutable audit log (signed) of policy decisions | Then each decision has timestamp, inputs hash, policy ver, signature; Neg: integrity check fails → alert, use replica | Risk: storage growth; Mit: tiered retention | `policy.decision_audited`, `audit.integrity_status` | BE, Sec, Data | P0 | CORE |
+| FR-012 | Routing multi-objective (ETA, safety, energy, grade) | When route requested Then returns optimal under weights; Neg: infeasible → reasoned fallback | Risk: oscillation; Mit: hysteresis, penalties | `route.request`, `route.optimization_duration_ms`, `route.fallback_reason` | BE, ML, Maps | P0 | CORE, CITY |
+| FR-013 | Convoy coordination (L4 + mixed manned) | When convoy created Then spacing, speed sync, comm loss handling; Neg: leader loss → safe regroup plan | Risk: RF loss; Mit: V2V mesh + roles | `convoy.created`, `convoy.sync_status`, `convoy.regroup_plan_activated` | Edge, BE | P1 | MIN, DEF, LGX |
+| FR-014 | Dynamic re-route on closures/weather | When closure event Then re-route ≤5s; Neg: no route → pause + operator alert | Risk: flapping; Mit: debounce windows | `route.reroute_triggered`, `reroute.duration_ms`, `route.no_alternative_alert` | BE, Maps, FE | P0 | CORE |
+| FR-015 | Map source agnostic (Lanelet2, OpenDRIVE, vendor APIs) | When site loads Then engine supports selected source w/ QA checks; Neg: failed QA → block deploy | Risk: source mismatch; Mit: adapters + contracts | `map.source_loaded`, `map.qa_status`, `map.deploy_blocked_reason` | Maps, BE | P0 | CORE |
+| FR-016 | Map delta pipeline weekly or on-demand with topology QA | When delta published Then coverage ≥99.9%, regressions <0.1% auto-reject | Risk: stale maps; Mit: freshness SLAs | `map.delta_published`, `map.coverage_pct`, `map.regression_count` | Maps, SRE | P1 | CORE |
+| FR-017 | Weather source agnostic with fusion & confidence | When multiple feeds Then fused nowcast + confidence; Neg: low confidence → conservative policy | Risk: bad feed; Mit: health scoring, fallbacks | `weather.fusion_event`, `weather.confidence_score`, `weather.policy_conservative` | BE, Data | P1 | CORE |
+| FR-018 | Comms agnostic (5G/LTE/Wi-Fi/DSRC/SAT) w/ auto-failover | When link degrades Then switch ≤2s; Neg: total loss → store-and-forward + degraded mode | Risk: split-brain; Mit: lease/epoch tokens | `comms.link_degraded`, `comms.failover_duration_ms`, `comms.mode_degraded` | Edge, SRE, Sec | P0 | CORE |
+| FR-019 | Telemetry ingest (MQTT/gRPC→Kafka) w/ schema registry | Then messages validated, DLQ on violation; Neg: incompatible schema → reject + notify | Risk: drift; Mit: compat tests CI | `telemetry.ingest_count`, `telemetry.validation_status`, `telemetry.dlq_count` | BE, Data, SRE | P0 | CORE |
+| FR-020 | Assist (tele-help) workflow with budgets | When vehicle requests help Then triage ≤10s, route to operator with scene context; Neg: SLA breach → escalate | Risk: overload; Mit: queueing, caps | `assist.request`, `assist.triage_duration_ms`, `assist.operator_assigned` | FE, BE, UX | P0 | CORE |
+| FR-021 | Operator console map (zoom/pan), click vehicle → details | When click icon Then details view loads VIN, mode, today's autonomous hours/km, last heartbeat, MPI, events | Risk: info overload; Mit: progressive disclosure | `console.vehicle_click`, `vehicle.details_load_ms`, `vehicle.details_viewed` | FE, UX, BE | P0 | CORE |
+| FR-022 | Vehicle list view with filters (live/down/deprecated/unknown), search (ID/VIN/plate), model/permit filters | Then filters combine; Neg: 0 hits → helpful empty state | Risk: perf at scale; Mit: server-side paging | `vehicle_list.view`, `vehicle_list.filter_applied`, `vehicle_list.search_query` | FE, BE | P0 | CORE |
+| FR-023 | Vehicle details events timeline (chronological, deep link) | Then events link to raw evidence; Neg: missing evidence → red badge | Risk: privacy; Mit: role-based redaction | `vehicle_details.timeline_view`, `event.evidence_linked`, `evidence.missing_flag` | FE, BE, Sec | P1 | CORE |
+| FR-024 | Garage PC: bay/drive slot health, firmware staging, offline cache, SBOM attest | Then bay statuses, flashing queue, attestation report; Neg: hash mismatch → block | Risk: brick; Mit: A/B partitions | `garage.status_view`, `firmware.flash_queue`, `sbom.attestation_status` | FE, Edge, Sec | P1 | CORE |
+| FR-025 | Predictive maintenance (RUL) with work orders | When RUL<thresh Then ticket created with parts list; Neg: low confidence → schedule inspection | Risk: label scarcity; Mit: hybrid rules + ML | `pdm.rul_threshold_breached`, `pdm.work_order_created`, `pdm.inspection_scheduled` | ML, BE, FE | P1 | CORE |
+| FR-026 | Energy/charging optimizer (queues, tariffs, SoC) | Then schedule reduces idle/fees; Neg: grid constraint → stagger plan | Risk: contention; Mit: queue sim | `energy.optimization_run`, `charging.idle_reduced_pct`, `charging.fees_reduced_pct` | BE, ML | P1 | CORE |
+| FR-027 | V2X integration (PKI, misbehavior detection) | Then signed messages accepted; Neg: invalid cert → drop & log | Risk: spoofing; Mit: PKI pinning | `v2x.message_received`, `v2x.signature_status`, `v2x.misbehavior_detected` | Edge, Sec | P2 | CORE, CITY |
+| FR-028 | Secure OTA (signed, staged, canary, rollback) | Then update plan w/ cohort; Neg: health fail → auto rollback | Risk: fleet brick; Mit: ring rollout | `ota.update_initiated`, `ota.cohort_status`, `ota.rollback_triggered` | Sec, SRE, Edge | P0 | CORE |
+| FR-029 | Evidence bundles per release (req→test→artifact trace) | Then bundle score 100%; Neg: gap → block release | Risk: toil; Mit: auto-extraction in CI | `evidence.bundle_generated`, `bundle.completeness_score`, `release.blocked_reason` | BE, QA, Gov | P0 | CORE |
+| FR-030 | Multi-tenant isolation (RBAC/ABAC) | Then tenant cannot view others' assets; Neg: attempted access → alert | Risk: data bleed; Mit: policy engine at DB | `tenant.access_attempt`, `access.denied_reason`, `security.alert_triggered` | BE, Sec | P0 | CORE |
+| FR-031 | Internationalization (i18n, RTL) | Then UI switches locale incl. RTL; Neg: missing strings → fallback flagged | Risk: hard-coded text; Mit: lint rule | `ui.locale_changed`, `ui.rtl_enabled`, `i18n.missing_string_count` | FE, UX | P2 | CORE |
+| FR-032 | Accessibility WCAG 2.2 AA for Control Center | Then keyboard nav, ARIA, contrast; Neg: audit fail → block release | Risk: regressions; Mit: axe in CI | `a11y.audit_run`, `a11y.compliance_status`, `release.blocked_reason` | FE, QA | P1 | CORE |
+| FR-033 | Privacy controls (data classes, purpose binding, redaction) | Then exports require purpose + approval; Neg: PII in raw video export → blocked | Risk: over-collection; Mit: privacy tags | `data.export_initiated`, `data.purpose_validated`, `data.pii_redaction_status` | Sec, Data, Gov | P0 | CORE |
+| FR-034 | Idempotent APIs with request keys | Then retries don't duplicate state; Neg: stale retry → 409 idempotency | Risk: dupes; Mit: store keys TTL | `api.request_received`, `api.idempotency_status`, `api.duplicate_request_count` | BE, QA | P0 | CORE |
+| FR-035 | Incident mgmt (alerts→playbooks→status page) | Then P1 routes to on-call & runs playbook; Neg: missing runbook → block | Risk: slow MTTR; Mit: drills | `incident.alert_triggered`, `incident.playbook_run`, `incident.status_page_updated` | SRE, FE | P1 | CORE |
+| FR-036 | Digital twin CI gates (scenario bank, pass/fail) | Then PR blocked if KRs dip (e.g., assist>0.5/1k km); Neg: flaky sim → quarantine | Risk: sim drift; Mit: log→scenario miner | `ci.twin_gate_run`, `twin_gate.pass_fail_status`, `twin_gate.scenario_quarantined` | ML, QA, SRE | P0 | CORE |
+| FR-037 | Sector overlays (defense, mining, logistics, ride-hail) | Then selecting sector loads rules/UI presets; Neg: cross-contam → block | Risk: config sprawl; Mit: typed overlays | `sector.overlay_selected`, `sector.rules_loaded`, `sector.ui_presets_applied` | PM, BE | P1 | CORE *(enables RH, LGX, MIN, DEF, MT via presets)* |
+| FR-038 | Marketplace adapters (ERP/WMS/TOS/mapping providers) | Then connectors contract-tested; Neg: rate limit → back-off | Risk: API changes; Mit: contract tests CI | `adapter.connection_status`, `adapter.contract_test_status`, `adapter.rate_limit_exceeded` | BE, QA | P1 | RH, LGX, CITY, DEF |
+| FR-039 | Governance dashboard (OKRs, SLIs/SLOs) | Then live OKR progress & error budgets; Neg: missing data → red banner | Risk: metric rot; Mit: owner registry | `gov.dashboard_view`, `okr.progress_updated`, `slo.error_budget_status` | FE, Data | P2 | CORE |
+| FR-040 | Cost & carbon ledger per trip/vehicle/site | Then emits cost & CO₂eq per trip; Neg: input gap → estimated flag | Risk: greenwashing; Mit: provenance | `trip.cost_emitted`, `trip.co2eq_emitted`, `cost.input_gap_flag` | Data, BE | P2 | CORE |
+| FR-041 | Role-safe tele-assist (no direct drive if disallowed) | Then assist UI shows allowed actions; Neg: attempt beyond scope → blocked & logged | Risk: misuse; Mit: ABAC checks | `assist.action_attempt`, `assist.action_allowed`, `security.access_denied_log` | FE, Sec | P0 | CORE |
+| FR-042 | Heartbeats & MPI (health) with thresholds | Then missed heartbeat ≥N → page; Neg: false positives → adaptive | Risk: noise; Mit: dynamic thresholds | `vehicle.heartbeat_received`, `vehicle.mpi_status`, `alert.heartbeat_missed` | Edge, SRE | P0 | CORE |
+| FR-043 | Degraded modes (network, sensor-limited) | Then system applies speed caps, store-and-forward; Neg: mis-entry → alert | Risk: unclear UX; Mit: banner states | `system.degraded_mode_activated`, `degraded_mode.type`, `degraded_mode.alert_triggered` | Edge, FE | P0 | CORE |
+| FR-044 | Sandbox/demo seed (vehicles, trips, maps) | Then local stack runs with seed script; Neg: missing assets → docs link | Risk: onboarding friction; Mit: prebuilt | `sandbox.setup_initiated`, `sandbox.seed_status`, `sandbox.missing_assets_alert` | DevEx, PM | P3 | CORE |
+| FR-045 | Change mgmt & release notes auto-generated | Then human-readable notes per tenant; Neg: missing mapping → CI fail | Risk: silent changes; Mit: CI gate | `release.notes_generated`, `release.tenant_notified`, `ci.release_notes_status` | BE, PM | P2 | CORE |
+| FR-046 | Right-sized logging (PII-safe) | Then debug logs scrubbed; Neg: PII detected → pipeline drop + alert | Risk: PII leak; Mit: log scanners | `log.event_emitted`, `log.pii_scrubbed`, `security.pii_alert` | Sec, SRE | P0 | CORE |
+| FR-047 | SLA reporting (assist rate, uptime, cmd ack) | Then monthly PDF/JSON per tenant; Neg: metric missing → marked | Risk: disputes; Mit: signed reports | `sla.report_generated`, `sla.metric_status`, `sla.dispute_flag` | BE, Data | P2 | CORE |
+| FR-048 | Operator workload guardrails (max concurrent assists, fatigue) | Then hard limits + rotations; Neg: over-allocation → auto-shed | Risk: human error; Mit: scheduling | `operator.workload_status`, `operator.assist_count`, `operator.fatigue_alert` | FE, PM | P2 | CORE |
+| FR-049 | Training mode (sim/live with watermark) | Then operators can train safely; Neg: wrong mode → block risky actions | Risk: unsafe actions; Mit: strong affordances | `training.mode_activated`, `training.watermark_status`, `training.unsafe_action_blocked` | FE, UX | P3 | CORE |
+| FR-050 | Lifecycle retention policies per data class | Then auto purge per policy; Neg: early delete → legal hold | Risk: over-retention; Mit: DPO review | `data.retention_policy_applied`, `data.purge_event`, `data.legal_hold_status` | Data, Sec, Gov | P1 | CORE |
+| FR-051 | OEM/Operator connector framework | Given creds When health-check Then 100% contract tests; signals mapped to unified model | Risk: API variance; Mit: per-brand adapters | `connector.health`, `oem_brand` | BE, QA | P0 | CORE *(per brand)* |
+| FR-052 | Brand-segmented zero-trust | Given cross-brand access When try Then deny & page | Risk: lateral movement; Mit: segmentation | `brand_boundary_violation` | Sec, SRE | P0 | CORE |
+| FR-053 | Multi-tier dispatch & zones | Given request When match Then tier+zone rationale auditable; surge caps enforced | Risk: fairness; Mit: constraints | `dispatch.tier`, `pricing.multiplier` | BE, Data | P0 | RH, MT, CITY, LGX |
+| FR-054 | Pricing, payments & reconciliation | Given trip complete When settle Then ledger ±0.01 currency; dispute workflow | Risk: payment failures; Mit: retries | `invoice.issued`, `recon.delta` | BE, FinOps | P0 | RH, LGX, MT |
+| FR-055 | Corporate accounts & SLAs + portal | Given breach When detect Then alert ≤5m; credits auto-applied | Risk: SLA calc errors; Mit: tests | `sla.breach`, `credit.applied` | BE, FE | P1 | RH, MT, LGX |
+| FR-056 | Passenger & cargo workflows (ePOD/RFID/Temp/Vib) | Given delivery When close Then ePOD immutable; sensor excursion→exception ≤60s | Risk: device failure; Mit: redundancy | `epod.captured`, `cargo.excursion` | FE, BE, Edge | P0 | LGX, RH |
+| FR-057 | Biometric/mobile vehicle access | Given valid user When auth Then 99.9% success; spoof=0 (red team) | Risk: spoofing; Mit: liveness | `vehicle.access_attempt` | Sec, FE | P1 | RH, DEF |
+| FR-058 | Real-time event bus (gRPC/WebSocket) | Given publish When deliver Then P99<100ms, lossless under 1 node fail | Risk: back-pressure; Mit: flow control | `bus.latency_p99`, `bus.drop_count` | BE, SRE | P0 | CORE |
+| FR-059 | Cross-fleet reallocation (idle↔needed) | Given idle cohort When reallocate Then decision logged; reversal <5m | Risk: wrong ODD; Mit: policy gate | `reallocation.decision` | BE, PM | P1 | CORE |
+| FR-060 | Dedicated lanes, platoons, corridors | Given corridor active When run Then headway ±10%; V2V loss→safe degrade | Risk: RF loss; Mit: fallback | `platoon.headway`, `v2v.link` | Edge, BE | P1 | CITY, MIN, DEF |
+| FR-061 | Multi-modal transfer (MaaS/transit/curb) | Given transfer When schedule Then window P95≥95%; curb violations auto-avoid | Risk: city rules; Mit: curb APIs | `transfer.window_met` | BE, Maps | P1 | CITY, RH, MT |
+| FR-062 | Digital-twin scenario library (brand packs) | Given new site When gate Then pass N critical scenarios/brand or block | Risk: sim drift; Mit: refresh SLA | `twin.scenario_pass` | ML, QA | P0 | CORE *(brand/site scoped)* |
+| FR-063 | ROS2/VDA5050/ISO 23725 interop | Given version matrix When run Then 100% green | Risk: version skew; Mit: pinning | `interop.matrix_result` | BE, QA | P0 | CORE, LGX, MIN, IND |
+| FR-064 | Data residency & sovereignty | Given PII When store/process Then region-locked; cross-border needs waiver | Risk: misconfig; Mit: policy checks | `data.residency_assertion` | Sec, Data, Gov | P0 | CORE |
+| FR-065 | High-rate telemetry ≤200ms | Given link OK When stream Then P95 ≤200ms; degraded state marked | Risk: bandwidth; Mit: adaptive throttling | `telemetry.interval_ms` | Edge, Data | P0 | CORE |
 
 ---
 
-## 7) Non-Functional Requirements
+## Non-Functional Requirements (NFRs)
 
-### NFR Template (Applied Throughout)
-| ID | Attribute | Target (with load & env) | Scope | Measurement Method (SLI) | Alert Policy / Error Budget | Owner |
+**Columns:** ID · Attribute (Metric) · Requirement / Target · SLI/Measurement · Alert Policy / Error Budget · Risk & Fallback · Owner · Pri · Sector
 
-### 7.1) Performance Requirements
-
-| ID | Attribute | Target (with load & env) | Scope | Measurement Method (SLI) | Alert Policy / Error Budget | Owner |
-|---|---|---|---|---|---|---|
-| NFR-P-01 | Control Loop Latency | P95 ≤ 50ms at 45°C, dust PM10 ≤150μg/m³, 100 vehicles/site | Vehicle edge control loop | Synthetic control probe + field telemetry from vehicle heartbeat | Page if P95 >60ms for 5min; Error budget: 2%/month | Platform Lead |
-| NFR-P-02 | Route Calculation | ≤5s for 100 waypoints, 50km range, 20% traffic variance | Route optimization service | Route calculation time from API request to response | Alert if P95 >7s; Error budget: 1%/month | Routing Lead |
-| NFR-P-03 | Policy Evaluation | P99 ≤10ms under 1000 evaluations/sec load | Policy engine service | Policy evaluation latency from request to decision | Page if P99 >15ms for 2min; Error budget: 0.5%/month | Policy Lead |
-| NFR-P-04 | Fleet Dashboard Refresh | ≤2s for 500 vehicles, full telemetry | Control center UI | Time from user action to UI update completion | Alert if P95 >3s; Error budget: 5%/month | UI Lead |
-
-### 7.2) Safety Requirements
-
-| ID | Attribute | Target (with load & env) | Scope | Measurement Method (SLI) | Alert Policy / Error Budget | Owner |
-|---|---|---|---|---|---|---|
-| NFR-S-01 | Assist Rate | ≤0.5/1000km (12-month rolling average) | Fleet operational performance | (assist events) / (kilometers traveled) * 1000 | Page if >0.7/1000km trend; Target: Zero critical assists | Safety Lead |
-| NFR-S-02 | Critical Incident Rate | 0 per quarter with >99% detection confidence | Safety-critical system functions | Manual incident reporting + automated anomaly detection | Immediate page on any critical incident; Zero tolerance | Safety Lead |
-| NFR-S-03 | Safe Stop Success Rate | 100% within vehicle-specific deceleration limits | Vehicle emergency systems | Safe stop execution success rate when triggered | Page if <100% success rate; Zero tolerance for failures | Vehicle Safety Lead |
-
-### 7.3) Security Requirements
-
-| ID | Attribute | Target (with load & env) | Scope | Measurement Method (SLI) | Alert Policy / Error Budget | Owner |
-|---|---|---|---|---|---|---|
-| NFR-Sec-01 | Encryption Coverage | 100% data encrypted at rest and in transit | All data handling systems | Percentage of data flows with encryption enabled | Alert if <100% coverage; Zero tolerance for unencrypted data | Security Lead |
-| NFR-Sec-02 | Vulnerability Response | ≤14 days for critical CVEs, ≤7 days for exploitable | All system components | Time from CVE publication to patch deployment | Page if critical CVE >7 days; Error budget: 0 critical CVEs >14 days | Security Lead |
+| NFR ID | Attribute (Metric) | Requirement / Target | SLI/Measurement | Alert Policy / Error Budget | Risk & Fallback | Owner | Pri | Sector |
+|--------|--------------------|--------------------|-----------------|---------------------------|-----------------|--------|-----|--------|
+| NFR-P-01 | Control loop latency (P95) | ≤50ms @ 45°C, dust PM10 ≤150 μg/m³; 100 vehicles/site | `control_loop_p95_latency_ms` from edge telemetry | Page if P95 > 60ms for 5 min; budget 2%/month | If >60ms 5min → drop non-critical tasks, log perf event | Platform Lead | P0 | CORE |
+| NFR-P-02 | Policy eval latency (P99) | ≤10ms @ 1k eval/s | `policy_engine_p99_latency_ms` from service metrics | Page if P99 > 15ms for 2 min; budget 1%/month | Switch to in-mem cache of hot rules; rate-limit | BE Lead | P0 | CORE |
+| NFR-P-03 | Route calc (P95) | ≤5s for 50km/100 waypoints, 20% traffic variance | `route_calculation_p95_duration_s` from routing service | Alert if P95 > 7s for 1 min; budget 3%/month | Fallback to last known good route | Maps Lead | P1 | CORE |
+| NFR-P-04 | Assist Q&A RTT (P95) | ≤2s (defense profile) | `comms_assist_p95_rtt_ms` from comms/assist metrics | Page if >3s for 30s; budget 0.5%/month | Adapt bitrate/codec; prioritize critical assists | Comms Lead | P0 | CORE |
+| NFR-P-06 | Event bus pub→sub P99 | <100ms @ 50k msg/s/region | `bus.latency_p99` from event bus metrics | Page if >120ms for 2 min; budget 1%/month | Flow control, shard by tenant/region | SRE Lead | P0 | CORE |
+| NFR-R-01 | Availability (Control Center) | 99.9% monthly | `control_center_uptime_pct` from synthetic checks | Alert if monthly forecast < 99.9%; budget 0.1% downtime/month | Read-only mode; static tiles | SRE Lead | P0 | CORE |
+| NFR-R-02 | Command ack time | WAN ≤3s, LAN ≤1s (P95) | `command_acknowledgement_p95_ms` from vehicle telemetry | Page if WAN > 4s or LAN > 1.5s for 1 min; budget 0.5%/month | Retry with idempotency; queue metrics | Edge Lead | P0 | CORE |
+| NFR-R-03 | Data durability | ≥11 nines for evidence store | `evidence_store_durability_nines` from storage audits | Alert on any audit failure; budget 0 data loss | Cross-region replication; quarterly restore test | Data Lead | P0 | CORE |
+| NFR-R-04 | Geo failover RTO | <60s critical svc | `geo_failover_rto_seconds` from DR drills | Alert if RTO >60s in drill; budget 0 failures | Auto failover runbooks; health checks | SRE Lead | P0 | CORE |
+| NFR-R-05 | Vehicle availability | ≥99.5% per vehicle | `vehicle_availability_pct` from heartbeat analysis | Alert if <99% for vehicle; budget 0.5% unavailability | PdM, spares inventory management | Fleet Lead | P0 | CORE |
+| NFR-S-01 | Assist rate | ≤0.3 / 1,000 km (target), SLA ≤0.5 | `assist_rate_per_1000km` from safety logs | Page if >0.7/1000km for 7 days; budget 0.05 assists/1000km | Degrade speed; add human review gate | Safety Lead | P0 | CORE |
+| NFR-S-02 | Critical incidents | 0 per quarter; ≥99% detection | `critical_incident_count`, `incident_detection_rate_pct` from safety reports | Page on >0 critical; weekly incident review | Halt site; incident review board | Safety Lead | P0 | CORE |
+| NFR-S-03 | Safe-stop success | 100% within profile limits | `safe_stop_success_rate_pct` from vehicle logs | Page on <100% success; budget 0 failures | Escalate to tier-2 emergency procedures | QA Lead | P0 | CORE |
+| NFR-Sec-01 | Encryption | 100% in transit (mTLS) & at rest (AES-256) | `encryption_coverage_pct` from security scans | Block traffic lacking mTLS; key rotation 90d | Block traffic lacking mTLS; key rotation 90d | Security Lead | P0 | CORE |
+| NFR-Sec-02 | Vulnerability SLAs | Critical CVE ≤14d; exploitable ≤7d | `cve_resolution_time_days` from vulnerability tracker | Alert if critical >10d or exploitable >5d; budget 0 overdue | Emergency patch window; SBOM diff gate | Security Lead | P0 | CORE |
+| NFR-Sec-03 | OTA integrity | 100% signed + attested | `ota_integrity_check_status` from deployment logs | Block install; auto rollback; hold cohort | Block install; auto rollback; hold cohort | Security Lead | P0 | CORE |
+| NFR-Sec-05 | Brand segmentation | Zero cross-brand flow | `brand_boundary_violations_count` from IDS events | Page on any cross-brand access; budget 0 violations | Micro-segmentation; pen test quarterly | Sec Lead, SRE | P0 | CORE |
+| NFR-Priv-01 | Purpose binding | 100% bound exports | `purpose_binding_violations_count` from data audits | Block non-purpose exports; audit trail | Block non-purpose exports; audit trail | Data Lead | P0 | CORE |
+| NFR-Priv-03 | Residency | PII in-region only | `residency_assertions_count` from data pipeline | Alert on any cross-border PII; waiver + logs | Waiver process; data localization controls | Privacy Lead | P0 | CORE |
+| NFR-I-01 | Interoperability | Lanelet2/OpenDRIVE map IO; CAN/J1939; REST/gRPC | `adapter_contract_test_pass_rate_pct` from CI | Alert on <100% pass rate; budget 0 failures | Adapters must pass contract tests | Platform Lead | P0 | CORE |
+| NFR-I-04 | ROS2/VDA5050/ISO 23725 suite | Matrix 100% green | `interop_matrix_pass_rate_pct` from QA automation | Alert on any matrix failure; budget 0 failures | Version pinning; compatibility matrix | QA Lead | P0 | CORE |
+| NFR-Port-01 | Sensor adapter time | ≤2 weeks | `new_sensor_integration_time_days` from project tracker | Alert if >10 days; budget 0 overdue integrations | SDK, reference adapter, contract tests | Edge Lead | P1 | CORE |
+| NFR-Port-02 | Map provider time | ≤3 weeks | `new_map_provider_integration_time_days` from project tracker | Alert if >15 days; budget 0 overdue integrations | QA harness + schema converter | Maps Lead | P1 | CORE |
+| NFR-Port-03 | Comms failover | ≤2s | `comms_failover_duration_ms` from edge telemetry | Page if >3s for 30s; budget 0.1% failover failures | Link manager with hysteresis | Edge Lead | P0 | CORE |
+| NFR-Sc-01 | Horizontal scale (ingest) | 10k msgs/sec/site sustained | `telemetry_ingest_rate_msgs_per_sec` from Kafka metrics | Page if >8k msgs/sec for 5 min; budget 0.5% dropped msgs | Auto-scaling; back-pressure + DLQ | SRE Lead | P1 | CORE |
+| NFR-Sc-02 | Fleet scale | 100k AVs / 2M+ daily events | `active_vehicles_count`, `daily_events_count` from fleet manager | Alert if >80k vehicles or >1.6M events; budget 0.1% perf degradation | Shard by tenant/site; throttle per shard | SRE Lead | P1 | CORE |
+| NFR-Sc-03 | Concurrent users | 1,000 ops | `concurrent_sessions_count` from session manager | Alert if >800 concurrent; budget 5% performance degradation | Load balancing; session optimization | UI Lead | P2 | CORE |
+| NFR-Ob-01 | Observability | 100% services with logs/metrics/traces & SLOs | `observability_coverage_pct` from monitoring agent | CI fails if missing exporters; budget 0 non-compliant services | CI fails if missing exporters | SRE Lead | P0 | CORE |
+| NFR-Ob-02 | Alert noise | ≤2% false-positive pages/mo | `false_positive_alert_rate_pct` from incident tracker | Alert if >3% for 7 days; budget 0.5% false positives | Tune thresholds; anomaly suppression | SRE Lead | P2 | CORE |
+| NFR-Ob-03 | Trace coverage | 100% user req traced | `trace_coverage_pct` from tracing system | Alert if <95% coverage; budget 5% missing traces | Correlation IDs; auto-instrumentation | Obs Lead | P1 | CORE |
+| NFR-M-01 | Maintainability | Cyclomatic complexity guardrails; >80% unit cov | `cyclomatic_complexity_score`, `unit_test_coverage_pct` from SonarQube/CI | Lint + coverage merge gate; budget 0 critical violations | Lint + coverage merge gate | Eng Lead | P2 | CORE |
+| NFR-M-02 | Deployability | Blue/green or canary, ≤30m fleet cohort cut | `deployment_duration_min`, `canary_health_status` from CI/CD | Alert if >20m or canary health <99%; budget 0.1% failed deployments | Release pipeline checks; feature flags | DevOps Lead | P1 | CORE |
+| NFR-M-03 | Docs currency | 100% APIs within 1 release | `api_doc_currency_pct` from doc pipeline | Block release if doc gaps; budget 0 outdated APIs | Auto-gen from OpenAPI; CI gate | Tech Writer | P2 | CORE |
+| NFR-U-01 | Usability (SUS) | ≥80 SUS; novice time-to-first-action ≤10 min | `sus_score` from user surveys, `time_to_first_action_min` from UX tests | Alert if SUS < 75 or TtFA > 12 min; budget 5% user dissatisfaction | Guided tours; empty-state templates | UX Lead | P2 | CORE |
+| NFR-Comp-01 | Evidence completeness | 100% complete per release | `evidence_bundle_completeness_pct` from CI | Release gate blocks on gap; budget 0 non-compliant releases | Release gate blocks on gap | Gov Lead | P0 | CORE |
+| NFR-Comp-02 | Audit trail integrity | 100% decisions auditable | `audit_trail_completeness_pct` from audit system | Page on any missing audit; budget 0 gaps | Backup audit store; integrity checks | Audit Lead | P0 | CORE |
+| NFR-Comp-03 | Standards mapping | ISO 26262, SOTIF 21448, 13482, FMVSS/NHTSA, MSHA, MIL-STD | `standards_compliance_pct` from compliance system | Block release on compliance gap; budget 0 non-compliance | Trace matrix; compliance automation | Gov Lead, QA | P0 | CORE *(maps to applicable standards per sector)* |
+| NFR-DQ-01 | Data quality | Schema validity ≥99.99%; drift alerts <24h | `schema_validity_pct`, `data_drift_alert_count` from data pipeline | Alert on <99.9% validity or >0 drift alerts; budget 0.01% invalid data | Great-Expectations/dbt tests | Data Lead | P1 | CORE |
+| NFR-DQ-02 | Data freshness | Critical <5m; non-critical <60m | `data_freshness_minutes` from pipeline monitoring | Alert if critical >10m or non-critical >120m; budget 5% stale data | Pipeline SLOs; alerting on delays | Data Lead | P1 | CORE |
 
 ---
 
-## 8) Compliance & Safety
+## Sector Pack Strategy (Plug-and-Play)
 
-### 8.1) Evidence/Compliance Matrix
+### Core Pack (Always Enabled)
+**Foundation Requirements:** All 65 FRs + 36 NFRs listed above with CORE alignment
 
-| Regulation/Standard | Clause/Theme | Artifact Produced | Where Generated | Reviewer | Verification Method |
-|---|---|---|---|---|---|
-| **ISO 26262** | HARA (Hazard Analysis) | `hara_analysis.md`, `hazard_register.xlsx` | CI safety job, Field telemetry | Safety Lead | Third-party assessment, Statistical validation |
-| **ISO 21448 (SOTIF)** | ODD & Edge Coverage | `sotif_report.pdf`, `edge_case_coverage.json` | Scenario runner, ML validation | ML Lead | Coverage analysis, Edge case testing |
-| **UNECE R155** | CSMS Implementation | `csms_documentation.pdf`, `security_controls.json` | Security pipeline, Audit system | Security Lead | Cybersecurity audit, Penetration testing |
-| **UNECE R156** | OTA Security | `ota_security_plan.pdf`, `update_attestation.json` | OTA pipeline, Signing service | OTA Lead | Update verification, Rollback testing |
+### Sector-Specific Extensions
+
+**Ride-Hailing Pack (RH)**
+- **Extensions**: FR-053 (Multi-tier dispatch), FR-054 (Pricing/payments), FR-055 (Corporate SLAs), FR-056 (Passenger workflows), FR-057 (Biometric access), FR-061 (Multi-modal transfer)
+- **Sector Overlays**: Passenger-focused UI, ride-sharing policies, payment integration, surge pricing
+- **Auto-Dependencies**: FR-009 (Policy) + FR-038 (Adapters) + FR-058 (Event bus) + CORE
+
+**Logistics Pack (LGX)**  
+- **Extensions**: FR-013 (Convoy), FR-054 (Pricing/recon), FR-055 (Corporate SLAs), FR-056 (Cargo workflows with ePOD/RFID/Temp/Vib), FR-061 (Multi-modal)
+- **Sector Overlays**: Cargo-focused UI, supply chain policies, warehouse integration, ERP/WMS/TOS adapters
+- **Auto-Dependencies**: FR-038 (ERP/WMS/TOS adapters) + FR-013 (Convoy) + CORE
+
+**Mining Pack (MIN)**
+- **Extensions**: FR-013 (Convoy), FR-026 (Energy optimizer), FR-060 (Platoons), FR-063 (ROS2/VDA5050 interop)
+- **Sector Overlays**: Mining-focused UI, safety-first policies, heavy equipment integration
+- **Auto-Dependencies**: FR-013 (Convoy) + FR-025 (PdM) + FR-026 (Energy) + CORE
+
+**Defense Pack (DEF)**
+- **Extensions**: FR-013 (Convoy), FR-027 (V2X), FR-057 (Biometric access), FR-060 (Platoons)
+- **Sector Overlays**: Military-grade UI, defense policies, secure protocols, tactical coordination
+- **Auto-Dependencies**: FR-013 (Convoy) + FR-027 (V2X) + FR-052 (Brand zero-trust) + CORE
+
+**Micro-Transit Pack (MT)**
+- **Extensions**: FR-053 (Multi-tier dispatch), FR-054 (Pricing), FR-055 (Corporate SLAs), FR-061 (Multi-modal)
+- **Sector Overlays**: Transit-focused UI, public transport policies, accessibility compliance
+- **Auto-Dependencies**: Similar to RH + Public transit APIs + CORE
+
+**CITY Add-on**
+- **Extensions**: FR-027 (V2X), FR-060 (Dedicated lanes/platoons), FR-061 (Multi-modal transfer)
+- **Sector Overlays**: City-focused UI, municipal policies, infrastructure integration, curb management
+- **Auto-Dependencies**: FR-027 (V2X) + FR-012 (Routing) + Curb APIs + CORE
+
+### Auto-Dependency Resolution
+- **FR-053 (Tiered dispatch)** ⇒ requires FR-009 (Policy) & FR-058 (Event bus)
+- **FR-054 (Payments/recon)** ⇒ requires FR-038 (Adapters)
+- **FR-060 (Platoons/corridors)** ⇒ requires FR-027 (V2X) & FR-012 (Routing)
+- **FR-062 (Twin packs)** ⇒ requires FR-036 (Twin gates)
+- **FR-052 (Brand zero-trust)** ⇒ requires FR-030 (RBAC/ABAC)
+- **FR-012 (Routing)** ⇒ requires FR-015/016 (Maps) & FR-017 (Weather)
 
 ---
+
+## Traceability (problem→solution, strategy→FR/NFR)
+
+### Strategic Alignment
+- **Safety (O-1)**: FR-003/004/009/011/020/041/042/043/060/062 + NFR-S-01/02/03 → assists≤0.3/1k km, 0 criticals
+- **Time-to-Value (O-2)**: FR-001/002/015/051/063 + NFR-Port-01/02/03 → new sensor≤14d, map≤21d  
+- **Scale & Cost (O-3)**: FR-012/025/026/039/040/058 + NFR-Sc-01/02, NFR-P-06 → 100k AVs, 2M+ events
+- **Regulatory (O-4)**: FR-009/011/029/033/064 + NFR-Comp-01/02/03, NFR-Priv-01/03 → 100% audits
+- **UX (O-5)**: FR-020/021/022/031/032/048/049 + NFR-U-01 → SUS ≥80, <3h onboarding
+
 
 ## 9) Rollout Plan
 
@@ -370,3 +412,4 @@ FR-001 (Vehicle Profile Loading)
 **Quality Score**: 6.0/6.0 (Perfect)  
 **Validation**: All quality gates passed  
 **Next Review**: Monthly requirements review with stakeholder validation
+
