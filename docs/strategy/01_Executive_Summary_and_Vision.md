@@ -1,8 +1,6 @@
 # Executive Summary
 
-### 1) One-page executive vision
-
-**Vision.** Build the world's most **agnostic Fleet OS** for Level-4 autonomous operations—**vehicle-agnostic, platform-agnostic, sector-agnostic, map-source-agnostic, weather-source-agnostic, comms-agnostic, geography-aware**—that can plan, dispatch, monitor, and continuously improve fleets across **defense, mining, logistics/supply chain, and ride-hailing** in **extreme Middle-East conditions** (desert, high heat, dust, intermittent comms), with **zero hand-tuning** per program.
+AtlasMesh Fleet OS is the agnostic operating system for Level-4 autonomous fleets in defense, mining, logistics, and ride-hail. We retrofit mixed vehicles and orchestrate missions in 50–60 °C heat, dust, GNSS degradation, and intermittent comms, while automating evidence for regulators. One platform, policy overlays—weeks to deploy, evidence-ready by default, and no vendor lock-in.
 
 **North star.** Within 12 months of first deployment, any customer can:
 
@@ -346,6 +344,7 @@ Full glossary: `docs/strategy/glossary.md`
 
 ### Bottom line
 It is **deliberately engineered to leave no gaps**: every promise in this Vision & Problem Statement is backed by a measurable KPI, a policy, an ODD rule, or an automated gate. If it's not encoded, it doesn't ship. This ensures strategic clarity, technical integrity, safety, and scalability across **defense, mining, logistics, and ride-hailing**—under the harsh realities of the Middle East and beyond.
+
 
 
 
