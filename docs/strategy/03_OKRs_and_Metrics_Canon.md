@@ -1,7 +1,5 @@
 # 03_OKRs_and_Metrics_Canon.md
 
-# OKRs & Metrics Canon
-
 ## Company OKRs (FY-1)
 
 **O1 — Prove repeatable L4 operations in harsh, regulated ODDs.**  
