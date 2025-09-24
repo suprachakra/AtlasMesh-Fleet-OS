@@ -1,6 +1,6 @@
 # AtlasMesh Fleet OS
 
-**AtlasMesh Fleet OS** is a **vehicle-, platform-, sector-, and sensor-agnostic** operating system for Level-4 autonomous fleets operating in harsh and regulated environments. It combines an AV retrofit kit (CoreX) with a comprehensive fleet management system to enable safe, efficient, and compliant autonomous operations across defense, mining, logistics, and ride-hail sectors.
+**AtlasMesh Fleet OS** is a **vehicle-, platform-, sector- and sensor-agnostic** operating system for Level-4 autonomous fleets operating in harsh and regulated environments. It combines an AV retrofit kit (CoreX) with a comprehensive fleet management system to enable safe, efficient, and compliant autonomous operations across defense, mining, logistics, and ride-hail sectors.
 
 [![License](https://img.shields.io/badge/License-BUSL%201.1-blue.svg)](LICENSE)
 [![CI Status](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](https://github.com/atlasmesh/fleet-os/actions)
