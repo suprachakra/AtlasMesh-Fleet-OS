@@ -48,7 +48,7 @@ graph LR
 - **Trip Service**: Idempotent, sector-neutral lifecycle with FSM
 - **Dispatch & Rebalancing**: Assignment/pooling with oscillation damping
 - **Routing & ETA**: Constraint-aware routing with GNSS-deny resilience
-- **Energy Manager**: SOC forecasts, charger queues, and tariff optimization
+- **Energy Manager**: SOC forecasts, charger queues and tariff optimization
 
 ### Operations & Safety
 - **Fleet Health & Alerts**: Live KPIs and SLOs with runbooks
