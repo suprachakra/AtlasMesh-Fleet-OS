@@ -1,7 +1,6 @@
 # 03_Requirements_FRs_NFRs
----
+
 **Positioning:** *AtlasMesh is a Fleet OS — vendor-neutral, vehicle-agnostic, sector-aware. This doc is the single source of truth for product requirements (FRs & NFRs).*
----
 
 ## 1) Conventions & Columns
 
@@ -275,3 +274,4 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 * **LMS integration** for sector certifications across customers → **Owner:** UX/PM.
 
 ---
+
