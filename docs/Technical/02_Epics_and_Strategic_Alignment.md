@@ -1,9 +1,7 @@
 ## AtlasMesh Fleet OS — Epics & Strategic Alignment
-
 **Positioning:** *AtlasMesh is a Fleet OS — not an autonomy stack.* We orchestrate mixed fleets, decisions, evidence, and operations across vendors, vehicles, sensors, maps, and clouds.
----
-
 ## 1) Epic-to-Problem Mapping
+
 
 | Core Problem                           | Primary Epic(s)                                                               | Secondary Epic(s)                                   | Customer Impact                                                  |
 | -------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------- |
@@ -190,3 +188,4 @@
 * **E12:** FR-015/016/017/018; NFR-Port-02/03
 
 ---
+
