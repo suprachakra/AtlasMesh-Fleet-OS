@@ -1,0 +1,1635 @@
+syntax = "proto3";
+
+package atlasmesh.fleet.v1;
+
+option go_package = "github.com/atlasmesh/fleet-os/services/fleet-manager/proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// FleetManager manages vehicle registry, health monitoring, and ODD validation
+service FleetManager {
+  // Vehicle Management
+  rpc RegisterVehicle(RegisterVehicleRequest) returns (RegisterVehicleResponse);
+  rpc GetVehicle(GetVehicleRequest) returns (GetVehicleResponse);
+  rpc ListVehicles(ListVehiclesRequest) returns (ListVehiclesResponse);
+  rpc UpdateVehicle(UpdateVehicleRequest) returns (UpdateVehicleResponse);
+  rpc DeregisterVehicle(DeregisterVehicleRequest) returns (DeregisterVehicleResponse);
+  
+  // Vehicle Status & Health
+  rpc UpdateVehicleStatus(UpdateVehicleStatusRequest) returns (UpdateVehicleStatusResponse);
+  rpc GetVehicleHealth(GetVehicleHealthRequest) returns (GetVehicleHealthResponse);
+  rpc StreamVehicleUpdates(StreamVehicleUpdatesRequest) returns (stream VehicleUpdateEvent);
+  
+  // ODD Management
+  rpc ValidateODD(ValidateODDRequest) returns (ValidateODDResponse);
+  rpc GetODDStatus(GetODDStatusRequest) returns (GetODDStatusResponse);
+  rpc UpdateODD(UpdateODDRequest) returns (UpdateODDResponse);
+  
+  // Fleet Operations
+  rpc GetFleetOverview(GetFleetOverviewRequest) returns (GetFleetOverviewResponse);
+  rpc GetFleetMetrics(GetFleetMetricsRequest) returns (GetFleetMetricsResponse);
+  rpc PerformFleetAction(PerformFleetActionRequest) returns (PerformFleetActionResponse);
+  
+  // Maintenance & Diagnostics
+  rpc ScheduleMaintenance(ScheduleMaintenanceRequest) returns (ScheduleMaintenanceResponse);
+  rpc GetMaintenanceSchedule(GetMaintenanceScheduleRequest) returns (GetMaintenanceScheduleResponse);
+  rpc ReportDiagnostics(ReportDiagnosticsRequest) returns (ReportDiagnosticsResponse);
+  
+  // Capabilities & Profiles
+  rpc GetVehicleCapabilities(GetVehicleCapabilitiesRequest) returns (GetVehicleCapabilitiesResponse);
+  rpc UpdateVehicleProfile(UpdateVehicleProfileRequest) returns (UpdateVehicleProfileResponse);
+  rpc ValidateVehicleProfile(ValidateVehicleProfileRequest) returns (ValidateVehicleProfileResponse);
+}
+
+// Vehicle registration request
+message RegisterVehicleRequest {
+  string idempotency_key = 1;
+  Vehicle vehicle = 2;
+  RegisterVehicleOptions options = 3;
+}
+
+// Vehicle registration response
+message RegisterVehicleResponse {
+  string vehicle_id = 1;
+  VehicleStatus status = 2;
+  google.protobuf.Timestamp registered_at = 3;
+  string audit_trail_id = 4;
+  repeated ValidationWarning warnings = 5;
+}
+
+// Get vehicle request
+message GetVehicleRequest {
+  string vehicle_id = 1;
+  GetVehicleOptions options = 2;
+}
+
+// Get vehicle response
+message GetVehicleResponse {
+  Vehicle vehicle = 1;
+  VehicleMetadata metadata = 2;
+}
+
+// List vehicles request
+message ListVehiclesRequest {
+  ListVehiclesFilter filter = 1;
+  PaginationOptions pagination = 2;
+}
+
+// List vehicles response
+message ListVehiclesResponse {
+  repeated Vehicle vehicles = 1;
+  PaginationMetadata pagination = 2;
+  int32 total_count = 3;
+}
+
+// Update vehicle request
+message UpdateVehicleRequest {
+  string vehicle_id = 1;
+  VehicleUpdate update = 2;
+  UpdateVehicleOptions options = 3;
+}
+
+// Update vehicle response
+message UpdateVehicleResponse {
+  Vehicle vehicle = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Deregister vehicle request
+message DeregisterVehicleRequest {
+  string vehicle_id = 1;
+  string reason = 2;
+  DeregisterVehicleOptions options = 3;
+}
+
+// Deregister vehicle response
+message DeregisterVehicleResponse {
+  bool deregistered = 1;
+  google.protobuf.Timestamp deregistered_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Update vehicle status request
+message UpdateVehicleStatusRequest {
+  string vehicle_id = 1;
+  VehicleStatus new_status = 2;
+  Location current_location = 3;
+  VehicleHealthData health_data = 4;
+  google.protobuf.Struct additional_data = 5;
+}
+
+// Update vehicle status response
+message UpdateVehicleStatusResponse {
+  VehicleStatus previous_status = 1;
+  VehicleStatus current_status = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  repeated HealthAlert health_alerts = 4;
+}
+
+// Get vehicle health request
+message GetVehicleHealthRequest {
+  string vehicle_id = 1;
+  GetVehicleHealthOptions options = 2;
+}
+
+// Get vehicle health response
+message GetVehicleHealthResponse {
+  VehicleHealthStatus health_status = 1;
+  repeated HealthAlert active_alerts = 2;
+  VehicleHealthHistory history = 3;
+  google.protobuf.Timestamp assessed_at = 4;
+}
+
+// Stream vehicle updates request
+message StreamVehicleUpdatesRequest {
+  repeated string vehicle_ids = 1; // Empty means all vehicles for fleet
+  string fleet_id = 2;
+  StreamOptions options = 3;
+}
+
+// Vehicle update event
+message VehicleUpdateEvent {
+  string vehicle_id = 1;
+  VehicleStatus status = 2;
+  Location location = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  google.protobuf.Struct data = 5;
+  string event_type = 6;
+}
+
+// Validate ODD request
+message ValidateODDRequest {
+  string vehicle_id = 1;
+  Location location = 2;
+  EnvironmentalConditions conditions = 3;
+  ValidateODDOptions options = 4;
+}
+
+// Validate ODD response
+message ValidateODDResponse {
+  bool valid = 1;
+  ODDValidationResult result = 2;
+  repeated ODDViolation violations = 3;
+  string recommendation = 4;
+}
+
+// Get ODD status request
+message GetODDStatusRequest {
+  string vehicle_id = 1;
+  GetODDStatusOptions options = 2;
+}
+
+// Get ODD status response
+message GetODDStatusResponse {
+  ODDStatus status = 1;
+  repeated ODDConstraint active_constraints = 2;
+  google.protobuf.Timestamp status_at = 3;
+}
+
+// Update ODD request
+message UpdateODDRequest {
+  string vehicle_id = 1;
+  ODDUpdate update = 2;
+  UpdateODDOptions options = 3;
+}
+
+// Update ODD response
+message UpdateODDResponse {
+  ODDStatus status = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Get fleet overview request
+message GetFleetOverviewRequest {
+  string fleet_id = 1;
+  GetFleetOverviewOptions options = 2;
+}
+
+// Get fleet overview response
+message GetFleetOverviewResponse {
+  FleetOverview overview = 1;
+  google.protobuf.Timestamp snapshot_at = 2;
+}
+
+// Get fleet metrics request
+message GetFleetMetricsRequest {
+  string fleet_id = 1;
+  google.protobuf.Timestamp start_time = 2;
+  google.protobuf.Timestamp end_time = 3;
+  MetricsOptions options = 4;
+}
+
+// Get fleet metrics response
+message GetFleetMetricsResponse {
+  FleetMetrics metrics = 1;
+  google.protobuf.Timestamp calculated_at = 2;
+}
+
+// Perform fleet action request
+message PerformFleetActionRequest {
+  string fleet_id = 1;
+  FleetAction action = 2;
+  FleetActionOptions options = 3;
+}
+
+// Perform fleet action response
+message PerformFleetActionResponse {
+  string action_id = 1;
+  FleetActionStatus status = 2;
+  FleetActionResult result = 3;
+  google.protobuf.Timestamp executed_at = 4;
+}
+
+// Schedule maintenance request
+message ScheduleMaintenanceRequest {
+  string vehicle_id = 1;
+  MaintenanceSchedule schedule = 2;
+  ScheduleMaintenanceOptions options = 3;
+}
+
+// Schedule maintenance response
+message ScheduleMaintenanceResponse {
+  string schedule_id = 1;
+  google.protobuf.Timestamp scheduled_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Get maintenance schedule request
+message GetMaintenanceScheduleRequest {
+  string vehicle_id = 1;
+  GetMaintenanceScheduleOptions options = 2;
+}
+
+// Get maintenance schedule response
+message GetMaintenanceScheduleResponse {
+  repeated MaintenanceSchedule schedules = 1;
+  MaintenanceRecommendations recommendations = 2;
+}
+
+// Report diagnostics request
+message ReportDiagnosticsRequest {
+  string vehicle_id = 1;
+  DiagnosticData diagnostics = 2;
+  ReportDiagnosticsOptions options = 3;
+}
+
+// Report diagnostics response
+message ReportDiagnosticsResponse {
+  string report_id = 1;
+  DiagnosticAnalysis analysis = 2;
+  repeated MaintenanceRecommendation recommendations = 3;
+  google.protobuf.Timestamp analyzed_at = 4;
+}
+
+// Get vehicle capabilities request
+message GetVehicleCapabilitiesRequest {
+  string vehicle_id = 1;
+  GetVehicleCapabilitiesOptions options = 2;
+}
+
+// Get vehicle capabilities response
+message GetVehicleCapabilitiesResponse {
+  VehicleCapabilities capabilities = 1;
+  CapabilityMatrix capability_matrix = 2;
+  google.protobuf.Timestamp assessed_at = 3;
+}
+
+// Update vehicle profile request
+message UpdateVehicleProfileRequest {
+  string vehicle_id = 1;
+  VehicleProfile profile = 2;
+  UpdateVehicleProfileOptions options = 3;
+}
+
+// Update vehicle profile response
+message UpdateVehicleProfileResponse {
+  VehicleProfile profile = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Validate vehicle profile request
+message ValidateVehicleProfileRequest {
+  VehicleProfile profile = 1;
+  ValidationOptions options = 2;
+}
+
+// Validate vehicle profile response
+message ValidateVehicleProfileResponse {
+  bool valid = 1;
+  repeated ValidationError errors = 2;
+  repeated ValidationWarning warnings = 3;
+  ProfileValidationResults results = 4;
+}
+
+// Core data structures
+
+// Vehicle definition
+message Vehicle {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  VehicleType type = 4;
+  VehicleStatus status = 5;
+  
+  // Vehicle identification
+  string vin = 6;
+  string license_plate = 7;
+  string make = 8;
+  string model = 9;
+  int32 year = 10;
+  string color = 11;
+  
+  // Vehicle specifications
+  VehicleSpecifications specifications = 12;
+  VehicleCapabilities capabilities = 13;
+  VehicleProfile profile = 14;
+  
+  // Current state
+  Location current_location = 15;
+  VehicleHealthData health_data = 16;
+  ODDStatus odd_status = 17;
+  
+  // Fleet assignment
+  string fleet_id = 18;
+  string sector = 19;
+  string tenant_id = 20;
+  repeated string tags = 21;
+  google.protobuf.Struct metadata = 22;
+  
+  // Audit fields
+  google.protobuf.Timestamp registered_at = 23;
+  google.protobuf.Timestamp updated_at = 24;
+  string registered_by = 25;
+  string updated_by = 26;
+  int32 version = 27;
+}
+
+// Vehicle specifications
+message VehicleSpecifications {
+  // Physical dimensions
+  double length_m = 1;
+  double width_m = 2;
+  double height_m = 3;
+  double wheelbase_m = 4;
+  double ground_clearance_m = 5;
+  double curb_weight_kg = 6;
+  double max_payload_kg = 7;
+  
+  // Performance specs
+  double max_speed_kmh = 8;
+  double max_acceleration_ms2 = 9;
+  double max_deceleration_ms2 = 10;
+  double turning_radius_m = 11;
+  double max_grade_percentage = 12;
+  double max_side_slope_degrees = 13;
+  
+  // Capacity specs
+  int32 passenger_capacity = 14;
+  double cargo_volume_m3 = 15;
+  double towing_capacity_kg = 16;
+  
+  // Power specs
+  PowertrainType powertrain_type = 17;
+  double battery_capacity_kwh = 18;
+  double fuel_capacity_liters = 19;
+  double range_km = 20;
+  double charging_power_kw = 21;
+}
+
+// Vehicle capabilities
+message VehicleCapabilities {
+  // Autonomy capabilities
+  AutonomyLevel autonomy_level = 1;
+  repeated string autonomous_features = 2;
+  repeated string safety_features = 3;
+  
+  // Sensor capabilities
+  repeated SensorCapability sensors = 4;
+  repeated string perception_capabilities = 5;
+  
+  // Connectivity capabilities
+  repeated string communication_protocols = 6;
+  repeated string network_types = 7;
+  
+  // Environmental capabilities
+  EnvironmentalCapabilities environmental = 8;
+  
+  // Operational capabilities
+  repeated string operational_modes = 9;
+  repeated string supported_missions = 10;
+  repeated string certifications = 11;
+}
+
+// Environmental capabilities
+message EnvironmentalCapabilities {
+  TemperatureRange operating_temperature = 1;
+  double max_wind_speed_kmh = 2;
+  double min_visibility_m = 3;
+  double max_precipitation_mmh = 4;
+  repeated string supported_weather_conditions = 5;
+  repeated string supported_road_types = 6;
+  repeated string supported_terrains = 7;
+}
+
+// Temperature range
+message TemperatureRange {
+  double min_celsius = 1;
+  double max_celsius = 2;
+}
+
+// Sensor capability
+message SensorCapability {
+  string sensor_type = 1;
+  string model = 2;
+  SensorSpecifications specifications = 3;
+  SensorStatus status = 4;
+  Location mounting_position = 5;
+}
+
+// Sensor specifications
+message SensorSpecifications {
+  double range_m = 1;
+  double field_of_view_degrees = 2;
+  double resolution = 3;
+  double accuracy = 4;
+  double update_rate_hz = 5;
+  google.protobuf.Struct additional_specs = 6;
+}
+
+// Vehicle profile
+message VehicleProfile {
+  string profile_id = 1;
+  string name = 2;
+  string version = 3;
+  
+  // Performance profiles
+  PerformanceProfile performance = 4;
+  SafetyProfile safety = 5;
+  EfficiencyProfile efficiency = 6;
+  
+  // Operational profiles
+  repeated OperationalMode operational_modes = 7;
+  repeated MissionProfile mission_profiles = 8;
+  
+  // Constraints and limits
+  VehicleConstraints constraints = 9;
+  
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
+
+// Performance profile
+message PerformanceProfile {
+  double max_speed_kmh = 1;
+  double max_acceleration_ms2 = 2;
+  double max_deceleration_ms2 = 3;
+  double comfort_acceleration_ms2 = 4;
+  double comfort_deceleration_ms2 = 5;
+  double max_lateral_acceleration_ms2 = 6;
+}
+
+// Safety profile
+message SafetyProfile {
+  double following_distance_seconds = 1;
+  double emergency_braking_distance_m = 2;
+  double lane_keeping_tolerance_m = 3;
+  double speed_limit_tolerance_kmh = 4;
+  repeated SafetyConstraint safety_constraints = 5;
+}
+
+// Safety constraint
+message SafetyConstraint {
+  string constraint_type = 1;
+  double threshold_value = 2;
+  string action = 3;
+  ConstraintSeverity severity = 4;
+}
+
+// Efficiency profile
+message EfficiencyProfile {
+  double target_efficiency_score = 1;
+  double eco_mode_max_speed_kmh = 2;
+  double optimal_speed_range_min_kmh = 3;
+  double optimal_speed_range_max_kmh = 4;
+  double idle_timeout_seconds = 5;
+}
+
+// Operational mode
+message OperationalMode {
+  string mode_id = 1;
+  string name = 2;
+  string description = 3;
+  ModeType type = 4;
+  repeated ModeParameter parameters = 5;
+  repeated string applicable_scenarios = 6;
+}
+
+// Mode parameter
+message ModeParameter {
+  string parameter_name = 1;
+  string parameter_value = 2;
+  string parameter_type = 3;
+  string description = 4;
+}
+
+// Mission profile
+message MissionProfile {
+  string profile_id = 1;
+  string mission_type = 2;
+  string sector = 3;
+  repeated string required_capabilities = 4;
+  MissionConstraints constraints = 5;
+  PerformanceTargets targets = 6;
+}
+
+// Mission constraints
+message MissionConstraints {
+  double max_mission_duration_hours = 1;
+  double max_mission_distance_km = 2;
+  repeated string prohibited_areas = 3;
+  repeated string required_certifications = 4;
+  EnvironmentalConstraints environmental = 5;
+}
+
+// Environmental constraints
+message EnvironmentalConstraints {
+  TemperatureRange temperature_range = 1;
+  double max_wind_speed_kmh = 2;
+  double min_visibility_m = 3;
+  double max_precipitation_mmh = 4;
+  repeated string prohibited_weather = 5;
+}
+
+// Performance targets
+message PerformanceTargets {
+  double target_availability_percentage = 1;
+  double target_efficiency_score = 2;
+  double target_safety_score = 3;
+  double max_assist_rate_per_1000km = 4;
+}
+
+// Vehicle constraints
+message VehicleConstraints {
+  repeated GeographicConstraint geographic = 1;
+  repeated TemporalConstraint temporal = 2;
+  repeated OperationalConstraint operational = 3;
+  repeated RegulatoryConstraint regulatory = 4;
+}
+
+// Geographic constraint
+message GeographicConstraint {
+  string constraint_id = 1;
+  ConstraintType type = 2; // ALLOWED, PROHIBITED
+  repeated Location boundaries = 3;
+  string reason = 4;
+  google.protobuf.Timestamp effective_from = 5;
+  google.protobuf.Timestamp effective_until = 6;
+}
+
+// Temporal constraint
+message TemporalConstraint {
+  string constraint_id = 1;
+  ConstraintType type = 2;
+  repeated TimeWindow time_windows = 3;
+  string reason = 4;
+}
+
+// Time window
+message TimeWindow {
+  string start_time = 1; // HH:MM format
+  string end_time = 2;   // HH:MM format
+  repeated int32 days_of_week = 3; // 0=Sunday, 1=Monday, etc.
+}
+
+// Operational constraint
+message OperationalConstraint {
+  string constraint_id = 1;
+  string constraint_type = 2;
+  google.protobuf.Struct parameters = 3;
+  ConstraintSeverity severity = 4;
+  string description = 5;
+}
+
+// Regulatory constraint
+message RegulatoryConstraint {
+  string regulation_id = 1;
+  string jurisdiction = 2;
+  string requirement = 3;
+  ComplianceStatus compliance_status = 4;
+  google.protobuf.Timestamp expires_at = 5;
+}
+
+// Location definition
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  double altitude = 3;
+  string address = 4;
+  string place_id = 5;
+  LocationType type = 6;
+  google.protobuf.Struct metadata = 7;
+}
+
+// Vehicle health data
+message VehicleHealthData {
+  HealthStatus overall_status = 1;
+  SystemHealthData systems = 2;
+  repeated HealthMetric metrics = 3;
+  repeated HealthAlert alerts = 4;
+  google.protobuf.Timestamp last_updated = 5;
+}
+
+// System health data
+message SystemHealthData {
+  SystemHealth powertrain = 1;
+  SystemHealth braking = 2;
+  SystemHealth steering = 3;
+  SystemHealth suspension = 4;
+  SystemHealth electrical = 5;
+  SystemHealth hvac = 6;
+  SystemHealth sensors = 7;
+  SystemHealth communication = 8;
+  SystemHealth compute = 9;
+}
+
+// System health
+message SystemHealth {
+  HealthStatus status = 1;
+  double health_score = 2; // 0.0 to 1.0
+  repeated HealthMetric metrics = 3;
+  repeated HealthAlert alerts = 4;
+  google.protobuf.Timestamp last_checked = 5;
+}
+
+// Health metric
+message HealthMetric {
+  string metric_name = 1;
+  double value = 2;
+  string unit = 3;
+  double min_threshold = 4;
+  double max_threshold = 5;
+  MetricStatus status = 6;
+  google.protobuf.Timestamp measured_at = 7;
+}
+
+// Health alert
+message HealthAlert {
+  string alert_id = 1;
+  AlertType type = 2;
+  AlertSeverity severity = 3;
+  string message = 4;
+  string system = 5;
+  string component = 6;
+  google.protobuf.Struct details = 7;
+  google.protobuf.Timestamp triggered_at = 8;
+  google.protobuf.Timestamp acknowledged_at = 9;
+  google.protobuf.Timestamp resolved_at = 10;
+}
+
+// Vehicle health status
+message VehicleHealthStatus {
+  string vehicle_id = 1;
+  HealthStatus overall_status = 2;
+  double overall_health_score = 3;
+  SystemHealthData systems = 4;
+  repeated HealthTrend trends = 5;
+  HealthPredictions predictions = 6;
+}
+
+// Health trend
+message HealthTrend {
+  string metric_name = 1;
+  TrendDirection direction = 2;
+  double rate_of_change = 3;
+  double confidence = 4;
+  google.protobuf.Timestamp trend_start = 5;
+}
+
+// Health predictions
+message HealthPredictions {
+  repeated MaintenanceRecommendation maintenance_recommendations = 2;
+  repeated FailurePrediction failure_predictions = 3;
+  google.protobuf.Timestamp predicted_at = 4;
+}
+
+// Failure prediction
+message FailurePrediction {
+  string component = 1;
+  FailureType failure_type = 2;
+  double probability = 3;
+  google.protobuf.Timestamp predicted_failure_time = 4;
+  double confidence = 5;
+  string recommended_action = 6;
+}
+
+// Vehicle health history
+message VehicleHealthHistory {
+  repeated HealthSnapshot snapshots = 1;
+  repeated MaintenanceRecord maintenance_records = 2;
+  repeated IncidentRecord incident_records = 3;
+}
+
+// Health snapshot
+message HealthSnapshot {
+  google.protobuf.Timestamp timestamp = 1;
+  HealthStatus overall_status = 2;
+  double overall_health_score = 3;
+  repeated HealthMetric metrics = 4;
+}
+
+// Maintenance record
+message MaintenanceRecord {
+  string record_id = 1;
+  MaintenanceType type = 2;
+  string description = 3;
+  google.protobuf.Timestamp performed_at = 4;
+  string performed_by = 5;
+  repeated string components_serviced = 6;
+  double cost = 7;
+  string notes = 8;
+}
+
+// Incident record
+message IncidentRecord {
+  string incident_id = 1;
+  IncidentType type = 2;
+  IncidentSeverity severity = 3;
+  string description = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+  Location location = 6;
+  google.protobuf.Struct details = 7;
+  string resolution = 8;
+  google.protobuf.Timestamp resolved_at = 9;
+}
+
+// Environmental conditions
+message EnvironmentalConditions {
+  WeatherConditions weather = 1;
+  RoadConditions road = 2;
+  TrafficConditions traffic = 3;
+  LightingConditions lighting = 4;
+  google.protobuf.Timestamp observed_at = 5;
+}
+
+// Weather conditions
+message WeatherConditions {
+  double temperature_celsius = 1;
+  double humidity_percentage = 2;
+  double wind_speed_kmh = 3;
+  double wind_direction_degrees = 4;
+  double precipitation_mmh = 5;
+  double visibility_m = 6;
+  string weather_type = 7;
+}
+
+// Road conditions
+message RoadConditions {
+  string surface_type = 1;
+  SurfaceCondition surface_condition = 2;
+  double friction_coefficient = 3;
+  double grade_percentage = 4;
+  double curvature_radius_m = 5;
+  int32 lane_count = 6;
+  double lane_width_m = 7;
+}
+
+// Traffic conditions
+message TrafficConditions {
+  TrafficDensity density = 1;
+  double average_speed_kmh = 2;
+  int32 vehicle_count = 3;
+  repeated string traffic_incidents = 4;
+}
+
+// Lighting conditions
+message LightingConditions {
+  LightingType type = 1;
+  double illuminance_lux = 2;
+  double contrast_ratio = 3;
+  bool glare_present = 4;
+}
+
+// ODD validation result
+message ODDValidationResult {
+  ODDValidationStatus status = 1;
+  double confidence_score = 2;
+  repeated string limiting_factors = 3;
+  repeated ODDConstraint violated_constraints = 4;
+  string recommendation = 5;
+}
+
+// ODD violation
+message ODDViolation {
+  string constraint_id = 1;
+  string constraint_type = 2;
+  string violation_description = 3;
+  ViolationSeverity severity = 4;
+  double threshold_value = 5;
+  double actual_value = 6;
+  string recommended_action = 7;
+}
+
+// ODD status
+message ODDStatus {
+  string vehicle_id = 1;
+  ODDValidationStatus overall_status = 2;
+  Location current_location = 3;
+  EnvironmentalConditions current_conditions = 4;
+  repeated ODDConstraint active_constraints = 5;
+  repeated ODDViolation active_violations = 6;
+  google.protobuf.Timestamp last_validated = 7;
+}
+
+// ODD constraint
+message ODDConstraint {
+  string constraint_id = 1;
+  string name = 2;
+  ConstraintType type = 3;
+  string description = 4;
+  google.protobuf.Struct parameters = 5;
+  ConstraintSeverity severity = 6;
+  bool is_active = 7;
+}
+
+// ODD update
+message ODDUpdate {
+  repeated ODDConstraint add_constraints = 1;
+  repeated string remove_constraint_ids = 2;
+  repeated ODDConstraint update_constraints = 3;
+  string update_reason = 4;
+}
+
+// Fleet overview
+message FleetOverview {
+  string fleet_id = 1;
+  string name = 2;
+  FleetSummary summary = 3;
+  repeated VehicleSummary vehicles = 4;
+  FleetHealthSummary health = 5;
+  FleetOperationalStatus operational_status = 6;
+}
+
+// Fleet summary
+message FleetSummary {
+  int32 total_vehicles = 1;
+  int32 active_vehicles = 2;
+  int32 available_vehicles = 3;
+  int32 in_use_vehicles = 4;
+  int32 maintenance_vehicles = 5;
+  int32 offline_vehicles = 6;
+  double average_utilization = 7;
+  double fleet_health_score = 8;
+}
+
+// Vehicle summary
+message VehicleSummary {
+  string vehicle_id = 1;
+  string name = 2;
+  VehicleType type = 3;
+  VehicleStatus status = 4;
+  Location current_location = 5;
+  double health_score = 6;
+  double utilization = 7;
+  google.protobuf.Timestamp last_updated = 8;
+}
+
+// Fleet health summary
+message FleetHealthSummary {
+  double overall_health_score = 1;
+  int32 healthy_vehicles = 2;
+  int32 degraded_vehicles = 3;
+  int32 critical_vehicles = 4;
+  int32 active_alerts = 5;
+  repeated string top_issues = 6;
+}
+
+// Fleet operational status
+message FleetOperationalStatus {
+  OperationalStatus status = 1;
+  int32 active_missions = 2;
+  int32 pending_assignments = 3;
+  double average_response_time_minutes = 4;
+  double service_level_percentage = 5;
+}
+
+// Fleet metrics
+message FleetMetrics {
+  string fleet_id = 1;
+  google.protobuf.Timestamp period_start = 2;
+  google.protobuf.Timestamp period_end = 3;
+  
+  // Utilization metrics
+  double average_utilization = 4;
+  double peak_utilization = 5;
+  int32 total_operating_hours = 6;
+  int32 total_idle_hours = 7;
+  
+  // Performance metrics
+  double average_speed_kmh = 8;
+  double total_distance_km = 9;
+  double fuel_efficiency_l_100km = 10;
+  double energy_efficiency_kwh_100km = 11;
+  
+  // Reliability metrics
+  double availability_percentage = 12;
+  int32 total_breakdowns = 13;
+  double mean_time_between_failures_hours = 14;
+  double mean_time_to_repair_hours = 15;
+  
+  // Safety metrics
+  int32 total_incidents = 16;
+  int32 safety_violations = 17;
+  double safety_score = 18;
+  
+  // Maintenance metrics
+  int32 scheduled_maintenance_count = 19;
+  int32 unscheduled_maintenance_count = 20;
+  double maintenance_cost = 21;
+}
+
+// Fleet action
+message FleetAction {
+  FleetActionType type = 1;
+  repeated string target_vehicle_ids = 2;
+  google.protobuf.Struct parameters = 3;
+  string reason = 4;
+  bool force_action = 5;
+}
+
+// Fleet action result
+message FleetActionResult {
+  int32 successful_actions = 1;
+  int32 failed_actions = 2;
+  repeated ActionResult individual_results = 3;
+  google.protobuf.Struct summary = 4;
+}
+
+// Action result
+message ActionResult {
+  string vehicle_id = 1;
+  bool success = 2;
+  string message = 3;
+  google.protobuf.Struct details = 4;
+}
+
+// Maintenance schedule
+message MaintenanceSchedule {
+  string schedule_id = 1;
+  string vehicle_id = 2;
+  MaintenanceType type = 3;
+  string description = 4;
+  google.protobuf.Timestamp scheduled_at = 5;
+  int32 estimated_duration_minutes = 6;
+  repeated string required_parts = 7;
+  repeated string required_skills = 8;
+  MaintenancePriority priority = 9;
+  string notes = 10;
+}
+
+// Maintenance recommendations
+message MaintenanceRecommendations {
+  repeated MaintenanceRecommendation immediate = 1;
+  repeated MaintenanceRecommendation upcoming = 2;
+  repeated MaintenanceRecommendation predictive = 3;
+}
+
+// Maintenance recommendation
+message MaintenanceRecommendation {
+  string recommendation_id = 1;
+  MaintenanceType type = 2;
+  string component = 3;
+  string description = 4;
+  RecommendationPriority priority = 5;
+  google.protobuf.Timestamp recommended_by = 6;
+  double confidence = 7;
+  string reasoning = 8;
+  double estimated_cost = 9;
+  int32 estimated_duration_minutes = 10;
+}
+
+// Diagnostic data
+message DiagnosticData {
+  string vehicle_id = 1;
+  google.protobuf.Timestamp collected_at = 2;
+  repeated DiagnosticCode codes = 3;
+  repeated SensorReading sensor_readings = 4;
+  repeated SystemStatus system_statuses = 5;
+  google.protobuf.Struct raw_data = 6;
+}
+
+// Diagnostic code
+message DiagnosticCode {
+  string code = 1;
+  DiagnosticSeverity severity = 2;
+  string description = 3;
+  string system = 4;
+  string component = 5;
+  google.protobuf.Timestamp first_detected = 6;
+  int32 occurrence_count = 7;
+}
+
+// Sensor reading
+message SensorReading {
+  string sensor_id = 1;
+  string sensor_type = 2;
+  double value = 3;
+  string unit = 4;
+  SensorStatus status = 5;
+  google.protobuf.Timestamp timestamp = 6;
+}
+
+// System status
+message SystemStatus {
+  string system_name = 1;
+  SystemStatusType status = 2;
+  double performance_percentage = 3;
+  repeated string active_faults = 4;
+  google.protobuf.Timestamp last_checked = 5;
+}
+
+// Diagnostic analysis
+message DiagnosticAnalysis {
+  string analysis_id = 1;
+  AnalysisResult result = 2;
+  repeated DiagnosticFinding findings = 3;
+  repeated string root_causes = 4;
+  double confidence = 5;
+  string summary = 6;
+}
+
+// Diagnostic finding
+message DiagnosticFinding {
+  string finding_id = 1;
+  FindingType type = 2;
+  FindingSeverity severity = 3;
+  string description = 4;
+  string affected_system = 5;
+  string recommended_action = 6;
+}
+
+// Capability matrix
+message CapabilityMatrix {
+  repeated CapabilityAssessment assessments = 1;
+  CapabilityScore overall_score = 2;
+  repeated string limitations = 3;
+  repeated string recommendations = 4;
+}
+
+// Capability assessment
+message CapabilityAssessment {
+  string capability_name = 1;
+  CapabilityLevel level = 2;
+  double score = 3;
+  string assessment = 4;
+  repeated string requirements = 5;
+  repeated string gaps = 6;
+}
+
+// Capability score
+message CapabilityScore {
+  double overall_score = 1;
+  double autonomy_score = 2;
+  double safety_score = 3;
+  double reliability_score = 4;
+  double performance_score = 5;
+}
+
+// Profile validation results
+message ProfileValidationResults {
+  bool overall_valid = 1;
+  repeated ProfileValidation validations = 2;
+  ProfileCompatibility compatibility = 3;
+  repeated string recommendations = 4;
+}
+
+// Profile validation
+message ProfileValidation {
+  string profile_section = 1;
+  bool valid = 2;
+  repeated ValidationError errors = 3;
+  repeated ValidationWarning warnings = 4;
+}
+
+// Profile compatibility
+message ProfileCompatibility {
+  bool vehicle_compatible = 1;
+  bool mission_compatible = 2;
+  bool regulatory_compliant = 3;
+  repeated string compatibility_issues = 4;
+}
+
+// Update structures
+message VehicleUpdate {
+  optional string name = 1;
+  optional string description = 2;
+  optional VehicleStatus status = 3;
+  optional Location current_location = 4;
+  optional VehicleProfile profile = 5;
+  repeated string add_tags = 6;
+  repeated string remove_tags = 7;
+  optional google.protobuf.Struct metadata_updates = 8;
+}
+
+// Metadata structures
+message VehicleMetadata {
+  int32 version = 1;
+  int32 event_count = 2;
+  google.protobuf.Timestamp last_updated = 3;
+  VehicleStatistics statistics = 4;
+  repeated string related_vehicles = 5;
+}
+
+// Vehicle statistics
+message VehicleStatistics {
+  double total_distance_km = 1;
+  int32 total_operating_hours = 2;
+  double average_utilization = 3;
+  int32 total_trips = 4;
+  int32 maintenance_events = 5;
+  double reliability_score = 6;
+}
+
+// Validation structures
+message ValidationError {
+  string field = 1;
+  string code = 2;
+  string message = 3;
+  google.protobuf.Struct context = 4;
+}
+
+message ValidationWarning {
+  string field = 1;
+  string code = 2;
+  string message = 3;
+  string suggestion = 4;
+}
+
+// Filter and pagination structures
+message ListVehiclesFilter {
+  repeated VehicleStatus statuses = 1;
+  repeated VehicleType types = 2;
+  repeated string fleet_ids = 3;
+  repeated string sectors = 4;
+  repeated string tags = 5;
+  LocationFilter location_filter = 6;
+  HealthFilter health_filter = 7;
+  google.protobuf.Timestamp registered_after = 8;
+  google.protobuf.Timestamp registered_before = 9;
+}
+
+message LocationFilter {
+  double center_latitude = 1;
+  double center_longitude = 2;
+  double radius_km = 3;
+}
+
+message HealthFilter {
+  repeated HealthStatus health_statuses = 1;
+  double min_health_score = 2;
+  double max_health_score = 3;
+  repeated AlertSeverity alert_severities = 4;
+}
+
+message PaginationOptions {
+  int32 page_size = 1;
+  string page_token = 2;
+  string sort_by = 3;
+  SortOrder sort_order = 4;
+}
+
+message PaginationMetadata {
+  string next_page_token = 1;
+  string previous_page_token = 2;
+  int32 page_size = 3;
+  bool has_more = 4;
+}
+
+// Options structures
+message RegisterVehicleOptions {
+  bool validate_only = 1;
+  bool auto_activate = 2;
+  bool skip_capability_check = 3;
+}
+
+message GetVehicleOptions {
+  bool include_metadata = 1;
+  bool include_health_history = 2;
+  bool include_capabilities = 3;
+  bool include_profile = 4;
+}
+
+message UpdateVehicleOptions {
+  bool validate_only = 1;
+  bool skip_capability_check = 2;
+  string change_reason = 3;
+}
+
+message DeregisterVehicleOptions {
+  bool soft_delete = 1;
+  bool force_deregister = 2;
+  bool transfer_assignments = 3;
+}
+
+message GetVehicleHealthOptions {
+  bool include_history = 1;
+  bool include_predictions = 2;
+  int32 history_days = 3;
+}
+
+message ValidateODDOptions {
+  bool strict_validation = 1;
+  bool include_recommendations = 2;
+  bool check_future_conditions = 3;
+}
+
+message GetODDStatusOptions {
+  bool include_constraints = 1;
+  bool include_violations = 2;
+  bool include_history = 3;
+}
+
+message UpdateODDOptions {
+  bool validate_constraints = 1;
+  bool notify_affected_systems = 2;
+  string update_reason = 3;
+}
+
+message GetFleetOverviewOptions {
+  bool include_vehicle_details = 1;
+  bool include_health_summary = 2;
+  bool include_metrics = 3;
+}
+
+message FleetActionOptions {
+  bool dry_run = 1;
+  bool force_action = 2;
+  int32 timeout_seconds = 3;
+  bool notify_operators = 4;
+}
+
+message ScheduleMaintenanceOptions {
+  bool auto_schedule = 1;
+  bool check_availability = 2;
+  bool notify_maintenance_team = 3;
+}
+
+message GetMaintenanceScheduleOptions {
+  bool include_completed = 1;
+  bool include_recommendations = 2;
+  int32 days_ahead = 3;
+}
+
+message ReportDiagnosticsOptions {
+  bool auto_analyze = 1;
+  bool generate_recommendations = 2;
+  bool notify_maintenance = 3;
+}
+
+message GetVehicleCapabilitiesOptions {
+  bool include_matrix = 1;
+  bool include_assessments = 2;
+  bool include_limitations = 3;
+}
+
+message UpdateVehicleProfileOptions {
+  bool validate_profile = 1;
+  bool check_compatibility = 2;
+  string update_reason = 3;
+}
+
+message ValidationOptions {
+  bool strict_mode = 1;
+  bool check_compatibility = 2;
+  bool check_regulatory_compliance = 3;
+}
+
+message MetricsOptions {
+  bool include_utilization = 1;
+  bool include_performance = 2;
+  bool include_reliability = 3;
+  bool include_safety = 4;
+  bool include_maintenance = 5;
+  string aggregation_level = 6; // "hour", "day", "week"
+}
+
+message StreamOptions {
+  repeated string event_types = 1;
+  bool include_historical = 2;
+  int32 buffer_size = 3;
+}
+
+// Enums
+
+enum VehicleType {
+  VEHICLE_TYPE_UNSPECIFIED = 0;
+  VEHICLE_TYPE_PASSENGER_CAR = 1;
+  VEHICLE_TYPE_SUV = 2;
+  VEHICLE_TYPE_TRUCK = 3;
+  VEHICLE_TYPE_BUS = 4;
+  VEHICLE_TYPE_VAN = 5;
+  VEHICLE_TYPE_MOTORCYCLE = 6;
+  VEHICLE_TYPE_UGV = 7; // Unmanned Ground Vehicle
+  VEHICLE_TYPE_SPECIALIZED = 8;
+}
+
+enum VehicleStatus {
+  VEHICLE_STATUS_UNSPECIFIED = 0;
+  VEHICLE_STATUS_REGISTERED = 1;
+  VEHICLE_STATUS_AVAILABLE = 2;
+  VEHICLE_STATUS_ASSIGNED = 3;
+  VEHICLE_STATUS_IN_USE = 4;
+  VEHICLE_STATUS_CHARGING = 5;
+  VEHICLE_STATUS_MAINTENANCE = 6;
+  VEHICLE_STATUS_OFFLINE = 7;
+  VEHICLE_STATUS_DEREGISTERED = 8;
+}
+
+enum PowertrainType {
+  POWERTRAIN_TYPE_UNSPECIFIED = 0;
+  POWERTRAIN_TYPE_ICE = 1; // Internal Combustion Engine
+  POWERTRAIN_TYPE_HYBRID = 2;
+  POWERTRAIN_TYPE_ELECTRIC = 3;
+  POWERTRAIN_TYPE_FUEL_CELL = 4;
+}
+
+enum AutonomyLevel {
+  AUTONOMY_LEVEL_UNSPECIFIED = 0;
+  AUTONOMY_LEVEL_0 = 1; // No automation
+  AUTONOMY_LEVEL_1 = 2; // Driver assistance
+  AUTONOMY_LEVEL_2 = 3; // Partial automation
+  AUTONOMY_LEVEL_3 = 4; // Conditional automation
+  AUTONOMY_LEVEL_4 = 5; // High automation
+  AUTONOMY_LEVEL_5 = 6; // Full automation
+}
+
+enum SensorStatus {
+  SENSOR_STATUS_UNSPECIFIED = 0;
+  SENSOR_STATUS_OPERATIONAL = 1;
+  SENSOR_STATUS_DEGRADED = 2;
+  SENSOR_STATUS_FAILED = 3;
+  SENSOR_STATUS_OFFLINE = 4;
+  SENSOR_STATUS_CALIBRATING = 5;
+}
+
+enum HealthStatus {
+  HEALTH_STATUS_UNSPECIFIED = 0;
+  HEALTH_STATUS_HEALTHY = 1;
+  HEALTH_STATUS_DEGRADED = 2;
+  HEALTH_STATUS_CRITICAL = 3;
+  HEALTH_STATUS_FAILED = 4;
+  HEALTH_STATUS_UNKNOWN = 5;
+}
+
+enum MetricStatus {
+  METRIC_STATUS_UNSPECIFIED = 0;
+  METRIC_STATUS_NORMAL = 1;
+  METRIC_STATUS_WARNING = 2;
+  METRIC_STATUS_CRITICAL = 3;
+  METRIC_STATUS_UNKNOWN = 4;
+}
+
+enum AlertType {
+  ALERT_TYPE_UNSPECIFIED = 0;
+  ALERT_TYPE_SYSTEM_FAULT = 1;
+  ALERT_TYPE_PERFORMANCE_DEGRADATION = 2;
+  ALERT_TYPE_MAINTENANCE_DUE = 3;
+  ALERT_TYPE_SAFETY_VIOLATION = 4;
+  ALERT_TYPE_SECURITY_BREACH = 5;
+  ALERT_TYPE_COMMUNICATION_LOSS = 6;
+}
+
+enum AlertSeverity {
+  ALERT_SEVERITY_UNSPECIFIED = 0;
+  ALERT_SEVERITY_INFO = 1;
+  ALERT_SEVERITY_WARNING = 2;
+  ALERT_SEVERITY_ERROR = 3;
+  ALERT_SEVERITY_CRITICAL = 4;
+}
+
+enum TrendDirection {
+  TREND_DIRECTION_UNSPECIFIED = 0;
+  TREND_DIRECTION_IMPROVING = 1;
+  TREND_DIRECTION_STABLE = 2;
+  TREND_DIRECTION_DEGRADING = 3;
+}
+
+enum FailureType {
+  FAILURE_TYPE_UNSPECIFIED = 0;
+  FAILURE_TYPE_MECHANICAL = 1;
+  FAILURE_TYPE_ELECTRICAL = 2;
+  FAILURE_TYPE_SOFTWARE = 3;
+  FAILURE_TYPE_SENSOR = 4;
+  FAILURE_TYPE_COMMUNICATION = 5;
+}
+
+enum MaintenanceType {
+  MAINTENANCE_TYPE_UNSPECIFIED = 0;
+  MAINTENANCE_TYPE_PREVENTIVE = 1;
+  MAINTENANCE_TYPE_CORRECTIVE = 2;
+  MAINTENANCE_TYPE_PREDICTIVE = 3;
+  MAINTENANCE_TYPE_EMERGENCY = 4;
+}
+
+enum MaintenancePriority {
+  MAINTENANCE_PRIORITY_UNSPECIFIED = 0;
+  MAINTENANCE_PRIORITY_LOW = 1;
+  MAINTENANCE_PRIORITY_NORMAL = 2;
+  MAINTENANCE_PRIORITY_HIGH = 3;
+  MAINTENANCE_PRIORITY_URGENT = 4;
+}
+
+enum RecommendationPriority {
+  RECOMMENDATION_PRIORITY_UNSPECIFIED = 0;
+  RECOMMENDATION_PRIORITY_LOW = 1;
+  RECOMMENDATION_PRIORITY_MEDIUM = 2;
+  RECOMMENDATION_PRIORITY_HIGH = 3;
+  RECOMMENDATION_PRIORITY_CRITICAL = 4;
+}
+
+enum IncidentType {
+  INCIDENT_TYPE_UNSPECIFIED = 0;
+  INCIDENT_TYPE_ACCIDENT = 1;
+  INCIDENT_TYPE_BREAKDOWN = 2;
+  INCIDENT_TYPE_SAFETY_VIOLATION = 3;
+  INCIDENT_TYPE_SECURITY_BREACH = 4;
+  INCIDENT_TYPE_OPERATIONAL_ERROR = 5;
+}
+
+enum IncidentSeverity {
+  INCIDENT_SEVERITY_UNSPECIFIED = 0;
+  INCIDENT_SEVERITY_MINOR = 1;
+  INCIDENT_SEVERITY_MODERATE = 2;
+  INCIDENT_SEVERITY_MAJOR = 3;
+  INCIDENT_SEVERITY_CRITICAL = 4;
+}
+
+enum SurfaceCondition {
+  SURFACE_CONDITION_UNSPECIFIED = 0;
+  SURFACE_CONDITION_DRY = 1;
+  SURFACE_CONDITION_WET = 2;
+  SURFACE_CONDITION_ICY = 3;
+  SURFACE_CONDITION_SNOWY = 4;
+  SURFACE_CONDITION_MUDDY = 5;
+  SURFACE_CONDITION_SANDY = 6;
+}
+
+enum TrafficDensity {
+  TRAFFIC_DENSITY_UNSPECIFIED = 0;
+  TRAFFIC_DENSITY_FREE_FLOW = 1;
+  TRAFFIC_DENSITY_LIGHT = 2;
+  TRAFFIC_DENSITY_MODERATE = 3;
+  TRAFFIC_DENSITY_HEAVY = 4;
+  TRAFFIC_DENSITY_CONGESTED = 5;
+}
+
+enum LightingType {
+  LIGHTING_TYPE_UNSPECIFIED = 0;
+  LIGHTING_TYPE_DAYLIGHT = 1;
+  LIGHTING_TYPE_TWILIGHT = 2;
+  LIGHTING_TYPE_NIGHT = 3;
+  LIGHTING_TYPE_ARTIFICIAL = 4;
+}
+
+enum ODDValidationStatus {
+  ODD_VALIDATION_STATUS_UNSPECIFIED = 0;
+  ODD_VALIDATION_STATUS_VALID = 1;
+  ODD_VALIDATION_STATUS_INVALID = 2;
+  ODD_VALIDATION_STATUS_CONDITIONAL = 3;
+  ODD_VALIDATION_STATUS_UNKNOWN = 4;
+}
+
+enum ConstraintType {
+  CONSTRAINT_TYPE_UNSPECIFIED = 0;
+  CONSTRAINT_TYPE_ALLOWED = 1;
+  CONSTRAINT_TYPE_PROHIBITED = 2;
+  CONSTRAINT_TYPE_CONDITIONAL = 3;
+}
+
+enum ConstraintSeverity {
+  CONSTRAINT_SEVERITY_UNSPECIFIED = 0;
+  CONSTRAINT_SEVERITY_INFO = 1;
+  CONSTRAINT_SEVERITY_WARNING = 2;
+  CONSTRAINT_SEVERITY_ERROR = 3;
+  CONSTRAINT_SEVERITY_CRITICAL = 4;
+}
+
+enum ComplianceStatus {
+  COMPLIANCE_STATUS_UNSPECIFIED = 0;
+  COMPLIANCE_STATUS_COMPLIANT = 1;
+  COMPLIANCE_STATUS_NON_COMPLIANT = 2;
+  COMPLIANCE_STATUS_PENDING = 3;
+  COMPLIANCE_STATUS_EXPIRED = 4;
+}
+
+enum LocationType {
+  LOCATION_TYPE_UNSPECIFIED = 0;
+  LOCATION_TYPE_ADDRESS = 1;
+  LOCATION_TYPE_COORDINATE = 2;
+  LOCATION_TYPE_LANDMARK = 3;
+  LOCATION_TYPE_DEPOT = 4;
+  LOCATION_TYPE_CHARGING_STATION = 5;
+  LOCATION_TYPE_WAYPOINT = 6;
+}
+
+enum ModeType {
+  MODE_TYPE_UNSPECIFIED = 0;
+  MODE_TYPE_PERFORMANCE = 1;
+  MODE_TYPE_EFFICIENCY = 2;
+  MODE_TYPE_SAFETY = 3;
+  MODE_TYPE_COMFORT = 4;
+  MODE_TYPE_MISSION_SPECIFIC = 5;
+}
+
+enum OperationalStatus {
+  OPERATIONAL_STATUS_UNSPECIFIED = 0;
+  OPERATIONAL_STATUS_NORMAL = 1;
+  OPERATIONAL_STATUS_DEGRADED = 2;
+  OPERATIONAL_STATUS_LIMITED = 3;
+  OPERATIONAL_STATUS_SUSPENDED = 4;
+}
+
+enum FleetActionType {
+  FLEET_ACTION_TYPE_UNSPECIFIED = 0;
+  FLEET_ACTION_TYPE_START_ALL = 1;
+  FLEET_ACTION_TYPE_STOP_ALL = 2;
+  FLEET_ACTION_TYPE_RECALL_ALL = 3;
+  FLEET_ACTION_TYPE_EMERGENCY_STOP = 4;
+  FLEET_ACTION_TYPE_UPDATE_SOFTWARE = 5;
+  FLEET_ACTION_TYPE_REBALANCE = 6;
+}
+
+enum FleetActionStatus {
+  FLEET_ACTION_STATUS_UNSPECIFIED = 0;
+  FLEET_ACTION_STATUS_PENDING = 1;
+  FLEET_ACTION_STATUS_IN_PROGRESS = 2;
+  FLEET_ACTION_STATUS_COMPLETED = 3;
+  FLEET_ACTION_STATUS_FAILED = 4;
+  FLEET_ACTION_STATUS_CANCELLED = 5;
+}
+
+enum DiagnosticSeverity {
+  DIAGNOSTIC_SEVERITY_UNSPECIFIED = 0;
+  DIAGNOSTIC_SEVERITY_INFO = 1;
+  DIAGNOSTIC_SEVERITY_WARNING = 2;
+  DIAGNOSTIC_SEVERITY_ERROR = 3;
+  DIAGNOSTIC_SEVERITY_CRITICAL = 4;
+}
+
+enum SystemStatusType {
+  SYSTEM_STATUS_TYPE_UNSPECIFIED = 0;
+  SYSTEM_STATUS_TYPE_OPERATIONAL = 1;
+  SYSTEM_STATUS_TYPE_DEGRADED = 2;
+  SYSTEM_STATUS_TYPE_FAILED = 3;
+  SYSTEM_STATUS_TYPE_OFFLINE = 4;
+}
+
+enum AnalysisResult {
+  ANALYSIS_RESULT_UNSPECIFIED = 0;
+  ANALYSIS_RESULT_NORMAL = 1;
+  ANALYSIS_RESULT_ATTENTION_REQUIRED = 2;
+  ANALYSIS_RESULT_MAINTENANCE_REQUIRED = 3;
+  ANALYSIS_RESULT_CRITICAL_ISSUE = 4;
+}
+
+enum FindingType {
+  FINDING_TYPE_UNSPECIFIED = 0;
+  FINDING_TYPE_FAULT = 1;
+  FINDING_TYPE_DEGRADATION = 2;
+  FINDING_TYPE_ANOMALY = 3;
+  FINDING_TYPE_WEAR = 4;
+}
+
+enum FindingSeverity {
+  FINDING_SEVERITY_UNSPECIFIED = 0;
+  FINDING_SEVERITY_LOW = 1;
+  FINDING_SEVERITY_MEDIUM = 2;
+  FINDING_SEVERITY_HIGH = 3;
+  FINDING_SEVERITY_CRITICAL = 4;
+}
+
+enum CapabilityLevel {
+  CAPABILITY_LEVEL_UNSPECIFIED = 0;
+  CAPABILITY_LEVEL_NONE = 1;
+  CAPABILITY_LEVEL_BASIC = 2;
+  CAPABILITY_LEVEL_INTERMEDIATE = 3;
+  CAPABILITY_LEVEL_ADVANCED = 4;
+  CAPABILITY_LEVEL_EXPERT = 5;
+}
+
+enum ViolationSeverity {
+  VIOLATION_SEVERITY_UNSPECIFIED = 0;
+  VIOLATION_SEVERITY_INFO = 1;
+  VIOLATION_SEVERITY_WARNING = 2;
+  VIOLATION_SEVERITY_ERROR = 3;
+  VIOLATION_SEVERITY_CRITICAL = 4;
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC = 1;
+  SORT_ORDER_DESC = 2;
+}

@@ -1,0 +1,769 @@
+syntax = "proto3";
+
+package atlasmesh.dispatch.v1;
+
+option go_package = "github.com/atlasmesh/fleet-os/services/dispatch-service/proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// DispatchService handles vehicle assignment and fleet optimization
+service DispatchService {
+  // CreateAssignment creates a new vehicle assignment
+  rpc CreateAssignment(CreateAssignmentRequest) returns (CreateAssignmentResponse);
+  
+  // GetAssignment retrieves an assignment by ID
+  rpc GetAssignment(GetAssignmentRequest) returns (GetAssignmentResponse);
+  
+  // ListAssignments lists assignments with filtering
+  rpc ListAssignments(ListAssignmentsRequest) returns (ListAssignmentsResponse);
+  
+  // UpdateAssignment updates an existing assignment
+  rpc UpdateAssignment(UpdateAssignmentRequest) returns (UpdateAssignmentResponse);
+  
+  // CancelAssignment cancels an assignment
+  rpc CancelAssignment(CancelAssignmentRequest) returns (CancelAssignmentResponse);
+  
+  // OptimizeFleet performs fleet-wide optimization
+  rpc OptimizeFleet(OptimizeFleetRequest) returns (OptimizeFleetResponse);
+  
+  // RebalanceFleet rebalances vehicle distribution
+  rpc RebalanceFleet(RebalanceFleetRequest) returns (RebalanceFleetResponse);
+  
+  // GetFleetStatus retrieves current fleet status
+  rpc GetFleetStatus(GetFleetStatusRequest) returns (GetFleetStatusResponse);
+  
+  // StreamAssignmentUpdates streams real-time assignment updates
+  rpc StreamAssignmentUpdates(StreamAssignmentUpdatesRequest) returns (stream AssignmentUpdateEvent);
+  
+  // GetDispatchMetrics retrieves dispatch performance metrics
+  rpc GetDispatchMetrics(GetDispatchMetricsRequest) returns (GetDispatchMetricsResponse);
+  
+  // ValidateAssignment validates assignment parameters
+  rpc ValidateAssignment(ValidateAssignmentRequest) returns (ValidateAssignmentResponse);
+  
+  // GetAvailableVehicles finds available vehicles for assignment
+  rpc GetAvailableVehicles(GetAvailableVehiclesRequest) returns (GetAvailableVehiclesResponse);
+}
+
+// Create assignment request
+message CreateAssignmentRequest {
+  string idempotency_key = 1;
+  Assignment assignment = 2;
+  CreateAssignmentOptions options = 3;
+}
+
+// Create assignment response
+message CreateAssignmentResponse {
+  string assignment_id = 1;
+  AssignmentStatus status = 2;
+  google.protobuf.Timestamp created_at = 3;
+  string audit_trail_id = 4;
+  repeated PolicyViolation policy_violations = 5;
+  OptimizationMetrics optimization_metrics = 6;
+}
+
+// Get assignment request
+message GetAssignmentRequest {
+  string assignment_id = 1;
+  GetAssignmentOptions options = 2;
+}
+
+// Get assignment response
+message GetAssignmentResponse {
+  Assignment assignment = 1;
+  AssignmentMetadata metadata = 2;
+}
+
+// List assignments request
+message ListAssignmentsRequest {
+  ListAssignmentsFilter filter = 1;
+  PaginationOptions pagination = 2;
+}
+
+// List assignments response
+message ListAssignmentsResponse {
+  repeated Assignment assignments = 1;
+  PaginationMetadata pagination = 2;
+  int32 total_count = 3;
+}
+
+// Update assignment request
+message UpdateAssignmentRequest {
+  string assignment_id = 1;
+  AssignmentUpdate update = 2;
+  UpdateAssignmentOptions options = 3;
+}
+
+// Update assignment response
+message UpdateAssignmentResponse {
+  Assignment assignment = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Cancel assignment request
+message CancelAssignmentRequest {
+  string assignment_id = 1;
+  string reason = 2;
+  CancelAssignmentOptions options = 3;
+}
+
+// Cancel assignment response
+message CancelAssignmentResponse {
+  bool cancelled = 1;
+  google.protobuf.Timestamp cancelled_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Optimize fleet request
+message OptimizeFleetRequest {
+  string fleet_id = 1;
+  OptimizationObjective objective = 2;
+  OptimizationConstraints constraints = 3;
+  OptimizationOptions options = 4;
+}
+
+// Optimize fleet response
+message OptimizeFleetResponse {
+  string optimization_id = 1;
+  repeated AssignmentRecommendation recommendations = 2;
+  OptimizationResults results = 3;
+  google.protobuf.Timestamp optimized_at = 4;
+}
+
+// Rebalance fleet request
+message RebalanceFleetRequest {
+  string fleet_id = 1;
+  RebalancingStrategy strategy = 2;
+  RebalancingOptions options = 3;
+}
+
+// Rebalance fleet response
+message RebalanceFleetResponse {
+  string rebalancing_id = 1;
+  repeated VehicleRebalanceAction actions = 2;
+  RebalancingResults results = 3;
+  google.protobuf.Timestamp rebalanced_at = 4;
+}
+
+// Get fleet status request
+message GetFleetStatusRequest {
+  string fleet_id = 1;
+  GetFleetStatusOptions options = 2;
+}
+
+// Get fleet status response
+message GetFleetStatusResponse {
+  FleetStatus status = 1;
+  google.protobuf.Timestamp status_at = 2;
+}
+
+// Stream assignment updates request
+message StreamAssignmentUpdatesRequest {
+  repeated string assignment_ids = 1;
+  string fleet_id = 2;
+  StreamOptions options = 3;
+}
+
+// Assignment update event
+message AssignmentUpdateEvent {
+  string assignment_id = 1;
+  AssignmentStatus status = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  google.protobuf.Struct data = 4;
+  string event_type = 5;
+}
+
+// Get dispatch metrics request
+message GetDispatchMetricsRequest {
+  string fleet_id = 1;
+  google.protobuf.Timestamp start_time = 2;
+  google.protobuf.Timestamp end_time = 3;
+  MetricsOptions options = 4;
+}
+
+// Get dispatch metrics response
+message GetDispatchMetricsResponse {
+  DispatchMetrics metrics = 1;
+  google.protobuf.Timestamp calculated_at = 2;
+}
+
+// Validate assignment request
+message ValidateAssignmentRequest {
+  Assignment assignment = 1;
+  ValidationOptions options = 2;
+}
+
+// Validate assignment response
+message ValidateAssignmentResponse {
+  bool valid = 1;
+  repeated ValidationError errors = 2;
+  repeated ValidationWarning warnings = 3;
+  repeated PolicyViolation policy_violations = 4;
+  OptimizationScore score = 5;
+}
+
+// Get available vehicles request
+message GetAvailableVehiclesRequest {
+  VehicleSearchCriteria criteria = 1;
+  SearchOptions options = 2;
+}
+
+// Get available vehicles response
+message GetAvailableVehiclesResponse {
+  repeated VehicleAvailability vehicles = 1;
+  SearchMetadata metadata = 2;
+}
+
+// Core data structures
+
+// Assignment definition
+message Assignment {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  AssignmentType type = 4;
+  AssignmentStatus status = 5;
+  AssignmentPriority priority = 6;
+  
+  // Assignment participants
+  string vehicle_id = 7;
+  string driver_id = 8; // Optional for autonomous
+  string trip_id = 9;
+  string fleet_id = 10;
+  
+  // Assignment details
+  Location pickup_location = 11;
+  Location dropoff_location = 12;
+  google.protobuf.Timestamp scheduled_start = 13;
+  google.protobuf.Timestamp scheduled_end = 14;
+  google.protobuf.Timestamp actual_start = 15;
+  google.protobuf.Timestamp actual_end = 16;
+  
+  // Assignment constraints
+  AssignmentConstraints constraints = 17;
+  repeated string policy_ids = 18;
+  
+  // Optimization data
+  OptimizationScore score = 19;
+  repeated string optimization_factors = 20;
+  
+  // Assignment metadata
+  string sector = 21;
+  string tenant_id = 22;
+  repeated string tags = 23;
+  google.protobuf.Struct metadata = 24;
+  
+  // Audit fields
+  google.protobuf.Timestamp created_at = 25;
+  google.protobuf.Timestamp updated_at = 26;
+  string created_by = 27;
+  string updated_by = 28;
+  int32 version = 29;
+}
+
+// Location definition
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  double altitude = 3;
+  string address = 4;
+  string place_id = 5;
+  LocationType type = 6;
+  google.protobuf.Struct metadata = 7;
+}
+
+// Assignment constraints
+message AssignmentConstraints {
+  double max_distance_km = 1;
+  int32 max_duration_minutes = 2;
+  double max_detour_km = 3;
+  int32 max_wait_time_minutes = 4;
+  repeated string required_capabilities = 5;
+  repeated string prohibited_areas = 6;
+  VehicleConstraints vehicle_constraints = 7;
+  TimeConstraints time_constraints = 8;
+}
+
+// Vehicle constraints
+message VehicleConstraints {
+  repeated string vehicle_types = 1;
+  double min_battery_percentage = 2;
+  double min_fuel_percentage = 3;
+  int32 min_passenger_capacity = 4;
+  double min_cargo_capacity_kg = 5;
+  repeated string required_features = 6;
+}
+
+// Time constraints
+message TimeConstraints {
+  google.protobuf.Timestamp earliest_start = 1;
+  google.protobuf.Timestamp latest_start = 2;
+  google.protobuf.Timestamp earliest_end = 3;
+  google.protobuf.Timestamp latest_end = 4;
+  int32 buffer_minutes = 5;
+}
+
+// Optimization objective
+message OptimizationObjective {
+  ObjectiveType primary_objective = 1;
+  repeated ObjectiveWeight secondary_objectives = 2;
+  OptimizationHorizon horizon = 3;
+}
+
+// Objective weight
+message ObjectiveWeight {
+  ObjectiveType objective = 1;
+  double weight = 2; // 0.0 to 1.0
+}
+
+// Optimization constraints
+message OptimizationConstraints {
+  int32 max_assignments_per_vehicle = 1;
+  double max_total_distance_km = 2;
+  int32 max_total_duration_minutes = 3;
+  double min_vehicle_utilization = 4;
+  double max_vehicle_utilization = 5;
+  repeated string mandatory_assignments = 6;
+  repeated string excluded_vehicles = 7;
+}
+
+// Assignment recommendation
+message AssignmentRecommendation {
+  string vehicle_id = 1;
+  string trip_id = 2;
+  OptimizationScore score = 3;
+  string reasoning = 4;
+  repeated string alternatives = 5;
+  google.protobuf.Struct details = 6;
+}
+
+// Optimization results
+message OptimizationResults {
+  string optimization_id = 1;
+  int32 total_assignments = 2;
+  int32 optimized_assignments = 3;
+  double total_distance_km = 4;
+  int32 total_duration_minutes = 5;
+  double average_utilization = 6;
+  double cost_savings_percentage = 7;
+  OptimizationScore overall_score = 8;
+}
+
+// Rebalancing strategy
+message RebalancingStrategy {
+  RebalancingType type = 1;
+  RebalancingTrigger trigger = 2;
+  repeated RebalancingZone zones = 3;
+  RebalancingParameters parameters = 4;
+}
+
+// Rebalancing zone
+message RebalancingZone {
+  string zone_id = 1;
+  string name = 2;
+  repeated Location boundaries = 3;
+  int32 target_vehicle_count = 4;
+  int32 current_vehicle_count = 5;
+  double demand_forecast = 6;
+}
+
+// Rebalancing parameters
+message RebalancingParameters {
+  double demand_threshold = 1;
+  double supply_threshold = 2;
+  int32 min_rebalance_distance_km = 3;
+  int32 max_rebalance_distance_km = 4;
+  double cost_per_km = 5;
+  int32 rebalance_interval_minutes = 6;
+}
+
+// Vehicle rebalance action
+message VehicleRebalanceAction {
+  string vehicle_id = 1;
+  string from_zone_id = 2;
+  string to_zone_id = 3;
+  Location target_location = 4;
+  RebalanceActionType action_type = 5;
+  int32 estimated_duration_minutes = 6;
+  double estimated_distance_km = 7;
+  double priority_score = 8;
+}
+
+// Rebalancing results
+message RebalancingResults {
+  string rebalancing_id = 1;
+  int32 total_actions = 2;
+  int32 executed_actions = 3;
+  double total_rebalance_distance_km = 4;
+  int32 total_rebalance_time_minutes = 5;
+  double demand_supply_improvement = 6;
+  double cost_impact = 7;
+}
+
+// Fleet status
+message FleetStatus {
+  string fleet_id = 1;
+  int32 total_vehicles = 2;
+  int32 available_vehicles = 3;
+  int32 assigned_vehicles = 4;
+  int32 maintenance_vehicles = 5;
+  int32 charging_vehicles = 6;
+  int32 offline_vehicles = 7;
+  double average_utilization = 8;
+  int32 pending_assignments = 9;
+  int32 active_assignments = 10;
+  repeated ZoneStatus zone_statuses = 11;
+}
+
+// Zone status
+message ZoneStatus {
+  string zone_id = 1;
+  string name = 2;
+  int32 vehicles_in_zone = 3;
+  int32 demand_requests = 4;
+  double supply_demand_ratio = 5;
+  double average_wait_time_minutes = 6;
+}
+
+// Dispatch metrics
+message DispatchMetrics {
+  string fleet_id = 1;
+  google.protobuf.Timestamp period_start = 2;
+  google.protobuf.Timestamp period_end = 3;
+  
+  // Assignment metrics
+  int32 total_assignments = 4;
+  int32 successful_assignments = 5;
+  int32 failed_assignments = 6;
+  double assignment_success_rate = 7;
+  
+  // Performance metrics
+  double average_assignment_time_seconds = 8;
+  double average_pickup_time_minutes = 9;
+  double average_utilization = 10;
+  double total_distance_km = 11;
+  double empty_miles_percentage = 12;
+  
+  // Optimization metrics
+  double optimization_score = 13;
+  double cost_efficiency = 14;
+  double demand_fulfillment_rate = 15;
+  
+  // Quality metrics
+  double customer_satisfaction_score = 16;
+  int32 complaints_count = 17;
+  int32 compliments_count = 18;
+}
+
+// Optimization score
+message OptimizationScore {
+  double overall_score = 1; // 0.0 to 1.0
+  double distance_score = 2;
+  double time_score = 3;
+  double cost_score = 4;
+  double utilization_score = 5;
+  double satisfaction_score = 6;
+  google.protobuf.Struct details = 7;
+}
+
+// Vehicle search criteria
+message VehicleSearchCriteria {
+  Location search_location = 1;
+  double search_radius_km = 2;
+  repeated string vehicle_types = 3;
+  repeated string required_capabilities = 4;
+  VehicleConstraints constraints = 5;
+  google.protobuf.Timestamp needed_at = 6;
+  int32 needed_duration_minutes = 7;
+}
+
+// Vehicle availability
+message VehicleAvailability {
+  string vehicle_id = 1;
+  VehicleStatus status = 2;
+  Location current_location = 3;
+  double distance_km = 4;
+  int32 eta_minutes = 5;
+  double battery_percentage = 6;
+  double fuel_percentage = 7;
+  repeated string capabilities = 8;
+  OptimizationScore suitability_score = 9;
+  google.protobuf.Timestamp available_at = 10;
+}
+
+// Assignment update for partial updates
+message AssignmentUpdate {
+  optional string name = 1;
+  optional string description = 2;
+  optional AssignmentPriority priority = 3;
+  optional google.protobuf.Timestamp scheduled_start = 4;
+  optional google.protobuf.Timestamp scheduled_end = 5;
+  optional AssignmentConstraints constraints = 6;
+  repeated string add_tags = 7;
+  repeated string remove_tags = 8;
+  optional google.protobuf.Struct metadata_updates = 9;
+}
+
+// Assignment metadata
+message AssignmentMetadata {
+  int32 version = 1;
+  int32 event_count = 2;
+  google.protobuf.Timestamp last_updated = 3;
+  repeated string related_assignments = 4;
+  AssignmentStatistics statistics = 5;
+}
+
+// Assignment statistics
+message AssignmentStatistics {
+  double completion_rate = 1;
+  double average_duration_minutes = 2;
+  double average_distance_km = 3;
+  int32 total_reassignments = 4;
+  google.protobuf.Timestamp last_completed = 5;
+}
+
+// Search metadata
+message SearchMetadata {
+  int32 total_vehicles_searched = 1;
+  int32 available_vehicles_found = 2;
+  double search_duration_ms = 3;
+  google.protobuf.Timestamp searched_at = 4;
+}
+
+// Policy violation
+message PolicyViolation {
+  string policy_id = 1;
+  string rule_id = 2;
+  string message = 3;
+  ViolationSeverity severity = 4;
+  string suggested_action = 5;
+  google.protobuf.Struct context = 6;
+}
+
+// Validation error
+message ValidationError {
+  string field = 1;
+  string code = 2;
+  string message = 3;
+  google.protobuf.Struct context = 4;
+}
+
+// Validation warning
+message ValidationWarning {
+  string field = 1;
+  string code = 2;
+  string message = 3;
+  string suggestion = 4;
+}
+
+// Filter options
+message ListAssignmentsFilter {
+  repeated AssignmentStatus statuses = 1;
+  repeated AssignmentType types = 2;
+  repeated string vehicle_ids = 3;
+  repeated string fleet_ids = 4;
+  repeated string sectors = 5;
+  google.protobuf.Timestamp created_after = 6;
+  google.protobuf.Timestamp created_before = 7;
+  google.protobuf.Timestamp scheduled_after = 8;
+  google.protobuf.Timestamp scheduled_before = 9;
+}
+
+// Pagination options
+message PaginationOptions {
+  int32 page_size = 1;
+  string page_token = 2;
+  string sort_by = 3;
+  SortOrder sort_order = 4;
+}
+
+// Pagination metadata
+message PaginationMetadata {
+  string next_page_token = 1;
+  string previous_page_token = 2;
+  int32 page_size = 3;
+  bool has_more = 4;
+}
+
+// Options for various operations
+message CreateAssignmentOptions {
+  bool validate_only = 1;
+  bool auto_optimize = 2;
+  bool skip_policy_check = 3;
+  bool force_assignment = 4;
+}
+
+message GetAssignmentOptions {
+  bool include_metadata = 1;
+  bool include_optimization_details = 2;
+  bool include_vehicle_status = 3;
+}
+
+message UpdateAssignmentOptions {
+  bool validate_only = 1;
+  bool auto_reoptimize = 2;
+  string change_reason = 3;
+}
+
+message CancelAssignmentOptions {
+  bool force_cancel = 1;
+  bool notify_participants = 2;
+  bool auto_reassign = 3;
+}
+
+message OptimizationOptions {
+  int32 max_iterations = 1;
+  double convergence_threshold = 2;
+  int32 timeout_seconds = 3;
+  bool include_alternatives = 4;
+}
+
+message RebalancingOptions {
+  bool dry_run = 1;
+  bool auto_execute = 2;
+  int32 max_actions = 3;
+  double cost_threshold = 4;
+}
+
+message GetFleetStatusOptions {
+  bool include_zone_details = 1;
+  bool include_vehicle_details = 2;
+  bool include_predictions = 3;
+}
+
+message StreamOptions {
+  repeated string event_types = 1;
+  bool include_historical = 2;
+}
+
+message ValidationOptions {
+  bool strict_mode = 1;
+  bool check_policies = 2;
+  bool check_vehicle_availability = 3;
+  bool check_optimization_score = 4;
+}
+
+message MetricsOptions {
+  bool include_performance = 1;
+  bool include_optimization = 2;
+  bool include_quality = 3;
+  string aggregation_level = 4; // "hour", "day", "week"
+}
+
+message SearchOptions {
+  int32 max_results = 1;
+  bool include_unavailable = 2;
+  bool sort_by_distance = 3;
+  bool sort_by_suitability = 4;
+}
+
+// Enums
+
+enum AssignmentType {
+  ASSIGNMENT_TYPE_UNSPECIFIED = 0;
+  ASSIGNMENT_TYPE_PASSENGER = 1;
+  ASSIGNMENT_TYPE_CARGO = 2;
+  ASSIGNMENT_TYPE_SERVICE = 3;
+  ASSIGNMENT_TYPE_EMERGENCY = 4;
+  ASSIGNMENT_TYPE_MAINTENANCE = 5;
+  ASSIGNMENT_TYPE_REBALANCING = 6;
+}
+
+enum AssignmentStatus {
+  ASSIGNMENT_STATUS_UNSPECIFIED = 0;
+  ASSIGNMENT_STATUS_PENDING = 1;
+  ASSIGNMENT_STATUS_ASSIGNED = 2;
+  ASSIGNMENT_STATUS_ACCEPTED = 3;
+  ASSIGNMENT_STATUS_STARTED = 4;
+  ASSIGNMENT_STATUS_IN_PROGRESS = 5;
+  ASSIGNMENT_STATUS_COMPLETED = 6;
+  ASSIGNMENT_STATUS_CANCELLED = 7;
+  ASSIGNMENT_STATUS_FAILED = 8;
+}
+
+enum AssignmentPriority {
+  ASSIGNMENT_PRIORITY_UNSPECIFIED = 0;
+  ASSIGNMENT_PRIORITY_LOW = 1;
+  ASSIGNMENT_PRIORITY_NORMAL = 2;
+  ASSIGNMENT_PRIORITY_HIGH = 3;
+  ASSIGNMENT_PRIORITY_URGENT = 4;
+  ASSIGNMENT_PRIORITY_EMERGENCY = 5;
+}
+
+enum LocationType {
+  LOCATION_TYPE_UNSPECIFIED = 0;
+  LOCATION_TYPE_ADDRESS = 1;
+  LOCATION_TYPE_COORDINATE = 2;
+  LOCATION_TYPE_LANDMARK = 3;
+  LOCATION_TYPE_DEPOT = 4;
+  LOCATION_TYPE_CHARGING_STATION = 5;
+  LOCATION_TYPE_WAYPOINT = 6;
+}
+
+enum ObjectiveType {
+  OBJECTIVE_TYPE_UNSPECIFIED = 0;
+  OBJECTIVE_TYPE_MINIMIZE_DISTANCE = 1;
+  OBJECTIVE_TYPE_MINIMIZE_TIME = 2;
+  OBJECTIVE_TYPE_MINIMIZE_COST = 3;
+  OBJECTIVE_TYPE_MAXIMIZE_UTILIZATION = 4;
+  OBJECTIVE_TYPE_MAXIMIZE_SATISFACTION = 5;
+  OBJECTIVE_TYPE_MINIMIZE_EMISSIONS = 6;
+}
+
+enum OptimizationHorizon {
+  OPTIMIZATION_HORIZON_UNSPECIFIED = 0;
+  OPTIMIZATION_HORIZON_IMMEDIATE = 1;
+  OPTIMIZATION_HORIZON_SHORT_TERM = 2; // 1-4 hours
+  OPTIMIZATION_HORIZON_MEDIUM_TERM = 3; // 4-24 hours
+  OPTIMIZATION_HORIZON_LONG_TERM = 4; // 1+ days
+}
+
+enum RebalancingType {
+  REBALANCING_TYPE_UNSPECIFIED = 0;
+  REBALANCING_TYPE_DEMAND_BASED = 1;
+  REBALANCING_TYPE_TIME_BASED = 2;
+  REBALANCING_TYPE_PREDICTIVE = 3;
+  REBALANCING_TYPE_MANUAL = 4;
+}
+
+enum RebalancingTrigger {
+  REBALANCING_TRIGGER_UNSPECIFIED = 0;
+  REBALANCING_TRIGGER_DEMAND_IMBALANCE = 1;
+  REBALANCING_TRIGGER_TIME_INTERVAL = 2;
+  REBALANCING_TRIGGER_UTILIZATION_THRESHOLD = 3;
+  REBALANCING_TRIGGER_MANUAL_REQUEST = 4;
+}
+
+enum RebalanceActionType {
+  REBALANCE_ACTION_TYPE_UNSPECIFIED = 0;
+  REBALANCE_ACTION_TYPE_MOVE = 1;
+  REBALANCE_ACTION_TYPE_WAIT = 2;
+  REBALANCE_ACTION_TYPE_CHARGE = 3;
+  REBALANCE_ACTION_TYPE_MAINTENANCE = 4;
+}
+
+enum VehicleStatus {
+  VEHICLE_STATUS_UNSPECIFIED = 0;
+  VEHICLE_STATUS_AVAILABLE = 1;
+  VEHICLE_STATUS_ASSIGNED = 2;
+  VEHICLE_STATUS_IN_USE = 3;
+  VEHICLE_STATUS_CHARGING = 4;
+  VEHICLE_STATUS_MAINTENANCE = 5;
+  VEHICLE_STATUS_OFFLINE = 6;
+}
+
+enum ViolationSeverity {
+  VIOLATION_SEVERITY_UNSPECIFIED = 0;
+  VIOLATION_SEVERITY_INFO = 1;
+  VIOLATION_SEVERITY_WARNING = 2;
+  VIOLATION_SEVERITY_ERROR = 3;
+  VIOLATION_SEVERITY_CRITICAL = 4;
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC = 1;
+  SORT_ORDER_DESC = 2;
+}
