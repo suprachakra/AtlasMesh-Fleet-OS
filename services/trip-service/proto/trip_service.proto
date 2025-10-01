@@ -1,0 +1,648 @@
+syntax = "proto3";
+
+package atlasmesh.trip.v1;
+
+option go_package = "github.com/atlasmesh/fleet-os/services/trip-service/proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// TripService manages the complete lifecycle of autonomous vehicle trips
+service TripService {
+  // CreateTrip creates a new trip with idempotency support
+  rpc CreateTrip(CreateTripRequest) returns (CreateTripResponse);
+  
+  // GetTrip retrieves a trip by ID
+  rpc GetTrip(GetTripRequest) returns (GetTripResponse);
+  
+  // ListTrips lists trips with filtering and pagination
+  rpc ListTrips(ListTripsRequest) returns (ListTripsResponse);
+  
+  // UpdateTrip updates trip details (limited fields)
+  rpc UpdateTrip(UpdateTripRequest) returns (UpdateTripResponse);
+  
+  // CancelTrip cancels a trip
+  rpc CancelTrip(CancelTripRequest) returns (CancelTripResponse);
+  
+  // StartTrip transitions trip to started state
+  rpc StartTrip(StartTripRequest) returns (StartTripResponse);
+  
+  // CompleteTrip marks trip as completed
+  rpc CompleteTrip(CompleteTripRequest) returns (CompleteTripResponse);
+  
+  // UpdateTripStatus updates trip status with validation
+  rpc UpdateTripStatus(UpdateTripStatusRequest) returns (UpdateTripStatusResponse);
+  
+  // GetTripEvents retrieves trip event history
+  rpc GetTripEvents(GetTripEventsRequest) returns (GetTripEventsResponse);
+  
+  // StreamTripUpdates streams real-time trip updates
+  rpc StreamTripUpdates(StreamTripUpdatesRequest) returns (stream TripUpdateEvent);
+  
+  // ValidateTrip validates trip parameters without creating
+  rpc ValidateTrip(ValidateTripRequest) returns (ValidateTripResponse);
+  
+  // GetTripMetrics retrieves trip performance metrics
+  rpc GetTripMetrics(GetTripMetricsRequest) returns (GetTripMetricsResponse);
+}
+
+// Trip creation request with idempotency key
+message CreateTripRequest {
+  string idempotency_key = 1; // Required for exactly-once semantics
+  Trip trip = 2;
+  CreateTripOptions options = 3;
+}
+
+// Trip creation response
+message CreateTripResponse {
+  string trip_id = 1;
+  TripStatus status = 2;
+  google.protobuf.Timestamp created_at = 3;
+  string audit_trail_id = 4;
+  repeated PolicyViolation policy_violations = 5;
+}
+
+// Get trip request
+message GetTripRequest {
+  string trip_id = 1;
+  GetTripOptions options = 2;
+}
+
+// Get trip response
+message GetTripResponse {
+  Trip trip = 1;
+  TripMetadata metadata = 2;
+}
+
+// List trips request
+message ListTripsRequest {
+  ListTripsFilter filter = 1;
+  PaginationOptions pagination = 2;
+}
+
+// List trips response
+message ListTripsResponse {
+  repeated Trip trips = 1;
+  PaginationMetadata pagination = 2;
+  int32 total_count = 3;
+}
+
+// Update trip request
+message UpdateTripRequest {
+  string trip_id = 1;
+  TripUpdate update = 2;
+  UpdateTripOptions options = 3;
+}
+
+// Update trip response
+message UpdateTripResponse {
+  Trip trip = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Cancel trip request
+message CancelTripRequest {
+  string trip_id = 1;
+  string reason = 2;
+  CancelTripOptions options = 3;
+}
+
+// Cancel trip response
+message CancelTripResponse {
+  bool cancelled = 1;
+  google.protobuf.Timestamp cancelled_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Start trip request
+message StartTripRequest {
+  string trip_id = 1;
+  StartTripOptions options = 2;
+}
+
+// Start trip response
+message StartTripResponse {
+  bool started = 1;
+  google.protobuf.Timestamp started_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Complete trip request
+message CompleteTripRequest {
+  string trip_id = 1;
+  TripCompletionData completion_data = 2;
+  CompleteTripOptions options = 3;
+}
+
+// Complete trip response
+message CompleteTripResponse {
+  bool completed = 1;
+  google.protobuf.Timestamp completed_at = 2;
+  TripSummary summary = 3;
+  string audit_trail_id = 4;
+}
+
+// Update trip status request
+message UpdateTripStatusRequest {
+  string trip_id = 1;
+  TripStatus new_status = 2;
+  string reason = 3;
+  google.protobuf.Struct context = 4;
+}
+
+// Update trip status response
+message UpdateTripStatusResponse {
+  TripStatus previous_status = 1;
+  TripStatus current_status = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  string audit_trail_id = 4;
+}
+
+// Get trip events request
+message GetTripEventsRequest {
+  string trip_id = 1;
+  GetTripEventsOptions options = 2;
+}
+
+// Get trip events response
+message GetTripEventsResponse {
+  repeated TripEvent events = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Stream trip updates request
+message StreamTripUpdatesRequest {
+  repeated string trip_ids = 1; // Empty means all trips for tenant
+  StreamOptions options = 2;
+}
+
+// Trip update event for streaming
+message TripUpdateEvent {
+  string trip_id = 1;
+  TripStatus status = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  google.protobuf.Struct data = 4;
+  string event_type = 5;
+}
+
+// Validate trip request
+message ValidateTripRequest {
+  Trip trip = 1;
+  ValidationOptions options = 2;
+}
+
+// Validate trip response
+message ValidateTripResponse {
+  bool valid = 1;
+  repeated ValidationError errors = 2;
+  repeated ValidationWarning warnings = 3;
+  repeated PolicyViolation policy_violations = 4;
+}
+
+// Get trip metrics request
+message GetTripMetricsRequest {
+  string trip_id = 1;
+  MetricsOptions options = 2;
+}
+
+// Get trip metrics response
+message GetTripMetricsResponse {
+  TripMetrics metrics = 1;
+  google.protobuf.Timestamp calculated_at = 2;
+}
+
+// Core data structures
+
+// Trip definition
+message Trip {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  TripType type = 4;
+  TripStatus status = 5;
+  TripPriority priority = 6;
+  
+  // Trip participants
+  string vehicle_id = 7;
+  string driver_id = 8; // Optional for fully autonomous
+  repeated string passenger_ids = 9;
+  
+  // Trip routing
+  Location origin = 10;
+  Location destination = 11;
+  repeated Location waypoints = 12;
+  string route_id = 13; // Reference to calculated route
+  
+  // Trip scheduling
+  google.protobuf.Timestamp scheduled_start = 14;
+  google.protobuf.Timestamp scheduled_end = 15;
+  google.protobuf.Timestamp actual_start = 16;
+  google.protobuf.Timestamp actual_end = 17;
+  
+  // Trip constraints
+  TripConstraints constraints = 18;
+  repeated string policy_ids = 19;
+  
+  // Trip metadata
+  string sector = 20;
+  string tenant_id = 21;
+  repeated string tags = 22;
+  google.protobuf.Struct metadata = 23;
+  
+  // Audit fields
+  google.protobuf.Timestamp created_at = 24;
+  google.protobuf.Timestamp updated_at = 25;
+  string created_by = 26;
+  string updated_by = 27;
+  int32 version = 28;
+}
+
+// Trip location
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  double altitude = 3; // Optional
+  string address = 4; // Human-readable address
+  string place_id = 5; // External place identifier
+  LocationType type = 6;
+  google.protobuf.Struct metadata = 7;
+}
+
+// Trip constraints
+message TripConstraints {
+  double max_speed_kmh = 1;
+  double max_acceleration_ms2 = 2;
+  double max_deceleration_ms2 = 3;
+  int32 max_passengers = 4;
+  double max_cargo_weight_kg = 5;
+  repeated string required_capabilities = 6;
+  repeated string prohibited_areas = 7;
+  WeatherConstraints weather_constraints = 8;
+  TimeConstraints time_constraints = 9;
+}
+
+// Weather constraints
+message WeatherConstraints {
+  double max_wind_speed_kmh = 1;
+  double min_visibility_m = 2;
+  double max_precipitation_mmh = 3;
+  double min_temperature_c = 4;
+  double max_temperature_c = 5;
+  repeated string prohibited_conditions = 6;
+}
+
+// Time constraints
+message TimeConstraints {
+  repeated TimeWindow allowed_windows = 1;
+  repeated TimeWindow prohibited_windows = 2;
+  int32 max_duration_minutes = 3;
+  int32 buffer_minutes = 4;
+}
+
+// Time window
+message TimeWindow {
+  string start_time = 1; // HH:MM format
+  string end_time = 2;   // HH:MM format
+  repeated int32 days_of_week = 3; // 0=Sunday, 1=Monday, etc.
+}
+
+// Trip completion data
+message TripCompletionData {
+  double actual_distance_km = 1;
+  int32 actual_duration_minutes = 2;
+  double fuel_consumed_liters = 3;
+  double energy_consumed_kwh = 4;
+  int32 assist_count = 5;
+  repeated string incidents = 6;
+  TripRating rating = 7;
+  google.protobuf.Struct additional_data = 8;
+}
+
+// Trip rating
+message TripRating {
+  double overall_score = 1; // 1.0 to 5.0
+  double safety_score = 2;
+  double efficiency_score = 3;
+  double comfort_score = 4;
+  string feedback = 5;
+  string rated_by = 6;
+}
+
+// Trip summary
+message TripSummary {
+  string trip_id = 1;
+  TripStatus final_status = 2;
+  double total_distance_km = 3;
+  int32 total_duration_minutes = 4;
+  double average_speed_kmh = 5;
+  int32 total_assists = 6;
+  int32 total_incidents = 7;
+  double efficiency_score = 8;
+  double safety_score = 9;
+  google.protobuf.Timestamp completed_at = 10;
+}
+
+// Trip event
+message TripEvent {
+  string id = 1;
+  string trip_id = 2;
+  TripEventType type = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  string description = 5;
+  google.protobuf.Struct data = 6;
+  string source = 7;
+  EventSeverity severity = 8;
+}
+
+// Trip metadata
+message TripMetadata {
+  int32 version = 1;
+  int32 event_count = 2;
+  google.protobuf.Timestamp last_updated = 3;
+  repeated string related_trips = 4;
+  TripStatistics statistics = 5;
+}
+
+// Trip statistics
+message TripStatistics {
+  double completion_rate = 1;
+  double average_duration_minutes = 2;
+  double average_distance_km = 3;
+  int32 total_assists = 4;
+  int32 total_incidents = 5;
+  google.protobuf.Timestamp last_completed = 6;
+}
+
+// Trip metrics
+message TripMetrics {
+  string trip_id = 1;
+  PerformanceMetrics performance = 2;
+  SafetyMetrics safety = 3;
+  EfficiencyMetrics efficiency = 4;
+  EnvironmentalMetrics environmental = 5;
+}
+
+// Performance metrics
+message PerformanceMetrics {
+  double average_speed_kmh = 1;
+  double max_speed_kmh = 2;
+  double average_acceleration_ms2 = 3;
+  double max_acceleration_ms2 = 4;
+  double route_deviation_m = 5;
+  double schedule_deviation_minutes = 6;
+}
+
+// Safety metrics
+message SafetyMetrics {
+  int32 hard_braking_events = 1;
+  int32 rapid_acceleration_events = 2;
+  int32 lane_departure_events = 3;
+  int32 following_distance_violations = 4;
+  int32 speed_limit_violations = 5;
+  double safety_score = 6;
+}
+
+// Efficiency metrics
+message EfficiencyMetrics {
+  double fuel_efficiency_l_100km = 1;
+  double energy_efficiency_kwh_100km = 2;
+  double idle_time_percentage = 3;
+  double route_efficiency_score = 4;
+  double time_efficiency_score = 5;
+}
+
+// Environmental metrics
+message EnvironmentalMetrics {
+  double co2_emissions_kg = 1;
+  double nox_emissions_g = 2;
+  double pm_emissions_g = 3;
+  double noise_level_db = 4;
+  double environmental_score = 5;
+}
+
+// Trip update for partial updates
+message TripUpdate {
+  optional string name = 1;
+  optional string description = 2;
+  optional TripPriority priority = 3;
+  optional google.protobuf.Timestamp scheduled_start = 4;
+  optional google.protobuf.Timestamp scheduled_end = 5;
+  optional TripConstraints constraints = 6;
+  repeated string add_tags = 7;
+  repeated string remove_tags = 8;
+  optional google.protobuf.Struct metadata_updates = 9;
+}
+
+// Policy violation
+message PolicyViolation {
+  string policy_id = 1;
+  string rule_id = 2;
+  string message = 3;
+  ViolationSeverity severity = 4;
+  string suggested_action = 5;
+  google.protobuf.Struct context = 6;
+}
+
+// Validation error
+message ValidationError {
+  string field = 1;
+  string code = 2;
+  string message = 3;
+  google.protobuf.Struct context = 4;
+}
+
+// Validation warning
+message ValidationWarning {
+  string field = 1;
+  string code = 2;
+  string message = 3;
+  string suggestion = 4;
+}
+
+// Filter options
+message ListTripsFilter {
+  repeated TripStatus statuses = 1;
+  repeated TripType types = 2;
+  repeated string vehicle_ids = 3;
+  repeated string sectors = 4;
+  repeated string tags = 5;
+  google.protobuf.Timestamp created_after = 6;
+  google.protobuf.Timestamp created_before = 7;
+  google.protobuf.Timestamp scheduled_after = 8;
+  google.protobuf.Timestamp scheduled_before = 9;
+  LocationFilter origin_filter = 10;
+  LocationFilter destination_filter = 11;
+}
+
+// Location filter
+message LocationFilter {
+  double center_latitude = 1;
+  double center_longitude = 2;
+  double radius_km = 3;
+  repeated string place_ids = 4;
+}
+
+// Pagination options
+message PaginationOptions {
+  int32 page_size = 1;
+  string page_token = 2;
+  string sort_by = 3;
+  SortOrder sort_order = 4;
+}
+
+// Pagination metadata
+message PaginationMetadata {
+  string next_page_token = 1;
+  string previous_page_token = 2;
+  int32 page_size = 3;
+  bool has_more = 4;
+}
+
+// Options for various operations
+message CreateTripOptions {
+  bool validate_only = 1;
+  bool auto_start = 2;
+  bool skip_policy_check = 3;
+}
+
+message GetTripOptions {
+  bool include_metadata = 1;
+  bool include_events = 2;
+  bool include_metrics = 3;
+}
+
+message UpdateTripOptions {
+  bool validate_only = 1;
+  bool skip_policy_check = 2;
+  string change_reason = 3;
+}
+
+message CancelTripOptions {
+  bool force_cancel = 1;
+  bool notify_participants = 2;
+}
+
+message StartTripOptions {
+  bool skip_pre_trip_checks = 1;
+  google.protobuf.Struct override_params = 2;
+}
+
+message CompleteTripOptions {
+  bool auto_generate_summary = 1;
+  bool skip_post_trip_validation = 2;
+}
+
+message GetTripEventsOptions {
+  repeated TripEventType event_types = 1;
+  google.protobuf.Timestamp after = 2;
+  google.protobuf.Timestamp before = 3;
+  PaginationOptions pagination = 4;
+}
+
+message StreamOptions {
+  repeated TripEventType event_types = 1;
+  bool include_historical = 2;
+}
+
+message ValidationOptions {
+  bool strict_mode = 1;
+  bool check_policies = 2;
+  bool check_vehicle_availability = 3;
+}
+
+message MetricsOptions {
+  bool include_performance = 1;
+  bool include_safety = 2;
+  bool include_efficiency = 3;
+  bool include_environmental = 4;
+}
+
+// Enums
+
+enum TripType {
+  TRIP_TYPE_UNSPECIFIED = 0;
+  TRIP_TYPE_PASSENGER = 1;
+  TRIP_TYPE_CARGO = 2;
+  TRIP_TYPE_SERVICE = 3;
+  TRIP_TYPE_EMERGENCY = 4;
+  TRIP_TYPE_PATROL = 5;
+  TRIP_TYPE_CONVOY = 6;
+  TRIP_TYPE_MAINTENANCE = 7;
+  TRIP_TYPE_TRAINING = 8;
+  TRIP_TYPE_TEST = 9;
+}
+
+enum TripStatus {
+  TRIP_STATUS_UNSPECIFIED = 0;
+  TRIP_STATUS_DRAFT = 1;
+  TRIP_STATUS_SCHEDULED = 2;
+  TRIP_STATUS_CONFIRMED = 3;
+  TRIP_STATUS_STARTED = 4;
+  TRIP_STATUS_IN_PROGRESS = 5;
+  TRIP_STATUS_PAUSED = 6;
+  TRIP_STATUS_RESUMED = 7;
+  TRIP_STATUS_COMPLETED = 8;
+  TRIP_STATUS_CANCELLED = 9;
+  TRIP_STATUS_FAILED = 10;
+  TRIP_STATUS_ABORTED = 11;
+}
+
+enum TripPriority {
+  TRIP_PRIORITY_UNSPECIFIED = 0;
+  TRIP_PRIORITY_LOW = 1;
+  TRIP_PRIORITY_NORMAL = 2;
+  TRIP_PRIORITY_HIGH = 3;
+  TRIP_PRIORITY_URGENT = 4;
+  TRIP_PRIORITY_EMERGENCY = 5;
+}
+
+enum LocationType {
+  LOCATION_TYPE_UNSPECIFIED = 0;
+  LOCATION_TYPE_ADDRESS = 1;
+  LOCATION_TYPE_COORDINATE = 2;
+  LOCATION_TYPE_LANDMARK = 3;
+  LOCATION_TYPE_DEPOT = 4;
+  LOCATION_TYPE_CHARGING_STATION = 5;
+  LOCATION_TYPE_WAYPOINT = 6;
+}
+
+enum TripEventType {
+  TRIP_EVENT_TYPE_UNSPECIFIED = 0;
+  TRIP_EVENT_TYPE_CREATED = 1;
+  TRIP_EVENT_TYPE_UPDATED = 2;
+  TRIP_EVENT_TYPE_STARTED = 3;
+  TRIP_EVENT_TYPE_PAUSED = 4;
+  TRIP_EVENT_TYPE_RESUMED = 5;
+  TRIP_EVENT_TYPE_COMPLETED = 6;
+  TRIP_EVENT_TYPE_CANCELLED = 7;
+  TRIP_EVENT_TYPE_FAILED = 8;
+  TRIP_EVENT_TYPE_ASSIST_REQUESTED = 9;
+  TRIP_EVENT_TYPE_ASSIST_RESOLVED = 10;
+  TRIP_EVENT_TYPE_INCIDENT = 11;
+  TRIP_EVENT_TYPE_WAYPOINT_REACHED = 12;
+  TRIP_EVENT_TYPE_ROUTE_CHANGED = 13;
+  TRIP_EVENT_TYPE_POLICY_VIOLATION = 14;
+}
+
+enum EventSeverity {
+  EVENT_SEVERITY_UNSPECIFIED = 0;
+  EVENT_SEVERITY_INFO = 1;
+  EVENT_SEVERITY_WARNING = 2;
+  EVENT_SEVERITY_ERROR = 3;
+  EVENT_SEVERITY_CRITICAL = 4;
+}
+
+enum ViolationSeverity {
+  VIOLATION_SEVERITY_UNSPECIFIED = 0;
+  VIOLATION_SEVERITY_INFO = 1;
+  VIOLATION_SEVERITY_WARNING = 2;
+  VIOLATION_SEVERITY_ERROR = 3;
+  VIOLATION_SEVERITY_CRITICAL = 4;
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC = 1;
+  SORT_ORDER_DESC = 2;
+}
