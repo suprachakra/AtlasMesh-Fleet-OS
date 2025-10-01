@@ -242,7 +242,7 @@ make test-sim         # Simulation tests
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, branch naming conventions, commit message format, and pull request process.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, branch naming conventions, commit message format and pull request process.
 
 Key points:
 - Fork the repository and create a feature branch
