@@ -1,0 +1,100 @@
+@startuml emergency_stop_command_v1
+!theme aws-orange
+title Emergency Stop Command Flow - AtlasMesh Fleet OS
+subtitle SAFETY CRITICAL: Emergency stop command dispatch and execution
+note right: Version 1.0 | Generated from: Vehicle Gateway traces | Safety Level: CRITICAL
+
+' SAFETY: This diagram shows the emergency stop command flow
+' INTEGRATION CONTRACT: WebSocket + Kafka + ROS2 command chain
+' LATENCY BUDGET: <100ms end-to-end for safety compliance
+' COMPLIANCE: UAE AV safety regulations require documented emergency procedures
+
+actor "Safety Operator" as operator #red
+participant "Control Center UI" as ui #lightblue
+participant "API Gateway" as gateway #orange
+participant "Auth Service" as auth #yellow
+participant "Policy Engine" as policy #green
+participant "Vehicle Gateway" as vgw #blue
+participant "Event Bus (Kafka)" as kafka #purple
+participant "Vehicle Agent (ROS2)" as agent #brown
+participant "Vehicle Systems" as vehicle #red
+
+== EMERGENCY STOP INITIATION ==
+
+operator -> ui: **EMERGENCY STOP**\nClicks emergency button
+note right operator: SAFETY: Operator identifies\nhazardous situation
+
+ui -> ui: Show confirmation dialog\n"CONFIRM EMERGENCY STOP"
+note right ui: UX: Prevent accidental activation\nbut minimize delay
+
+operator -> ui: Confirms emergency stop
+ui -> gateway: POST /api/v1/emergency/stop\n{vehicle_id, reason, operator_id}
+note right ui: SECURITY: Includes operator identity\nfor audit trail
+
+== AUTHENTICATION & AUTHORIZATION ==
+
+gateway -> auth: Validate JWT token\nCheck emergency permissions
+note right gateway: SECURITY: Emergency commands require\nspecial authorization
+
+auth -> auth: Verify operator has\nEMERGENCY_STOP role
+auth --> gateway: ✓ Authorized\n{operator_id, roles}
+
+gateway -> policy: Evaluate emergency policy\n{vehicle_id, operator_id, context}
+note right gateway: POLICY: Check if emergency stop\nis allowed for this vehicle/context
+
+policy -> policy: Evaluate OPA policy:\nallow_emergency_stop
+policy --> gateway: ✓ Policy allows\n{decision: allow, reason}
+
+== COMMAND DISPATCH ==
+
+gateway -> vgw: Send emergency command\n{command_id, vehicle_id, type: EMERGENCY_STOP}
+note right gateway: PERF: Direct gRPC call\nfor minimum latency
+
+vgw -> vgw: **PRIORITY QUEUE**\nBypass normal command queue
+note right vgw: SAFETY: Emergency commands\nhave absolute priority
+
+vgw -> kafka: Publish emergency event\ntopic: vehicle.commands.emergency
+note right vgw: AUDIT: All emergency commands\nlogged for compliance
+
+== VEHICLE COMMUNICATION ==
+
+vgw -> agent: WebSocket: EMERGENCY_STOP\n{command_id, timestamp, authority}
+note right vgw: INTEGRATION: Real-time WebSocket\nfor immediate delivery
+
+agent -> agent: **IMMEDIATE PROCESSING**\nInterrupt current operations
+note right agent: SAFETY: Emergency commands\npreempt all other operations
+
+agent -> vehicle: ROS2: /emergency_stop\n{stop_type: IMMEDIATE}
+note right agent: ROS2 CONTRACT: Emergency stop topic\nwith immediate execution
+
+== VEHICLE RESPONSE ==
+
+vehicle -> vehicle: **EXECUTE EMERGENCY STOP**\n- Apply brakes\n- Disable autonomy\n- Hazard lights ON
+note right vehicle: SAFETY: Physical safety systems\nactivated immediately
+
+vehicle -> agent: ROS2: /emergency_status\n{status: STOPPED, location, timestamp}
+agent -> vgw: WebSocket: Emergency stop executed\n{status: COMPLETED, telemetry}
+
+== CONFIRMATION & MONITORING ==
+
+vgw -> kafka: Publish completion event\ntopic: vehicle.events.emergency_completed
+vgw -> gateway: gRPC: Command completed\n{command_id, status: SUCCESS}
+
+gateway -> ui: HTTP 200: Emergency stop executed\n{vehicle_id, status, location}
+ui -> operator: **VISUAL CONFIRMATION**\nVehicle stopped - Emergency active
+
+== CONTINUOUS MONITORING ==
+
+loop Every 1 second
+    vehicle -> agent: ROS2: Vehicle status\n{stopped: true, emergency: true}
+    agent -> vgw: WebSocket: Status update
+    vgw -> ui: Real-time status\n{emergency_active: true}
+    ui -> operator: Dashboard update\nEmergency status visible
+end
+
+== AUDIT & COMPLIANCE ==
+
+kafka -> kafka: Store emergency event\nfor compliance audit
+note right kafka: COMPLIANCE: All emergency events\nretained for regulatory review
+
+@enduml

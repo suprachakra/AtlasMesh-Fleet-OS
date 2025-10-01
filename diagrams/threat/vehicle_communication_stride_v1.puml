@@ -1,0 +1,188 @@
+@startuml vehicle_communication_stride_v1
+!theme aws-orange
+title STRIDE Threat Model - Vehicle Communication - AtlasMesh Fleet OS
+subtitle SECURITY CRITICAL: Threat analysis for vehicle command and telemetry flows
+note right: Version 1.0 | Generated from: DFD + Trust Boundaries | Security Level: CRITICAL
+
+' STRIDE THREAT MODEL: Vehicle Communication Security Analysis
+' SCOPE: Vehicle Gateway, Command Dispatch, Telemetry Collection
+' METHODOLOGY: STRIDE (Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation)
+' COMPLIANCE: UAE cybersecurity framework + automotive security standards
+
+!define THREAT_HIGH #ff4757
+!define THREAT_MEDIUM #ffa502
+!define THREAT_LOW #2ed573
+!define MITIGATION #3742fa
+
+package "Trust Boundary: Internet/External" {
+    actor "Malicious Actor" as attacker THREAT_HIGH
+    actor "Fleet Operator" as operator #lightblue
+}
+
+package "Trust Boundary: Fleet Management System" {
+    component "API Gateway" as gateway #orange
+    component "Auth Service" as auth #yellow
+    component "Vehicle Gateway" as vgw #blue
+    database "Command Database" as cmddb #lightgreen
+    queue "Event Bus (Kafka)" as kafka #purple
+}
+
+package "Trust Boundary: Vehicle Network" {
+    component "Vehicle Agent" as agent #brown
+    component "Vehicle Systems" as vehicle #darkblue
+}
+
+' === SPOOFING THREATS ===
+
+note top of attacker : **SPOOFING THREATS (S)**\n\nS1: Impersonate legitimate operator\nS2: Spoof vehicle identity\nS3: Fake authentication tokens\nS4: Man-in-the-middle attacks
+
+attacker .down.> operator : **S1: Identity Spoofing**\nSteal operator credentials\nImpersonate authorized user
+note on link THREAT_HIGH : **RISK: HIGH**\nImpact: Unauthorized vehicle control\nLikelihood: Medium
+
+attacker .down.> vehicle : **S2: Vehicle Identity Spoofing**\nSpoof vehicle certificates\nImpersonate legitimate vehicle
+note on link THREAT_HIGH : **RISK: HIGH**\nImpact: False telemetry injection\nLikelihood: Low
+
+' === TAMPERING THREATS ===
+
+attacker .down.> gateway : **T1: Command Tampering**\nModify vehicle commands in transit\nAlter command parameters
+note on link THREAT_HIGH : **RISK: HIGH**\nImpact: Malicious vehicle behavior\nLikelihood: Medium
+
+attacker .down.> kafka : **T2: Event Tampering**\nModify audit logs\nAlter telemetry data
+note on link THREAT_MEDIUM : **RISK: MEDIUM**\nImpact: Compliance violations\nLikelihood: Low
+
+' === REPUDIATION THREATS ===
+
+operator .down.> cmddb : **R1: Command Repudiation**\nDeny issuing dangerous commands\nClaim commands were unauthorized
+note on link THREAT_MEDIUM : **RISK: MEDIUM**\nImpact: Legal/compliance issues\nLikelihood: Medium
+
+' === INFORMATION DISCLOSURE THREATS ===
+
+attacker .down.> vgw : **I1: Telemetry Interception**\nEavesdrop on vehicle communications\nSteal location/operational data
+note on link THREAT_HIGH : **RISK: HIGH**\nImpact: Privacy violations\nLikelihood: High
+
+attacker .down.> auth : **I2: Credential Disclosure**\nSteal authentication tokens\nAccess user credentials
+note on link THREAT_HIGH : **RISK: HIGH**\nImpact: System compromise\nLikelihood: Medium
+
+' === DENIAL OF SERVICE THREATS ===
+
+attacker .down.> gateway : **D1: API Flooding**\nOverwhelm API with requests\nExhaust system resources
+note on link THREAT_MEDIUM : **RISK: MEDIUM**\nImpact: Service unavailability\nLikelihood: High
+
+attacker .down.> vgw : **D2: WebSocket Exhaustion**\nFlood vehicle connections\nDisrupt real-time communication
+note on link THREAT_HIGH : **RISK: HIGH**\nImpact: Loss of vehicle control\nLikelihood: Medium
+
+' === ELEVATION OF PRIVILEGE THREATS ===
+
+attacker .down.> auth : **E1: Privilege Escalation**\nExploit authentication flaws\nGain administrative access
+note on link THREAT_HIGH : **RISK: HIGH**\nImpact: Full system compromise\nLikelihood: Low
+
+' === MITIGATIONS ===
+
+rectangle "MITIGATIONS" MITIGATION {
+    note as mitigations
+        **SPOOFING MITIGATIONS:**
+        ✓ Multi-factor authentication (MFA)
+        ✓ Certificate-based vehicle identity
+        ✓ JWT tokens with short expiration
+        ✓ mTLS for all communications
+        
+        **TAMPERING MITIGATIONS:**
+        ✓ Digital signatures on commands
+        ✓ TLS encryption for all traffic
+        ✓ Message integrity checks (HMAC)
+        ✓ Immutable audit logs
+        
+        **REPUDIATION MITIGATIONS:**
+        ✓ Cryptographic signatures on commands
+        ✓ Comprehensive audit logging
+        ✓ Non-repudiation certificates
+        ✓ Blockchain audit trail (future)
+        
+        **INFO DISCLOSURE MITIGATIONS:**
+        ✓ End-to-end encryption (E2EE)
+        ✓ Data classification and DLP
+        ✓ Network segmentation
+        ✓ Zero-trust architecture
+        
+        **DENIAL OF SERVICE MITIGATIONS:**
+        ✓ Rate limiting and throttling
+        ✓ DDoS protection (CloudFlare)
+        ✓ Circuit breakers
+        ✓ Priority queues for safety commands
+        
+        **ELEVATION MITIGATIONS:**
+        ✓ Principle of least privilege
+        ✓ Role-based access control (RBAC)
+        ✓ Regular security audits
+        ✓ Vulnerability scanning
+    end note
+}
+
+' === ATTACK SCENARIOS ===
+
+rectangle "HIGH-RISK ATTACK SCENARIOS" THREAT_HIGH {
+    note as scenarios
+        **SCENARIO 1: Malicious Command Injection**
+        1. Attacker compromises operator credentials (S1)
+        2. Issues emergency stop to entire fleet (T1)
+        3. Causes city-wide transportation disruption
+        **MITIGATION:** Dual authorization for fleet-wide commands
+        
+        **SCENARIO 2: Vehicle Hijacking**
+        1. Attacker intercepts vehicle certificates (S2)
+        2. Spoofs legitimate vehicle identity
+        3. Injects false telemetry and receives commands
+        **MITIGATION:** Hardware security modules (HSM)
+        
+        **SCENARIO 3: Privacy Breach**
+        1. Attacker intercepts telemetry streams (I1)
+        2. Tracks vehicle locations and passenger data
+        3. Sells data or uses for surveillance
+        **MITIGATION:** End-to-end encryption + data anonymization
+        
+        **SCENARIO 4: Service Disruption**
+        1. Attacker floods vehicle gateway (D2)
+        2. Disrupts real-time vehicle communication
+        3. Forces vehicles into safe-stop mode
+        **MITIGATION:** DDoS protection + priority queues
+    end note
+}
+
+' === SECURITY CONTROLS MAPPING ===
+
+rectangle "SECURITY CONTROLS" MITIGATION {
+    note as controls
+        **AUTHENTICATION & AUTHORIZATION:**
+        • OAuth 2.0 + OpenID Connect
+        • JWT tokens with RS256 signing
+        • Multi-factor authentication (MFA)
+        • Role-based access control (RBAC)
+        • Attribute-based access control (ABAC)
+        
+        **COMMUNICATION SECURITY:**
+        • TLS 1.3 for all HTTP traffic
+        • mTLS for service-to-service communication
+        • WebSocket Secure (WSS) for vehicle connections
+        • Certificate pinning for mobile apps
+        
+        **DATA PROTECTION:**
+        • AES-256 encryption at rest
+        • Field-level encryption for PII
+        • Data loss prevention (DLP)
+        • Secure key management (Vault)
+        
+        **MONITORING & DETECTION:**
+        • Security Information Event Management (SIEM)
+        • Intrusion detection system (IDS)
+        • Anomaly detection for vehicle behavior
+        • Real-time security dashboards
+        
+        **INCIDENT RESPONSE:**
+        • Automated threat response
+        • Security playbooks
+        • Incident escalation procedures
+        • Forensic logging capabilities
+    end note
+}
+
+@enduml

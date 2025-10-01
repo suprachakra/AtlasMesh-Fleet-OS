@@ -1,0 +1,208 @@
+@startuml auth_jwt_flow_v1
+!theme aws-orange
+title Authentication & Authorization Flow - AtlasMesh Fleet OS
+subtitle HIGH PRIORITY: JWT-based authentication with RBAC/ABAC authorization
+note right: Version 1.0 | Generated from: Auth Service traces | Security Level: HIGH
+
+' SECURITY: JWT-based authentication with role-based and attribute-based access control
+' INTEGRATION CONTRACT: OAuth 2.0 + OpenID Connect + JWT tokens
+' PERFORMANCE: <50ms for token validation, <10ms for policy evaluation
+' COMPLIANCE: UAE cybersecurity framework + GDPR privacy requirements
+
+actor "Fleet Operator" as operator #blue
+participant "Control Center UI" as ui #lightblue
+participant "API Gateway" as gateway #orange
+participant "Auth Service" as auth #yellow
+participant "Policy Engine" as policy #green
+participant "HashiCorp Vault" as vault #purple
+participant "User Database" as userdb #lightgreen
+participant "Fleet Manager" as fleet #darkblue
+participant "Audit Service" as audit #red
+
+== INITIAL LOGIN ==
+
+operator -> ui: Enter credentials\n{username, password, MFA}
+note right operator: USER: Fleet operator\nneeds system access
+
+ui -> ui: Client-side validation\nPassword strength check
+note right ui: UX: Immediate feedback\nfor invalid inputs
+
+ui -> gateway: POST /api/v1/auth/login\n{username, password, mfa_token}
+note right ui: SECURITY: HTTPS only\nCredentials encrypted in transit
+
+== AUTHENTICATION ==
+
+gateway -> auth: gRPC: AuthenticateUser\n{credentials, client_info}
+note right gateway: SERVICE: Delegate auth\nto specialized service
+
+auth -> userdb: Query user account\nSELECT * FROM users WHERE username = ?
+note right auth: DATABASE: Retrieve user\nprofile and status
+
+userdb --> auth: User profile\n{user_id, password_hash, roles, status}
+
+auth -> auth: **PASSWORD VERIFICATION**\nbcrypt.CompareHashAndPassword\n(stored_hash, provided_password)
+note right auth: SECURITY: bcrypt with\ncost factor 12
+
+alt Invalid credentials
+    auth --> gateway: ❌ Authentication failed\n{error: "Invalid credentials"}
+    gateway --> ui: HTTP 401: Unauthorized
+    ui -> operator: Error: Invalid login
+    
+    auth -> audit: Log failed login\n{user, ip, timestamp, reason}
+    note right auth: AUDIT: Security event\nlogged for monitoring
+else Valid credentials
+    auth -> auth: **MFA VERIFICATION**\nTOTP validation\n(user_secret, provided_token)
+    note right auth: SECURITY: Time-based OTP\nfor additional security
+    
+    alt Invalid MFA
+        auth --> gateway: ❌ MFA verification failed
+        gateway --> ui: HTTP 401: MFA required
+        ui -> operator: Error: Invalid MFA code
+    else Valid MFA
+        auth -> vault: Request signing key\nGET /v1/pki/cert/jwt-signing
+        note right auth: SECURITY: RSA private key\nfor JWT signing
+        
+        vault --> auth: ✓ Signing key\n{private_key, certificate}
+        
+        auth -> auth: **GENERATE JWT TOKEN**\nClaims: {user_id, roles, permissions}\nAlgorithm: RS256\nExpiration: 1 hour
+        note right auth: JWT: Short-lived token\nwith user context
+        
+        auth -> auth: **GENERATE REFRESH TOKEN**\nSecure random token\nExpiration: 30 days
+        note right auth: REFRESH: Long-lived token\nfor token renewal
+        
+        auth -> userdb: Store refresh token\nINSERT INTO user_sessions\n{user_id, refresh_token, expires_at}
+        
+        auth --> gateway: ✓ Authentication success\n{jwt_token, refresh_token, expires_in}
+    end
+end
+
+== TOKEN RESPONSE ==
+
+gateway --> ui: HTTP 200: Login successful\n{access_token, refresh_token, user_profile}
+ui -> ui: Store tokens securely\nHttpOnly cookies + localStorage
+note right ui: SECURITY: Secure token storage\nwith XSS protection
+
+ui -> operator: **LOGIN SUCCESS**\nRedirect to dashboard
+
+== AUTHORIZED API REQUEST ==
+
+operator -> ui: Click "View Fleet Status"\nRequest fleet information
+ui -> gateway: GET /api/v1/fleets\nAuthorization: Bearer {jwt_token}
+note right ui: API: Include JWT token\nin Authorization header
+
+== TOKEN VALIDATION ==
+
+gateway -> auth: gRPC: ValidateToken\n{jwt_token, required_permissions}
+note right gateway: SECURITY: Validate every\nAPI request
+
+auth -> vault: Get public key\nGET /v1/pki/cert/jwt-verification
+vault --> auth: ✓ Public key\n{public_key, certificate}
+
+auth -> auth: **JWT VERIFICATION**\n- Signature validation (RS256)\n- Expiration check\n- Issuer validation\n- Claims extraction
+note right auth: SECURITY: Cryptographic\nverification of token
+
+alt Token invalid/expired
+    auth --> gateway: ❌ Token invalid\n{error: "Token expired"}
+    gateway --> ui: HTTP 401: Unauthorized
+    ui -> ui: Attempt token refresh\nusing refresh_token
+    
+    alt Refresh successful
+        ui -> gateway: POST /api/v1/auth/refresh\n{refresh_token}
+        gateway -> auth: gRPC: RefreshToken\n{refresh_token}
+        auth -> userdb: Validate refresh token\nSELECT * FROM user_sessions
+        auth -> auth: Generate new JWT\nSame process as login
+        auth --> gateway: ✓ New tokens\n{jwt_token, refresh_token}
+        gateway --> ui: HTTP 200: Tokens refreshed
+        ui -> ui: Update stored tokens\nRetry original request
+    else Refresh failed
+        ui -> operator: **SESSION EXPIRED**\nPlease log in again
+    end
+else Token valid
+    auth --> gateway: ✓ Token valid\n{user_id, roles, permissions}
+end
+
+== AUTHORIZATION ==
+
+gateway -> policy: gRPC: EvaluatePolicy\n{user_context, resource, action}
+note right gateway: POLICY: Check if user\ncan perform requested action
+
+policy -> policy: **RBAC EVALUATION**\n- Check user roles\n- Match role permissions\n- Resource access rules
+note right policy: RBAC: Role-based\naccess control
+
+policy -> policy: **ABAC EVALUATION**\n- User attributes\n- Resource attributes\n- Environmental context\n- Dynamic policies
+note right policy: ABAC: Attribute-based\nfine-grained control
+
+policy -> policy: **OPA/REGO EVALUATION**\nallow = true {\n  input.user.roles[_] == "fleet_operator"\n  input.resource == "fleets"\n  input.action == "read"\n}
+note right policy: POLICY: Declarative\npolicy evaluation
+
+alt Access denied
+    policy --> gateway: ❌ Access denied\n{decision: "deny", reason}
+    gateway --> ui: HTTP 403: Forbidden
+    ui -> operator: Error: Insufficient permissions
+    
+    policy -> audit: Log access denial\n{user, resource, action, reason}
+else Access granted
+    policy --> gateway: ✓ Access granted\n{decision: "allow", constraints}
+end
+
+== RESOURCE ACCESS ==
+
+gateway -> fleet: gRPC: GetFleets\n{user_context, filters}
+note right gateway: SERVICE: Forward request\nwith user context
+
+fleet -> fleet: **BUSINESS LOGIC**\n- Apply user constraints\n- Filter by organization\n- Apply data policies
+note right fleet: BUSINESS: Multi-tenant\ndata isolation
+
+fleet -> userdb: Query fleet data\nSELECT * FROM fleets\nWHERE organization_id = ?
+userdb --> fleet: Fleet data\n{fleets[], metadata}
+
+fleet --> gateway: ✓ Fleet information\n{fleets, total_count, permissions}
+gateway --> ui: HTTP 200: Fleet data\n{fleets[], user_permissions}
+
+ui -> operator: **DISPLAY FLEET STATUS**\nFleet dashboard with data
+
+== AUDIT & COMPLIANCE ==
+
+auth -> audit: Log successful access\n{user_id, resource, action, timestamp}
+policy -> audit: Log policy evaluation\n{decision, policy_id, context}
+fleet -> audit: Log data access\n{user_id, data_accessed, filters}
+
+audit -> audit: **COMPLIANCE LOGGING**\n- GDPR access logs\n- UAE cybersecurity requirements\n- SOX audit trails\n- Data lineage tracking
+note right audit: COMPLIANCE: Complete\naudit trail for regulations
+
+== SESSION MANAGEMENT ==
+
+loop Every 5 minutes
+    ui -> gateway: GET /api/v1/auth/session\nAuthorization: Bearer {jwt_token}
+    gateway -> auth: gRPC: ValidateSession\n{jwt_token}
+    
+    alt Token near expiration (<10 min)
+        auth --> gateway: ⚠️ Token expiring soon
+        gateway --> ui: HTTP 200: {expires_soon: true}
+        ui -> ui: Auto-refresh token\nSeamless user experience
+    else Token valid
+        auth --> gateway: ✓ Session active
+        gateway --> ui: HTTP 200: {session: "active"}
+    end
+end
+
+== LOGOUT ==
+
+operator -> ui: Click "Logout"\nEnd session
+ui -> gateway: POST /api/v1/auth/logout\nAuthorization: Bearer {jwt_token}
+
+gateway -> auth: gRPC: LogoutUser\n{jwt_token, refresh_token}
+auth -> userdb: Revoke refresh token\nDELETE FROM user_sessions\nWHERE refresh_token = ?
+
+auth -> auth: **TOKEN BLACKLIST**\nAdd JWT to blacklist\nuntil expiration
+note right auth: SECURITY: Prevent token\nreuse after logout
+
+auth --> gateway: ✓ Logout successful
+gateway --> ui: HTTP 200: Logged out
+
+ui -> ui: Clear stored tokens\nRedirect to login page
+ui -> operator: **LOGOUT COMPLETE**\nSession terminated
+
+auth -> audit: Log logout event\n{user_id, session_duration, timestamp}
+
+@enduml

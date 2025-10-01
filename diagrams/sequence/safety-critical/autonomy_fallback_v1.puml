@@ -1,0 +1,125 @@
+@startuml autonomy_fallback_v1
+!theme aws-orange
+title Autonomy Fallback Sequence - AtlasMesh Fleet OS
+subtitle SAFETY CRITICAL: Autonomous system degradation and fallback procedures
+note right: Version 1.0 | Generated from: Vehicle Agent traces | Safety Level: CRITICAL
+
+' SAFETY: This diagram shows autonomous system fallback to safe state
+' INTEGRATION CONTRACT: ROS2 + WebSocket + Policy Engine coordination
+' LATENCY BUDGET: <50ms for fallback initiation, <500ms for safe stop
+' COMPLIANCE: SAE J3016 Level 4 fallback requirements
+
+participant "Autonomy System" as autonomy #darkblue
+participant "Vehicle Agent (ROS2)" as agent #brown
+participant "Safety Monitor" as safety #red
+participant "Vehicle Gateway" as vgw #blue
+participant "Policy Engine" as policy #green
+participant "Fleet Manager" as fleet #lightgreen
+participant "Control Center UI" as ui #lightblue
+participant "Safety Operator" as operator #red
+
+== NORMAL AUTONOMOUS OPERATION ==
+
+autonomy -> agent: ROS2: /autonomy_status\n{level: L4, confidence: 0.95, status: ACTIVE}
+agent -> vgw: WebSocket: Autonomy telemetry\n{confidence: 95%, status: ACTIVE}
+note right agent: NORMAL: High confidence\nautonomous operation
+
+== DEGRADATION DETECTION ==
+
+autonomy -> autonomy: **CONFIDENCE DROP**\nML model confidence: 0.95 → 0.65
+note right autonomy: TRIGGER: Sensor degradation,\nweather, or edge case detected
+
+autonomy -> agent: ROS2: /autonomy_status\n{level: L4, confidence: 0.65, status: DEGRADED}
+note right autonomy: SAFETY: Confidence below\n70% threshold triggers fallback
+
+agent -> safety: ROS2: /safety_alert\n{type: CONFIDENCE_LOW, severity: WARNING}
+note right agent: SAFETY MONITOR: Immediate\nalert to safety subsystem
+
+== FALLBACK DECISION ==
+
+safety -> safety: **EVALUATE FALLBACK OPTIONS**\n- Minimal Risk Condition (MRC)\n- Request human takeover\n- Continue with constraints
+note right safety: SAFETY: SAE J3016 requires\nfallback to safe state
+
+safety -> agent: ROS2: /fallback_command\n{action: REQUEST_TAKEOVER, timeout: 10s}
+note right safety: SAFETY: Request human\nintervention within 10 seconds
+
+== OPERATOR NOTIFICATION ==
+
+agent -> vgw: WebSocket: Fallback initiated\n{vehicle_id, reason: LOW_CONFIDENCE, action: REQUEST_TAKEOVER}
+vgw -> fleet: gRPC: VehicleFallback\n{vehicle_id, fallback_type, urgency: HIGH}
+
+fleet -> policy: Evaluate fallback policy\n{vehicle, location, traffic, weather}
+policy -> policy: **POLICY EVALUATION**\n- Safe stopping locations\n- Traffic conditions\n- Emergency protocols
+policy --> fleet: ✓ Fallback approved\n{safe_stop_location, max_time: 30s}
+
+fleet -> vgw: gRPC: Fallback authorized\n{safe_stop_coords, time_limit}
+vgw -> ui: WebSocket: **URGENT ALERT**\nVehicle requesting takeover
+
+ui -> operator: **VISUAL/AUDIO ALERT**\n🚨 TAKEOVER REQUEST\nVehicle ID: AV-001
+note right ui: UX: Prominent alert with\nvehicle location and status
+
+== HUMAN RESPONSE SCENARIOS ==
+
+alt Operator responds within timeout
+    operator -> ui: Click "ACKNOWLEDGE TAKEOVER"
+    ui -> vgw: POST /api/v1/takeover/acknowledge\n{vehicle_id, operator_id}
+    
+    vgw -> agent: WebSocket: Takeover acknowledged\n{operator_id, instructions}
+    agent -> safety: ROS2: /takeover_status\n{status: ACKNOWLEDGED, operator}
+    
+    safety -> autonomy: ROS2: /autonomy_command\n{action: TRANSFER_CONTROL, mode: MANUAL}
+    autonomy -> autonomy: **TRANSFER TO MANUAL**\nDisable autonomous systems
+    
+    autonomy -> agent: ROS2: /autonomy_status\n{level: L0, status: MANUAL_OVERRIDE}
+    agent -> vgw: WebSocket: Manual control active\n{operator_id, timestamp}
+    
+    note right autonomy: SUCCESS: Human operator\nhas control of vehicle
+
+else Operator does not respond (timeout)
+    safety -> safety: **TIMEOUT EXCEEDED**\nNo operator response in 10s
+    note right safety: SAFETY: Automatic fallback\nto Minimal Risk Condition
+    
+    safety -> agent: ROS2: /fallback_command\n{action: MINIMAL_RISK_CONDITION, immediate: true}
+    
+    agent -> autonomy: ROS2: /autonomy_command\n{action: SAFE_STOP, location: nearest_safe_spot}
+    autonomy -> autonomy: **EXECUTE SAFE STOP**\n- Navigate to safe location\n- Gradual deceleration\n- Hazard lights ON
+    
+    autonomy -> agent: ROS2: /autonomy_status\n{level: L4, status: SAFE_STOP_ACTIVE}
+    
+    note right autonomy: SAFETY: Vehicle executing\nautonomous safe stop
+end
+
+== SAFE STOP EXECUTION ==
+
+autonomy -> autonomy: **SAFE STOP PROCEDURE**\n1. Signal intentions\n2. Move to safe location\n3. Gradual stop\n4. Park safely
+note right autonomy: SAFETY: Predefined safe stop\nprocedure per SAE J3016
+
+loop Every 100ms during safe stop
+    autonomy -> agent: ROS2: /vehicle_status\n{speed, location, stop_progress}
+    agent -> vgw: WebSocket: Safe stop progress\n{progress: 45%, eta: 15s}
+    vgw -> ui: Real-time update\nSafe stop in progress
+end
+
+autonomy -> agent: ROS2: /autonomy_status\n{level: L4, status: MINIMAL_RISK_CONDITION}
+note right autonomy: FINAL STATE: Vehicle safely\nstopped in MRC
+
+== POST-FALLBACK PROCEDURES ==
+
+agent -> vgw: WebSocket: MRC achieved\n{vehicle_id, final_location, timestamp}
+vgw -> fleet: gRPC: VehicleInMRC\n{vehicle_id, location, reason}
+
+fleet -> fleet: **UPDATE VEHICLE STATUS**\n- Mark as out of service\n- Schedule inspection\n- Update fleet capacity
+note right fleet: BUSINESS: Vehicle removed\nfrom active fleet until resolved
+
+fleet -> ui: Vehicle status update\n{status: OUT_OF_SERVICE, reason: FALLBACK}
+ui -> operator: **NOTIFICATION**\nVehicle AV-001 in MRC\nInspection required
+
+== AUDIT & COMPLIANCE ==
+
+vgw -> kafka: Publish fallback event\ntopic: vehicle.events.autonomy_fallback
+note right vgw: AUDIT: Complete fallback\nevent for safety analysis
+
+kafka -> kafka: **SAFETY AUDIT TRAIL**\n- Fallback trigger\n- Decision timeline\n- Operator response\n- Final outcome
+note right kafka: COMPLIANCE: Required for\nSAE J3016 and UAE regulations
+
+@enduml
