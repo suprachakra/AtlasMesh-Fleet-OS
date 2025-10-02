@@ -1,6 +1,6 @@
 # Analytics Service
 
-> **TL;DR:** Real-time and batch analytics service providing business intelligence, operational insights, and data-driven decision support
+> **TL;DR:** Real-time and batch analytics service providing business intelligence, operational insights and data-driven decision support
 
 ## 📊 **Architecture Overview**
 
@@ -297,3 +297,4 @@ fleet_kpis:
 ---
 
 **🎯 Owner:** Data Analytics Team | **📧 Contact:** analytics-team@atlasmesh.com
+
