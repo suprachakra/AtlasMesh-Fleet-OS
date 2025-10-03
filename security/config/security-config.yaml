@@ -1,0 +1,315 @@
+# AtlasMesh Fleet OS - Security Configuration
+# Comprehensive security settings for zero-trust architecture
+
+# Global Security Settings
+global:
+  security_mode: "strict"  # strict, standard, development
+  encryption_at_rest: true
+  encryption_in_transit: true
+  audit_logging: true
+  compliance_mode: "soc2_type2"  # soc2_type2, iso27001, nist_800_53
+
+# Authentication Configuration
+authentication:
+  # JWT Configuration
+  jwt:
+    issuer: "atlasmesh-auth"
+    audience: "atlasmesh-fleet-os"
+    access_token_ttl: "15m"
+    refresh_token_ttl: "7d"
+    rotate_refresh_tokens: true
+    algorithm: "RS256"
+    key_size: 2048
+    
+  # Multi-Factor Authentication
+  mfa:
+    enabled: true
+    required_for_roles: ["admin", "supervisor"]
+    methods:
+      - "totp"
+      - "sms"
+      - "email"
+    backup_codes: true
+    grace_period: "24h"
+    
+  # Session Management
+  session:
+    timeout: "8h"
+    idle_timeout: "30m"
+    max_concurrent_sessions: 3
+    secure_cookies: true
+    same_site: "strict"
+    
+  # Password Policy
+  password_policy:
+    min_length: 12
+    require_uppercase: true
+    require_lowercase: true
+    require_numbers: true
+    require_special_chars: true
+    max_age_days: 90
+    history_count: 12
+    lockout_threshold: 5
+    lockout_duration: "30m"
+
+# Authorization Configuration
+authorization:
+  # RBAC Settings
+  rbac:
+    enabled: true
+    default_role: "viewer"
+    role_hierarchy: true
+    
+  # ABAC Settings
+  abac:
+    enabled: true
+    policy_engine: "opa"
+    policy_path: "/security/policies"
+    evaluation_timeout: "100ms"
+    
+  # Permissions
+  permissions:
+    cache_ttl: "5m"
+    refresh_interval: "1h"
+    
+# Network Security
+network:
+  # TLS Configuration
+  tls:
+    min_version: "1.2"
+    preferred_version: "1.3"
+    cipher_suites:
+      - "TLS_AES_256_GCM_SHA384"
+      - "TLS_CHACHA20_POLY1305_SHA256"
+      - "TLS_AES_128_GCM_SHA256"
+      - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+      - "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+    
+  # mTLS Configuration
+  mtls:
+    enabled: true
+    require_client_cert: true
+    verify_client_cert: true
+    ca_cert_path: "/etc/atlasmesh/ca/ca.crt"
+    cert_rotation_days: 30
+    
+  # Certificate Management
+  certificates:
+    ca_validity_days: 3650  # 10 years
+    service_validity_days: 90
+    renewal_threshold_days: 30
+    key_size: 2048
+    organization: "AtlasMesh"
+    organizational_unit: "Fleet OS"
+    
+  # Network Policies
+  network_policies:
+    default_deny: true
+    ingress_whitelist:
+      - "10.0.0.0/8"
+      - "172.16.0.0/12"
+      - "192.168.0.0/16"
+    egress_whitelist:
+      - "0.0.0.0/0"  # Allow all outbound (can be restricted per service)
+
+# Data Protection
+data_protection:
+  # Encryption
+  encryption:
+    algorithm: "AES-256-GCM"
+    key_rotation_days: 90
+    envelope_encryption: true
+    
+  # Data Classification
+  classification:
+    levels:
+      - "public"
+      - "internal"
+      - "confidential"
+      - "restricted"
+      - "classified"
+    default_level: "internal"
+    
+  # Data Loss Prevention
+  dlp:
+    enabled: true
+    scan_uploads: true
+    scan_downloads: true
+    block_sensitive_data: true
+    
+  # Privacy Controls
+  privacy:
+    pii_detection: true
+    data_residency_enforcement: true
+    consent_management: true
+    right_to_be_forgotten: true
+
+# Secrets Management
+secrets:
+  # Vault Configuration
+  vault:
+    enabled: true
+    address: "http://vault:8200"
+    auth_method: "kubernetes"  # kubernetes, aws, azure, gcp, token
+    secret_path: "secret/atlasmesh"
+    
+  # Secret Rotation
+  rotation:
+    enabled: true
+    default_ttl: "30d"
+    rotation_threshold: "7d"
+    
+  # Secret Types
+  types:
+    database_credentials:
+      ttl: "24h"
+      rotation_threshold: "6h"
+    api_keys:
+      ttl: "90d"
+      rotation_threshold: "30d"
+    certificates:
+      ttl: "90d"
+      rotation_threshold: "30d"
+
+# Audit and Compliance
+audit:
+  # Audit Logging
+  logging:
+    enabled: true
+    level: "info"  # debug, info, warn, error
+    format: "json"
+    retention_days: 2555  # 7 years
+    
+  # Events to Audit
+  events:
+    authentication: true
+    authorization: true
+    data_access: true
+    configuration_changes: true
+    privilege_escalation: true
+    failed_attempts: true
+    
+  # Compliance Reporting
+  compliance:
+    automated_reports: true
+    report_frequency: "monthly"
+    recipients:
+      - "compliance@atlasmesh.com"
+      - "security@atlasmesh.com"
+
+# Security Monitoring
+monitoring:
+  # Threat Detection
+  threat_detection:
+    enabled: true
+    anomaly_detection: true
+    behavioral_analysis: true
+    
+  # Security Metrics
+  metrics:
+    failed_login_threshold: 10
+    suspicious_activity_threshold: 5
+    data_exfiltration_threshold: "100MB"
+    
+  # Alerting
+  alerting:
+    channels:
+      - "slack"
+      - "email"
+      - "pagerduty"
+    severity_levels:
+      - "low"
+      - "medium" 
+      - "high"
+      - "critical"
+
+# Incident Response
+incident_response:
+  # Automated Response
+  automated_response:
+    enabled: true
+    actions:
+      - "block_ip"
+      - "disable_account"
+      - "revoke_tokens"
+      - "quarantine_data"
+      
+  # Escalation
+  escalation:
+    auto_escalate: true
+    escalation_threshold: "15m"
+    on_call_rotation: true
+
+# Sector-Specific Security
+sectors:
+  defense:
+    security_level: "high"
+    clearance_required: true
+    network_isolation: true
+    data_classification: "classified"
+    audit_retention_years: 10
+    
+  mining:
+    security_level: "medium"
+    safety_critical: true
+    environmental_monitoring: true
+    data_classification: "confidential"
+    audit_retention_years: 7
+    
+  logistics:
+    security_level: "medium"
+    supply_chain_security: true
+    cargo_tracking: true
+    data_classification: "internal"
+    audit_retention_years: 5
+    
+  ridehail:
+    security_level: "high"
+    pii_protection: true
+    payment_security: true
+    data_classification: "confidential"
+    audit_retention_years: 7
+
+# Development and Testing
+development:
+  # Security in Development
+  secure_development:
+    sast_scanning: true
+    dast_scanning: true
+    dependency_scanning: true
+    secret_scanning: true
+    
+  # Test Environment Security
+  test_security:
+    data_masking: true
+    synthetic_data: true
+    isolated_networks: true
+    
+# Integration Security
+integrations:
+  # API Security
+  api_security:
+    rate_limiting: true
+    request_validation: true
+    response_filtering: true
+    cors_policy: "strict"
+    
+  # Third-Party Integrations
+  third_party:
+    security_assessment_required: true
+    data_sharing_agreements: true
+    regular_security_reviews: true
+
+# Backup and Recovery
+backup_recovery:
+  # Backup Security
+  backup_security:
+    encryption: true
+    access_controls: true
+    integrity_checks: true
+    
+  # Disaster Recovery
+  disaster_recovery:
+    rto: "4h"  # Recovery Time Objective
+    rpo: "1h"  # Recovery Point Objective
+    geographic_distribution: true

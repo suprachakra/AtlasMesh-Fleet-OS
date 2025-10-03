@@ -1,0 +1,320 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "AtlasMesh Fleet Operations",
+    "tags": ["fleet-os", "operations"],
+    "style": "dark",
+    "timezone": "Asia/Dubai",
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Fleet Overview",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "fleet_total_vehicles",
+            "legendFormat": "Total Vehicles"
+          },
+          {
+            "expr": "fleet_active_vehicles",
+            "legendFormat": "Active Vehicles"
+          },
+          {
+            "expr": "fleet_available_vehicles",
+            "legendFormat": "Available Vehicles"
+          },
+          {
+            "expr": "fleet_maintenance_vehicles",
+            "legendFormat": "In Maintenance"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "unit": "short",
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Fleet Utilization",
+        "type": "gauge",
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0},
+        "targets": [
+          {
+            "expr": "fleet_utilization_percentage",
+            "legendFormat": "Utilization %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 50},
+                {"color": "green", "value": 70}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Active Trips",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "sum(trips_active_total)",
+            "legendFormat": "Active Trips"
+          },
+          {
+            "expr": "sum(rate(trips_completed_total[5m]) * 60)",
+            "legendFormat": "Trips/min"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "System Health",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0},
+        "targets": [
+          {
+            "expr": "avg(up{job=~\"fleet-manager|vehicle-gateway|policy-engine\"}) * 100",
+            "legendFormat": "Service Uptime %"
+          },
+          {
+            "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100",
+            "legendFormat": "Error Rate %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "unit": "percent",
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 95},
+                {"color": "green", "value": 99}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Trip Volume Over Time",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(trips_created_total[5m]) * 60)",
+            "legendFormat": "Trips Created/min"
+          },
+          {
+            "expr": "sum(rate(trips_completed_total[5m]) * 60)",
+            "legendFormat": "Trips Completed/min"
+          },
+          {
+            "expr": "sum(rate(trips_cancelled_total[5m]) * 60)",
+            "legendFormat": "Trips Cancelled/min"
+          }
+        ],
+        "yAxes": [
+          {"label": "Trips per minute", "min": 0}
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Vehicle Status Distribution",
+        "type": "piechart",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "sum by (status) (vehicle_status)",
+            "legendFormat": "{{status}}"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Emergency Events",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "sum(rate(emergency_stops_total[5m]) * 60)",
+            "legendFormat": "Emergency Stops/min"
+          },
+          {
+            "expr": "sum(rate(assist_requests_total[5m]) * 60)",
+            "legendFormat": "Assist Requests/min"
+          },
+          {
+            "expr": "sum(rate(incidents_created_total[5m]) * 60)",
+            "legendFormat": "Incidents/min"
+          }
+        ],
+        "yAxes": [
+          {"label": "Events per minute", "min": 0}
+        ],
+        "alert": {
+          "conditions": [
+            {
+              "query": {"params": ["A", "5m", "now"]},
+              "reducer": {"params": [], "type": "avg"},
+              "evaluator": {"params": [5], "type": "gt"}
+            }
+          ],
+          "executionErrorState": "alerting",
+          "for": "5m",
+          "frequency": "10s",
+          "handler": 1,
+          "name": "High Emergency Events",
+          "noDataState": "no_data"
+        }
+      },
+      {
+        "id": 8,
+        "title": "Performance Metrics",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service))",
+            "legendFormat": "{{service}} P95 Latency"
+          },
+          {
+            "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service))",
+            "legendFormat": "{{service}} P50 Latency"
+          }
+        ],
+        "yAxes": [
+          {"label": "Response Time (seconds)", "min": 0}
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Weather Impact",
+        "type": "graph",
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 24},
+        "targets": [
+          {
+            "expr": "weather_temperature_celsius",
+            "legendFormat": "Temperature (°C)"
+          },
+          {
+            "expr": "weather_wind_speed_kmh",
+            "legendFormat": "Wind Speed (km/h)"
+          },
+          {
+            "expr": "weather_visibility_km",
+            "legendFormat": "Visibility (km)"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Fleet Efficiency",
+        "type": "gauge",
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 24},
+        "targets": [
+          {
+            "expr": "fleet_efficiency_percentage",
+            "legendFormat": "Efficiency %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 70},
+                {"color": "green", "value": 85}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "Revenue & Cost",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 24},
+        "targets": [
+          {
+            "expr": "sum(fleet_revenue_aed_total)",
+            "legendFormat": "Revenue (AED)"
+          },
+          {
+            "expr": "sum(fleet_operational_cost_aed_total)",
+            "legendFormat": "Operational Cost (AED)"
+          },
+          {
+            "expr": "sum(fleet_revenue_aed_total) - sum(fleet_operational_cost_aed_total)",
+            "legendFormat": "Profit (AED)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "unit": "currencyAED"
+          }
+        }
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "name": "fleet",
+          "type": "query",
+          "query": "label_values(fleet_total_vehicles, fleet_id)",
+          "refresh": 1,
+          "includeAll": true,
+          "allValue": ".*"
+        },
+        {
+          "name": "environment",
+          "type": "query",
+          "query": "label_values(up, environment)",
+          "refresh": 1,
+          "includeAll": false
+        }
+      ]
+    },
+    "annotations": {
+      "list": [
+        {
+          "name": "Deployments",
+          "datasource": "Prometheus",
+          "expr": "changes(fleet_os_build_info[1h]) > 0",
+          "titleFormat": "Deployment",
+          "textFormat": "Version {{version}} deployed"
+        }
+      ]
+    }
+  }
+}

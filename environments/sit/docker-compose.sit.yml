@@ -1,0 +1,386 @@
+# AtlasMesh Fleet OS - System Integration Testing (SIT) Environment
+# 
+# This environment is designed for:
+# - Integration testing between services
+# - End-to-end workflow validation
+# - Performance testing under load
+# - Security testing and penetration testing
+# - Automated test suite execution
+
+version: '3.8'
+
+services:
+  # Core Infrastructure
+  postgres:
+    image: postgres:15-alpine
+    container_name: atlasmesh-postgres-sit
+    environment:
+      POSTGRES_DB: atlasmesh_sit
+      POSTGRES_USER: atlasmesh_sit
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_SIT}
+      POSTGRES_MULTIPLE_DATABASES: "atlasmesh_policy,atlasmesh_trips,atlasmesh_dispatch,atlasmesh_routing,atlasmesh_fleet"
+    volumes:
+      - postgres_sit_data:/var/lib/postgresql/data
+      - ../../scripts/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh:ro
+    ports:
+      - "5433:5432"  # Different port for SIT
+    networks:
+      - atlasmesh-sit-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlasmesh_sit -d atlasmesh_sit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+
+  redis:
+    image: redis:7-alpine
+    container_name: atlasmesh-redis-sit
+    command: redis-server --requirepass ${REDIS_PASSWORD_SIT}
+    ports:
+      - "6380:6379"  # Different port for SIT
+    volumes:
+      - redis_sit_data:/data
+    networks:
+      - atlasmesh-sit-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  # Message Broker
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: atlasmesh-zookeeper-sit
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: WARN
+    volumes:
+      - zookeeper_sit_data:/var/lib/zookeeper/data
+      - zookeeper_sit_logs:/var/lib/zookeeper/log
+    networks:
+      - atlasmesh-sit-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: atlasmesh-kafka-sit
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_HOURS: 24  # Shorter retention for SIT
+      KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
+    volumes:
+      - kafka_sit_data:/var/lib/kafka/data
+    ports:
+      - "9093:9092"  # Different port for SIT
+    networks:
+      - atlasmesh-sit-network
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.4.0
+    container_name: atlasmesh-schema-registry-sit
+    depends_on:
+      - kafka
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: WARN
+    ports:
+      - "8082:8081"  # Different port for SIT
+    networks:
+      - atlasmesh-sit-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  # Analytics Storage
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8-alpine
+    container_name: atlasmesh-clickhouse-sit
+    environment:
+      CLICKHOUSE_DB: atlasmesh_analytics_sit
+      CLICKHOUSE_USER: atlasmesh_sit
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD_SIT}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - clickhouse_sit_data:/var/lib/clickhouse
+      - ../../services/telemetry-ingestion/migrations:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "8124:8123"  # Different port for SIT
+      - "9001:9000"
+    networks:
+      - atlasmesh-sit-network
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+
+  minio:
+    image: minio/minio:latest
+    container_name: atlasmesh-minio-sit
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER_SIT}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD_SIT}
+    volumes:
+      - minio_sit_data:/data
+    ports:
+      - "9001:9000"  # Different port for SIT
+      - "9091:9001"
+    networks:
+      - atlasmesh-sit-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  # Core Services
+  api-gateway:
+    build:
+      context: ../../services/api-gateway
+      dockerfile: Dockerfile
+    container_name: atlasmesh-api-gateway-sit
+    environment:
+      ENVIRONMENT: sit
+      HTTP_PORT: 8080
+      GRPC_PORT: 9080
+      POSTGRES_URL: postgres://atlasmesh_sit:${POSTGRES_PASSWORD_SIT}@postgres:5432/atlasmesh_policy
+      REDIS_URL: redis://:${REDIS_PASSWORD_SIT}@redis:6379
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      LOG_LEVEL: info
+      RATE_LIMIT_ENABLED: 'true'
+      RATE_LIMIT_RPS: 1000  # Higher limits for SIT testing
+      CORS_ENABLED: 'true'
+      METRICS_ENABLED: 'true'
+    ports:
+      - "8081:8080"  # Different port for SIT
+      - "9081:9080"
+    networks:
+      - atlasmesh-sit-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+      replicas: 2  # Load balancing for SIT
+
+  policy-engine:
+    build:
+      context: ../../services/policy-engine
+      dockerfile: Dockerfile
+    container_name: atlasmesh-policy-engine-sit
+    environment:
+      ENVIRONMENT: sit
+      HTTP_PORT: 8091
+      GRPC_PORT: 9091
+      POSTGRES_URL: postgres://atlasmesh_sit:${POSTGRES_PASSWORD_SIT}@postgres:5432/atlasmesh_policy
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      LOG_LEVEL: debug  # More verbose logging for SIT
+      METRICS_ENABLED: 'true'
+      OPA_ENABLED: 'true'
+      POLICY_CACHE_TTL: 300  # 5 minutes cache for SIT
+    ports:
+      - "8092:8091"
+      - "9092:9091"
+    networks:
+      - atlasmesh-sit-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+
+  # Monitoring Stack
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: atlasmesh-prometheus-sit
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=7d'  # Shorter retention for SIT
+      - '--web.enable-lifecycle'
+    volumes:
+      - ../../monitoring/prometheus/prometheus-sit.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_sit_data:/prometheus
+    ports:
+      - "9091:9090"  # Different port for SIT
+    networks:
+      - atlasmesh-sit-network
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: atlasmesh-grafana-sit
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD_SIT}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+      GF_SERVER_DOMAIN: grafana-sit.atlasmesh.local
+    volumes:
+      - grafana_sit_data:/var/lib/grafana
+      - ../../monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ../../monitoring/grafana/datasources-sit.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+    ports:
+      - "3001:3000"  # Different port for SIT
+    networks:
+      - atlasmesh-sit-network
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.49
+    container_name: atlasmesh-jaeger-sit
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+      SPAN_STORAGE_TYPE: memory
+      MEMORY_MAX_TRACES: 50000  # Increased for SIT testing
+    ports:
+      - "16687:16686"  # Different port for SIT
+      - "14269:14268"
+    networks:
+      - atlasmesh-sit-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  # Test Automation Services
+  test-runner:
+    build:
+      context: ../../tests
+      dockerfile: Dockerfile.test-runner
+    container_name: atlasmesh-test-runner-sit
+    environment:
+      TEST_ENVIRONMENT: sit
+      API_BASE_URL: http://api-gateway:8080
+      POSTGRES_URL: postgres://atlasmesh_sit:${POSTGRES_PASSWORD_SIT}@postgres:5432/atlasmesh_sit
+      KAFKA_BROKERS: kafka:9092
+      TEST_PARALLELISM: 4
+      TEST_TIMEOUT: 300s
+    volumes:
+      - ../../tests:/tests:ro
+      - test_sit_results:/test-results
+    networks:
+      - atlasmesh-sit-network
+    depends_on:
+      - api-gateway
+      - policy-engine
+    profiles:
+      - testing
+    command: ["npm", "run", "test:integration"]
+
+  # Load Testing
+  k6:
+    image: grafana/k6:latest
+    container_name: atlasmesh-k6-sit
+    environment:
+      K6_PROMETHEUS_RW_SERVER_URL: http://prometheus:9090/api/v1/write
+      K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM: 'true'
+    volumes:
+      - ../../tests/load:/scripts:ro
+      - k6_sit_results:/results
+    networks:
+      - atlasmesh-sit-network
+    profiles:
+      - load-testing
+    command: ["run", "--out", "prometheus", "/scripts/api-load-test.js"]
+
+volumes:
+  postgres_sit_data:
+    driver: local
+  redis_sit_data:
+    driver: local
+  zookeeper_sit_data:
+    driver: local
+  zookeeper_sit_logs:
+    driver: local
+  kafka_sit_data:
+    driver: local
+  clickhouse_sit_data:
+    driver: local
+  minio_sit_data:
+    driver: local
+  prometheus_sit_data:
+    driver: local
+  grafana_sit_data:
+    driver: local
+  test_sit_results:
+    driver: local
+  k6_sit_results:
+    driver: local
+
+networks:
+  atlasmesh-sit-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16  # Different subnet for SIT
+
+# Health check configuration for the entire stack
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 30s

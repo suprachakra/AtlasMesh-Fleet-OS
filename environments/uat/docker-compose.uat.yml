@@ -1,0 +1,555 @@
+# AtlasMesh Fleet OS - User Acceptance Testing (UAT) Environment
+# 
+# This environment is designed for:
+# - User acceptance testing with real-world scenarios
+# - Business stakeholder validation
+# - Performance validation under realistic load
+# - Security and compliance validation
+# - Pre-production final validation
+
+version: '3.8'
+
+services:
+  # Core Infrastructure - Production-like setup
+  postgres-primary:
+    image: postgres:15-alpine
+    container_name: atlasmesh-postgres-primary-uat
+    environment:
+      POSTGRES_DB: atlasmesh_uat
+      POSTGRES_USER: atlasmesh_uat
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_UAT}
+      POSTGRES_REPLICATION_MODE: master
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: ${POSTGRES_REPLICATION_PASSWORD_UAT}
+    volumes:
+      - postgres_uat_primary_data:/var/lib/postgresql/data
+      - ../../scripts/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh:ro
+      - ../../config/postgresql/postgresql-uat.conf:/etc/postgresql/postgresql.conf:ro
+    ports:
+      - "5434:5432"
+    networks:
+      - atlasmesh-uat-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlasmesh_uat -d atlasmesh_uat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+
+  postgres-replica:
+    image: postgres:15-alpine
+    container_name: atlasmesh-postgres-replica-uat
+    environment:
+      POSTGRES_MASTER_SERVICE: postgres-primary
+      POSTGRES_REPLICATION_MODE: slave
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: ${POSTGRES_REPLICATION_PASSWORD_UAT}
+      POSTGRES_MASTER_PORT_NUMBER: 5432
+    volumes:
+      - postgres_uat_replica_data:/var/lib/postgresql/data
+    networks:
+      - atlasmesh-uat-network
+    depends_on:
+      - postgres-primary
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+
+  redis-cluster:
+    image: redis:7-alpine
+    container_name: atlasmesh-redis-cluster-uat
+    command: >
+      redis-server 
+      --requirepass ${REDIS_PASSWORD_UAT}
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_uat_data:/data
+    networks:
+      - atlasmesh-uat-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+
+  # Message Broker Cluster
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: atlasmesh-zookeeper-1-uat
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+    volumes:
+      - zookeeper_uat_1_data:/var/lib/zookeeper/data
+      - zookeeper_uat_1_logs:/var/lib/zookeeper/log
+    networks:
+      - atlasmesh-uat-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  zookeeper-2:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: atlasmesh-zookeeper-2-uat
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+    volumes:
+      - zookeeper_uat_2_data:/var/lib/zookeeper/data
+      - zookeeper_uat_2_logs:/var/lib/zookeeper/log
+    networks:
+      - atlasmesh-uat-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  zookeeper-3:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: atlasmesh-zookeeper-3-uat
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888;zookeeper-2:2888:3888;zookeeper-3:2888:3888
+    volumes:
+      - zookeeper_uat_3_data:/var/lib/zookeeper/data
+      - zookeeper_uat_3_logs:/var/lib/zookeeper/log
+    networks:
+      - atlasmesh-uat-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  kafka-1:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: atlasmesh-kafka-1-uat
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_LOG_RETENTION_HOURS: 168  # 7 days
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824  # 1GB
+      KAFKA_NUM_PARTITIONS: 12
+    volumes:
+      - kafka_uat_1_data:/var/lib/kafka/data
+    ports:
+      - "9094:9092"
+    networks:
+      - atlasmesh-uat-network
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+          cpus: '1.5'
+
+  kafka-2:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: atlasmesh-kafka-2-uat
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+      KAFKA_NUM_PARTITIONS: 12
+    volumes:
+      - kafka_uat_2_data:/var/lib/kafka/data
+    ports:
+      - "9095:9092"
+    networks:
+      - atlasmesh-uat-network
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+          cpus: '1.5'
+
+  kafka-3:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: atlasmesh-kafka-3-uat
+    depends_on:
+      - zookeeper-1
+      - zookeeper-2
+      - zookeeper-3
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181,zookeeper-2:2181,zookeeper-3:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_LOG_RETENTION_HOURS: 168
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+      KAFKA_NUM_PARTITIONS: 12
+    volumes:
+      - kafka_uat_3_data:/var/lib/kafka/data
+    ports:
+      - "9096:9092"
+    networks:
+      - atlasmesh-uat-network
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+          cpus: '1.5'
+
+  # Load Balancer
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: atlasmesh-nginx-uat
+    volumes:
+      - ../../config/nginx/nginx-uat.conf:/etc/nginx/nginx.conf:ro
+      - ../../config/nginx/ssl:/etc/nginx/ssl:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - atlasmesh-uat-network
+    depends_on:
+      - api-gateway-1
+      - api-gateway-2
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # Core Services - High Availability Setup
+  api-gateway-1:
+    build:
+      context: ../../services/api-gateway
+      dockerfile: Dockerfile
+    container_name: atlasmesh-api-gateway-1-uat
+    environment:
+      ENVIRONMENT: uat
+      HTTP_PORT: 8080
+      GRPC_PORT: 9080
+      POSTGRES_URL: postgres://atlasmesh_uat:${POSTGRES_PASSWORD_UAT}@postgres-primary:5432/atlasmesh_policy
+      REDIS_URL: redis://:${REDIS_PASSWORD_UAT}@redis-cluster:6379
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      LOG_LEVEL: info
+      RATE_LIMIT_ENABLED: 'true'
+      RATE_LIMIT_RPS: 500
+      CORS_ENABLED: 'true'
+      METRICS_ENABLED: 'true'
+      CIRCUIT_BREAKER_ENABLED: 'true'
+      CIRCUIT_BREAKER_THRESHOLD: 10
+      CIRCUIT_BREAKER_TIMEOUT: 30s
+    networks:
+      - atlasmesh-uat-network
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+      redis-cluster:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.5'
+
+  api-gateway-2:
+    build:
+      context: ../../services/api-gateway
+      dockerfile: Dockerfile
+    container_name: atlasmesh-api-gateway-2-uat
+    environment:
+      ENVIRONMENT: uat
+      HTTP_PORT: 8080
+      GRPC_PORT: 9080
+      POSTGRES_URL: postgres://atlasmesh_uat:${POSTGRES_PASSWORD_UAT}@postgres-primary:5432/atlasmesh_policy
+      REDIS_URL: redis://:${REDIS_PASSWORD_UAT}@redis-cluster:6379
+      JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+      LOG_LEVEL: info
+      RATE_LIMIT_ENABLED: 'true'
+      RATE_LIMIT_RPS: 500
+      CORS_ENABLED: 'true'
+      METRICS_ENABLED: 'true'
+      CIRCUIT_BREAKER_ENABLED: 'true'
+      CIRCUIT_BREAKER_THRESHOLD: 10
+      CIRCUIT_BREAKER_TIMEOUT: 30s
+    networks:
+      - atlasmesh-uat-network
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+      redis-cluster:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.5'
+
+  # Security Services
+  vault:
+    image: hashicorp/vault:1.15
+    container_name: atlasmesh-vault-uat
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_ROOT_TOKEN_UAT}
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+      VAULT_LOCAL_CONFIG: |
+        {
+          "backend": {
+            "file": {
+              "path": "/vault/file"
+            }
+          },
+          "default_lease_ttl": "168h",
+          "max_lease_ttl": "720h",
+          "ui": true,
+          "api_addr": "http://0.0.0.0:8200"
+        }
+    volumes:
+      - vault_uat_data:/vault/file
+    ports:
+      - "8201:8200"
+    networks:
+      - atlasmesh-uat-network
+    cap_add:
+      - IPC_LOCK
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+
+  # Monitoring Stack - Production-like
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: atlasmesh-prometheus-uat
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    volumes:
+      - ../../monitoring/prometheus/prometheus-uat.yml:/etc/prometheus/prometheus.yml:ro
+      - ../../monitoring/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_uat_data:/prometheus
+    ports:
+      - "9092:9090"
+    networks:
+      - atlasmesh-uat-network
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: atlasmesh-alertmanager-uat
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=http://alertmanager-uat.atlasmesh.local'
+    volumes:
+      - ../../monitoring/alertmanager/alertmanager-uat.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_uat_data:/alertmanager
+    ports:
+      - "9094:9093"
+    networks:
+      - atlasmesh-uat-network
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: atlasmesh-grafana-uat
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD_UAT}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel
+      GF_SERVER_DOMAIN: grafana-uat.atlasmesh.local
+      GF_SMTP_ENABLED: 'true'
+      GF_SMTP_HOST: ${SMTP_HOST}
+      GF_SMTP_USER: ${SMTP_USER}
+      GF_SMTP_PASSWORD: ${SMTP_PASSWORD}
+      GF_ALERTING_ENABLED: 'true'
+    volumes:
+      - grafana_uat_data:/var/lib/grafana
+      - ../../monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ../../monitoring/grafana/datasources-uat.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ../../monitoring/grafana/alerting:/etc/grafana/provisioning/alerting:ro
+    ports:
+      - "3002:3000"
+    networks:
+      - atlasmesh-uat-network
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+
+  # User Acceptance Testing Tools
+  selenium-hub:
+    image: selenium/hub:4.15.0
+    container_name: atlasmesh-selenium-hub-uat
+    ports:
+      - "4444:4444"
+    networks:
+      - atlasmesh-uat-network
+    environment:
+      GRID_MAX_SESSION: 16
+      GRID_BROWSER_TIMEOUT: 300
+      GRID_TIMEOUT: 300
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+
+  selenium-chrome:
+    image: selenium/node-chrome:4.15.0
+    container_name: atlasmesh-selenium-chrome-uat
+    depends_on:
+      - selenium-hub
+    environment:
+      HUB_HOST: selenium-hub
+      NODE_MAX_INSTANCES: 4
+      NODE_MAX_SESSION: 4
+    networks:
+      - atlasmesh-uat-network
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+
+  # Business User Testing Interface
+  control-center:
+    build:
+      context: ../../ui/control-center
+      dockerfile: Dockerfile
+    container_name: atlasmesh-control-center-uat
+    environment:
+      NODE_ENV: production
+      REACT_APP_API_BASE_URL: https://api-uat.atlasmesh.local
+      REACT_APP_ENVIRONMENT: uat
+      REACT_APP_SENTRY_DSN: ${SENTRY_DSN_UAT}
+      REACT_APP_ANALYTICS_ID: ${ANALYTICS_ID_UAT}
+    ports:
+      - "3003:80"
+    networks:
+      - atlasmesh-uat-network
+    depends_on:
+      - nginx
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+volumes:
+  postgres_uat_primary_data:
+    driver: local
+  postgres_uat_replica_data:
+    driver: local
+  redis_uat_data:
+    driver: local
+  zookeeper_uat_1_data:
+    driver: local
+  zookeeper_uat_1_logs:
+    driver: local
+  zookeeper_uat_2_data:
+    driver: local
+  zookeeper_uat_2_logs:
+    driver: local
+  zookeeper_uat_3_data:
+    driver: local
+  zookeeper_uat_3_logs:
+    driver: local
+  kafka_uat_1_data:
+    driver: local
+  kafka_uat_2_data:
+    driver: local
+  kafka_uat_3_data:
+    driver: local
+  vault_uat_data:
+    driver: local
+  prometheus_uat_data:
+    driver: local
+  alertmanager_uat_data:
+    driver: local
+  grafana_uat_data:
+    driver: local
+
+networks:
+  atlasmesh-uat-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
