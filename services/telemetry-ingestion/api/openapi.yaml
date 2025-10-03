@@ -1,0 +1,803 @@
+openapi: 3.0.3
+info:
+  title: AtlasMesh Telemetry Ingestion API
+  version: 1.0.0
+  description: |
+    High-throughput telemetry ingestion service for AtlasMesh Fleet OS.
+    
+    Handles real-time vehicle telemetry data with:
+    - Schema validation against Avro schemas
+    - Data quality checks and enrichment
+    - Multi-path storage (hot/cold) routing
+    - Dead letter queue handling for failed messages
+    - Real-time streaming via WebSocket
+    
+    ## Performance Characteristics
+    - Ingestion rate: 100,000+ messages/second
+    - P99 latency: <100ms for batch ingestion
+    - P99 latency: <10ms for streaming ingestion
+    - Availability: 99.95%
+    
+    ## Data Formats
+    - JSON: For development and testing
+    - Avro: For production (recommended for performance)
+    - Protobuf: For edge devices with bandwidth constraints
+    
+    ## Rate Limits
+    - Authenticated vehicles: 10,000 requests/minute
+    - Batch ingestion: 1,000 messages per request
+    - Streaming: Unlimited for authenticated vehicles
+
+  contact:
+    name: AtlasMesh Telemetry Team
+    email: telemetry-team@atlasmesh.ai
+    url: https://docs.atlasmesh.ai/telemetry
+  license:
+    name: Proprietary
+    url: https://atlasmesh.ai/license
+
+servers:
+  - url: http://telemetry-ingestion:8095/v1
+    description: Internal service endpoint
+  - url: https://telemetry.atlasmesh.ai/v1
+    description: Production telemetry ingestion
+  - url: https://telemetry-staging.atlasmesh.ai/v1
+    description: Staging telemetry ingestion
+
+security:
+  - vehicleAuth: []
+  - serviceAuth: []
+
+paths:
+  /health:
+    get:
+      summary: Health check with pipeline status
+      operationId: getHealth
+      tags: [System Health]
+      security: []
+      responses:
+        '200':
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelemetryHealthResponse'
+
+  /telemetry/ingest:
+    post:
+      summary: Ingest vehicle telemetry data (batch)
+      operationId: ingestTelemetry
+      tags: [Telemetry Ingestion]
+      parameters:
+        - name: X-Vehicle-ID
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Vehicle identifier
+        - name: X-Batch-ID
+          in: header
+          schema:
+            type: string
+            format: uuid
+          description: Batch identifier for deduplication
+        - name: X-Schema-Version
+          in: header
+          schema:
+            type: string
+            default: "1.0"
+          description: Telemetry schema version
+        - name: Content-Encoding
+          in: header
+          schema:
+            type: string
+            enum: [gzip, deflate, br]
+          description: Compression algorithm used
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelemetryBatch'
+            examples:
+              vehicle_state:
+                summary: Vehicle state telemetry
+                value:
+                  vehicle_id: "550e8400-e29b-41d4-a716-446655440000"
+                  batch_id: "550e8400-e29b-41d4-a716-446655440001"
+                  timestamp: "2024-01-15T10:30:00Z"
+                  telemetry_data:
+                    - recorded_at: "2024-01-15T10:30:00Z"
+                      location:
+                        latitude: 25.2048
+                        longitude: 55.2708
+                        altitude_msl: 10.5
+                      speed_kmh: 45.2
+                      heading_degrees: 180.5
+                      operational_status: "active"
+          application/avro:
+            schema:
+              type: string
+              format: binary
+              description: Avro-encoded telemetry data
+          application/x-protobuf:
+            schema:
+              type: string
+              format: binary
+              description: Protobuf-encoded telemetry data
+      responses:
+        '202':
+          description: Telemetry accepted for processing
+          headers:
+            X-Ingestion-ID:
+              schema:
+                type: string
+                format: uuid
+              description: Unique ingestion identifier
+            X-Processing-Time-Ms:
+              schema:
+                type: number
+              description: Processing time in milliseconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '413':
+          description: Payload too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Schema validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          description: Service temporarily unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /telemetry/stream:
+    get:
+      summary: Establish WebSocket connection for real-time telemetry streaming
+      operationId: streamTelemetry
+      tags: [Telemetry Streaming]
+      parameters:
+        - name: vehicle_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: compression
+          in: query
+          schema:
+            type: string
+            enum: [none, gzip, lz4]
+            default: none
+        - name: batch_size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+          description: Number of messages to batch before sending
+        - name: flush_interval_ms
+          in: query
+          schema:
+            type: integer
+            minimum: 100
+            maximum: 10000
+            default: 1000
+          description: Maximum time to wait before flushing batch
+      responses:
+        '101':
+          description: Switching to WebSocket protocol
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /telemetry/validate:
+    post:
+      summary: Validate telemetry data against schema
+      operationId: validateTelemetry
+      tags: [Data Validation]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                schema_version:
+                  type: string
+                  default: "1.0"
+                data:
+                  type: object
+                  description: Telemetry data to validate
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /schemas:
+    get:
+      summary: List available telemetry schemas
+      operationId: listSchemas
+      tags: [Schema Management]
+      parameters:
+        - name: version
+          in: query
+          schema:
+            type: string
+          description: Filter by schema version
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [avro, json-schema, protobuf]
+          description: Schema format
+      responses:
+        '200':
+          description: List of available schemas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  schemas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SchemaInfo'
+
+  /schemas/{schemaId}:
+    get:
+      summary: Get specific schema definition
+      operationId: getSchema
+      tags: [Schema Management]
+      parameters:
+        - name: schemaId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [avro, json-schema, protobuf]
+            default: avro
+      responses:
+        '200':
+          description: Schema definition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchemaDefinition'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /metrics:
+    get:
+      summary: Get telemetry pipeline metrics
+      operationId: getMetrics
+      tags: [Monitoring]
+      security:
+        - serviceAuth: []
+      parameters:
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [prometheus, json]
+            default: prometheus
+        - name: vehicle_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: Filter metrics by vehicle ID
+      responses:
+        '200':
+          description: Pipeline metrics
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Prometheus format metrics
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelemetryMetrics'
+
+components:
+  schemas:
+    TelemetryBatch:
+      type: object
+      required: [vehicle_id, batch_id, telemetry_data]
+      properties:
+        vehicle_id:
+          type: string
+          format: uuid
+          description: Unique vehicle identifier
+        batch_id:
+          type: string
+          format: uuid
+          description: Unique batch identifier for deduplication
+        timestamp:
+          type: string
+          format: date-time
+          description: Batch creation timestamp
+        telemetry_data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TelemetryRecord'
+          minItems: 1
+          maxItems: 1000
+          description: Array of telemetry records
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Additional batch metadata
+
+    TelemetryRecord:
+      type: object
+      required: [recorded_at, location, operational_status]
+      properties:
+        recorded_at:
+          type: string
+          format: date-time
+          description: When the telemetry was recorded
+        location:
+          $ref: '#/components/schemas/GeoLocation'
+        speed_kmh:
+          type: number
+          minimum: 0
+          maximum: 300
+          description: Vehicle speed in km/h
+        heading_degrees:
+          type: number
+          minimum: 0
+          maximum: 360
+          description: Vehicle heading in degrees
+        battery_level_percent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: Battery charge level percentage
+        fuel_level_percent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: Fuel level percentage
+        operational_status:
+          type: string
+          enum: [idle, active, maintenance, emergency, offline]
+          description: Current operational status
+        sensor_readings:
+          type: object
+          additionalProperties: true
+          description: Raw sensor data
+        diagnostic_codes:
+          type: array
+          items:
+            type: string
+            pattern: '^[A-Z][0-9]{4}$'
+          description: Active diagnostic trouble codes
+        environmental_conditions:
+          $ref: '#/components/schemas/EnvironmentalConditions'
+        mission_context:
+          $ref: '#/components/schemas/MissionContext'
+
+    GeoLocation:
+      type: object
+      required: [latitude, longitude]
+      properties:
+        latitude:
+          type: number
+          minimum: -90
+          maximum: 90
+          description: Latitude in decimal degrees
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+          description: Longitude in decimal degrees
+        altitude_msl:
+          type: number
+          nullable: true
+          description: Altitude above mean sea level in meters
+        accuracy_m:
+          type: number
+          minimum: 0
+          nullable: true
+          description: Position accuracy in meters
+        heading_degrees:
+          type: number
+          minimum: 0
+          maximum: 360
+          nullable: true
+          description: GPS heading in degrees
+
+    EnvironmentalConditions:
+      type: object
+      properties:
+        temperature_celsius:
+          type: number
+          minimum: -50
+          maximum: 60
+          description: Ambient temperature
+        humidity_percent:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Relative humidity
+        wind_speed_mps:
+          type: number
+          minimum: 0
+          description: Wind speed in m/s
+        precipitation_mmh:
+          type: number
+          minimum: 0
+          description: Precipitation rate in mm/h
+        visibility_m:
+          type: number
+          minimum: 0
+          description: Visibility in meters
+        road_conditions:
+          type: string
+          enum: [dry, wet, icy, snowy, muddy]
+          description: Road surface conditions
+
+    MissionContext:
+      type: object
+      properties:
+        trip_id:
+          type: string
+          format: uuid
+          nullable: true
+        route_id:
+          type: string
+          format: uuid
+          nullable: true
+        mission_type:
+          type: string
+          enum: [delivery, pickup, patrol, maintenance, emergency]
+          nullable: true
+        progress_percent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+        waypoint_current:
+          type: integer
+          minimum: 0
+          nullable: true
+        waypoint_total:
+          type: integer
+          minimum: 0
+          nullable: true
+
+    IngestionResponse:
+      type: object
+      required: [ingestion_id, status, processed_count]
+      properties:
+        ingestion_id:
+          type: string
+          format: uuid
+          description: Unique ingestion identifier
+        status:
+          type: string
+          enum: [accepted, processing, completed, failed]
+          description: Ingestion status
+        processed_count:
+          type: integer
+          description: Number of records processed
+        failed_count:
+          type: integer
+          description: Number of records that failed validation
+        processing_time_ms:
+          type: number
+          description: Processing time in milliseconds
+        validation_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          description: Validation errors if any
+        next_expected_batch_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Expected next batch ID for sequence validation
+
+    ValidationResponse:
+      type: object
+      required: [valid, schema_version]
+      properties:
+        valid:
+          type: boolean
+          description: Whether the data is valid
+        schema_version:
+          type: string
+          description: Schema version used for validation
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          description: Validation errors if any
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationWarning'
+          description: Validation warnings
+
+    ValidationError:
+      type: object
+      required: [field, message, code]
+      properties:
+        field:
+          type: string
+          description: Field path that failed validation
+        message:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+        expected_type:
+          type: string
+          description: Expected data type
+        actual_value:
+          description: Actual value that failed validation
+
+    ValidationWarning:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high]
+
+    ValidationErrorResponse:
+      type: object
+      required: [error, validation_errors]
+      properties:
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Error message
+        validation_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+        timestamp:
+          type: string
+          format: date-time
+        correlation_id:
+          type: string
+
+    SchemaInfo:
+      type: object
+      properties:
+        schema_id:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+        format:
+          type: string
+          enum: [avro, json-schema, protobuf]
+        created_at:
+          type: string
+          format: date-time
+        description:
+          type: string
+
+    SchemaDefinition:
+      type: object
+      properties:
+        schema_id:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+        format:
+          type: string
+        definition:
+          description: Schema definition (format depends on schema type)
+        examples:
+          type: array
+          items:
+            type: object
+          description: Example data conforming to schema
+
+    TelemetryHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        version:
+          type: string
+        uptime_seconds:
+          type: integer
+        pipeline_status:
+          type: object
+          properties:
+            kafka_healthy:
+              type: boolean
+            schema_registry_healthy:
+              type: boolean
+            clickhouse_healthy:
+              type: boolean
+            minio_healthy:
+              type: boolean
+        ingestion_rate:
+          type: object
+          properties:
+            messages_per_second:
+              type: number
+            bytes_per_second:
+              type: number
+        processing_latency:
+          type: object
+          properties:
+            p50_ms:
+              type: number
+            p95_ms:
+              type: number
+            p99_ms:
+              type: number
+
+    TelemetryMetrics:
+      type: object
+      properties:
+        ingestion_metrics:
+          type: object
+          properties:
+            total_messages_ingested:
+              type: integer
+            messages_per_second:
+              type: number
+            bytes_per_second:
+              type: number
+            failed_messages:
+              type: integer
+            duplicate_messages:
+              type: integer
+        processing_metrics:
+          type: object
+          properties:
+            average_processing_time_ms:
+              type: number
+            p95_processing_time_ms:
+              type: number
+            p99_processing_time_ms:
+              type: number
+        storage_metrics:
+          type: object
+          properties:
+            hot_storage_usage_gb:
+              type: number
+            cold_storage_usage_gb:
+              type: number
+            compression_ratio:
+              type: number
+
+    ErrorResponse:
+      type: object
+      required: [error, message, timestamp, correlation_id]
+      properties:
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          description: Additional error context
+        timestamp:
+          type: string
+          format: date-time
+        correlation_id:
+          type: string
+          description: Request correlation ID for tracing
+        retry_after:
+          type: integer
+          description: Seconds to wait before retrying
+        documentation_url:
+          type: string
+          format: uri
+          description: Link to relevant documentation
+
+  parameters:
+    VehicleIdHeader:
+      name: X-Vehicle-ID
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    RateLimited:
+      description: Rate limit exceeded
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+        Retry-After:
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  securitySchemes:
+    vehicleAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Vehicle-Certificate
+      description: Vehicle authentication using X.509 certificates
+    serviceAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Service-Token
+      description: Service-to-service authentication

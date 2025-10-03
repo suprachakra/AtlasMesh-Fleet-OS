@@ -1,0 +1,2232 @@
+syntax = "proto3";
+
+package atlasmesh.routing.v1;
+
+option go_package = "github.com/atlasmesh/fleet-os/services/routing-service/proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// RoutingService handles route calculation, optimization, and navigation
+service RoutingService {
+  // Route Calculation
+  rpc CalculateRoute(CalculateRouteRequest) returns (CalculateRouteResponse);
+  rpc CalculateMultipleRoutes(CalculateMultipleRoutesRequest) returns (CalculateMultipleRoutesResponse);
+  rpc OptimizeRoute(OptimizeRouteRequest) returns (OptimizeRouteResponse);
+  
+  // Route Management
+  rpc GetRoute(GetRouteRequest) returns (GetRouteResponse);
+  rpc ListRoutes(ListRoutesRequest) returns (ListRoutesResponse);
+  rpc UpdateRoute(UpdateRouteRequest) returns (UpdateRouteResponse);
+  rpc DeleteRoute(DeleteRouteRequest) returns (DeleteRouteResponse);
+  
+  // Route Validation & Analysis
+  rpc ValidateRoute(ValidateRouteRequest) returns (ValidateRouteResponse);
+  rpc AnalyzeRoute(AnalyzeRouteRequest) returns (AnalyzeRouteResponse);
+  rpc CompareRoutes(CompareRoutesRequest) returns (CompareRoutesResponse);
+  
+  // Real-time Navigation
+  rpc StartNavigation(StartNavigationRequest) returns (StartNavigationResponse);
+  rpc UpdateNavigation(UpdateNavigationRequest) returns (UpdateNavigationResponse);
+  rpc StreamNavigationUpdates(StreamNavigationUpdatesRequest) returns (stream NavigationUpdateEvent);
+  
+  // Route Monitoring & Replay
+  rpc GetRouteMetrics(GetRouteMetricsRequest) returns (GetRouteMetricsResponse);
+  rpc ReplayRoute(ReplayRouteRequest) returns (ReplayRouteResponse);
+  rpc GetRouteHistory(GetRouteHistoryRequest) returns (GetRouteHistoryResponse);
+  
+  // Golden Corridor Management
+  rpc CreateGoldenCorridor(CreateGoldenCorridorRequest) returns (CreateGoldenCorridorResponse);
+  rpc GetGoldenCorridor(GetGoldenCorridorRequest) returns (GetGoldenCorridorResponse);
+  rpc ValidateAgainstGoldenCorridor(ValidateAgainstGoldenCorridorRequest) returns (ValidateAgainstGoldenCorridorResponse);
+}
+
+// Calculate route request
+message CalculateRouteRequest {
+  string idempotency_key = 1;
+  RouteRequest route_request = 2;
+  CalculateRouteOptions options = 3;
+}
+
+// Calculate route response
+message CalculateRouteResponse {
+  string route_id = 1;
+  Route route = 2;
+  RouteMetrics metrics = 3;
+  repeated RouteAlternative alternatives = 4;
+  google.protobuf.Timestamp calculated_at = 5;
+  string audit_trail_id = 6;
+}
+
+// Calculate multiple routes request
+message CalculateMultipleRoutesRequest {
+  repeated RouteRequest route_requests = 1;
+  BatchCalculationOptions options = 2;
+}
+
+// Calculate multiple routes response
+message CalculateMultipleRoutesResponse {
+  repeated CalculateRouteResponse routes = 1;
+  BatchCalculationMetrics metrics = 2;
+}
+
+// Optimize route request
+message OptimizeRouteRequest {
+  string route_id = 1;
+  OptimizationObjective objective = 2;
+  OptimizationConstraints constraints = 3;
+  OptimizeRouteOptions options = 4;
+}
+
+// Optimize route response
+message OptimizeRouteResponse {
+  string optimized_route_id = 1;
+  Route optimized_route = 2;
+  OptimizationResults results = 3;
+  google.protobuf.Timestamp optimized_at = 4;
+}
+
+// Get route request
+message GetRouteRequest {
+  string route_id = 1;
+  GetRouteOptions options = 2;
+}
+
+// Get route response
+message GetRouteResponse {
+  Route route = 1;
+  RouteMetadata metadata = 2;
+}
+
+// List routes request
+message ListRoutesRequest {
+  ListRoutesFilter filter = 1;
+  PaginationOptions pagination = 2;
+}
+
+// List routes response
+message ListRoutesResponse {
+  repeated Route routes = 1;
+  PaginationMetadata pagination = 2;
+  int32 total_count = 3;
+}
+
+// Update route request
+message UpdateRouteRequest {
+  string route_id = 1;
+  RouteUpdate update = 2;
+  UpdateRouteOptions options = 3;
+}
+
+// Update route response
+message UpdateRouteResponse {
+  Route route = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Delete route request
+message DeleteRouteRequest {
+  string route_id = 1;
+  DeleteRouteOptions options = 2;
+}
+
+// Delete route response
+message DeleteRouteResponse {
+  bool deleted = 1;
+  google.protobuf.Timestamp deleted_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Validate route request
+message ValidateRouteRequest {
+  Route route = 1;
+  ValidationCriteria criteria = 2;
+  ValidateRouteOptions options = 3;
+}
+
+// Validate route response
+message ValidateRouteResponse {
+  bool valid = 1;
+  RouteValidationResult result = 2;
+  repeated RouteViolation violations = 3;
+  repeated ValidationWarning warnings = 4;
+}
+
+// Analyze route request
+message AnalyzeRouteRequest {
+  string route_id = 1;
+  AnalysisType analysis_type = 2;
+  AnalyzeRouteOptions options = 3;
+}
+
+// Analyze route response
+message AnalyzeRouteResponse {
+  RouteAnalysis analysis = 1;
+  google.protobuf.Timestamp analyzed_at = 2;
+}
+
+// Compare routes request
+message CompareRoutesRequest {
+  repeated string route_ids = 1;
+  ComparisonCriteria criteria = 2;
+  CompareRoutesOptions options = 3;
+}
+
+// Compare routes response
+message CompareRoutesResponse {
+  RouteComparison comparison = 1;
+  string recommended_route_id = 2;
+  string recommendation_reason = 3;
+}
+
+// Start navigation request
+message StartNavigationRequest {
+  string route_id = 1;
+  string vehicle_id = 2;
+  NavigationOptions options = 3;
+}
+
+// Start navigation response
+message StartNavigationResponse {
+  string navigation_session_id = 1;
+  NavigationStatus status = 2;
+  google.protobuf.Timestamp started_at = 3;
+}
+
+// Update navigation request
+message UpdateNavigationRequest {
+  string navigation_session_id = 1;
+  VehiclePosition current_position = 2;
+  NavigationUpdate update = 3;
+}
+
+// Update navigation response
+message UpdateNavigationResponse {
+  NavigationInstruction next_instruction = 1;
+  RouteDeviation deviation = 2;
+  NavigationStatus status = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+// Stream navigation updates request
+message StreamNavigationUpdatesRequest {
+  string navigation_session_id = 1;
+  StreamOptions options = 2;
+}
+
+// Navigation update event
+message NavigationUpdateEvent {
+  string navigation_session_id = 1;
+  NavigationEventType event_type = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  google.protobuf.Struct data = 4;
+}
+
+// Get route metrics request
+message GetRouteMetricsRequest {
+  string route_id = 1;
+  google.protobuf.Timestamp start_time = 2;
+  google.protobuf.Timestamp end_time = 3;
+  MetricsOptions options = 4;
+}
+
+// Get route metrics response
+message GetRouteMetricsResponse {
+  RoutePerformanceMetrics metrics = 1;
+  google.protobuf.Timestamp calculated_at = 2;
+}
+
+// Replay route request
+message ReplayRouteRequest {
+  string route_id = 1;
+  string execution_id = 2; // Specific execution to replay
+  ReplayOptions options = 3;
+}
+
+// Replay route response
+message ReplayRouteResponse {
+  string replay_id = 1;
+  RouteReplay replay_data = 2;
+  ReplayAnalysis analysis = 3;
+}
+
+// Get route history request
+message GetRouteHistoryRequest {
+  string route_id = 1;
+  GetRouteHistoryOptions options = 2;
+}
+
+// Get route history response
+message GetRouteHistoryResponse {
+  repeated RouteExecution executions = 1;
+  RouteHistoryStatistics statistics = 2;
+  PaginationMetadata pagination = 3;
+}
+
+// Create golden corridor request
+message CreateGoldenCorridorRequest {
+  string idempotency_key = 1;
+  GoldenCorridor corridor = 2;
+  CreateGoldenCorridorOptions options = 3;
+}
+
+// Create golden corridor response
+message CreateGoldenCorridorResponse {
+  string corridor_id = 1;
+  google.protobuf.Timestamp created_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Get golden corridor request
+message GetGoldenCorridorRequest {
+  string corridor_id = 1;
+  GetGoldenCorridorOptions options = 2;
+}
+
+// Get golden corridor response
+message GetGoldenCorridorResponse {
+  GoldenCorridor corridor = 1;
+  CorridorMetadata metadata = 2;
+}
+
+// Validate against golden corridor request
+message ValidateAgainstGoldenCorridorRequest {
+  string corridor_id = 1;
+  Route route = 2;
+  CorridorValidationOptions options = 3;
+}
+
+// Validate against golden corridor response
+message ValidateAgainstGoldenCorridorResponse {
+  bool compliant = 1;
+  CorridorValidationResult result = 2;
+  repeated CorridorViolation violations = 3;
+  double compliance_score = 4;
+}
+
+// Core data structures
+
+// Route request
+message RouteRequest {
+  string request_id = 1;
+  Location origin = 2;
+  Location destination = 3;
+  repeated Location waypoints = 4;
+  
+  // Route preferences
+  RoutePreferences preferences = 5;
+  RouteConstraints constraints = 6;
+  VehicleProfile vehicle_profile = 7;
+  
+  // Context
+  string sector = 8;
+  string tenant_id = 9;
+  google.protobuf.Timestamp departure_time = 10;
+  google.protobuf.Struct metadata = 11;
+}
+
+// Route definition
+message Route {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  RouteStatus status = 4;
+  
+  // Route geometry
+  repeated RouteSegment segments = 5;
+  repeated Waypoint waypoints = 6;
+  RouteBounds bounds = 7;
+  
+  // Route properties
+  RouteProperties properties = 8;
+  RouteConstraints constraints = 9;
+  
+  // Route metadata
+  string sector = 10;
+  string tenant_id = 11;
+  repeated string tags = 12;
+  google.protobuf.Struct metadata = 13;
+  
+  // Audit fields
+  google.protobuf.Timestamp created_at = 14;
+  google.protobuf.Timestamp updated_at = 15;
+  string created_by = 16;
+  string updated_by = 17;
+  int32 version = 18;
+}
+
+// Location definition
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  double altitude = 3;
+  string address = 4;
+  string place_id = 5;
+  LocationType type = 6;
+  google.protobuf.Struct metadata = 7;
+}
+
+// Route segment
+message RouteSegment {
+  string segment_id = 1;
+  int32 sequence = 2;
+  SegmentType type = 3;
+  
+  // Geometry
+  repeated Location points = 4;
+  double distance_m = 5;
+  double duration_s = 6;
+  
+  // Properties
+  SegmentProperties properties = 7;
+  repeated SegmentConstraint constraints = 8;
+  
+  // Navigation
+  repeated NavigationInstruction instructions = 9;
+  
+  // Metadata
+  google.protobuf.Struct metadata = 10;
+}
+
+// Waypoint
+message Waypoint {
+  string waypoint_id = 1;
+  Location location = 2;
+  WaypointType type = 3;
+  int32 sequence = 4;
+  
+  // Timing
+  google.protobuf.Timestamp arrival_time = 5;
+  google.protobuf.Timestamp departure_time = 6;
+  int32 dwell_time_s = 7;
+  
+  // Properties
+  WaypointProperties properties = 8;
+  repeated WaypointConstraint constraints = 9;
+  
+  google.protobuf.Struct metadata = 10;
+}
+
+// Route bounds
+message RouteBounds {
+  Location southwest = 1;
+  Location northeast = 2;
+  double max_altitude = 3;
+  double min_altitude = 4;
+}
+
+// Route properties
+message RouteProperties {
+  double total_distance_m = 1;
+  double total_duration_s = 2;
+  double estimated_fuel_consumption_l = 3;
+  double estimated_energy_consumption_kwh = 4;
+  
+  // Terrain analysis
+  TerrainAnalysis terrain = 5;
+  
+  // Traffic analysis
+  TrafficAnalysis traffic = 6;
+  
+  // Environmental analysis
+  EnvironmentalAnalysis environmental = 7;
+  
+  // Safety analysis
+  SafetyAnalysis safety = 8;
+}
+
+// Terrain analysis
+message TerrainAnalysis {
+  double max_elevation_m = 1;
+  double min_elevation_m = 2;
+  double total_elevation_gain_m = 3;
+  double total_elevation_loss_m = 4;
+  double max_grade_percentage = 5;
+  double avg_grade_percentage = 6;
+  repeated TerrainChallenge challenges = 7;
+}
+
+// Terrain challenge
+message TerrainChallenge {
+  ChallengeType type = 1;
+  Location location = 2;
+  ChallengeSeverity severity = 3;
+  string description = 4;
+  google.protobuf.Struct details = 5;
+}
+
+// Traffic analysis
+message TrafficAnalysis {
+  TrafficLevel overall_level = 1;
+  double avg_speed_kmh = 2;
+  repeated TrafficIncident incidents = 3;
+  repeated CongestionZone congestion_zones = 4;
+  google.protobuf.Timestamp analysis_time = 5;
+}
+
+// Traffic incident
+message TrafficIncident {
+  string incident_id = 1;
+  IncidentType type = 2;
+  IncidentSeverity severity = 3;
+  Location location = 4;
+  string description = 5;
+  google.protobuf.Timestamp start_time = 6;
+  google.protobuf.Timestamp estimated_end_time = 7;
+}
+
+// Congestion zone
+message CongestionZone {
+  string zone_id = 1;
+  repeated Location boundaries = 2;
+  CongestionLevel level = 3;
+  double avg_speed_kmh = 4;
+  double delay_minutes = 5;
+}
+
+// Environmental analysis
+message EnvironmentalAnalysis {
+  WeatherImpact weather = 1;
+  AirQualityImpact air_quality = 2;
+  NoiseImpact noise = 3;
+  EmissionsEstimate emissions = 4;
+}
+
+// Weather impact
+message WeatherImpact {
+  WeatherCondition condition = 1;
+  WeatherSeverity severity = 2;
+  double visibility_m = 3;
+  double precipitation_mmh = 4;
+  double wind_speed_kmh = 5;
+  double temperature_c = 6;
+  string impact_description = 7;
+}
+
+// Air quality impact
+message AirQualityImpact {
+  int32 aqi_index = 1;
+  AirQualityLevel level = 2;
+  repeated Pollutant pollutants = 3;
+  string health_advisory = 4;
+}
+
+// Pollutant
+message Pollutant {
+  PollutantType type = 1;
+  double concentration = 2;
+  string unit = 3;
+  PollutantLevel level = 4;
+}
+
+// Noise impact
+message NoiseImpact {
+  double avg_noise_level_db = 1;
+  double max_noise_level_db = 2;
+  repeated NoiseSource noise_sources = 3;
+  NoiseLevel overall_level = 4;
+}
+
+// Noise source
+message NoiseSource {
+  NoiseSourceType type = 1;
+  Location location = 2;
+  double noise_level_db = 3;
+  string description = 4;
+}
+
+// Emissions estimate
+message EmissionsEstimate {
+  double co2_kg = 1;
+  double nox_g = 2;
+  double pm25_g = 3;
+  double pm10_g = 4;
+  EmissionLevel level = 5;
+}
+
+// Safety analysis
+message SafetyAnalysis {
+  SafetyScore overall_score = 1;
+  repeated SafetyHazard hazards = 2;
+  repeated SafetyRecommendation recommendations = 3;
+  RiskAssessment risk_assessment = 4;
+}
+
+// Safety hazard
+message SafetyHazard {
+  string hazard_id = 1;
+  HazardType type = 2;
+  HazardSeverity severity = 3;
+  Location location = 4;
+  string description = 5;
+  double risk_score = 6;
+  string mitigation = 7;
+}
+
+// Safety recommendation
+message SafetyRecommendation {
+  RecommendationType type = 1;
+  RecommendationPriority priority = 2;
+  string description = 3;
+  string rationale = 4;
+  google.protobuf.Struct parameters = 5;
+}
+
+// Risk assessment
+message RiskAssessment {
+  RiskLevel overall_risk = 1;
+  double risk_score = 2;
+  repeated RiskFactor risk_factors = 3;
+  repeated RiskMitigation mitigations = 4;
+}
+
+// Risk factor
+message RiskFactor {
+  RiskFactorType type = 1;
+  double impact_score = 2;
+  double probability = 3;
+  string description = 4;
+}
+
+// Risk mitigation
+message RiskMitigation {
+  string mitigation_id = 1;
+  MitigationType type = 2;
+  string description = 3;
+  double effectiveness = 4;
+  double cost = 5;
+}
+
+// Route preferences
+message RoutePreferences {
+  RouteOptimization optimization = 1;
+  repeated RoadType preferred_road_types = 2;
+  repeated RoadType avoided_road_types = 3;
+  bool avoid_tolls = 4;
+  bool avoid_highways = 5;
+  bool avoid_ferries = 6;
+  bool prefer_scenic_routes = 7;
+  double max_detour_percentage = 8;
+}
+
+// Route constraints
+message RouteConstraints {
+  // Vehicle constraints
+  VehicleConstraints vehicle = 1;
+  
+  // Temporal constraints
+  repeated TimeWindow allowed_windows = 2;
+  repeated TimeWindow prohibited_windows = 3;
+  
+  // Geographic constraints
+  repeated GeographicConstraint geographic = 4;
+  
+  // Environmental constraints
+  EnvironmentalConstraints environmental = 5;
+  
+  // Regulatory constraints
+  repeated RegulatoryConstraint regulatory = 6;
+  
+  // Performance constraints
+  PerformanceConstraints performance = 7;
+}
+
+// Vehicle constraints
+message VehicleConstraints {
+  double max_weight_kg = 1;
+  double max_height_m = 2;
+  double max_width_m = 3;
+  double max_length_m = 4;
+  double min_turning_radius_m = 5;
+  double max_axle_weight_kg = 6;
+  repeated string required_permits = 7;
+  repeated HazmatClass hazmat_classes = 8;
+}
+
+// Time window
+message TimeWindow {
+  google.protobuf.Timestamp start_time = 1;
+  google.protobuf.Timestamp end_time = 2;
+  repeated int32 days_of_week = 3;
+  string description = 4;
+}
+
+// Geographic constraint
+message GeographicConstraint {
+  string constraint_id = 1;
+  ConstraintType type = 2; // ALLOWED, PROHIBITED
+  repeated Location boundaries = 3;
+  string reason = 4;
+  ConstraintSeverity severity = 5;
+}
+
+// Environmental constraints
+message EnvironmentalConstraints {
+  double max_temperature_c = 1;
+  double min_temperature_c = 2;
+  double max_wind_speed_kmh = 3;
+  double min_visibility_m = 4;
+  double max_precipitation_mmh = 5;
+  repeated WeatherCondition prohibited_weather = 6;
+}
+
+// Regulatory constraint
+message RegulatoryConstraint {
+  string regulation_id = 1;
+  string jurisdiction = 2;
+  ConstraintType type = 3;
+  string description = 4;
+  google.protobuf.Struct parameters = 5;
+}
+
+// Performance constraints
+message PerformanceConstraints {
+  double max_speed_kmh = 1;
+  double max_acceleration_ms2 = 2;
+  double max_deceleration_ms2 = 3;
+  double max_lateral_g = 4;
+  double comfort_threshold = 5;
+}
+
+// Vehicle profile
+message VehicleProfile {
+  string profile_id = 1;
+  string vehicle_type = 2;
+  VehicleSpecifications specifications = 3;
+  PerformanceCharacteristics performance = 4;
+  repeated string capabilities = 5;
+  repeated string limitations = 6;
+}
+
+// Vehicle specifications
+message VehicleSpecifications {
+  double length_m = 1;
+  double width_m = 2;
+  double height_m = 3;
+  double weight_kg = 4;
+  double max_payload_kg = 5;
+  double turning_radius_m = 6;
+  double ground_clearance_m = 7;
+}
+
+// Performance characteristics
+message PerformanceCharacteristics {
+  double max_speed_kmh = 1;
+  double acceleration_0_100_s = 2;
+  double braking_distance_100_0_m = 3;
+  double fuel_efficiency_l_100km = 4;
+  double energy_efficiency_kwh_100km = 5;
+  double range_km = 6;
+}
+
+// Segment properties
+message SegmentProperties {
+  RoadType road_type = 1;
+  SurfaceType surface_type = 2;
+  int32 lane_count = 3;
+  double speed_limit_kmh = 4;
+  double avg_speed_kmh = 5;
+  TrafficLevel traffic_level = 6;
+  double elevation_change_m = 7;
+  double grade_percentage = 8;
+  double curvature = 9;
+}
+
+// Segment constraint
+message SegmentConstraint {
+  ConstraintType type = 1;
+  string description = 2;
+  google.protobuf.Struct parameters = 3;
+  ConstraintSeverity severity = 4;
+}
+
+// Navigation instruction
+message NavigationInstruction {
+  string instruction_id = 1;
+  InstructionType type = 2;
+  string text = 3;
+  Location location = 4;
+  double distance_to_m = 5;
+  int32 duration_to_s = 6;
+  InstructionPriority priority = 7;
+  google.protobuf.Struct details = 8;
+}
+
+// Waypoint properties
+message WaypointProperties {
+  WaypointCategory category = 1;
+  repeated string services = 2;
+  repeated string facilities = 3;
+  AccessibilityInfo accessibility = 4;
+  ContactInfo contact = 5;
+}
+
+// Accessibility info
+message AccessibilityInfo {
+  bool wheelchair_accessible = 1;
+  bool hearing_impaired_accessible = 2;
+  bool visually_impaired_accessible = 3;
+  repeated string accessibility_features = 4;
+}
+
+// Contact info
+message ContactInfo {
+  string phone = 1;
+  string email = 2;
+  string website = 3;
+  repeated string emergency_contacts = 4;
+}
+
+// Waypoint constraint
+message WaypointConstraint {
+  ConstraintType type = 1;
+  string description = 2;
+  google.protobuf.Struct parameters = 3;
+  ConstraintSeverity severity = 4;
+}
+
+// Route metrics
+message RouteMetrics {
+  CalculationMetrics calculation = 1;
+  PerformanceMetrics performance = 2;
+  QualityMetrics quality = 3;
+  EfficiencyMetrics efficiency = 4;
+}
+
+// Calculation metrics
+message CalculationMetrics {
+  double calculation_time_ms = 1;
+  int32 nodes_explored = 2;
+  int32 alternatives_generated = 3;
+  string algorithm_used = 4;
+  google.protobuf.Timestamp calculated_at = 5;
+}
+
+// Performance metrics
+message PerformanceMetrics {
+  double estimated_travel_time_s = 1;
+  double estimated_fuel_consumption_l = 2;
+  double estimated_energy_consumption_kwh = 3;
+  double estimated_cost = 4;
+  double comfort_score = 5;
+}
+
+// Quality metrics
+message QualityMetrics {
+  double route_quality_score = 1;
+  double safety_score = 2;
+  double reliability_score = 3;
+  double environmental_score = 4;
+  double user_preference_score = 5;
+}
+
+// Efficiency metrics
+message EfficiencyMetrics {
+  double distance_efficiency = 1;
+  double time_efficiency = 2;
+  double fuel_efficiency = 3;
+  double cost_efficiency = 4;
+  double overall_efficiency = 5;
+}
+
+// Route alternative
+message RouteAlternative {
+  string alternative_id = 1;
+  Route route = 2;
+  AlternativeType type = 3;
+  string description = 4;
+  RouteComparison comparison_to_primary = 5;
+  double recommendation_score = 6;
+}
+
+// Route comparison
+message RouteComparison {
+  repeated RouteComparisonItem items = 1;
+  ComparisonSummary summary = 2;
+  string recommendation = 3;
+}
+
+// Route comparison item
+message RouteComparisonItem {
+  string route_id = 1;
+  string route_name = 2;
+  RouteComparisonMetrics metrics = 3;
+  double overall_score = 4;
+  repeated string advantages = 5;
+  repeated string disadvantages = 6;
+}
+
+// Route comparison metrics
+message RouteComparisonMetrics {
+  double distance_km = 1;
+  double duration_minutes = 2;
+  double fuel_cost = 3;
+  double toll_cost = 4;
+  double safety_score = 5;
+  double comfort_score = 6;
+  double environmental_score = 7;
+}
+
+// Comparison summary
+message ComparisonSummary {
+  string fastest_route_id = 1;
+  string shortest_route_id = 2;
+  string most_economical_route_id = 3;
+  string safest_route_id = 4;
+  string most_comfortable_route_id = 5;
+  string most_environmental_route_id = 6;
+}
+
+// Optimization objective
+message OptimizationObjective {
+  ObjectiveType primary = 1;
+  repeated ObjectiveWeight secondary = 2;
+  OptimizationHorizon horizon = 3;
+}
+
+// Objective weight
+message ObjectiveWeight {
+  ObjectiveType objective = 1;
+  double weight = 2; // 0.0 to 1.0
+}
+
+// Optimization constraints
+message OptimizationConstraints {
+  double max_distance_increase_percentage = 1;
+  double max_time_increase_percentage = 2;
+  double max_cost_increase_percentage = 3;
+  int32 max_iterations = 4;
+  double convergence_threshold = 5;
+  repeated string fixed_waypoints = 6;
+}
+
+// Optimization results
+message OptimizationResults {
+  string optimization_id = 1;
+  OptimizationStatus status = 2;
+  int32 iterations_performed = 3;
+  double improvement_percentage = 4;
+  OptimizationMetrics before = 5;
+  OptimizationMetrics after = 6;
+  repeated OptimizationStep steps = 7;
+}
+
+// Optimization metrics
+message OptimizationMetrics {
+  double total_distance_km = 1;
+  double total_time_minutes = 2;
+  double total_cost = 3;
+  double efficiency_score = 4;
+  double objective_value = 5;
+}
+
+// Optimization step
+message OptimizationStep {
+  int32 step_number = 1;
+  string operation = 2;
+  double improvement = 3;
+  string description = 4;
+}
+
+// Vehicle position
+message VehiclePosition {
+  Location location = 1;
+  double heading_degrees = 2;
+  double speed_kmh = 3;
+  double accuracy_m = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  google.protobuf.Struct additional_data = 6;
+}
+
+// Navigation update
+message NavigationUpdate {
+  NavigationUpdateType type = 1;
+  google.protobuf.Struct data = 2;
+  string reason = 3;
+}
+
+// Route deviation
+message RouteDeviation {
+  bool is_deviating = 1;
+  double deviation_distance_m = 2;
+  DeviationType deviation_type = 3;
+  string reason = 4;
+  RerouteRecommendation reroute_recommendation = 5;
+}
+
+// Reroute recommendation
+message RerouteRecommendation {
+  bool recommend_reroute = 1;
+  string reason = 2;
+  Route suggested_route = 3;
+  RouteComparison comparison = 4;
+}
+
+// Route performance metrics
+message RoutePerformanceMetrics {
+  string route_id = 1;
+  int32 total_executions = 2;
+  int32 successful_executions = 3;
+  double success_rate = 4;
+  
+  // Timing metrics
+  double avg_execution_time_minutes = 5;
+  double min_execution_time_minutes = 6;
+  double max_execution_time_minutes = 7;
+  
+  // Efficiency metrics
+  double avg_fuel_consumption_l = 8;
+  double avg_energy_consumption_kwh = 9;
+  double avg_cost = 10;
+  
+  // Quality metrics
+  double avg_comfort_score = 11;
+  double avg_safety_score = 12;
+  int32 total_incidents = 13;
+  int32 total_deviations = 14;
+  
+  // Usage metrics
+  google.protobuf.Timestamp first_used = 15;
+  google.protobuf.Timestamp last_used = 16;
+  int32 unique_vehicles = 17;
+}
+
+// Route replay
+message RouteReplay {
+  string replay_id = 1;
+  string route_id = 2;
+  string execution_id = 3;
+  repeated ReplayFrame frames = 4;
+  ReplayMetadata metadata = 5;
+}
+
+// Replay frame
+message ReplayFrame {
+  google.protobuf.Timestamp timestamp = 1;
+  VehiclePosition position = 2;
+  VehicleState state = 3;
+  EnvironmentalConditions conditions = 4;
+  repeated NavigationEvent events = 5;
+}
+
+// Vehicle state
+message VehicleState {
+  double speed_kmh = 1;
+  double acceleration_ms2 = 2;
+  double fuel_level_percentage = 3;
+  double battery_level_percentage = 4;
+  VehicleMode mode = 5;
+  repeated string active_systems = 6;
+}
+
+// Navigation event
+message NavigationEvent {
+  NavigationEventType type = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  Location location = 3;
+  string description = 4;
+  google.protobuf.Struct data = 5;
+}
+
+// Replay analysis
+message ReplayAnalysis {
+  RouteExecutionSummary summary = 1;
+  repeated PerformanceAnomaly anomalies = 2;
+  repeated Insight insights = 3;
+  repeated Recommendation recommendations = 4;
+}
+
+// Route execution summary
+message RouteExecutionSummary {
+  double actual_distance_km = 1;
+  double actual_duration_minutes = 2;
+  double planned_distance_km = 3;
+  double planned_duration_minutes = 4;
+  double distance_variance_percentage = 5;
+  double time_variance_percentage = 6;
+  int32 deviation_count = 7;
+  int32 incident_count = 8;
+}
+
+// Performance anomaly
+message PerformanceAnomaly {
+  AnomalyType type = 1;
+  AnomalySeverity severity = 2;
+  Location location = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  string description = 5;
+  double impact_score = 6;
+}
+
+// Insight
+message Insight {
+  InsightType type = 1;
+  InsightCategory category = 2;
+  string description = 3;
+  double confidence = 4;
+  google.protobuf.Struct supporting_data = 5;
+}
+
+// Recommendation
+message Recommendation {
+  RecommendationType type = 1;
+  RecommendationPriority priority = 2;
+  string description = 3;
+  string rationale = 4;
+  double expected_improvement = 5;
+  google.protobuf.Struct implementation_details = 6;
+}
+
+// Route execution
+message RouteExecution {
+  string execution_id = 1;
+  string route_id = 2;
+  string vehicle_id = 3;
+  google.protobuf.Timestamp started_at = 4;
+  google.protobuf.Timestamp completed_at = 5;
+  ExecutionStatus status = 6;
+  RouteExecutionSummary summary = 7;
+  repeated ExecutionEvent events = 8;
+}
+
+// Execution event
+message ExecutionEvent {
+  string event_id = 1;
+  ExecutionEventType type = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  Location location = 4;
+  string description = 5;
+  EventSeverity severity = 6;
+  google.protobuf.Struct data = 7;
+}
+
+// Route history statistics
+message RouteHistoryStatistics {
+  int32 total_executions = 1;
+  double avg_success_rate = 2;
+  double avg_completion_time_minutes = 3;
+  double avg_deviation_count = 4;
+  RouteUsageTrends trends = 5;
+}
+
+// Route usage trends
+message RouteUsageTrends {
+  repeated UsageTrend daily_usage = 1;
+  repeated UsageTrend weekly_usage = 2;
+  repeated UsageTrend monthly_usage = 3;
+  repeated PerformanceTrend performance_trends = 4;
+}
+
+// Usage trend
+message UsageTrend {
+  google.protobuf.Timestamp period = 1;
+  int32 usage_count = 2;
+  double avg_performance_score = 3;
+}
+
+// Performance trend
+message PerformanceTrend {
+  string metric_name = 1;
+  TrendDirection direction = 2;
+  double rate_of_change = 3;
+  double confidence = 4;
+}
+
+// Golden corridor
+message GoldenCorridor {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  CorridorType type = 4;
+  
+  // Corridor definition
+  repeated Location centerline = 5;
+  double width_m = 6;
+  repeated CorridorSegment segments = 7;
+  
+  // Corridor properties
+  CorridorProperties properties = 8;
+  repeated CorridorConstraint constraints = 9;
+  
+  // Validation criteria
+  CorridorValidationCriteria validation_criteria = 10;
+  
+  // Metadata
+  string sector = 11;
+  string tenant_id = 12;
+  repeated string tags = 13;
+  google.protobuf.Struct metadata = 14;
+  
+  // Audit fields
+  google.protobuf.Timestamp created_at = 15;
+  google.protobuf.Timestamp updated_at = 16;
+  string created_by = 17;
+  string updated_by = 18;
+  int32 version = 19;
+}
+
+// Corridor segment
+message CorridorSegment {
+  string segment_id = 1;
+  int32 sequence = 2;
+  repeated Location points = 3;
+  double width_m = 4;
+  CorridorSegmentProperties properties = 5;
+  repeated CorridorConstraint constraints = 6;
+}
+
+// Corridor properties
+message CorridorProperties {
+  double total_length_m = 1;
+  double avg_width_m = 2;
+  double max_speed_kmh = 3;
+  double min_speed_kmh = 4;
+  repeated string applicable_vehicle_types = 5;
+  repeated string required_capabilities = 6;
+}
+
+// Corridor segment properties
+message CorridorSegmentProperties {
+  double length_m = 1;
+  double width_m = 2;
+  double max_speed_kmh = 3;
+  double curvature = 4;
+  double grade_percentage = 5;
+  SurfaceType surface_type = 6;
+}
+
+// Corridor constraint
+message CorridorConstraint {
+  string constraint_id = 1;
+  ConstraintType type = 2;
+  string description = 3;
+  google.protobuf.Struct parameters = 4;
+  ConstraintSeverity severity = 5;
+}
+
+// Corridor validation criteria
+message CorridorValidationCriteria {
+  double max_deviation_m = 1;
+  double max_speed_violation_kmh = 2;
+  double max_lateral_acceleration_ms2 = 3;
+  double max_longitudinal_acceleration_ms2 = 4;
+  repeated string required_compliance_checks = 5;
+}
+
+// Corridor validation result
+message CorridorValidationResult {
+  CorridorComplianceStatus status = 1;
+  double compliance_score = 2;
+  CorridorValidationMetrics metrics = 3;
+  repeated CorridorValidationDetail details = 4;
+}
+
+// Corridor validation metrics
+message CorridorValidationMetrics {
+  double max_deviation_m = 1;
+  double avg_deviation_m = 2;
+  double deviation_percentage = 3;
+  int32 violation_count = 4;
+  double compliance_percentage = 5;
+}
+
+// Corridor validation detail
+message CorridorValidationDetail {
+  string detail_id = 1;
+  ValidationType type = 2;
+  Location location = 3;
+  double deviation_m = 4;
+  string description = 5;
+  ValidationSeverity severity = 6;
+}
+
+// Corridor violation
+message CorridorViolation {
+  string violation_id = 1;
+  ViolationType type = 2;
+  Location location = 3;
+  double severity_score = 4;
+  string description = 5;
+  string recommended_action = 6;
+  google.protobuf.Struct details = 7;
+}
+
+// Corridor metadata
+message CorridorMetadata {
+  int32 version = 1;
+  int32 usage_count = 2;
+  google.protobuf.Timestamp last_used = 3;
+  CorridorStatistics statistics = 4;
+}
+
+// Corridor statistics
+message CorridorStatistics {
+  int32 total_validations = 1;
+  double avg_compliance_score = 2;
+  int32 total_violations = 3;
+  double violation_rate = 4;
+  google.protobuf.Timestamp last_validation = 5;
+}
+
+// Update structures
+message RouteUpdate {
+  optional string name = 1;
+  optional string description = 2;
+  optional RouteStatus status = 3;
+  repeated string add_tags = 4;
+  repeated string remove_tags = 5;
+  optional google.protobuf.Struct metadata_updates = 6;
+}
+
+// Metadata structures
+message RouteMetadata {
+  int32 version = 1;
+  int32 execution_count = 2;
+  google.protobuf.Timestamp last_executed = 3;
+  RouteStatistics statistics = 4;
+}
+
+// Route statistics
+message RouteStatistics {
+  double avg_execution_time_minutes = 1;
+  double success_rate = 2;
+  int32 total_deviations = 3;
+  int32 total_incidents = 4;
+  double avg_fuel_consumption_l = 5;
+  double reliability_score = 6;
+}
+
+// Validation structures
+message ValidationCriteria {
+  repeated ValidationType validation_types = 1;
+  ValidationStrictness strictness = 2;
+  repeated string policy_ids = 3;
+  bool check_real_time_conditions = 4;
+}
+
+message RouteValidationResult {
+  ValidationStatus status = 1;
+  double validation_score = 2;
+  repeated ValidationDetail details = 3;
+  ValidationSummary summary = 4;
+}
+
+message ValidationDetail {
+  ValidationType type = 1;
+  ValidationStatus status = 2;
+  Location location = 3;
+  string description = 4;
+  ValidationSeverity severity = 5;
+  google.protobuf.Struct data = 6;
+}
+
+message ValidationSummary {
+  int32 total_checks = 1;
+  int32 passed_checks = 2;
+  int32 failed_checks = 3;
+  int32 warning_checks = 4;
+  double overall_score = 5;
+}
+
+message RouteViolation {
+  string violation_id = 1;
+  ViolationType type = 2;
+  Location location = 3;
+  ViolationSeverity severity = 4;
+  string description = 5;
+  string recommended_action = 6;
+  google.protobuf.Struct context = 7;
+}
+
+message ValidationWarning {
+  string warning_id = 1;
+  WarningType type = 2;
+  Location location = 3;
+  string message = 4;
+  string suggestion = 5;
+}
+
+// Filter and pagination structures
+message ListRoutesFilter {
+  repeated RouteStatus statuses = 1;
+  repeated string sectors = 2;
+  repeated string tags = 3;
+  LocationFilter origin_filter = 4;
+  LocationFilter destination_filter = 5;
+  google.protobuf.Timestamp created_after = 6;
+  google.protobuf.Timestamp created_before = 7;
+  DistanceFilter distance_filter = 8;
+  DurationFilter duration_filter = 9;
+}
+
+message LocationFilter {
+  double center_latitude = 1;
+  double center_longitude = 2;
+  double radius_km = 3;
+}
+
+message DistanceFilter {
+  double min_distance_km = 1;
+  double max_distance_km = 2;
+}
+
+message DurationFilter {
+  double min_duration_minutes = 1;
+  double max_duration_minutes = 2;
+}
+
+message PaginationOptions {
+  int32 page_size = 1;
+  string page_token = 2;
+  string sort_by = 3;
+  SortOrder sort_order = 4;
+}
+
+message PaginationMetadata {
+  string next_page_token = 1;
+  string previous_page_token = 2;
+  int32 page_size = 3;
+  bool has_more = 4;
+}
+
+// Options structures
+message CalculateRouteOptions {
+  bool include_alternatives = 1;
+  int32 max_alternatives = 2;
+  bool include_traffic = 3;
+  bool include_tolls = 4;
+  bool real_time_conditions = 5;
+  int32 calculation_timeout_s = 6;
+}
+
+message BatchCalculationOptions {
+  bool fail_fast = 1;
+  int32 max_parallel = 2;
+  int32 timeout_s = 3;
+  bool optimize_order = 4;
+}
+
+message OptimizeRouteOptions {
+  int32 max_iterations = 1;
+  double convergence_threshold = 2;
+  int32 timeout_s = 3;
+  bool preserve_waypoint_order = 4;
+}
+
+message GetRouteOptions {
+  bool include_metadata = 1;
+  bool include_segments = 2;
+  bool include_instructions = 3;
+  bool include_alternatives = 4;
+}
+
+message UpdateRouteOptions {
+  bool validate_route = 1;
+  bool recalculate_metrics = 2;
+  string change_reason = 3;
+}
+
+message DeleteRouteOptions {
+  bool soft_delete = 1;
+  bool delete_executions = 2;
+  string reason = 3;
+}
+
+message ValidateRouteOptions {
+  bool strict_validation = 1;
+  bool check_real_time_conditions = 2;
+  bool include_recommendations = 3;
+}
+
+message AnalyzeRouteOptions {
+  bool include_alternatives = 1;
+  bool deep_analysis = 2;
+  repeated string analysis_modules = 3;
+}
+
+message CompareRoutesOptions {
+  repeated string comparison_metrics = 1;
+  bool include_detailed_breakdown = 2;
+  bool generate_recommendation = 3;
+}
+
+message NavigationOptions {
+  bool voice_guidance = 1;
+  bool real_time_traffic = 2;
+  bool automatic_rerouting = 3;
+  double reroute_threshold_m = 4;
+}
+
+message MetricsOptions {
+  bool include_performance = 1;
+  bool include_quality = 2;
+  bool include_efficiency = 3;
+  string aggregation_level = 4; // "execution", "day", "week"
+}
+
+message ReplayOptions {
+  double playback_speed = 1;
+  bool include_analysis = 2;
+  bool include_environmental_data = 3;
+  repeated string event_types = 4;
+}
+
+message GetRouteHistoryOptions {
+  bool include_statistics = 1;
+  bool include_trends = 2;
+  int32 max_executions = 3;
+  PaginationOptions pagination = 4;
+}
+
+message CreateGoldenCorridorOptions {
+  bool validate_corridor = 1;
+  bool auto_generate_constraints = 2;
+  string source_route_id = 3;
+}
+
+message GetGoldenCorridorOptions {
+  bool include_metadata = 1;
+  bool include_statistics = 2;
+  bool include_segments = 3;
+}
+
+message CorridorValidationOptions {
+  bool strict_validation = 1;
+  bool include_detailed_analysis = 2;
+  double tolerance_factor = 3;
+}
+
+message StreamOptions {
+  repeated string event_types = 1;
+  bool include_historical = 2;
+  int32 buffer_size = 3;
+}
+
+// Batch calculation metrics
+message BatchCalculationMetrics {
+  int32 total_requests = 1;
+  int32 successful_calculations = 2;
+  int32 failed_calculations = 3;
+  double total_calculation_time_ms = 4;
+  double avg_calculation_time_ms = 5;
+  google.protobuf.Timestamp started_at = 6;
+  google.protobuf.Timestamp completed_at = 7;
+}
+
+// Replay metadata
+message ReplayMetadata {
+  google.protobuf.Timestamp execution_start = 1;
+  google.protobuf.Timestamp execution_end = 2;
+  int32 total_frames = 3;
+  double frame_rate_hz = 4;
+  string vehicle_id = 5;
+  string route_version = 6;
+}
+
+// Enums
+
+enum RouteStatus {
+  ROUTE_STATUS_UNSPECIFIED = 0;
+  ROUTE_STATUS_DRAFT = 1;
+  ROUTE_STATUS_ACTIVE = 2;
+  ROUTE_STATUS_INACTIVE = 3;
+  ROUTE_STATUS_ARCHIVED = 4;
+  ROUTE_STATUS_DEPRECATED = 5;
+}
+
+enum LocationType {
+  LOCATION_TYPE_UNSPECIFIED = 0;
+  LOCATION_TYPE_ADDRESS = 1;
+  LOCATION_TYPE_COORDINATE = 2;
+  LOCATION_TYPE_LANDMARK = 3;
+  LOCATION_TYPE_DEPOT = 4;
+  LOCATION_TYPE_CHARGING_STATION = 5;
+  LOCATION_TYPE_WAYPOINT = 6;
+}
+
+enum SegmentType {
+  SEGMENT_TYPE_UNSPECIFIED = 0;
+  SEGMENT_TYPE_HIGHWAY = 1;
+  SEGMENT_TYPE_ARTERIAL = 2;
+  SEGMENT_TYPE_LOCAL = 3;
+  SEGMENT_TYPE_RAMP = 4;
+  SEGMENT_TYPE_ROUNDABOUT = 5;
+  SEGMENT_TYPE_FERRY = 6;
+  SEGMENT_TYPE_TUNNEL = 7;
+  SEGMENT_TYPE_BRIDGE = 8;
+}
+
+enum WaypointType {
+  WAYPOINT_TYPE_UNSPECIFIED = 0;
+  WAYPOINT_TYPE_ORIGIN = 1;
+  WAYPOINT_TYPE_DESTINATION = 2;
+  WAYPOINT_TYPE_INTERMEDIATE = 3;
+  WAYPOINT_TYPE_STOP = 4;
+  WAYPOINT_TYPE_CHECKPOINT = 5;
+  WAYPOINT_TYPE_CHARGING = 6;
+  WAYPOINT_TYPE_FUEL = 7;
+  WAYPOINT_TYPE_REST = 8;
+}
+
+enum WaypointCategory {
+  WAYPOINT_CATEGORY_UNSPECIFIED = 0;
+  WAYPOINT_CATEGORY_TRANSPORT_HUB = 1;
+  WAYPOINT_CATEGORY_SERVICE_STATION = 2;
+  WAYPOINT_CATEGORY_CHARGING_STATION = 3;
+  WAYPOINT_CATEGORY_REST_AREA = 4;
+  WAYPOINT_CATEGORY_CHECKPOINT = 5;
+  WAYPOINT_CATEGORY_DEPOT = 6;
+}
+
+enum RoadType {
+  ROAD_TYPE_UNSPECIFIED = 0;
+  ROAD_TYPE_HIGHWAY = 1;
+  ROAD_TYPE_ARTERIAL = 2;
+  ROAD_TYPE_COLLECTOR = 3;
+  ROAD_TYPE_LOCAL = 4;
+  ROAD_TYPE_RESIDENTIAL = 5;
+  ROAD_TYPE_SERVICE = 6;
+  ROAD_TYPE_UNPAVED = 7;
+  ROAD_TYPE_FERRY = 8;
+}
+
+enum SurfaceType {
+  SURFACE_TYPE_UNSPECIFIED = 0;
+  SURFACE_TYPE_PAVED = 1;
+  SURFACE_TYPE_UNPAVED = 2;
+  SURFACE_TYPE_GRAVEL = 3;
+  SURFACE_TYPE_DIRT = 4;
+  SURFACE_TYPE_SAND = 5;
+  SURFACE_TYPE_CONCRETE = 6;
+  SURFACE_TYPE_ASPHALT = 7;
+}
+
+enum TrafficLevel {
+  TRAFFIC_LEVEL_UNSPECIFIED = 0;
+  TRAFFIC_LEVEL_FREE_FLOW = 1;
+  TRAFFIC_LEVEL_LIGHT = 2;
+  TRAFFIC_LEVEL_MODERATE = 3;
+  TRAFFIC_LEVEL_HEAVY = 4;
+  TRAFFIC_LEVEL_CONGESTED = 5;
+}
+
+enum ChallengeType {
+  CHALLENGE_TYPE_UNSPECIFIED = 0;
+  CHALLENGE_TYPE_STEEP_GRADE = 1;
+  CHALLENGE_TYPE_SHARP_CURVE = 2;
+  CHALLENGE_TYPE_NARROW_PASSAGE = 3;
+  CHALLENGE_TYPE_LOW_CLEARANCE = 4;
+  CHALLENGE_TYPE_WEIGHT_RESTRICTION = 5;
+  CHALLENGE_TYPE_HAZMAT_RESTRICTION = 6;
+}
+
+enum ChallengeSeverity {
+  CHALLENGE_SEVERITY_UNSPECIFIED = 0;
+  CHALLENGE_SEVERITY_LOW = 1;
+  CHALLENGE_SEVERITY_MODERATE = 2;
+  CHALLENGE_SEVERITY_HIGH = 3;
+  CHALLENGE_SEVERITY_EXTREME = 4;
+}
+
+enum IncidentType {
+  INCIDENT_TYPE_UNSPECIFIED = 0;
+  INCIDENT_TYPE_ACCIDENT = 1;
+  INCIDENT_TYPE_CONSTRUCTION = 2;
+  INCIDENT_TYPE_ROAD_CLOSURE = 3;
+  INCIDENT_TYPE_WEATHER = 4;
+  INCIDENT_TYPE_SPECIAL_EVENT = 5;
+  INCIDENT_TYPE_VEHICLE_BREAKDOWN = 6;
+}
+
+enum IncidentSeverity {
+  INCIDENT_SEVERITY_UNSPECIFIED = 0;
+  INCIDENT_SEVERITY_MINOR = 1;
+  INCIDENT_SEVERITY_MODERATE = 2;
+  INCIDENT_SEVERITY_MAJOR = 3;
+  INCIDENT_SEVERITY_CRITICAL = 4;
+}
+
+enum CongestionLevel {
+  CONGESTION_LEVEL_UNSPECIFIED = 0;
+  CONGESTION_LEVEL_FREE_FLOW = 1;
+  CONGESTION_LEVEL_LIGHT = 2;
+  CONGESTION_LEVEL_MODERATE = 3;
+  CONGESTION_LEVEL_HEAVY = 4;
+  CONGESTION_LEVEL_STOP_AND_GO = 5;
+}
+
+enum WeatherCondition {
+  WEATHER_CONDITION_UNSPECIFIED = 0;
+  WEATHER_CONDITION_CLEAR = 1;
+  WEATHER_CONDITION_CLOUDY = 2;
+  WEATHER_CONDITION_RAIN = 3;
+  WEATHER_CONDITION_SNOW = 4;
+  WEATHER_CONDITION_FOG = 5;
+  WEATHER_CONDITION_WIND = 6;
+  WEATHER_CONDITION_STORM = 7;
+}
+
+enum WeatherSeverity {
+  WEATHER_SEVERITY_UNSPECIFIED = 0;
+  WEATHER_SEVERITY_LIGHT = 1;
+  WEATHER_SEVERITY_MODERATE = 2;
+  WEATHER_SEVERITY_HEAVY = 3;
+  WEATHER_SEVERITY_SEVERE = 4;
+}
+
+enum AirQualityLevel {
+  AIR_QUALITY_LEVEL_UNSPECIFIED = 0;
+  AIR_QUALITY_LEVEL_GOOD = 1;
+  AIR_QUALITY_LEVEL_MODERATE = 2;
+  AIR_QUALITY_LEVEL_UNHEALTHY_SENSITIVE = 3;
+  AIR_QUALITY_LEVEL_UNHEALTHY = 4;
+  AIR_QUALITY_LEVEL_VERY_UNHEALTHY = 5;
+  AIR_QUALITY_LEVEL_HAZARDOUS = 6;
+}
+
+enum PollutantType {
+  POLLUTANT_TYPE_UNSPECIFIED = 0;
+  POLLUTANT_TYPE_PM25 = 1;
+  POLLUTANT_TYPE_PM10 = 2;
+  POLLUTANT_TYPE_O3 = 3;
+  POLLUTANT_TYPE_NO2 = 4;
+  POLLUTANT_TYPE_SO2 = 5;
+  POLLUTANT_TYPE_CO = 6;
+}
+
+enum PollutantLevel {
+  POLLUTANT_LEVEL_UNSPECIFIED = 0;
+  POLLUTANT_LEVEL_LOW = 1;
+  POLLUTANT_LEVEL_MODERATE = 2;
+  POLLUTANT_LEVEL_HIGH = 3;
+  POLLUTANT_LEVEL_VERY_HIGH = 4;
+}
+
+enum NoiseLevel {
+  NOISE_LEVEL_UNSPECIFIED = 0;
+  NOISE_LEVEL_QUIET = 1;
+  NOISE_LEVEL_MODERATE = 2;
+  NOISE_LEVEL_LOUD = 3;
+  NOISE_LEVEL_VERY_LOUD = 4;
+}
+
+enum NoiseSourceType {
+  NOISE_SOURCE_TYPE_UNSPECIFIED = 0;
+  NOISE_SOURCE_TYPE_TRAFFIC = 1;
+  NOISE_SOURCE_TYPE_CONSTRUCTION = 2;
+  NOISE_SOURCE_TYPE_INDUSTRIAL = 3;
+  NOISE_SOURCE_TYPE_AIRCRAFT = 4;
+  NOISE_SOURCE_TYPE_RAILWAY = 5;
+}
+
+enum EmissionLevel {
+  EMISSION_LEVEL_UNSPECIFIED = 0;
+  EMISSION_LEVEL_VERY_LOW = 1;
+  EMISSION_LEVEL_LOW = 2;
+  EMISSION_LEVEL_MODERATE = 3;
+  EMISSION_LEVEL_HIGH = 4;
+  EMISSION_LEVEL_VERY_HIGH = 5;
+}
+
+enum SafetyScore {
+  SAFETY_SCORE_UNSPECIFIED = 0;
+  SAFETY_SCORE_VERY_LOW = 1;
+  SAFETY_SCORE_LOW = 2;
+  SAFETY_SCORE_MODERATE = 3;
+  SAFETY_SCORE_HIGH = 4;
+  SAFETY_SCORE_VERY_HIGH = 5;
+}
+
+enum HazardType {
+  HAZARD_TYPE_UNSPECIFIED = 0;
+  HAZARD_TYPE_INTERSECTION = 1;
+  HAZARD_TYPE_SHARP_CURVE = 2;
+  HAZARD_TYPE_STEEP_GRADE = 3;
+  HAZARD_TYPE_CONSTRUCTION_ZONE = 4;
+  HAZARD_TYPE_SCHOOL_ZONE = 5;
+  HAZARD_TYPE_PEDESTRIAN_CROSSING = 6;
+  HAZARD_TYPE_RAILWAY_CROSSING = 7;
+}
+
+enum HazardSeverity {
+  HAZARD_SEVERITY_UNSPECIFIED = 0;
+  HAZARD_SEVERITY_LOW = 1;
+  HAZARD_SEVERITY_MODERATE = 2;
+  HAZARD_SEVERITY_HIGH = 3;
+  HAZARD_SEVERITY_CRITICAL = 4;
+}
+
+enum RecommendationType {
+  RECOMMENDATION_TYPE_UNSPECIFIED = 0;
+  RECOMMENDATION_TYPE_SPEED_ADJUSTMENT = 1;
+  RECOMMENDATION_TYPE_LANE_CHANGE = 2;
+  RECOMMENDATION_TYPE_ROUTE_CHANGE = 3;
+  RECOMMENDATION_TYPE_TIMING_ADJUSTMENT = 4;
+  RECOMMENDATION_TYPE_VEHICLE_CHANGE = 5;
+  RECOMMENDATION_TYPE_SAFETY_MEASURE = 6;
+}
+
+enum RecommendationPriority {
+  RECOMMENDATION_PRIORITY_UNSPECIFIED = 0;
+  RECOMMENDATION_PRIORITY_LOW = 1;
+  RECOMMENDATION_PRIORITY_MEDIUM = 2;
+  RECOMMENDATION_PRIORITY_HIGH = 3;
+  RECOMMENDATION_PRIORITY_CRITICAL = 4;
+}
+
+enum RiskLevel {
+  RISK_LEVEL_UNSPECIFIED = 0;
+  RISK_LEVEL_VERY_LOW = 1;
+  RISK_LEVEL_LOW = 2;
+  RISK_LEVEL_MODERATE = 3;
+  RISK_LEVEL_HIGH = 4;
+  RISK_LEVEL_VERY_HIGH = 5;
+}
+
+enum RiskFactorType {
+  RISK_FACTOR_TYPE_UNSPECIFIED = 0;
+  RISK_FACTOR_TYPE_WEATHER = 1;
+  RISK_FACTOR_TYPE_TRAFFIC = 2;
+  RISK_FACTOR_TYPE_ROAD_CONDITION = 3;
+  RISK_FACTOR_TYPE_VEHICLE_LIMITATION = 4;
+  RISK_FACTOR_TYPE_DRIVER_FATIGUE = 5;
+  RISK_FACTOR_TYPE_TIME_OF_DAY = 6;
+}
+
+enum MitigationType {
+  MITIGATION_TYPE_UNSPECIFIED = 0;
+  MITIGATION_TYPE_SPEED_REDUCTION = 1;
+  MITIGATION_TYPE_ROUTE_CHANGE = 2;
+  MITIGATION_TYPE_TIMING_CHANGE = 3;
+  MITIGATION_TYPE_VEHICLE_CHANGE = 4;
+  MITIGATION_TYPE_ADDITIONAL_EQUIPMENT = 5;
+  MITIGATION_TYPE_DRIVER_TRAINING = 6;
+}
+
+enum RouteOptimization {
+  ROUTE_OPTIMIZATION_UNSPECIFIED = 0;
+  ROUTE_OPTIMIZATION_FASTEST = 1;
+  ROUTE_OPTIMIZATION_SHORTEST = 2;
+  ROUTE_OPTIMIZATION_MOST_ECONOMICAL = 3;
+  ROUTE_OPTIMIZATION_SAFEST = 4;
+  ROUTE_OPTIMIZATION_MOST_COMFORTABLE = 5;
+  ROUTE_OPTIMIZATION_BALANCED = 6;
+}
+
+enum HazmatClass {
+  HAZMAT_CLASS_UNSPECIFIED = 0;
+  HAZMAT_CLASS_1 = 1; // Explosives
+  HAZMAT_CLASS_2 = 2; // Gases
+  HAZMAT_CLASS_3 = 3; // Flammable liquids
+  HAZMAT_CLASS_4 = 4; // Flammable solids
+  HAZMAT_CLASS_5 = 5; // Oxidizing substances
+  HAZMAT_CLASS_6 = 6; // Toxic substances
+  HAZMAT_CLASS_7 = 7; // Radioactive materials
+  HAZMAT_CLASS_8 = 8; // Corrosive substances
+  HAZMAT_CLASS_9 = 9; // Miscellaneous dangerous goods
+}
+
+enum ConstraintType {
+  CONSTRAINT_TYPE_UNSPECIFIED = 0;
+  CONSTRAINT_TYPE_ALLOWED = 1;
+  CONSTRAINT_TYPE_PROHIBITED = 2;
+  CONSTRAINT_TYPE_CONDITIONAL = 3;
+  CONSTRAINT_TYPE_PREFERRED = 4;
+  CONSTRAINT_TYPE_AVOIDED = 5;
+}
+
+enum ConstraintSeverity {
+  CONSTRAINT_SEVERITY_UNSPECIFIED = 0;
+  CONSTRAINT_SEVERITY_INFO = 1;
+  CONSTRAINT_SEVERITY_WARNING = 2;
+  CONSTRAINT_SEVERITY_ERROR = 3;
+  CONSTRAINT_SEVERITY_CRITICAL = 4;
+}
+
+enum InstructionType {
+  INSTRUCTION_TYPE_UNSPECIFIED = 0;
+  INSTRUCTION_TYPE_CONTINUE = 1;
+  INSTRUCTION_TYPE_TURN_LEFT = 2;
+  INSTRUCTION_TYPE_TURN_RIGHT = 3;
+  INSTRUCTION_TYPE_TURN_SLIGHT_LEFT = 4;
+  INSTRUCTION_TYPE_TURN_SLIGHT_RIGHT = 5;
+  INSTRUCTION_TYPE_TURN_SHARP_LEFT = 6;
+  INSTRUCTION_TYPE_TURN_SHARP_RIGHT = 7;
+  INSTRUCTION_TYPE_UTURN = 8;
+  INSTRUCTION_TYPE_MERGE = 9;
+  INSTRUCTION_TYPE_ROUNDABOUT_ENTER = 10;
+  INSTRUCTION_TYPE_ROUNDABOUT_EXIT = 11;
+  INSTRUCTION_TYPE_DESTINATION_REACHED = 12;
+}
+
+enum InstructionPriority {
+  INSTRUCTION_PRIORITY_UNSPECIFIED = 0;
+  INSTRUCTION_PRIORITY_LOW = 1;
+  INSTRUCTION_PRIORITY_NORMAL = 2;
+  INSTRUCTION_PRIORITY_HIGH = 3;
+  INSTRUCTION_PRIORITY_CRITICAL = 4;
+}
+
+enum AlternativeType {
+  ALTERNATIVE_TYPE_UNSPECIFIED = 0;
+  ALTERNATIVE_TYPE_FASTEST = 1;
+  ALTERNATIVE_TYPE_SHORTEST = 2;
+  ALTERNATIVE_TYPE_MOST_ECONOMICAL = 3;
+  ALTERNATIVE_TYPE_AVOID_TRAFFIC = 4;
+  ALTERNATIVE_TYPE_AVOID_TOLLS = 5;
+  ALTERNATIVE_TYPE_SCENIC = 6;
+}
+
+enum ObjectiveType {
+  OBJECTIVE_TYPE_UNSPECIFIED = 0;
+  OBJECTIVE_TYPE_MINIMIZE_TIME = 1;
+  OBJECTIVE_TYPE_MINIMIZE_DISTANCE = 2;
+  OBJECTIVE_TYPE_MINIMIZE_COST = 3;
+  OBJECTIVE_TYPE_MAXIMIZE_SAFETY = 4;
+  OBJECTIVE_TYPE_MAXIMIZE_COMFORT = 5;
+  OBJECTIVE_TYPE_MINIMIZE_EMISSIONS = 6;
+}
+
+enum OptimizationHorizon {
+  OPTIMIZATION_HORIZON_UNSPECIFIED = 0;
+  OPTIMIZATION_HORIZON_IMMEDIATE = 1;
+  OPTIMIZATION_HORIZON_SHORT_TERM = 2; // 1-4 hours
+  OPTIMIZATION_HORIZON_MEDIUM_TERM = 3; // 4-24 hours
+  OPTIMIZATION_HORIZON_LONG_TERM = 4; // 1+ days
+}
+
+enum OptimizationStatus {
+  OPTIMIZATION_STATUS_UNSPECIFIED = 0;
+  OPTIMIZATION_STATUS_PENDING = 1;
+  OPTIMIZATION_STATUS_RUNNING = 2;
+  OPTIMIZATION_STATUS_COMPLETED = 3;
+  OPTIMIZATION_STATUS_FAILED = 4;
+  OPTIMIZATION_STATUS_CANCELLED = 5;
+}
+
+enum NavigationStatus {
+  NAVIGATION_STATUS_UNSPECIFIED = 0;
+  NAVIGATION_STATUS_STARTED = 1;
+  NAVIGATION_STATUS_IN_PROGRESS = 2;
+  NAVIGATION_STATUS_PAUSED = 3;
+  NAVIGATION_STATUS_COMPLETED = 4;
+  NAVIGATION_STATUS_CANCELLED = 5;
+  NAVIGATION_STATUS_FAILED = 6;
+}
+
+enum NavigationUpdateType {
+  NAVIGATION_UPDATE_TYPE_UNSPECIFIED = 0;
+  NAVIGATION_UPDATE_TYPE_POSITION = 1;
+  NAVIGATION_UPDATE_TYPE_SPEED = 2;
+  NAVIGATION_UPDATE_TYPE_HEADING = 3;
+  NAVIGATION_UPDATE_TYPE_TRAFFIC = 4;
+  NAVIGATION_UPDATE_TYPE_WEATHER = 5;
+  NAVIGATION_UPDATE_TYPE_INCIDENT = 6;
+}
+
+enum NavigationEventType {
+  NAVIGATION_EVENT_TYPE_UNSPECIFIED = 0;
+  NAVIGATION_EVENT_TYPE_STARTED = 1;
+  NAVIGATION_EVENT_TYPE_WAYPOINT_REACHED = 2;
+  NAVIGATION_EVENT_TYPE_ROUTE_DEVIATION = 3;
+  NAVIGATION_EVENT_TYPE_REROUTE = 4;
+  NAVIGATION_EVENT_TYPE_TRAFFIC_UPDATE = 5;
+  NAVIGATION_EVENT_TYPE_INCIDENT = 6;
+  NAVIGATION_EVENT_TYPE_COMPLETED = 7;
+}
+
+enum DeviationType {
+  DEVIATION_TYPE_UNSPECIFIED = 0;
+  DEVIATION_TYPE_MINOR = 1;
+  DEVIATION_TYPE_MAJOR = 2;
+  DEVIATION_TYPE_OFF_ROUTE = 3;
+  DEVIATION_TYPE_WRONG_DIRECTION = 4;
+}
+
+enum VehicleMode {
+  VEHICLE_MODE_UNSPECIFIED = 0;
+  VEHICLE_MODE_MANUAL = 1;
+  VEHICLE_MODE_ASSISTED = 2;
+  VEHICLE_MODE_AUTONOMOUS = 3;
+  VEHICLE_MODE_EMERGENCY = 4;
+  VEHICLE_MODE_MAINTENANCE = 5;
+}
+
+enum ExecutionStatus {
+  EXECUTION_STATUS_UNSPECIFIED = 0;
+  EXECUTION_STATUS_STARTED = 1;
+  EXECUTION_STATUS_IN_PROGRESS = 2;
+  EXECUTION_STATUS_COMPLETED = 3;
+  EXECUTION_STATUS_CANCELLED = 4;
+  EXECUTION_STATUS_FAILED = 5;
+  EXECUTION_STATUS_ABORTED = 6;
+}
+
+enum ExecutionEventType {
+  EXECUTION_EVENT_TYPE_UNSPECIFIED = 0;
+  EXECUTION_EVENT_TYPE_STARTED = 1;
+  EXECUTION_EVENT_TYPE_WAYPOINT_REACHED = 2;
+  EXECUTION_EVENT_TYPE_DEVIATION = 3;
+  EXECUTION_EVENT_TYPE_REROUTE = 4;
+  EXECUTION_EVENT_TYPE_INCIDENT = 5;
+  EXECUTION_EVENT_TYPE_COMPLETED = 6;
+  EXECUTION_EVENT_TYPE_CANCELLED = 7;
+}
+
+enum EventSeverity {
+  EVENT_SEVERITY_UNSPECIFIED = 0;
+  EVENT_SEVERITY_INFO = 1;
+  EVENT_SEVERITY_WARNING = 2;
+  EVENT_SEVERITY_ERROR = 3;
+  EVENT_SEVERITY_CRITICAL = 4;
+}
+
+enum AnomalyType {
+  ANOMALY_TYPE_UNSPECIFIED = 0;
+  ANOMALY_TYPE_SPEED_ANOMALY = 1;
+  ANOMALY_TYPE_ROUTE_DEVIATION = 2;
+  ANOMALY_TYPE_FUEL_CONSUMPTION = 3;
+  ANOMALY_TYPE_TIME_VARIANCE = 4;
+  ANOMALY_TYPE_SAFETY_VIOLATION = 5;
+}
+
+enum AnomalySeverity {
+  ANOMALY_SEVERITY_UNSPECIFIED = 0;
+  ANOMALY_SEVERITY_LOW = 1;
+  ANOMALY_SEVERITY_MODERATE = 2;
+  ANOMALY_SEVERITY_HIGH = 3;
+  ANOMALY_SEVERITY_CRITICAL = 4;
+}
+
+enum InsightType {
+  INSIGHT_TYPE_UNSPECIFIED = 0;
+  INSIGHT_TYPE_PERFORMANCE = 1;
+  INSIGHT_TYPE_EFFICIENCY = 2;
+  INSIGHT_TYPE_SAFETY = 3;
+  INSIGHT_TYPE_ROUTE_OPTIMIZATION = 4;
+  INSIGHT_TYPE_BEHAVIORAL = 5;
+}
+
+enum InsightCategory {
+  INSIGHT_CATEGORY_UNSPECIFIED = 0;
+  INSIGHT_CATEGORY_POSITIVE = 1;
+  INSIGHT_CATEGORY_NEUTRAL = 2;
+  INSIGHT_CATEGORY_NEGATIVE = 3;
+  INSIGHT_CATEGORY_ACTIONABLE = 4;
+}
+
+enum TrendDirection {
+  TREND_DIRECTION_UNSPECIFIED = 0;
+  TREND_DIRECTION_IMPROVING = 1;
+  TREND_DIRECTION_STABLE = 2;
+  TREND_DIRECTION_DEGRADING = 3;
+}
+
+enum CorridorType {
+  CORRIDOR_TYPE_UNSPECIFIED = 0;
+  CORRIDOR_TYPE_HIGHWAY = 1;
+  CORRIDOR_TYPE_ARTERIAL = 2;
+  CORRIDOR_TYPE_LOCAL = 3;
+  CORRIDOR_TYPE_SPECIALIZED = 4;
+  CORRIDOR_TYPE_EMERGENCY = 5;
+}
+
+enum CorridorComplianceStatus {
+  CORRIDOR_COMPLIANCE_STATUS_UNSPECIFIED = 0;
+  CORRIDOR_COMPLIANCE_STATUS_COMPLIANT = 1;
+  CORRIDOR_COMPLIANCE_STATUS_NON_COMPLIANT = 2;
+  CORRIDOR_COMPLIANCE_STATUS_PARTIALLY_COMPLIANT = 3;
+  CORRIDOR_COMPLIANCE_STATUS_UNKNOWN = 4;
+}
+
+enum ValidationType {
+  VALIDATION_TYPE_UNSPECIFIED = 0;
+  VALIDATION_TYPE_GEOMETRY = 1;
+  VALIDATION_TYPE_CONSTRAINTS = 2;
+  VALIDATION_TYPE_SAFETY = 3;
+  VALIDATION_TYPE_REGULATORY = 4;
+  VALIDATION_TYPE_PERFORMANCE = 5;
+  VALIDATION_TYPE_ENVIRONMENTAL = 6;
+}
+
+enum ValidationStatus {
+  VALIDATION_STATUS_UNSPECIFIED = 0;
+  VALIDATION_STATUS_PASSED = 1;
+  VALIDATION_STATUS_FAILED = 2;
+  VALIDATION_STATUS_WARNING = 3;
+  VALIDATION_STATUS_SKIPPED = 4;
+}
+
+enum ValidationStrictness {
+  VALIDATION_STRICTNESS_UNSPECIFIED = 0;
+  VALIDATION_STRICTNESS_LENIENT = 1;
+  VALIDATION_STRICTNESS_NORMAL = 2;
+  VALIDATION_STRICTNESS_STRICT = 3;
+  VALIDATION_STRICTNESS_VERY_STRICT = 4;
+}
+
+enum ValidationSeverity {
+  VALIDATION_SEVERITY_UNSPECIFIED = 0;
+  VALIDATION_SEVERITY_INFO = 1;
+  VALIDATION_SEVERITY_WARNING = 2;
+  VALIDATION_SEVERITY_ERROR = 3;
+  VALIDATION_SEVERITY_CRITICAL = 4;
+}
+
+enum ViolationType {
+  VIOLATION_TYPE_UNSPECIFIED = 0;
+  VIOLATION_TYPE_SPEED_LIMIT = 1;
+  VIOLATION_TYPE_WEIGHT_LIMIT = 2;
+  VIOLATION_TYPE_HEIGHT_LIMIT = 3;
+  VIOLATION_TYPE_WIDTH_LIMIT = 4;
+  VIOLATION_TYPE_HAZMAT_RESTRICTION = 5;
+  VIOLATION_TYPE_TIME_RESTRICTION = 6;
+  VIOLATION_TYPE_GEOGRAPHIC_RESTRICTION = 7;
+}
+
+enum ViolationSeverity {
+  VIOLATION_SEVERITY_UNSPECIFIED = 0;
+  VIOLATION_SEVERITY_INFO = 1;
+  VIOLATION_SEVERITY_WARNING = 2;
+  VIOLATION_SEVERITY_ERROR = 3;
+  VIOLATION_SEVERITY_CRITICAL = 4;
+}
+
+enum WarningType {
+  WARNING_TYPE_UNSPECIFIED = 0;
+  WARNING_TYPE_PERFORMANCE = 1;
+  WARNING_TYPE_SAFETY = 2;
+  WARNING_TYPE_EFFICIENCY = 3;
+  WARNING_TYPE_REGULATORY = 4;
+  WARNING_TYPE_ENVIRONMENTAL = 5;
+}
+
+enum AnalysisType {
+  ANALYSIS_TYPE_UNSPECIFIED = 0;
+  ANALYSIS_TYPE_PERFORMANCE = 1;
+  ANALYSIS_TYPE_SAFETY = 2;
+  ANALYSIS_TYPE_EFFICIENCY = 3;
+  ANALYSIS_TYPE_ENVIRONMENTAL = 4;
+  ANALYSIS_TYPE_COMPREHENSIVE = 5;
+}
+
+enum ComparisonCriteria {
+  COMPARISON_CRITERIA_UNSPECIFIED = 0;
+  COMPARISON_CRITERIA_TIME = 1;
+  COMPARISON_CRITERIA_DISTANCE = 2;
+  COMPARISON_CRITERIA_COST = 3;
+  COMPARISON_CRITERIA_SAFETY = 4;
+  COMPARISON_CRITERIA_COMFORT = 5;
+  COMPARISON_CRITERIA_ENVIRONMENTAL = 6;
+  COMPARISON_CRITERIA_ALL = 7;
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC = 1;
+  SORT_ORDER_DESC = 2;
+}
+
+// Route analysis
+message RouteAnalysis {
+  string analysis_id = 1;
+  AnalysisType type = 2;
+  RouteAnalysisResults results = 3;
+  repeated AnalysisInsight insights = 4;
+  repeated AnalysisRecommendation recommendations = 5;
+  google.protobuf.Timestamp analyzed_at = 6;
+}
+
+// Route analysis results
+message RouteAnalysisResults {
+  PerformanceAnalysis performance = 1;
+  SafetyAnalysis safety = 2;
+  EfficiencyAnalysis efficiency = 3;
+  EnvironmentalAnalysis environmental = 4;
+  double overall_score = 5;
+}
+
+// Performance analysis
+message PerformanceAnalysis {
+  double time_efficiency_score = 1;
+  double distance_efficiency_score = 2;
+  double speed_consistency_score = 3;
+  double route_directness_score = 4;
+  repeated PerformanceIssue issues = 5;
+}
+
+// Performance issue
+message PerformanceIssue {
+  PerformanceIssueType type = 1;
+  Location location = 2;
+  IssueSeverity severity = 3;
+  string description = 4;
+  double impact_score = 5;
+  string suggested_fix = 6;
+}
+
+// Efficiency analysis
+message EfficiencyAnalysis {
+  double fuel_efficiency_score = 1;
+  double time_efficiency_score = 2;
+  double cost_efficiency_score = 3;
+  double resource_utilization_score = 4;
+  repeated EfficiencyOpportunity opportunities = 5;
+}
+
+// Efficiency opportunity
+message EfficiencyOpportunity {
+  OpportunityType type = 1;
+  Location location = 2;
+  double potential_savings = 3;
+  string description = 4;
+  string implementation_suggestion = 5;
+}
+
+// Analysis insight
+message AnalysisInsight {
+  InsightType type = 1;
+  InsightCategory category = 2;
+  string title = 3;
+  string description = 4;
+  double confidence = 5;
+  google.protobuf.Struct supporting_data = 6;
+}
+
+// Analysis recommendation
+message AnalysisRecommendation {
+  RecommendationType type = 1;
+  RecommendationPriority priority = 2;
+  string title = 3;
+  string description = 4;
+  double expected_benefit = 5;
+  double implementation_effort = 6;
+  google.protobuf.Struct implementation_details = 7;
+}
+
+// Additional enums for analysis
+enum PerformanceIssueType {
+  PERFORMANCE_ISSUE_TYPE_UNSPECIFIED = 0;
+  PERFORMANCE_ISSUE_TYPE_BOTTLENECK = 1;
+  PERFORMANCE_ISSUE_TYPE_DETOUR = 2;
+  PERFORMANCE_ISSUE_TYPE_INEFFICIENT_ROUTING = 3;
+  PERFORMANCE_ISSUE_TYPE_SPEED_INCONSISTENCY = 4;
+}
+
+enum IssueSeverity {
+  ISSUE_SEVERITY_UNSPECIFIED = 0;
+  ISSUE_SEVERITY_LOW = 1;
+  ISSUE_SEVERITY_MODERATE = 2;
+  ISSUE_SEVERITY_HIGH = 3;
+  ISSUE_SEVERITY_CRITICAL = 4;
+}
+
+enum OpportunityType {
+  OPPORTUNITY_TYPE_UNSPECIFIED = 0;
+  OPPORTUNITY_TYPE_ROUTE_OPTIMIZATION = 1;
+  OPPORTUNITY_TYPE_SPEED_OPTIMIZATION = 2;
+  OPPORTUNITY_TYPE_FUEL_OPTIMIZATION = 3;
+  OPPORTUNITY_TYPE_TIME_OPTIMIZATION = 4;
+  OPPORTUNITY_TYPE_COST_OPTIMIZATION = 5;
+}

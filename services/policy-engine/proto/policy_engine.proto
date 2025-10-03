@@ -1,0 +1,480 @@
+syntax = "proto3";
+
+package atlasmesh.policy.v1;
+
+option go_package = "github.com/atlasmesh/fleet-os/services/policy-engine/proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// PolicyEngine service provides policy evaluation and management
+service PolicyEngine {
+  // EvaluatePolicy evaluates a policy against input data
+  rpc EvaluatePolicy(EvaluatePolicyRequest) returns (EvaluatePolicyResponse);
+  
+  // BatchEvaluatePolicy evaluates multiple policies in a single request
+  rpc BatchEvaluatePolicy(BatchEvaluatePolicyRequest) returns (BatchEvaluatePolicyResponse);
+  
+  // CreatePolicy creates a new policy
+  rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse);
+  
+  // UpdatePolicy updates an existing policy
+  rpc UpdatePolicy(UpdatePolicyRequest) returns (UpdatePolicyResponse);
+  
+  // GetPolicy retrieves a policy by ID
+  rpc GetPolicy(GetPolicyRequest) returns (GetPolicyResponse);
+  
+  // ListPolicies lists policies with optional filtering
+  rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse);
+  
+  // DeletePolicy deletes a policy
+  rpc DeletePolicy(DeletePolicyRequest) returns (DeletePolicyResponse);
+  
+  // ValidatePolicy validates policy syntax without saving
+  rpc ValidatePolicy(ValidatePolicyRequest) returns (ValidatePolicyResponse);
+  
+  // GetPolicyVersion retrieves a specific version of a policy
+  rpc GetPolicyVersion(GetPolicyVersionRequest) returns (GetPolicyVersionResponse);
+  
+  // ListPolicyVersions lists all versions of a policy
+  rpc ListPolicyVersions(ListPolicyVersionsRequest) returns (ListPolicyVersionsResponse);
+  
+  // RollbackPolicy rolls back to a previous policy version
+  rpc RollbackPolicy(RollbackPolicyRequest) returns (RollbackPolicyResponse);
+}
+
+// Policy evaluation request
+message EvaluatePolicyRequest {
+  string policy_id = 1;
+  google.protobuf.Struct input_data = 2;
+  EvaluationContext context = 3;
+  EvaluationOptions options = 4;
+}
+
+// Policy evaluation response
+message EvaluatePolicyResponse {
+  string decision_id = 1;
+  PolicyDecision decision = 2;
+  repeated PolicyViolation violations = 3;
+  EvaluationMetadata metadata = 4;
+  string audit_trail_id = 5;
+}
+
+// Batch policy evaluation request
+message BatchEvaluatePolicyRequest {
+  repeated EvaluatePolicyRequest requests = 1;
+  BatchEvaluationOptions options = 2;
+}
+
+// Batch policy evaluation response
+message BatchEvaluatePolicyResponse {
+  repeated EvaluatePolicyResponse responses = 1;
+  BatchEvaluationMetadata metadata = 2;
+}
+
+// Policy creation request
+message CreatePolicyRequest {
+  Policy policy = 1;
+  CreatePolicyOptions options = 2;
+}
+
+// Policy creation response
+message CreatePolicyResponse {
+  string policy_id = 1;
+  int32 version = 2;
+  google.protobuf.Timestamp created_at = 3;
+  string audit_trail_id = 4;
+}
+
+// Policy update request
+message UpdatePolicyRequest {
+  string policy_id = 1;
+  Policy policy = 2;
+  UpdatePolicyOptions options = 3;
+}
+
+// Policy update response
+message UpdatePolicyResponse {
+  string policy_id = 1;
+  int32 version = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  string audit_trail_id = 4;
+}
+
+// Get policy request
+message GetPolicyRequest {
+  string policy_id = 1;
+  GetPolicyOptions options = 2;
+}
+
+// Get policy response
+message GetPolicyResponse {
+  Policy policy = 1;
+  PolicyMetadata metadata = 2;
+}
+
+// List policies request
+message ListPoliciesRequest {
+  ListPoliciesFilter filter = 1;
+  PaginationOptions pagination = 2;
+}
+
+// List policies response
+message ListPoliciesResponse {
+  repeated Policy policies = 1;
+  PaginationMetadata pagination = 2;
+  int32 total_count = 3;
+}
+
+// Delete policy request
+message DeletePolicyRequest {
+  string policy_id = 1;
+  DeletePolicyOptions options = 2;
+}
+
+// Delete policy response
+message DeletePolicyResponse {
+  bool deleted = 1;
+  google.protobuf.Timestamp deleted_at = 2;
+  string audit_trail_id = 3;
+}
+
+// Validate policy request
+message ValidatePolicyRequest {
+  Policy policy = 1;
+  ValidationOptions options = 2;
+}
+
+// Validate policy response
+message ValidatePolicyResponse {
+  bool valid = 1;
+  repeated ValidationError errors = 2;
+  repeated ValidationWarning warnings = 3;
+  ValidationMetadata metadata = 4;
+}
+
+// Get policy version request
+message GetPolicyVersionRequest {
+  string policy_id = 1;
+  int32 version = 2;
+}
+
+// Get policy version response
+message GetPolicyVersionResponse {
+  Policy policy = 1;
+  PolicyVersionMetadata metadata = 2;
+}
+
+// List policy versions request
+message ListPolicyVersionsRequest {
+  string policy_id = 1;
+  PaginationOptions pagination = 2;
+}
+
+// List policy versions response
+message ListPolicyVersionsResponse {
+  repeated PolicyVersion versions = 1;
+  PaginationMetadata pagination = 2;
+}
+
+// Rollback policy request
+message RollbackPolicyRequest {
+  string policy_id = 1;
+  int32 target_version = 2;
+  RollbackOptions options = 3;
+}
+
+// Rollback policy response
+message RollbackPolicyResponse {
+  string policy_id = 1;
+  int32 new_version = 2;
+  int32 rolled_back_from_version = 3;
+  google.protobuf.Timestamp rolled_back_at = 4;
+  string audit_trail_id = 5;
+}
+
+// Core data structures
+
+// Policy definition
+message Policy {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  PolicyType type = 4;
+  string content = 5; // Rego or Cedar policy content
+  PolicyStatus status = 6;
+  repeated string tags = 7;
+  PolicyScope scope = 8;
+  PolicyPriority priority = 9;
+  google.protobuf.Struct metadata = 10;
+  int32 version = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
+  string created_by = 14;
+  string updated_by = 15;
+}
+
+// Policy decision result
+message PolicyDecision {
+  DecisionResult result = 1;
+  string reason = 2;
+  google.protobuf.Struct evidence = 3;
+  repeated string applicable_rules = 4;
+  DecisionConfidence confidence = 5;
+}
+
+// Policy violation
+message PolicyViolation {
+  string rule_id = 1;
+  string message = 2;
+  ViolationSeverity severity = 3;
+  google.protobuf.Struct context = 4;
+  string suggested_action = 5;
+}
+
+// Evaluation context
+message EvaluationContext {
+  string request_id = 1;
+  string user_id = 2;
+  string tenant_id = 3;
+  string sector = 4;
+  string environment = 5;
+  google.protobuf.Timestamp timestamp = 6;
+  google.protobuf.Struct additional_context = 7;
+}
+
+// Evaluation options
+message EvaluationOptions {
+  bool include_trace = 1;
+  bool include_evidence = 2;
+  int32 timeout_ms = 3;
+  bool use_cache = 4;
+  string cache_key = 5;
+}
+
+// Batch evaluation options
+message BatchEvaluationOptions {
+  bool fail_fast = 1;
+  int32 max_parallel = 2;
+  int32 timeout_ms = 3;
+}
+
+// Evaluation metadata
+message EvaluationMetadata {
+  int64 evaluation_time_ms = 1;
+  string policy_version = 2;
+  bool cache_hit = 3;
+  string engine_version = 4;
+  google.protobuf.Timestamp evaluated_at = 5;
+}
+
+// Batch evaluation metadata
+message BatchEvaluationMetadata {
+  int32 total_requests = 1;
+  int32 successful_evaluations = 2;
+  int32 failed_evaluations = 3;
+  int64 total_evaluation_time_ms = 4;
+  google.protobuf.Timestamp started_at = 5;
+  google.protobuf.Timestamp completed_at = 6;
+}
+
+// Policy metadata
+message PolicyMetadata {
+  int32 version = 1;
+  int32 total_versions = 2;
+  google.protobuf.Timestamp last_evaluated = 3;
+  int64 evaluation_count = 4;
+  PolicyUsageStats usage_stats = 5;
+}
+
+// Policy version metadata
+message PolicyVersionMetadata {
+  int32 version = 1;
+  google.protobuf.Timestamp created_at = 2;
+  string created_by = 3;
+  string change_summary = 4;
+  bool is_active = 5;
+}
+
+// Policy version
+message PolicyVersion {
+  int32 version = 1;
+  Policy policy = 2;
+  PolicyVersionMetadata metadata = 3;
+}
+
+// Policy usage statistics
+message PolicyUsageStats {
+  int64 total_evaluations = 1;
+  int64 allow_decisions = 2;
+  int64 deny_decisions = 3;
+  double average_evaluation_time_ms = 4;
+  google.protobuf.Timestamp last_used = 5;
+}
+
+// Validation error
+message ValidationError {
+  string code = 1;
+  string message = 2;
+  int32 line = 3;
+  int32 column = 4;
+  string context = 5;
+}
+
+// Validation warning
+message ValidationWarning {
+  string code = 1;
+  string message = 2;
+  int32 line = 3;
+  int32 column = 4;
+  string suggestion = 5;
+}
+
+// Validation metadata
+message ValidationMetadata {
+  string engine_version = 1;
+  int64 validation_time_ms = 2;
+  google.protobuf.Timestamp validated_at = 3;
+}
+
+// Filter options
+message ListPoliciesFilter {
+  repeated PolicyType types = 1;
+  repeated PolicyStatus statuses = 2;
+  repeated string tags = 3;
+  string sector = 4;
+  string name_pattern = 5;
+  google.protobuf.Timestamp created_after = 6;
+  google.protobuf.Timestamp created_before = 7;
+}
+
+// Pagination options
+message PaginationOptions {
+  int32 page_size = 1;
+  string page_token = 2;
+  string sort_by = 3;
+  SortOrder sort_order = 4;
+}
+
+// Pagination metadata
+message PaginationMetadata {
+  string next_page_token = 1;
+  string previous_page_token = 2;
+  int32 page_size = 3;
+  bool has_more = 4;
+}
+
+// Policy creation options
+message CreatePolicyOptions {
+  bool validate_only = 1;
+  bool auto_activate = 2;
+  string change_summary = 3;
+}
+
+// Policy update options
+message UpdatePolicyOptions {
+  bool validate_only = 1;
+  bool create_version = 2;
+  string change_summary = 3;
+  bool force_update = 4;
+}
+
+// Get policy options
+message GetPolicyOptions {
+  int32 version = 1;
+  bool include_metadata = 2;
+  bool include_usage_stats = 3;
+}
+
+// Delete policy options
+message DeletePolicyOptions {
+  bool soft_delete = 1;
+  bool delete_all_versions = 2;
+  string reason = 3;
+}
+
+// Validation options
+message ValidationOptions {
+  bool strict_mode = 1;
+  bool check_references = 2;
+  string target_engine = 3;
+}
+
+// Rollback options
+message RollbackOptions {
+  string reason = 1;
+  bool force_rollback = 2;
+  bool notify_users = 3;
+}
+
+// Enums
+
+enum PolicyType {
+  POLICY_TYPE_UNSPECIFIED = 0;
+  POLICY_TYPE_ODD = 1;           // Operational Design Domain
+  POLICY_TYPE_SAFETY = 2;        // Safety constraints
+  POLICY_TYPE_ROUTING = 3;       // Routing policies
+  POLICY_TYPE_DISPATCH = 4;      // Dispatch rules
+  POLICY_TYPE_REGULATORY = 5;    // Regulatory compliance
+  POLICY_TYPE_SECTOR = 6;        // Sector-specific rules
+  POLICY_TYPE_VEHICLE = 7;       // Vehicle-specific policies
+  POLICY_TYPE_ENVIRONMENTAL = 8; // Environmental conditions
+  POLICY_TYPE_SECURITY = 9;      // Security policies
+  POLICY_TYPE_PRIVACY = 10;      // Privacy policies
+}
+
+enum PolicyStatus {
+  POLICY_STATUS_UNSPECIFIED = 0;
+  POLICY_STATUS_DRAFT = 1;
+  POLICY_STATUS_ACTIVE = 2;
+  POLICY_STATUS_INACTIVE = 3;
+  POLICY_STATUS_DEPRECATED = 4;
+  POLICY_STATUS_ARCHIVED = 5;
+}
+
+enum PolicyScope {
+  POLICY_SCOPE_UNSPECIFIED = 0;
+  POLICY_SCOPE_GLOBAL = 1;
+  POLICY_SCOPE_TENANT = 2;
+  POLICY_SCOPE_SECTOR = 3;
+  POLICY_SCOPE_SITE = 4;
+  POLICY_SCOPE_VEHICLE = 5;
+}
+
+enum PolicyPriority {
+  POLICY_PRIORITY_UNSPECIFIED = 0;
+  POLICY_PRIORITY_LOW = 1;
+  POLICY_PRIORITY_MEDIUM = 2;
+  POLICY_PRIORITY_HIGH = 3;
+  POLICY_PRIORITY_CRITICAL = 4;
+}
+
+enum DecisionResult {
+  DECISION_RESULT_UNSPECIFIED = 0;
+  DECISION_RESULT_ALLOW = 1;
+  DECISION_RESULT_DENY = 2;
+  DECISION_RESULT_ABSTAIN = 3;
+  DECISION_RESULT_ERROR = 4;
+}
+
+enum DecisionConfidence {
+  DECISION_CONFIDENCE_UNSPECIFIED = 0;
+  DECISION_CONFIDENCE_LOW = 1;
+  DECISION_CONFIDENCE_MEDIUM = 2;
+  DECISION_CONFIDENCE_HIGH = 3;
+  DECISION_CONFIDENCE_ABSOLUTE = 4;
+}
+
+enum ViolationSeverity {
+  VIOLATION_SEVERITY_UNSPECIFIED = 0;
+  VIOLATION_SEVERITY_INFO = 1;
+  VIOLATION_SEVERITY_WARNING = 2;
+  VIOLATION_SEVERITY_ERROR = 3;
+  VIOLATION_SEVERITY_CRITICAL = 4;
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC = 1;
+  SORT_ORDER_DESC = 2;
+}
