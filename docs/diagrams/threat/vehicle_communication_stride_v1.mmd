@@ -1,13 +1,6 @@
----
-title: STRIDE Threat Model - Vehicle Communication - AtlasMesh Fleet OS
----
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
 graph TB
-    %% SECURITY CRITICAL: Threat analysis for vehicle command and telemetry flows
-    %% Version 1.0 | Generated from: DFD + Trust Boundaries | Security Level: CRITICAL
-    %% STRIDE THREAT MODEL: Vehicle Communication Security Analysis
-    %% SCOPE: Vehicle Gateway, Command Dispatch, Telemetry Collection
-    %% METHODOLOGY: STRIDE (Spoofing, Tampering, Repudiation, Info Disclosure, DoS, Elevation)
-    %% COMPLIANCE: UAE cybersecurity framework + automotive security standards
+    title STRIDE Threat Model - Vehicle Communication - AtlasMesh Fleet OS
 
     %% Trust Boundaries
     subgraph TB1["🌐 TRUST BOUNDARY: Internet/External"]
@@ -20,7 +13,7 @@ graph TB
         Auth[🔐 Auth Service<br/>Authentication]
         VGW[🌐 Vehicle Gateway<br/>Communication Hub]
         CmdDB[(🗄️ Command Database<br/>Persistent Storage)]
-        Kafka[📨 Event Bus (Kafka)<br/>Message Queue)]
+        Kafka[(📨 Event Bus (Kafka)<br/>Message Queue)]
     end
 
     subgraph TB3["🚗 TRUST BOUNDARY: Vehicle Network"]
@@ -28,29 +21,29 @@ graph TB
         Vehicle[🚗 Vehicle Systems<br/>Physical Control]
     end
 
-    %% SPOOFING THREATS (Red - High Risk)
+    %% SPOOFING THREATS
     Attacker -.->|S1: Identity Spoofing<br/>Steal operator credentials<br/>Impersonate authorized user| Operator
     Attacker -.->|S2: Vehicle Identity Spoofing<br/>Spoof vehicle certificates<br/>Impersonate legitimate vehicle| Vehicle
 
-    %% TAMPERING THREATS (Orange - High Risk)
+    %% TAMPERING THREATS
     Attacker -.->|T1: Command Tampering<br/>Modify vehicle commands in transit<br/>Alter command parameters| Gateway
     Attacker -.->|T2: Event Tampering<br/>Modify audit logs<br/>Alter telemetry data| Kafka
 
-    %% REPUDIATION THREATS (Yellow - Medium Risk)
+    %% REPUDIATION THREATS
     Operator -.->|R1: Command Repudiation<br/>Deny issuing dangerous commands<br/>Claim commands were unauthorized| CmdDB
 
-    %% INFORMATION DISCLOSURE THREATS (Purple - High Risk)
+    %% INFORMATION DISCLOSURE THREATS
     Attacker -.->|I1: Telemetry Interception<br/>Eavesdrop on vehicle communications<br/>Steal location/operational data| VGW
     Attacker -.->|I2: Credential Disclosure<br/>Steal authentication tokens<br/>Access user credentials| Auth
 
-    %% DENIAL OF SERVICE THREATS (Blue - Medium/High Risk)
+    %% DENIAL OF SERVICE THREATS
     Attacker -.->|D1: API Flooding<br/>Overwhelm API with requests<br/>Exhaust system resources| Gateway
     Attacker -.->|D2: WebSocket Exhaustion<br/>Flood vehicle connections<br/>Disrupt real-time communication| VGW
 
-    %% ELEVATION OF PRIVILEGE THREATS (Dark Red - High Risk)
+    %% ELEVATION OF PRIVILEGE THREATS
     Attacker -.->|E1: Privilege Escalation<br/>Exploit authentication flaws<br/>Gain administrative access| Auth
 
-    %% Normal Data Flows (Green - Legitimate)
+    %% Normal Data Flows
     Operator -->|Legitimate Commands| Gateway
     Gateway -->|Authenticated Requests| Auth
     Gateway -->|Validated Commands| VGW
@@ -61,48 +54,42 @@ graph TB
     VGW -->|Event Publishing| Kafka
     Gateway -->|Command Storage| CmdDB
 
-    %% MITIGATIONS (Green Boxes)
+    %% MITIGATIONS
     subgraph MITIGATIONS["🛡️ SECURITY MITIGATIONS"]
         direction TB
-        
         subgraph SPOOFING_MIT["🔒 SPOOFING MITIGATIONS"]
-            S_MFA[✅ Multi-factor authentication MFA]
+            S_MFA[✅ Multi-factor authentication]
             S_CERT[✅ Certificate-based vehicle identity]
-            S_JWT[✅ JWT tokens with short expiration]
+            S_JWT[✅ JWT tokens (short TTL)]
             S_MTLS[✅ mTLS for all communications]
         end
-        
         subgraph TAMPERING_MIT["🔐 TAMPERING MITIGATIONS"]
             T_SIG[✅ Digital signatures on commands]
             T_TLS[✅ TLS encryption for all traffic]
-            T_HMAC[✅ Message integrity checks HMAC]
+            T_HMAC[✅ HMAC integrity checks]
             T_AUDIT[✅ Immutable audit logs]
         end
-        
         subgraph REPUDIATION_MIT["📝 REPUDIATION MITIGATIONS"]
-            R_CRYPTO[✅ Cryptographic signatures on commands]
+            R_CRYPTO[✅ Cryptographic command signatures]
             R_LOG[✅ Comprehensive audit logging]
             R_CERT[✅ Non-repudiation certificates]
-            R_CHAIN[✅ Blockchain audit trail future]
+            R_CHAIN[✅ Blockchain audit trail (future)]
         end
-        
         subgraph DISCLOSURE_MIT["🔍 INFO DISCLOSURE MITIGATIONS"]
-            I_E2E[✅ End-to-end encryption E2EE]
-            I_DLP[✅ Data classification and DLP]
+            I_E2E[✅ End-to-end encryption]
+            I_DLP[✅ Data classification & DLP]
             I_SEG[✅ Network segmentation]
             I_ZERO[✅ Zero-trust architecture]
         end
-        
         subgraph DOS_MIT["⚡ DENIAL OF SERVICE MITIGATIONS"]
-            D_RATE[✅ Rate limiting and throttling]
-            D_DDOS[✅ DDoS protection CloudFlare]
+            D_RATE[✅ Rate limiting & throttling]
+            D_DDOS[✅ DDoS protection]
             D_CIRCUIT[✅ Circuit breakers]
             D_PRIORITY[✅ Priority queues for safety commands]
         end
-        
         subgraph ELEVATION_MIT["🔐 ELEVATION MITIGATIONS"]
-            E_LEAST[✅ Principle of least privilege]
-            E_RBAC[✅ Role-based access control RBAC]
+            E_LEAST[✅ Least privilege]
+            E_RBAC[✅ RBAC]
             E_AUDIT[✅ Regular security audits]
             E_SCAN[✅ Vulnerability scanning]
         end
@@ -111,29 +98,20 @@ graph TB
     %% HIGH-RISK ATTACK SCENARIOS
     subgraph SCENARIOS["🚨 HIGH-RISK ATTACK SCENARIOS"]
         direction TB
-        
-        SCENARIO1[🔴 SCENARIO 1: Malicious Command Injection<br/>1. Attacker compromises operator credentials S1<br/>2. Issues emergency stop to entire fleet T1<br/>3. Causes city-wide transportation disruption<br/>MITIGATION: Dual authorization for fleet-wide commands]
-        
-        SCENARIO2[🔴 SCENARIO 2: Vehicle Hijacking<br/>1. Attacker intercepts vehicle certificates S2<br/>2. Spoofs legitimate vehicle identity<br/>3. Injects false telemetry and receives commands<br/>MITIGATION: Hardware security modules HSM]
-        
-        SCENARIO3[🔴 SCENARIO 3: Privacy Breach<br/>1. Attacker intercepts telemetry streams I1<br/>2. Tracks vehicle locations and passenger data<br/>3. Sells data or uses for surveillance<br/>MITIGATION: End-to-end encryption + data anonymization]
-        
-        SCENARIO4[🔴 SCENARIO 4: Service Disruption<br/>1. Attacker floods vehicle gateway D2<br/>2. Disrupts real-time vehicle communication<br/>3. Forces vehicles into safe-stop mode<br/>MITIGATION: DDoS protection + priority queues]
+        SCENARIO1[🔴 SCENARIO 1: Malicious Command Injection<br/>1) Compromise operator creds (S1)<br/>2) Issue fleet-wide stop (T1)<br/>MITIGATION: Dual authorization]
+        SCENARIO2[🔴 SCENARIO 2: Vehicle Hijacking<br/>1) Spoof vehicle certs (S2)<br/>2) Inject false telemetry<br/>MITIGATION: HSM + mTLS]
+        SCENARIO3[🔴 SCENARIO 3: Privacy Breach<br/>1) Intercept telemetry (I1)<br/>2) Track locations/PII<br/>MITIGATION: E2EE + anonymization]
+        SCENARIO4[🔴 SCENARIO 4: Service Disruption<br/>1) Flood vehicle GW (D2)<br/>2) Disrupt real-time comms<br/>MITIGATION: DDoS + priority queues]
     end
 
     %% SECURITY CONTROLS MAPPING
     subgraph CONTROLS["🔧 SECURITY CONTROLS"]
         direction TB
-        
-        AUTH_CONTROLS[🔑 AUTHENTICATION & AUTHORIZATION:<br/>• OAuth 2.0 + OpenID Connect<br/>• JWT tokens with RS256 signing<br/>• Multi-factor authentication MFA<br/>• Role-based access control RBAC<br/>• Attribute-based access control ABAC]
-        
-        COMM_CONTROLS[📡 COMMUNICATION SECURITY:<br/>• TLS 1.3 for all HTTP traffic<br/>• mTLS for service-to-service communication<br/>• WebSocket Secure WSS for vehicle connections<br/>• Certificate pinning for mobile apps]
-        
-        DATA_CONTROLS[🗄️ DATA PROTECTION:<br/>• AES-256 encryption at rest<br/>• Field-level encryption for PII<br/>• Data loss prevention DLP<br/>• Secure key management Vault]
-        
-        MONITOR_CONTROLS[📊 MONITORING & DETECTION:<br/>• Security Information Event Management SIEM<br/>• Intrusion detection system IDS<br/>• Anomaly detection for vehicle behavior<br/>• Real-time security dashboards]
-        
-        INCIDENT_CONTROLS[🚨 INCIDENT RESPONSE:<br/>• Automated threat response<br/>• Security playbooks<br/>• Incident escalation procedures<br/>• Forensic logging capabilities]
+        AUTH_CONTROLS[🔑 AUTHN/AUTHZ:<br/>• OAuth2 + OIDC<br/>• JWT RS256<br/>• MFA<br/>• RBAC/ABAC]
+        COMM_CONTROLS[📡 COMMUNICATION SECURITY:<br/>• TLS 1.3<br/>• mTLS S2S<br/>• WSS for vehicles<br/>• Cert pinning]
+        DATA_CONTROLS[🗄️ DATA PROTECTION:<br/>• AES-256 at rest<br/>• Field-level PII enc<br/>• DLP<br/>• Vault/KMS]
+        MONITOR_CONTROLS[📊 MONITORING & DETECTION:<br/>• SIEM<br/>• IDS<br/>• Vehicle anomaly detection<br/>• Real-time dashboards]
+        INCIDENT_CONTROLS[🚨 INCIDENT RESPONSE:<br/>• Automated response<br/>• Playbooks<br/>• Escalation<br/>• Forensic logging]
     end
 
     %% Styling
@@ -143,7 +121,6 @@ graph TB
     classDef mitigation fill:#00b894,stroke:#00a085,stroke-width:2px,color:#fff
     classDef system fill:#74b9ff,stroke:#0984e3,stroke-width:2px,color:#fff
     classDef external fill:#636e72,stroke:#2d3436,stroke-width:2px,color:#fff
-    classDef trustBoundary fill:#ffeaa7,stroke:#fdcb6e,stroke-width:3px,stroke-dasharray: 5 5
     classDef scenario fill:#ff7675,stroke:#d63031,stroke-width:2px,color:#fff
     classDef controls fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px,color:#fff
 
@@ -151,6 +128,5 @@ graph TB
     class Operator external
     class Gateway,Auth,VGW,Agent,Vehicle system
     class CmdDB,Kafka system
-    class SPOOFING_MIT,TAMPERING_MIT,REPUDIATION_MIT,DISCLOSURE_MIT,DOS_MIT,ELEVATION_MIT mitigation
     class SCENARIO1,SCENARIO2,SCENARIO3,SCENARIO4 scenario
     class AUTH_CONTROLS,COMM_CONTROLS,DATA_CONTROLS,MONITOR_CONTROLS,INCIDENT_CONTROLS controls
