@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="AtlasMesh Map Converter">
+  <node id="1" lat="24.4667971" lon="54.3660254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="2" lat="24.4668971" lon="54.3660254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="3" lat="24.4669971" lon="54.3660254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="4" lat="24.4670971" lon="54.3660254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="5" lat="24.4671971" lon="54.3660254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="6" lat="24.4667971" lon="54.3661254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="7" lat="24.4668971" lon="54.3661254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="8" lat="24.4669971" lon="54.3661254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="9" lat="24.4670971" lon="54.3661254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="10" lat="24.4671971" lon="54.3661254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="11" lat="24.4669971" lon="54.3658254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="12" lat="24.4669971" lon="54.3659254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="13" lat="24.4669971" lon="54.3662254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="14" lat="24.4669971" lon="54.3663254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="15" lat="24.4668971" lon="54.3658254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="16" lat="24.4668971" lon="54.3659254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="17" lat="24.4668971" lon="54.3662254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  <node id="18" lat="24.4668971" lon="54.3663254" version="1">
+    <tag k="ele" v="0.0"/>
+  </node>
+  
+  <!-- Lanelet: North-South Road (Southbound) -->
+  <way id="101" version="1">
+    <nd ref="15"/>
+    <nd ref="16"/>
+    <nd ref="7"/>
+    <nd ref="17"/>
+    <nd ref="18"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="102" version="1">
+    <nd ref="11"/>
+    <nd ref="12"/>
+    <nd ref="8"/>
+    <nd ref="13"/>
+    <nd ref="14"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="dashed"/>
+  </way>
+  <relation id="1001" version="1">
+    <member type="way" ref="101" role="left"/>
+    <member type="way" ref="102" role="right"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+    <tag k="participant:vehicle" v="yes"/>
+    <tag k="speed_limit" v="50"/>
+  </relation>
+  
+  <!-- Lanelet: North-South Road (Northbound) -->
+  <way id="103" version="1">
+    <nd ref="14"/>
+    <nd ref="13"/>
+    <nd ref="9"/>
+    <nd ref="12"/>
+    <nd ref="11"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="dashed"/>
+  </way>
+  <way id="104" version="1">
+    <nd ref="18"/>
+    <nd ref="17"/>
+    <nd ref="10"/>
+    <nd ref="16"/>
+    <nd ref="15"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <relation id="1002" version="1">
+    <member type="way" ref="103" role="left"/>
+    <member type="way" ref="104" role="right"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+    <tag k="participant:vehicle" v="yes"/>
+    <tag k="speed_limit" v="50"/>
+  </relation>
+  
+  <!-- Lanelet: East-West Road (Westbound) -->
+  <way id="105" version="1">
+    <nd ref="5"/>
+    <nd ref="4"/>
+    <nd ref="3"/>
+    <nd ref="2"/>
+    <nd ref="1"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <way id="106" version="1">
+    <nd ref="10"/>
+    <nd ref="9"/>
+    <nd ref="8"/>
+    <nd ref="7"/>
+    <nd ref="6"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="dashed"/>
+  </way>
+  <relation id="1003" version="1">
+    <member type="way" ref="105" role="left"/>
+    <member type="way" ref="106" role="right"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+    <tag k="participant:vehicle" v="yes"/>
+    <tag k="speed_limit" v="50"/>
+  </relation>
+  
+  <!-- Lanelet: East-West Road (Eastbound) -->
+  <way id="107" version="1">
+    <nd ref="6"/>
+    <nd ref="7"/>
+    <nd ref="8"/>
+    <nd ref="9"/>
+    <nd ref="10"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="dashed"/>
+  </way>
+  <way id="108" version="1">
+    <nd ref="1"/>
+    <nd ref="2"/>
+    <nd ref="3"/>
+    <nd ref="4"/>
+    <nd ref="5"/>
+    <tag k="type" v="line_thin"/>
+    <tag k="subtype" v="solid"/>
+  </way>
+  <relation id="1004" version="1">
+    <member type="way" ref="107" role="left"/>
+    <member type="way" ref="108" role="right"/>
+    <tag k="type" v="lanelet"/>
+    <tag k="subtype" v="road"/>
+    <tag k="location" v="urban"/>
+    <tag k="one_way" v="yes"/>
+    <tag k="participant:vehicle" v="yes"/>
+    <tag k="speed_limit" v="50"/>
+  </relation>
+  
+  <!-- Regulatory Elements -->
+  <relation id="2001" version="1">
+    <member type="relation" ref="1001" role="refers"/>
+    <member type="relation" ref="1003" role="refers"/>
+    <tag k="type" v="regulatory_element"/>
+    <tag k="subtype" v="right_of_way"/>
+    <tag k="yield" v="1003"/>
+  </relation>
+  
+  <relation id="2002" version="1">
+    <member type="relation" ref="1002" role="refers"/>
+    <member type="relation" ref="1004" role="refers"/>
+    <tag k="type" v="regulatory_element"/>
+    <tag k="subtype" v="right_of_way"/>
+    <tag k="yield" v="1004"/>
+  </relation>
+  
+  <!-- Traffic Light -->
+  <node id="301" lat="24.4669971" lon="54.3661754" version="1">
+    <tag k="type" v="traffic_light"/>
+  </node>
+  
+  <relation id="3001" version="1">
+    <member type="node" ref="301" role="ref_line"/>
+    <member type="relation" ref="1001" role="refers"/>
+    <tag k="type" v="regulatory_element"/>
+    <tag k="subtype" v="traffic_light"/>
+  </relation>
+  
+  <relation id="3002" version="1">
+    <member type="node" ref="301" role="ref_line"/>
+    <member type="relation" ref="1003" role="refers"/>
+    <tag k="type" v="regulatory_element"/>
+    <tag k="subtype" v="traffic_light"/>
+  </relation>
+  
+  <!-- Map Metadata -->
+  <relation id="9001" version="1">
+    <tag k="type" v="multipolygon"/>
+    <tag k="name" v="Abu Dhabi Test Intersection"/>
+    <tag k="version" v="1.0"/>
+    <tag k="date" v="2025-09-15"/>
+    <tag k="source" v="AtlasMesh"/>
+    <tag k="projection" v="WGS84"/>
+    <tag k="format" v="lanelet2"/>
+  </relation>
+</osm>

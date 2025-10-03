@@ -1,0 +1,497 @@
+# AtlasMesh Fleet OS - UAT Environment Configuration
+# Abu Dhabi autonomous vehicle fleet management platform
+# User Acceptance Testing environment for final validation before production
+
+environment: uat
+region: abu_dhabi
+timezone: Asia/Dubai
+
+# API Configuration
+api:
+  base_url: https://api-uat.atlasmesh.com
+  ws_url: wss://api-uat.atlasmesh.com
+  timeout: 30000
+  rate_limit:
+    requests_per_minute: 2000
+    burst_size: 100
+  cors:
+    enabled: true
+    origins:
+      - https://app-uat.atlasmesh.com
+      - https://uat.atlasmesh.com
+
+# Database Configuration
+database:
+  postgresql:
+    host: postgresql-uat.atlasmesh.local
+    port: 5432
+    database: atlasmesh_fleet_uat
+    username: atlasmesh_uat
+    password_env: POSTGRES_PASSWORD_UAT
+    ssl_mode: require
+    max_connections: 100
+    connection_timeout: 30s
+    idle_timeout: 300s
+    log_queries: false
+    
+    # UAT-specific settings
+    uat:
+      data_refresh: daily
+      anonymization: enabled
+      test_data_retention: 30d
+  
+  redis:
+    host: redis-uat.atlasmesh.local
+    port: 6379
+    database: 0
+    password_env: REDIS_PASSWORD_UAT
+    max_connections: 50
+    connection_timeout: 5s
+    idle_timeout: 300s
+    ssl: true
+
+# Message Queue Configuration
+messaging:
+  kafka:
+    brokers:
+      - kafka-uat-01.atlasmesh.local:9092
+      - kafka-uat-02.atlasmesh.local:9092
+      - kafka-uat-03.atlasmesh.local:9092
+    topic_prefix: atlasmesh_uat
+    consumer_group: atlasmesh_uat_group
+    security:
+      protocol: SASL_SSL
+      mechanism: SCRAM-SHA-256
+      username: atlasmesh_uat
+      password_env: KAFKA_PASSWORD_UAT
+    performance:
+      batch_size: 500
+      linger_ms: 10
+      buffer_memory: 67108864
+
+# Map Configuration (Abu Dhabi centered)
+maps:
+  default_provider: openstreetmap
+  default_center:
+    lat: 24.4539
+    lng: 54.3773
+  default_zoom: 12
+  providers:
+    openstreetmap:
+      enabled: true
+      tile_server: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+      attribution: "© OpenStreetMap contributors"
+    google:
+      enabled: true
+      api_key_env: GOOGLE_MAPS_API_KEY_UAT
+      map_type: roadmap
+    mapbox:
+      enabled: false
+      api_key_env: MAPBOX_API_KEY_UAT
+  
+  # Abu Dhabi specific settings
+  abu_dhabi:
+    bounds:
+      north: 24.6
+      south: 24.2
+      east: 55.0
+      west: 54.0
+    districts:
+      - abu_dhabi_city
+      - al_ain
+      - al_dhafra
+    landmarks:
+      - sheikh_zayed_mosque
+      - emirates_palace
+      - corniche
+      - yas_island
+
+# Feature Flags
+features:
+  enable_clustering: true
+  enable_real_time_updates: true
+  enable_vehicle_trails: true
+  enable_geofence_monitoring: true
+  enable_heatmaps: true
+  enable_offline_mode: false
+  enable_debug_mode: false
+  enable_mock_data: false
+  enable_performance_monitoring: true
+  enable_chaos_engineering: false
+
+# Performance Settings
+performance:
+  map_update_interval: 5000
+  telemetry_batch_size: 100
+  max_vehicles_on_map: 200
+  max_route_points: 1000
+  cluster_radius: 50
+  max_cluster_zoom: 15
+  
+  # Production-equivalent budgets
+  budgets:
+    policy_evaluation_ms: 25
+    vehicle_command_ms: 50
+    route_calculation_ms: 200
+    ui_render_ms: 30
+
+# Security Configuration
+security:
+  enable_https: true
+  csrf_token_header: X-CSRF-Token
+  jwt:
+    secret_env: JWT_SECRET_UAT
+    expiration: 4h
+    refresh_expiration: 12h
+  
+  cors:
+    allow_credentials: true
+    max_age: 3600
+  
+  # UAT authentication
+  auth:
+    bypass_enabled: false
+    require_mfa: false
+    session_timeout: 8h
+    password_policy:
+      min_length: 8
+      require_special_chars: true
+      require_numbers: true
+    
+    # Test user management
+    test_users:
+      enabled: true
+      auto_provision: true
+      roles:
+        - fleet_operator
+        - safety_manager
+        - system_admin
+        - viewer
+
+# Logging Configuration
+logging:
+  level: info
+  format: json
+  output:
+    - stdout
+    - elasticsearch
+  
+  elasticsearch:
+    host: elasticsearch-uat.atlasmesh.local
+    port: 9200
+    index: atlasmesh-uat-logs
+    username: fluentd_uat
+    password_env: ELASTICSEARCH_PASSWORD_UAT
+  
+  components:
+    policy_engine: info
+    vehicle_gateway: info
+    fleet_manager: info
+    telemetry_ingestion: warn
+    map_data_contract: info
+    weather_fusion: info
+
+# Monitoring Configuration
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+    metrics_path: /metrics
+    retention: 30d
+  
+  grafana:
+    enabled: true
+    port: 3000
+    admin_password_env: GRAFANA_ADMIN_PASSWORD_UAT
+  
+  jaeger:
+    enabled: true
+    agent_host: jaeger-uat.atlasmesh.local
+    agent_port: 6831
+    sampling_rate: 0.3
+  
+  health_checks:
+    enabled: true
+    interval: 30s
+    timeout: 10s
+
+# UAT-specific Configuration
+uat:
+  # Test scenarios
+  test_scenarios:
+    enabled: true
+    automated: true
+    scenarios:
+      - basic_fleet_operations
+      - emergency_response
+      - policy_compliance
+      - user_workflows
+      - performance_validation
+  
+  # Test data management
+  test_data:
+    refresh_schedule: "0 6 * * *"
+    anonymization: true
+    synthetic_data: true
+    data_sets:
+      - minimal: 10 vehicles, 5 routes
+      - standard: 50 vehicles, 20 routes
+      - stress: 200 vehicles, 100 routes
+  
+  # User acceptance criteria
+  acceptance_criteria:
+    performance:
+      response_time_p95: 100ms
+      availability: 99.9%
+      error_rate: 0.1%
+    
+    functionality:
+      core_features: 100%
+      edge_cases: 95%
+      user_workflows: 100%
+    
+    usability:
+      task_completion_rate: 95%
+      user_satisfaction: 4.5/5
+      accessibility: WCAG_2.2_AA
+
+# External Services (UAT)
+external_services:
+  weather_api:
+    enabled: true
+    mock: false
+    url: https://api.openweathermap.org/data/2.5
+    api_key_env: WEATHER_API_KEY_UAT
+    timeout: 10s
+    rate_limit: 5000
+  
+  traffic_api:
+    enabled: true
+    mock: false
+    url: https://api.tomtom.com/traffic/services/4
+    api_key_env: TRAFFIC_API_KEY_UAT
+    timeout: 15s
+    rate_limit: 2500
+  
+  uae_government_apis:
+    enabled: true
+    mock: true  # Use mock for UAT to avoid affecting real systems
+    base_url: https://mock-api.government.ae
+    api_key_env: UAE_GOV_API_KEY_UAT
+    timeout: 30s
+    rate_limit: 500
+
+# Backup Configuration
+backup:
+  enabled: true
+  schedule: "0 3 * * *"
+  retention: 14d
+  storage:
+    type: s3
+    bucket: atlasmesh-uat-backups
+    region: me-south-1
+    encryption: true
+
+# Secrets Management
+secrets:
+  provider: kubernetes
+  rotation: false
+  
+  # Kubernetes secrets mapping
+  kubernetes:
+    namespace: atlasmesh-fleet-os-uat
+    secrets:
+      - name: database-credentials
+        keys:
+          POSTGRES_PASSWORD_UAT: password
+      - name: redis-credentials
+        keys:
+          REDIS_PASSWORD_UAT: password
+      - name: kafka-credentials
+        keys:
+          KAFKA_PASSWORD_UAT: password
+      - name: jwt-secrets
+        keys:
+          JWT_SECRET_UAT: secret
+      - name: api-keys
+        keys:
+          GOOGLE_MAPS_API_KEY_UAT: google_maps_key
+          WEATHER_API_KEY_UAT: weather_key
+          TRAFFIC_API_KEY_UAT: traffic_key
+          UAE_GOV_API_KEY_UAT: uae_gov_key
+      - name: monitoring-credentials
+        keys:
+          GRAFANA_ADMIN_PASSWORD_UAT: grafana_password
+          ELASTICSEARCH_PASSWORD_UAT: elasticsearch_password
+
+# Resource Limits (UAT)
+resources:
+  cpu_limit: 8000m
+  memory_limit: 16Gi
+  storage_limit: 200Gi
+  
+  # Per-service limits
+  services:
+    api_gateway:
+      cpu: 500m
+      memory: 512Mi
+      replicas: 2
+    fleet_manager:
+      cpu: 300m
+      memory: 512Mi
+      replicas: 2
+    policy_engine:
+      cpu: 300m
+      memory: 512Mi
+      replicas: 2
+    vehicle_gateway:
+      cpu: 500m
+      memory: 1Gi
+      replicas: 2
+    telemetry_ingestion:
+      cpu: 500m
+      memory: 1Gi
+      replicas: 2
+    control_center_ui:
+      cpu: 200m
+      memory: 256Mi
+      replicas: 2
+
+# Compliance (UAT validation)
+compliance:
+  uae_regulations: true
+  iso_standards: true
+  gdpr: true
+  audit_logging: true
+  data_retention: 90d
+  
+  # Compliance testing
+  testing:
+    automated_compliance_checks: true
+    regulatory_validation: true
+    audit_trail_verification: true
+    data_protection_testing: true
+
+# Test Automation
+test_automation:
+  enabled: true
+  
+  # Test types
+  tests:
+    unit_tests: true
+    integration_tests: true
+    e2e_tests: true
+    performance_tests: true
+    security_tests: true
+    accessibility_tests: true
+  
+  # Test execution
+  execution:
+    parallel: true
+    retry_count: 3
+    timeout: 30m
+    
+  # Test reporting
+  reporting:
+    format: junit
+    coverage_threshold: 80
+    performance_baseline: true
+
+# User Acceptance Testing
+user_acceptance:
+  # Test users
+  test_users:
+    fleet_operators: 5
+    safety_managers: 3
+    system_admins: 2
+    executives: 2
+  
+  # Test scenarios
+  scenarios:
+    - name: "Daily Fleet Operations"
+      duration: 2h
+      participants: fleet_operators
+      success_criteria: "Complete all daily tasks without errors"
+    
+    - name: "Emergency Response"
+      duration: 30m
+      participants: [fleet_operators, safety_managers]
+      success_criteria: "Respond to emergency within 2 minutes"
+    
+    - name: "System Administration"
+      duration: 1h
+      participants: system_admins
+      success_criteria: "Configure system settings successfully"
+    
+    - name: "Executive Dashboard"
+      duration: 15m
+      participants: executives
+      success_criteria: "Access all required KPIs and reports"
+  
+  # Feedback collection
+  feedback:
+    methods: [surveys, interviews, usability_sessions]
+    metrics: [task_completion, error_rate, satisfaction, efficiency]
+    reporting: weekly
+
+# Network Configuration
+network:
+  vpc_cidr: 10.2.0.0/16
+  subnets:
+    public:
+      - 10.2.1.0/24
+      - 10.2.2.0/24
+    private:
+      - 10.2.10.0/24
+      - 10.2.11.0/24
+  
+  # Load balancer configuration
+  load_balancer:
+    type: application
+    scheme: internet-facing
+    ssl_policy: ELBSecurityPolicy-TLS-1-2-2017-01
+  
+  # Security groups
+  security_groups:
+    web:
+      ingress:
+        - port: 443
+          protocol: tcp
+          cidr: 0.0.0.0/0
+        - port: 80
+          protocol: tcp
+          cidr: 0.0.0.0/0
+    app:
+      ingress:
+        - port: 8080
+          protocol: tcp
+          source_sg: web
+    db:
+      ingress:
+        - port: 5432
+          protocol: tcp
+          source_sg: app
+
+# Data Management
+data_management:
+  # Data refresh
+  refresh:
+    schedule: daily
+    source: production_anonymized
+    validation: automated
+  
+  # Data quality
+  quality:
+    checks: enabled
+    metrics: [completeness, accuracy, consistency]
+    thresholds:
+      completeness: 95%
+      accuracy: 98%
+      consistency: 99%
+  
+  # Data privacy
+  privacy:
+    anonymization: enabled
+    pseudonymization: enabled
+    pii_detection: enabled
+    gdpr_compliance: enforced

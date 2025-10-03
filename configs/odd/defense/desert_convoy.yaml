@@ -1,0 +1,303 @@
+---
+# Desert Convoy ODD Configuration
+# Operational Design Domain for defense convoy operations in Middle East desert conditions
+
+odd_id: "defense_desert_convoy_v1"
+sector: "defense"
+description: "Operational parameters for multi-vehicle convoy operations in desert environments"
+version: "1.0.0"
+last_updated: "2025-09-13"
+owner: "Defense Sector Lead"
+
+# Geographic constraints
+geographic:
+  region: "middle_east"
+  terrain_types:
+    - "desert_flat"
+    - "desert_dunes"
+    - "gravel_track"
+    - "unpaved_road"
+    - "paved_road"
+  elevation_range:
+    min_meters: -400
+    max_meters: 2500
+  slope_limits:
+    max_uphill_degrees: 25
+    max_downhill_degrees: 25
+    max_cross_slope_degrees: 15
+  no_go_zones:
+    - type: "geopolitical_boundary"
+      buffer_meters: 1000
+    - type: "active_conflict"
+      buffer_meters: 5000
+    - type: "environmental_protected"
+      buffer_meters: 500
+
+# Road and path constraints
+road:
+  types:
+    - "paved_highway"
+    - "paved_secondary"
+    - "unpaved_graded"
+    - "unpaved_track"
+    - "off_road_established"
+    - "off_road_pathfinding"
+  width_requirements:
+    min_width_meters: 3.5
+    preferred_width_meters: 5.0
+  surface_conditions:
+    allowed:
+      - "paved_intact"
+      - "paved_damaged"
+      - "gravel_compact"
+      - "sand_firm"
+      - "sand_loose"
+      - "rock_scattered"
+    restricted:
+      - "sand_deep"
+      - "mud"
+      - "flooded"
+  obstacle_limits:
+    max_height_cm: 30
+    max_width_cm: 50
+    detection_distance_meters: 50
+
+# Weather constraints
+weather:
+  temperature:
+    min_celsius: -10
+    max_celsius: 55
+    derating_curve:
+      - threshold_celsius: 45
+        speed_factor: 0.9
+      - threshold_celsius: 50
+        speed_factor: 0.7
+      - threshold_celsius: 55
+        speed_factor: 0.5
+  visibility:
+    min_meters: 50
+    preferred_meters: 200
+    degraded_operations:
+      threshold_meters: 100
+      speed_factor: 0.6
+  wind:
+    max_sustained_kmh: 65
+    max_gust_kmh: 80
+    dust_storm_threshold_kmh: 40
+  precipitation:
+    max_rate_mm_per_hour: 25
+    flash_flood_risk:
+      threshold_mm_per_hour: 15
+      duration_minutes: 30
+
+# Time constraints
+time:
+  operations:
+    - "day"
+    - "night"
+    - "twilight"
+  restrictions:
+    curfew_hours: []  # No curfew restrictions for defense operations
+    prayer_times: []  # No prayer time restrictions for defense operations
+
+# Communications constraints
+communications:
+  required_modes:
+    primary: "military_lte"
+    secondary: "mesh_network"
+    fallback: "satellite"
+  gnss_requirements:
+    required: false
+    degraded_allowed: true
+    denied_operations:
+      allowed: true
+      max_distance_km: 50
+      requirements:
+        - "inertial_navigation"
+        - "visual_odometry"
+        - "terrain_matching"
+  connectivity_requirements:
+    min_uptime_percent: 80
+    max_outage_minutes: 30
+    store_forward_required: true
+
+# Vehicle constraints
+vehicle:
+  types:
+    - "ugv_light"
+    - "ugv_medium"
+    - "ugv_heavy"
+    - "mrap"
+    - "logistics_truck"
+  capabilities:
+    min_range_km: 300
+    min_endurance_hours: 12
+    required_sensors:
+      - "lidar"
+      - "camera_visual"
+      - "camera_thermal"
+      - "radar"
+      - "gnss"
+      - "imu"
+  convoy_parameters:
+    min_vehicles: 2
+    max_vehicles: 12
+    spacing_range_meters:
+      min: 30
+      max: 100
+      default: 50
+    formation_types:
+      - "column"
+      - "staggered"
+      - "echelon"
+    lead_vehicle_requirements:
+      - "enhanced_perception"
+      - "comms_relay"
+      - "route_planning"
+
+# Security constraints
+security:
+  communications_security:
+    encryption_required: true
+    emissions_control:
+      low_probability_detection: true
+      low_probability_intercept: true
+  cyber_security:
+    attestation_required: true
+    tamper_detection: true
+    remote_wipe_capability: true
+  physical_security:
+    anti_tampering_required: true
+    ballistic_protection_level: "level_2"
+
+# Regulatory constraints
+regulatory:
+  rules_of_engagement:
+    required: true
+    version: "current"
+  export_controls:
+    classification: "controlled"
+    handling_requirements: "secure"
+  jurisdictional_rules:
+    applied_by: "mission_parameters"
+
+# Safety constraints
+safety:
+  safety_distance_multipliers:
+    nominal: 1.5
+    degraded: 2.0
+    emergency: 3.0
+  safe_stop_requirements:
+    min_distance_between_stops_km: 5
+    max_distance_between_stops_km: 20
+    required_attributes:
+      - "cover"
+      - "concealment"
+      - "defensive_position"
+  emergency_protocols:
+    required:
+      - "loss_of_comms"
+      - "vehicle_disabled"
+      - "security_breach"
+      - "medical_emergency"
+      - "weather_emergency"
+
+# Operational constraints
+operational:
+  mission_parameters:
+    max_duration_hours: 72
+    resupply_interval_hours: 24
+    rest_requirements:
+      maintenance_hours_per_day: 2
+      system_check_interval_hours: 8
+  escort_requirements:
+    human_escort_required: false
+    conditions_requiring_escort:
+      - "heightened_threat"
+      - "sensitive_cargo"
+      - "border_proximity"
+  tele_assist:
+    allowed: true
+    max_assists_per_100km: 2
+    max_duration_minutes_per_assist: 5
+    bandwidth_requirements_kbps: 256
+
+# Degradation modes
+degradation_modes:
+  comms_degraded:
+    triggers:
+      - "signal_loss_exceeds_5_minutes"
+      - "bandwidth_below_64kbps"
+      - "packet_loss_exceeds_30_percent"
+    actions:
+      - "reduce_spacing_by_20_percent"
+      - "increase_heartbeat_frequency"
+      - "activate_local_decision_making"
+      - "prepare_for_comms_loss"
+  comms_loss:
+    triggers:
+      - "signal_loss_exceeds_15_minutes"
+      - "heartbeat_failure"
+    actions:
+      - "execute_last_valid_orders"
+      - "proceed_to_nearest_safe_harbor"
+      - "maintain_formation_integrity"
+      - "attempt_comms_restoration"
+  gnss_degraded:
+    triggers:
+      - "position_uncertainty_exceeds_10_meters"
+      - "satellite_count_below_6"
+    actions:
+      - "activate_visual_inertial_navigation"
+      - "reduce_speed_by_20_percent"
+      - "increase_spacing_by_20_percent"
+  gnss_denied:
+    triggers:
+      - "position_uncertainty_exceeds_30_meters"
+      - "satellite_count_below_3"
+    actions:
+      - "switch_to_visual_terrain_navigation"
+      - "reduce_speed_by_40_percent"
+      - "increase_spacing_by_40_percent"
+      - "prepare_for_manual_intervention"
+  visibility_degraded:
+    triggers:
+      - "visibility_below_200_meters"
+      - "dust_detection_level_high"
+    actions:
+      - "activate_enhanced_sensing_mode"
+      - "reduce_speed_by_30_percent"
+      - "increase_spacing_by_30_percent"
+  visibility_critical:
+    triggers:
+      - "visibility_below_50_meters"
+    actions:
+      - "reduce_speed_to_minimum_safe"
+      - "prepare_for_safe_stop"
+      - "activate_emergency_lighting"
+  vehicle_health_degraded:
+    triggers:
+      - "critical_system_warning"
+      - "fuel_below_20_percent"
+      - "battery_below_30_percent"
+    actions:
+      - "notify_convoy_commander"
+      - "prepare_contingency_routing"
+      - "identify_maintenance_points"
+
+# Testing and validation
+validation:
+  required_scenarios:
+    - "dust_storm_response"
+    - "comms_degradation_handling"
+    - "gnss_denial_navigation"
+    - "obstacle_avoidance_offroad"
+    - "safe_harbor_execution"
+    - "formation_maintenance"
+  performance_metrics:
+    - "mission_completion_rate"
+    - "navigation_accuracy_gnss_denied"
+    - "formation_integrity_maintenance"
+    - "obstacle_detection_range"
+    - "comms_reliability"
+    - "assist_frequency"

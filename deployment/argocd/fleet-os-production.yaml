@@ -1,0 +1,120 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: fleet-os-production
+  namespace: argocd
+  labels:
+    environment: production
+    project: fleet-os
+spec:
+  replicas: 1
+  strategy:
+    canary:
+      maxSurge: "25%"
+      maxUnavailable: 0
+      steps:
+      - setWeight: 5
+      - pause: {duration: 10m}
+      - analysis:
+          templates:
+          - templateName: fleet-os-success-rate
+          args:
+          - name: service-name
+            value: fleet-os-production
+      - setWeight: 25
+      - pause: {duration: 10m}
+      - analysis:
+          templates:
+          - templateName: fleet-os-latency-check
+          args:
+          - name: service-name
+            value: fleet-os-production
+      - setWeight: 50
+      - pause: {duration: 20m}
+      - analysis:
+          templates:
+          - templateName: fleet-os-comprehensive-check
+          args:
+          - name: service-name
+            value: fleet-os-production
+      - setWeight: 100
+      canaryService: fleet-os-production-canary
+      stableService: fleet-os-production-stable
+      trafficRouting:
+        nginx:
+          stableIngress: fleet-os-production-stable
+          annotationPrefix: nginx.ingress.kubernetes.io
+          additionalIngressAnnotations:
+            canary-by-header: X-Canary
+            canary-by-header-value: "true"
+      analysis:
+        successCondition: result[0] >= 0.95
+        failureLimit: 3
+        interval: 2m
+        startingStep: 2
+  selector:
+    matchLabels:
+      app: fleet-os-production
+  template:
+    metadata:
+      labels:
+        app: fleet-os-production
+    spec:
+      containers:
+      - name: fleet-os
+        image: registry.atlasmesh.ae/fleet-os:v1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ENVIRONMENT
+          value: production
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+          limits:
+            cpu: 4000m
+            memory: 8Gi
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fleet-os-production
+  namespace: argocd
+  labels:
+    environment: production
+    project: fleet-os
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/atlasmesh/fleet-os.git
+    targetRevision: v1.0.0  # Use specific version tags for production
+    path: deployment/helm/fleet-os
+    helm:
+      valueFiles:
+        - values.yaml
+        - values-production.yaml
+      parameters:
+        - name: image.tag
+          value: v1.0.0
+        - name: environment
+          value: production
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fleet-os-production
+  syncPolicy:
+    # Manual sync for production - no automated sync
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 2
+      backoff:
+        duration: 30s
+        factor: 2
+        maxDuration: 10m
+  revisionHistoryLimit: 20  # Keep more history for production

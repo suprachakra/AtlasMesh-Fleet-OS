@@ -1,0 +1,359 @@
+# AtlasMesh Fleet OS - Production Environment Values
+
+environment: "production"
+region: "uae-central"
+
+# Production image configuration
+image:
+  tag: "v1.0.0"  # Use specific version tags in production
+
+# Production resource allocation
+services:
+  apiGateway:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+  
+  fleetManager:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 4000m
+        memory: 8Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+  
+  vehicleGateway:
+    replicas: 5
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 4000m
+        memory: 8Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 5
+      maxReplicas: 20
+      targetCPUUtilizationPercentage: 70
+  
+  policyEngine:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 8
+  
+  weatherFusion:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 5
+  
+  telemetryIngest:
+    replicas: 5
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 4000m
+        memory: 8Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 5
+      maxReplicas: 15
+      targetCPUUtilizationPercentage: 70
+
+# Production UI configuration
+ui:
+  controlCenter:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 8
+  
+  mobileApp:
+    replicas: 2
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+
+# Production database configuration
+postgresql:
+  auth:
+    postgresPassword: "CHANGE_IN_PRODUCTION"
+  primary:
+    persistence:
+      size: 200Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 2000m
+        memory: 4Gi
+      limits:
+        cpu: 8000m
+        memory: 16Gi
+  readReplicas:
+    replicaCount: 2
+    persistence:
+      size: 200Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 4000m
+        memory: 8Gi
+
+# Production Redis configuration
+redis:
+  auth:
+    password: "CHANGE_IN_PRODUCTION"
+  master:
+    persistence:
+      size: 50Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+  replica:
+    replicaCount: 2
+    persistence:
+      size: 50Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+
+# Production Kafka configuration
+kafka:
+  replicaCount: 3
+  persistence:
+    size: 100Gi
+    storageClass: "fast-ssd"
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 4000m
+      memory: 8Gi
+  zookeeper:
+    replicaCount: 3
+    persistence:
+      size: 20Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+
+# Production monitoring configuration
+monitoring:
+  prometheus:
+    server:
+      persistentVolume:
+        size: 100Gi
+        storageClass: "fast-ssd"
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 2Gi
+        limits:
+          cpu: 4000m
+          memory: 8Gi
+      retention: "30d"
+    alertmanager:
+      persistentVolume:
+        size: 20Gi
+        storageClass: "fast-ssd"
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+  
+  grafana:
+    persistence:
+      size: 20Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    adminPassword: "CHANGE_IN_PRODUCTION"
+  
+  jaeger:
+    elasticsearch:
+      replicas: 3
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 2Gi
+        limits:
+          cpu: 4000m
+          memory: 8Gi
+
+# Production ingress configuration
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/rate-limit: "1000"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/ssl-protocols: "TLSv1.2 TLSv1.3"
+  hosts:
+    - host: api.atlasmesh.ae
+      paths:
+        - path: /
+          pathType: Prefix
+          service: api-gateway
+    - host: fleet.atlasmesh.ae
+      paths:
+        - path: /
+          pathType: Prefix
+          service: control-center
+  tls:
+    - secretName: atlasmesh-prod-tls
+      hosts:
+        - api.atlasmesh.ae
+        - fleet.atlasmesh.ae
+
+# Production backup configuration
+backup:
+  enabled: true
+  schedule: "0 1 * * *"  # Daily at 1 AM
+  retention: "90d"       # 3 months retention
+  storage:
+    type: "s3"
+    bucket: "atlasmesh-prod-backups"
+    region: "me-south-1"
+    encryption: true
+
+# Production feature flags
+featureFlags:
+  autonomousDispatch: true
+  predictiveMaintenance: true
+  weatherIntegration: true
+  arabicLocalization: true
+  uaeGovernmentIntegration: true
+
+# Production resource quotas
+resourceQuotas:
+  hard:
+    requests.cpu: "100"
+    requests.memory: "200Gi"
+    limits.cpu: "200"
+    limits.memory: "400Gi"
+    persistentvolumeclaims: "100"
+
+# Production security configuration
+security:
+  rbac:
+    enabled: true
+  networkPolicies:
+    enabled: true
+  podSecurityPolicy:
+    enabled: true
+  serviceAccount:
+    create: true
+    name: "fleet-os-prod"
+
+# Production-specific environment variables
+env:
+  - name: ENVIRONMENT
+    value: "production"
+  - name: LOG_LEVEL
+    value: "INFO"
+  - name: ENABLE_PROFILING
+    value: "false"
+  - name: MOCK_EXTERNAL_SERVICES
+    value: "false"
+  - name: SENTRY_DSN
+    valueFrom:
+      secretKeyRef:
+        name: sentry-config
+        key: dsn
+
+# Pod Disruption Budgets for high availability
+podDisruptionBudgets:
+  enabled: true
+  minAvailable: 2
+
+# Node affinity for production workloads
+nodeAffinity:
+  enabled: true
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+    - matchExpressions:
+      - key: node-type
+        operator: In
+        values:
+        - production
+
+# Tolerations for dedicated production nodes
+tolerations:
+  - key: "production-only"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"

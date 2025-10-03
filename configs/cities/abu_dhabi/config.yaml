@@ -1,0 +1,214 @@
+---
+# Abu Dhabi City Configuration
+# Operational Design Domain and regulatory constraints for Abu Dhabi, UAE
+
+city: "abu_dhabi"
+country: "uae"
+region: "middle_east"
+timezone: "Asia/Dubai"
+currency: "AED"
+language: "ar_AE"  # Arabic (UAE)
+coordinates:
+  latitude: 24.4539
+  longitude: 54.3773
+
+# Regulatory framework
+regulations:
+  data_residency: "uae"
+  data_sovereignty: true
+  autonomous_permits_required: true
+  commercial_license_required: true
+  insurance_requirements: "comprehensive_av"
+  liability_framework: "uae_federal_law"
+
+# Speed limits and traffic rules
+traffic_rules:
+  speed_limits:
+    urban_kmh: 50
+    arterial_kmh: 60
+    highway_kmh: 80
+    school_zone_kmh: 30
+    construction_zone_kmh: 40
+  
+  autonomous_vehicle_rules:
+    min_following_distance_m: 25
+    lane_change_restrictions: "highway_only"
+    intersection_behavior: "conservative"
+    roundabout_strategy: "yield_heavy"
+    parking_restrictions: "designated_zones_only"
+
+# Weather and environmental conditions
+climate:
+  weather_patterns:
+    - season: "winter"
+      months: [11, 12, 1, 2, 3]
+      temperature_range: [15, 30]
+      humidity_range: [40, 80]
+      precipitation: "rare"
+      dust_storms: "occasional"
+      
+    - season: "summer"  
+      months: [4, 5, 6, 7, 8, 9, 10]
+      temperature_range: [25, 48]
+      humidity_range: [60, 95]
+      precipitation: "none"
+      dust_storms: "frequent"
+
+  extreme_conditions:
+    max_operating_temp_c: 55
+    max_humidity_percent: 95
+    dust_storm_protocols: true
+    sandstorm_protocols: true
+    flash_flood_procedures: true
+    visibility_thresholds:
+      normal_operations_m: 500
+      degraded_operations_m: 200
+      no_operations_m: 50
+
+# Infrastructure and connectivity
+infrastructure:
+  road_network:
+    quality: "excellent"
+    digital_infrastructure: "smart_city"
+    traffic_management: "centralized"
+    v2i_deployment: "planned_2026"
+    
+  connectivity:
+    primary_cellular: "etisalat"
+    backup_cellular: "du"
+    coverage_5g: "metro_areas"
+    coverage_4g: "comprehensive"
+    wifi_infrastructure: "public_zones"
+    
+  charging_infrastructure:
+    public_chargers: "expanding"
+    fast_charging: "available"
+    grid_capacity: "sufficient"
+    renewable_integration: "solar_dominant"
+
+# Geofences and operational zones
+geofences:
+  restricted_zones:
+    - name: "presidential_palace"
+      type: "exclusion"
+      coordinates: [[24.4678, 54.3219], [24.4698, 54.3289], [24.4658, 54.3299], [24.4638, 54.3229]]
+      
+    - name: "airport_restricted"
+      type: "exclusion"
+      coordinates: [[24.4330, 54.6511], [24.4530, 54.6711], [24.4230, 54.6811], [24.4030, 54.6611]]
+      
+    - name: "port_industrial"
+      type: "limited_access"
+      coordinates: [[24.5278, 54.3761], [24.5378, 54.3861], [24.5178, 54.3961], [24.5078, 54.3861]]
+      permitted_vehicle_types: ["logistics", "mining"]
+      
+  operational_zones:
+    - name: "downtown_core"
+      type: "urban_dense"
+      max_speed_kmh: 40
+      pedestrian_priority: true
+      
+    - name: "corniche_waterfront"
+      type: "scenic_route" 
+      max_speed_kmh: 50
+      tourist_area: true
+      
+    - name: "industrial_city"
+      type: "industrial"
+      max_speed_kmh: 60
+      heavy_vehicle_allowed: true
+
+# Emergency services and contacts
+emergency_services:
+  police: "999"
+  ambulance: "998"
+  fire: "997"
+  traffic_control_center: "+971-2-4444444"
+  
+  av_incident_contacts:
+    primary: "abu_dhabi_transport_authority"
+    phone: "+971-2-8005555"
+    email: "av.operations@adt.gov.ae"
+
+# Map and navigation providers
+mapping:
+  primary_provider: "here_maps"
+  backup_provider: "google_maps"
+  local_provider: "uae_roads_authority"
+  hd_map_coverage: "major_highways"
+  real_time_updates: true
+  
+  map_data_sources:
+    - "uae_federal_survey"
+    - "abu_dhabi_municipality"  
+    - "roads_transport_authority"
+
+# Cultural and operational considerations
+cultural_considerations:
+  prayer_times: "respect_required"
+  friday_restrictions: "reduced_operations_1200_1400"
+  ramadan_adjustments: "sunset_hour_restrictions"
+  cultural_sites: "approach_restrictions"
+  
+  language_support:
+    primary: "arabic"
+    secondary: "english"
+    emergency_services: "bilingual"
+
+# Seasonal operational adjustments
+seasonal_operations:
+  summer_schedule:
+    peak_hours: ["0600-1000", "1700-2200"]
+    maintenance_window: "0200-0500"
+    thermal_derating: "1100-1600"
+    
+  winter_schedule:
+    peak_hours: ["0700-0900", "1300-1500", "1700-1900"]
+    maintenance_window: "0100-0400"
+    extended_operations: true
+
+# Business and commercial constraints
+commercial_regulations:
+  business_license: "required"
+  trade_license: "commercial_activity"
+  customs_procedures: "simplified_av_category"
+  tax_implications: "vat_5_percent"
+  
+  import_requirements:
+    type_approval: "required"
+    safety_certification: "uae_standards"
+    environmental_compliance: "euro_6_equivalent"
+
+# Integration with city systems
+city_integrations:
+  smart_city_platform: "abu_dhabi_digital_authority"
+  traffic_management: "integrated"
+  parking_systems: "smart_parking"
+  public_transport: "coordination_required"
+  
+# Pilot program and testing zones
+pilot_programs:
+  masdar_city:
+    status: "active"
+    vehicle_types: ["autonomous_shuttle"]
+    speed_limit_kmh: 25
+    operating_hours: "0600-2200"
+    
+  yas_island:
+    status: "planned"
+    vehicle_types: ["passenger", "logistics"]
+    speed_limit_kmh: 50
+    special_events: "f1_restrictions"
+
+# Environmental monitoring
+environmental_monitoring:
+  air_quality_integration: true
+  dust_level_monitoring: true
+  temperature_alerts: true
+  humidity_tracking: true
+  
+  alert_thresholds:
+    dust_aqi_critical: 300
+    temperature_critical_c: 50
+    humidity_critical_percent: 90
+    wind_speed_critical_kmh: 70

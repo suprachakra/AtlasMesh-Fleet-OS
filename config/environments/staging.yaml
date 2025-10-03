@@ -1,0 +1,389 @@
+# AtlasMesh Fleet OS - Staging Environment Configuration
+# Abu Dhabi autonomous vehicle fleet management platform
+# Staging environment for pre-production testing and validation
+
+environment: staging
+region: abu_dhabi
+timezone: Asia/Dubai
+
+# API Configuration
+api:
+  base_url: https://api-staging.atlasmesh.com
+  ws_url: wss://api-staging.atlasmesh.com
+  timeout: 30000
+  rate_limit:
+    requests_per_minute: 500
+    burst_size: 50
+  cors:
+    enabled: true
+    origins:
+      - https://app-staging.atlasmesh.com
+      - https://staging.atlasmesh.com
+
+# Database Configuration
+database:
+  postgresql:
+    host: postgresql-staging.atlasmesh.local
+    port: 5432
+    database: atlasmesh_fleet_staging
+    username: atlasmesh_staging
+    password_env: POSTGRES_PASSWORD_STAGING
+    ssl_mode: require
+    max_connections: 50
+    connection_timeout: 30s
+    idle_timeout: 300s
+    log_queries: false
+  
+  redis:
+    host: redis-staging.atlasmesh.local
+    port: 6379
+    database: 0
+    password_env: REDIS_PASSWORD_STAGING
+    max_connections: 20
+    connection_timeout: 5s
+    idle_timeout: 300s
+    ssl: true
+
+# Message Queue Configuration
+messaging:
+  kafka:
+    brokers:
+      - kafka-staging-01.atlasmesh.local:9092
+      - kafka-staging-02.atlasmesh.local:9092
+      - kafka-staging-03.atlasmesh.local:9092
+    topic_prefix: atlasmesh_staging
+    consumer_group: atlasmesh_staging_group
+    security:
+      protocol: SASL_SSL
+      mechanism: SCRAM-SHA-256
+      username: atlasmesh_staging
+      password_env: KAFKA_PASSWORD_STAGING
+    performance:
+      batch_size: 500
+      linger_ms: 10
+      buffer_memory: 67108864
+
+# Map Configuration (Abu Dhabi centered)
+maps:
+  default_provider: openstreetmap
+  default_center:
+    lat: 24.4539
+    lng: 54.3773
+  default_zoom: 12
+  providers:
+    openstreetmap:
+      enabled: true
+      tile_server: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+      attribution: "© OpenStreetMap contributors"
+    google:
+      enabled: true
+      api_key_env: GOOGLE_MAPS_API_KEY_STAGING
+      map_type: roadmap
+    mapbox:
+      enabled: false
+      api_key_env: MAPBOX_API_KEY_STAGING
+  
+  # Abu Dhabi specific settings
+  abu_dhabi:
+    bounds:
+      north: 24.6
+      south: 24.2
+      east: 55.0
+      west: 54.0
+    districts:
+      - abu_dhabi_city
+      - al_ain
+      - al_dhafra
+    landmarks:
+      - sheikh_zayed_mosque
+      - emirates_palace
+      - corniche
+      - yas_island
+
+# Feature Flags
+features:
+  enable_clustering: true
+  enable_real_time_updates: true
+  enable_vehicle_trails: true
+  enable_geofence_monitoring: true
+  enable_heatmaps: true
+  enable_offline_mode: false
+  enable_debug_mode: true
+  enable_mock_data: false
+  enable_performance_monitoring: true
+  enable_chaos_engineering: true
+
+# Performance Settings
+performance:
+  map_update_interval: 5000
+  telemetry_batch_size: 100
+  max_vehicles_on_map: 200
+  max_route_points: 1000
+  cluster_radius: 50
+  max_cluster_zoom: 15
+  
+  # Production-like budgets
+  budgets:
+    policy_evaluation_ms: 50
+    vehicle_command_ms: 100
+    route_calculation_ms: 500
+    ui_render_ms: 50
+
+# Security Configuration
+security:
+  enable_https: true
+  csrf_token_header: X-CSRF-Token
+  jwt:
+    secret_env: JWT_SECRET_STAGING
+    expiration: 8h
+    refresh_expiration: 24h
+  
+  cors:
+    allow_credentials: true
+    max_age: 3600
+  
+  # Staging authentication
+  auth:
+    bypass_enabled: false
+    require_mfa: false
+    session_timeout: 8h
+    password_policy:
+      min_length: 8
+      require_special_chars: true
+      require_numbers: true
+
+# Logging Configuration
+logging:
+  level: info
+  format: json
+  output:
+    - stdout
+    - elasticsearch
+  
+  elasticsearch:
+    host: elasticsearch-staging.atlasmesh.local
+    port: 9200
+    index: atlasmesh-staging-logs
+    username: fluentd_staging
+    password_env: ELASTICSEARCH_PASSWORD_STAGING
+  
+  components:
+    policy_engine: info
+    vehicle_gateway: info
+    fleet_manager: info
+    telemetry_ingestion: warn
+    map_data_contract: info
+    weather_fusion: info
+
+# Monitoring Configuration
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+    metrics_path: /metrics
+    retention: 15d
+  
+  grafana:
+    enabled: true
+    port: 3000
+    admin_password_env: GRAFANA_ADMIN_PASSWORD_STAGING
+  
+  jaeger:
+    enabled: true
+    agent_host: jaeger-staging.atlasmesh.local
+    agent_port: 6831
+    sampling_rate: 0.5
+  
+  health_checks:
+    enabled: true
+    interval: 30s
+    timeout: 10s
+
+# Staging-specific Configuration
+staging:
+  auto_deploy: true
+  smoke_tests: true
+  load_tests: true
+  security_scans: true
+  
+  # Test data
+  test_data:
+    vehicles: 50
+    routes: 20
+    geofences: 10
+    synthetic_load: true
+  
+  # Validation
+  validation:
+    api_contracts: true
+    performance_budgets: true
+    security_policies: true
+    compliance_checks: true
+
+# External Services (Staging)
+external_services:
+  weather_api:
+    enabled: true
+    mock: false
+    url: https://api.openweathermap.org/data/2.5
+    api_key_env: WEATHER_API_KEY_STAGING
+    timeout: 10s
+    rate_limit: 1000
+  
+  traffic_api:
+    enabled: true
+    mock: false
+    url: https://api.tomtom.com/traffic/services/4
+    api_key_env: TRAFFIC_API_KEY_STAGING
+    timeout: 15s
+    rate_limit: 500
+  
+  uae_government_apis:
+    enabled: true
+    mock: false
+    base_url: https://staging-api.government.ae
+    api_key_env: UAE_GOV_API_KEY_STAGING
+    timeout: 30s
+    rate_limit: 100
+
+# Backup Configuration
+backup:
+  enabled: true
+  schedule: "0 2 * * *"
+  retention: 7d
+  storage:
+    type: s3
+    bucket: atlasmesh-staging-backups
+    region: me-south-1
+    encryption: true
+
+# Secrets Management
+secrets:
+  provider: kubernetes
+  rotation: false
+  
+  # Kubernetes secrets mapping
+  kubernetes:
+    namespace: atlasmesh-fleet-os-staging
+    secrets:
+      - name: database-credentials
+        keys:
+          POSTGRES_PASSWORD_STAGING: password
+      - name: redis-credentials
+        keys:
+          REDIS_PASSWORD_STAGING: password
+      - name: kafka-credentials
+        keys:
+          KAFKA_PASSWORD_STAGING: password
+      - name: jwt-secrets
+        keys:
+          JWT_SECRET_STAGING: secret
+      - name: api-keys
+        keys:
+          GOOGLE_MAPS_API_KEY_STAGING: google_maps_key
+          WEATHER_API_KEY_STAGING: weather_key
+          TRAFFIC_API_KEY_STAGING: traffic_key
+          UAE_GOV_API_KEY_STAGING: uae_gov_key
+      - name: monitoring-credentials
+        keys:
+          GRAFANA_ADMIN_PASSWORD_STAGING: grafana_password
+          ELASTICSEARCH_PASSWORD_STAGING: elasticsearch_password
+
+# Resource Limits (Staging)
+resources:
+  cpu_limit: 4000m
+  memory_limit: 8Gi
+  storage_limit: 100Gi
+  
+  # Per-service limits
+  services:
+    api_gateway:
+      cpu: 500m
+      memory: 512Mi
+      replicas: 2
+    fleet_manager:
+      cpu: 300m
+      memory: 512Mi
+      replicas: 2
+    policy_engine:
+      cpu: 300m
+      memory: 512Mi
+      replicas: 2
+    vehicle_gateway:
+      cpu: 500m
+      memory: 1Gi
+      replicas: 2
+    telemetry_ingestion:
+      cpu: 500m
+      memory: 1Gi
+      replicas: 2
+    control_center_ui:
+      cpu: 200m
+      memory: 256Mi
+      replicas: 2
+
+# Compliance (Enhanced for staging)
+compliance:
+  uae_regulations: true
+  iso_standards: true
+  gdpr: true
+  audit_logging: true
+  data_retention: 30d
+  
+  # Compliance validation
+  validation:
+    automated_checks: true
+    manual_reviews: false
+    third_party_audits: false
+
+# Disaster Recovery
+disaster_recovery:
+  enabled: true
+  rto: 4h
+  rpo: 1h
+  backup_frequency: daily
+  cross_region_replication: false
+  
+  # Failover configuration
+  failover:
+    automatic: false
+    manual_approval: true
+    rollback_timeout: 30m
+
+# Network Configuration
+network:
+  vpc_cidr: 10.1.0.0/16
+  subnets:
+    public:
+      - 10.1.1.0/24
+      - 10.1.2.0/24
+    private:
+      - 10.1.10.0/24
+      - 10.1.11.0/24
+  
+  # Load balancer configuration
+  load_balancer:
+    type: application
+    scheme: internet-facing
+    ssl_policy: ELBSecurityPolicy-TLS-1-2-2017-01
+  
+  # Security groups
+  security_groups:
+    web:
+      ingress:
+        - port: 443
+          protocol: tcp
+          cidr: 0.0.0.0/0
+        - port: 80
+          protocol: tcp
+          cidr: 0.0.0.0/0
+    app:
+      ingress:
+        - port: 8080
+          protocol: tcp
+          source_sg: web
+    db:
+      ingress:
+        - port: 5432
+          protocol: tcp
+          source_sg: app

@@ -1,0 +1,174 @@
+# Terminal Tractor V2 Vehicle Profile
+# Class B: Heavy Duty Industrial Vehicle
+# Used in ports, terminals, and logistics centers
+
+vehicle:
+  identification:
+    vin_pattern: "TT2*"
+    make: "Industrial Corp"
+    model: "Terminal Tractor V2"
+    class: "ClassB_HeavyDuty"
+    year: 2024
+    certification:
+      iso26262: "ASIL-B"
+      sotif: "validated"
+      un_r155: "compliant"
+      un_r156: "compliant"
+    
+  physics:
+    # Vehicle mass and dimensions
+    mass_kg: 8500                    # Unladen weight
+    max_payload_kg: 2000             # Maximum additional load
+    wheelbase_m: 3.2                 # Distance between axles
+    track_width_m: 2.1               # Width between wheels
+    overall_length_m: 6.5            # Total vehicle length
+    overall_width_m: 2.5             # Total vehicle width
+    overall_height_m: 3.2            # Total vehicle height
+    
+    # Center of gravity (critical for stability)
+    center_of_gravity:
+      x_m: 1.6      # From front axle (40% forward bias)
+      y_m: 0.0      # Centerline (symmetric)
+      z_m: 1.2      # From ground (low CG for stability)
+    
+    # Moment of inertia (for dynamics modeling)
+    inertia:
+      roll_kg_m2: 12000              # Roll inertia
+      pitch_kg_m2: 45000             # Pitch inertia  
+      yaw_kg_m2: 48000               # Yaw inertia
+      
+  actuation:
+    # Steering system parameters
+    steering:
+      max_angle_deg: 45              # Maximum steering angle
+      max_rate_deg_per_s: 30         # Maximum steering rate
+      deadband_deg: 0.5              # Steering deadband
+      response_time_ms: 100          # Actuator response time
+      backlash_deg: 0.2              # Mechanical backlash
+      
+    # Braking system parameters  
+    braking:
+      max_decel_m_s2: 4.0            # Maximum deceleration
+      response_time_ms: 150          # Brake response time
+      fade_factor: 0.95              # Brake fade coefficient
+      abs_enabled: true              # Anti-lock braking
+      ebs_enabled: true              # Electronic braking
+      
+    # Throttle/propulsion parameters
+    throttle:
+      max_accel_m_s2: 2.5            # Maximum acceleration
+      response_time_ms: 200          # Throttle response time
+      torque_curve:                  # Engine torque curve
+        - rpm: 1000
+          torque_nm: 1200
+        - rpm: 1500  
+          torque_nm: 1800
+        - rpm: 2000
+          torque_nm: 1600
+        - rpm: 2500
+          torque_nm: 1400
+          
+  performance:
+    # Speed and acceleration limits
+    max_speed_m_s: 15.0              # 54 km/h maximum speed
+    cruise_speed_m_s: 12.0           # Optimal cruise speed
+    max_lateral_accel_m_s2: 3.0      # Lateral acceleration limit
+    max_jerk_m_s3: 2.0               # Jerk limit for comfort
+    
+    # Operational envelopes
+    min_turning_radius_m: 8.5        # Minimum turning radius
+    approach_angle_deg: 25           # Front approach angle
+    departure_angle_deg: 20          # Rear departure angle
+    ground_clearance_m: 0.35         # Ground clearance
+    
+  safety:
+    # Emergency systems
+    emergency_brake_decel_m_s2: 6.0  # Emergency brake deceleration
+    stability_control: true          # Electronic stability control
+    rollover_threshold_deg: 25       # Rollover warning threshold
+    
+    # Operating limits
+    max_slope_deg: 15                # Maximum slope capability
+    max_crosswind_m_s: 20            # Maximum crosswind speed
+    min_visibility_m: 50             # Minimum visibility requirement
+    
+    # Fail-safe behaviors
+    failsafe:
+      communication_loss: "safe_stop"     # Action on comm loss
+      sensor_failure: "degraded_mode"     # Action on sensor failure
+      actuator_failure: "emergency_stop"  # Action on actuator failure
+      
+  sensors:
+    # Required sensor configuration
+    lidar_count: 4                   # Number of LiDAR sensors
+    camera_count: 8                  # Number of cameras
+    radar_count: 6                   # Number of radar sensors
+    ultrasonic_count: 12             # Number of ultrasonic sensors
+    imu_required: true               # Inertial measurement unit
+    gps_required: true               # GPS positioning
+    wheel_encoders: true             # Wheel speed sensors
+    
+    # Sensor specifications
+    lidar_specs:
+      range_m: 150                   # LiDAR range
+      resolution_deg: 0.1            # Angular resolution
+      frequency_hz: 20               # Update frequency
+      
+    camera_specs:
+      resolution: "1920x1080"        # Camera resolution
+      frame_rate_fps: 30             # Frame rate
+      field_of_view_deg: 120         # Horizontal FOV
+      
+    radar_specs:
+      range_m: 200                   # Radar range
+      resolution_m: 0.1              # Range resolution
+      frequency_hz: 20               # Update frequency
+      
+  connectivity:
+    # Communication requirements
+    cellular: "5G"                   # Cellular connectivity
+    wifi: "802.11ac"                 # WiFi standard
+    can_bus: "CAN-FD"               # CAN bus type
+    ethernet: "1000BASE-T"           # Ethernet standard
+    
+    # Data rates
+    telemetry_rate_hz: 10            # Telemetry update rate
+    command_latency_ms: 50           # Command latency requirement
+    
+  compliance:
+    # Regulatory compliance
+    emissions: "Euro VI"             # Emissions standard
+    noise_db: 72                     # Maximum noise level
+    safety_standards:
+      - "ISO 26262 ASIL-B"
+      - "SOTIF"
+      - "UN R155"
+      - "UN R156"
+      - "FMVSS 571"
+      
+  maintenance:
+    # Maintenance intervals
+    service_interval_hours: 500      # Service interval
+    oil_change_hours: 250           # Oil change interval
+    brake_inspection_hours: 1000    # Brake inspection
+    
+    # Diagnostic capabilities
+    obd_compliant: true             # OBD compliance
+    remote_diagnostics: true        # Remote diagnostic capability
+    predictive_maintenance: true    # Predictive maintenance support
+    
+  variant_budget:
+    # Variant budget tracking for qualified agnosticism
+    code_delta_percent: 2.1         # Current code delta from base
+    test_delta_percent: 15.3        # Current test delta from base
+    certification_scope: "model"    # Certification scope level
+    
+  validation:
+    # Validation requirements
+    hil_testing: true               # Hardware-in-loop testing required
+    track_testing: true             # Track testing required
+    simulation_hours: 10000         # Minimum simulation hours
+    real_world_km: 50000           # Minimum real-world testing
+    
+  last_updated: "2024-01-15T10:00:00Z"
+  schema_version: "1.0.0"

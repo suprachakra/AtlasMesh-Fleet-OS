@@ -1,0 +1,196 @@
+# Mine Haul Truck 400T Vehicle Profile
+# Class C: Mining Heavy Equipment
+# Used in open-pit mining operations
+
+vehicle:
+  identification:
+    vin_pattern: "MH4*"
+    make: "Mining Equipment Co"
+    model: "Haul Truck 400T"
+    class: "ClassC_Mining"
+    year: 2024
+    certification:
+      iso26262: "ASIL-C"            # Higher safety level for mining
+      sotif: "validated"
+      un_r155: "compliant"
+      un_r156: "compliant"
+      msha: "compliant"             # Mine Safety and Health Administration
+    
+  physics:
+    # Massive vehicle dimensions and weight
+    mass_kg: 400000                  # 400 tons when fully loaded
+    empty_weight_kg: 180000          # Empty vehicle weight
+    max_payload_kg: 220000           # Maximum payload capacity
+    wheelbase_m: 6.5                 # Long wheelbase for stability
+    track_width_m: 4.2               # Wide track for stability
+    overall_length_m: 14.5           # Very long vehicle
+    overall_width_m: 7.8             # Very wide vehicle
+    overall_height_m: 6.2            # High vehicle profile
+    
+    # Center of gravity (critical for loaded stability)
+    center_of_gravity:
+      x_m: 3.2      # From front axle (balanced when loaded)
+      y_m: 0.0      # Centerline (symmetric)
+      z_m: 3.5      # High CG when loaded (stability critical)
+    
+    # Moment of inertia (massive vehicle)
+    inertia:
+      roll_kg_m2: 2500000            # Very high roll inertia
+      pitch_kg_m2: 8000000           # Very high pitch inertia
+      yaw_kg_m2: 9500000             # Very high yaw inertia
+      
+  actuation:
+    # Heavy-duty steering system
+    steering:
+      max_angle_deg: 35              # Limited for stability
+      max_rate_deg_per_s: 10         # Slow for stability
+      deadband_deg: 1.0              # Larger deadband
+      response_time_ms: 250          # Slower hydraulic response
+      backlash_deg: 0.5              # More mechanical play
+      
+    # Massive braking system
+    braking:
+      max_decel_m_s2: 2.5            # Limited by load and stability
+      response_time_ms: 300          # Slower hydraulic response
+      fade_factor: 0.90              # More brake fade under load
+      abs_enabled: true              # Essential for loaded vehicle
+      retarder_enabled: true         # Engine/hydraulic retarder
+      
+    # High-torque propulsion
+    throttle:
+      max_accel_m_s2: 1.0            # Slow acceleration when loaded
+      response_time_ms: 500          # Diesel engine response
+      torque_curve:                  # High-torque diesel curve
+        - rpm: 800
+          torque_nm: 8500
+        - rpm: 1200
+          torque_nm: 12000
+        - rpm: 1600
+          torque_nm: 11500
+        - rpm: 2000
+          torque_nm: 10000
+          
+  performance:
+    # Performance limits for safety and efficiency
+    max_speed_m_s: 25.0              # 90 km/h maximum (downhill limited)
+    cruise_speed_m_s: 20.0           # Optimal cruise speed
+    max_lateral_accel_m_s2: 1.5      # Very limited for stability
+    max_jerk_m_s3: 0.5               # Smooth operation required
+    
+    # Operational capabilities
+    min_turning_radius_m: 18.0       # Large turning radius
+    approach_angle_deg: 30           # Good approach angle
+    departure_angle_deg: 25          # Good departure angle
+    ground_clearance_m: 0.8          # High ground clearance
+    
+  safety:
+    # Critical safety systems for mining
+    emergency_brake_decel_m_s2: 3.5  # Emergency brake capability
+    stability_control: true          # Essential for loaded operation
+    rollover_threshold_deg: 15       # Lower threshold due to high CG
+    
+    # Mining-specific limits
+    max_slope_deg: 12                # Maximum grade capability
+    max_crosswind_m_s: 15            # Lower wind tolerance
+    min_visibility_m: 100            # Higher visibility requirement
+    
+    # Mining-specific fail-safes
+    failsafe:
+      communication_loss: "safe_stop"      # Critical in mining
+      sensor_failure: "emergency_stop"     # No degraded mode
+      actuator_failure: "emergency_stop"   # Immediate stop
+      overload_detected: "speed_limit"     # Reduce speed if overloaded
+      
+  sensors:
+    # Comprehensive sensor suite for mining
+    lidar_count: 6                   # More sensors for large vehicle
+    camera_count: 12                 # 360-degree coverage
+    radar_count: 8                   # Long-range detection
+    ultrasonic_count: 16             # Close-proximity detection
+    imu_required: true               # Essential for stability
+    gps_required: true               # Navigation in mine
+    wheel_encoders: true             # Speed and slip detection
+    load_sensors: true               # Payload monitoring
+    
+    # Mining-specific sensor specs
+    lidar_specs:
+      range_m: 200                   # Longer range for large vehicle
+      resolution_deg: 0.05           # Higher resolution
+      frequency_hz: 20               # Standard frequency
+      dust_rating: "IP67"            # Dust protection
+      
+    camera_specs:
+      resolution: "2560x1440"        # Higher resolution
+      frame_rate_fps: 30             # Standard frame rate
+      field_of_view_deg: 110         # Wide field of view
+      low_light: true                # Night/underground operation
+      
+    radar_specs:
+      range_m: 300                   # Very long range
+      resolution_m: 0.1              # Fine resolution
+      frequency_hz: 20               # Standard frequency
+      
+  connectivity:
+    # Mining-specific connectivity
+    cellular: "5G"                   # High-bandwidth for telemetry
+    wifi: "802.11ac"                 # Local connectivity
+    can_bus: "CAN-FD"               # High-speed CAN
+    ethernet: "1000BASE-T"           # Gigabit ethernet
+    satellite: "backup"              # Backup communication
+    
+    # Data requirements
+    telemetry_rate_hz: 5             # Lower rate for bandwidth
+    command_latency_ms: 100          # Acceptable latency
+    
+  compliance:
+    # Mining-specific compliance
+    emissions: "Tier 4 Final"        # Off-road emissions
+    noise_db: 85                     # Higher noise allowance
+    safety_standards:
+      - "ISO 26262 ASIL-C"
+      - "SOTIF"
+      - "UN R155"
+      - "UN R156"
+      - "MSHA Part 56"              # Mining safety
+      - "ISO 19296"                 # Mining machinery
+      
+  maintenance:
+    # Heavy-duty maintenance schedule
+    service_interval_hours: 250      # More frequent service
+    oil_change_hours: 125           # Frequent oil changes
+    brake_inspection_hours: 500     # Critical brake inspection
+    tire_inspection_hours: 100      # Frequent tire inspection
+    
+    # Mining-specific diagnostics
+    obd_compliant: false            # Off-road exemption
+    remote_diagnostics: true        # Essential for remote mines
+    predictive_maintenance: true    # Critical for uptime
+    vibration_monitoring: true      # Structural health
+    
+  environmental:
+    # Mining environment specifications
+    operating_temp_c:
+      min: -40                      # Cold climate operation
+      max: 60                       # Hot climate operation
+    altitude_m:
+      max: 4500                     # High-altitude mines
+    dust_rating: "IP67"             # Severe dust protection
+    water_rating: "IP67"            # Water protection
+    
+  variant_budget:
+    # Variant budget for mining class
+    code_delta_percent: 4.8         # Higher delta for specialized equipment
+    test_delta_percent: 22.1        # More extensive testing required
+    certification_scope: "class"    # Class-level certification
+    
+  validation:
+    # Extensive validation for mining
+    hil_testing: true               # Required
+    track_testing: true             # Required
+    mine_testing: true              # Real mine environment testing
+    simulation_hours: 25000         # Extensive simulation
+    real_world_km: 100000          # Extensive real-world testing
+    load_testing_cycles: 10000     # Load/unload cycle testing
+    
+  last_updated: "2024-01-15T10:00:00Z"
+  schema_version: "1.0.0"

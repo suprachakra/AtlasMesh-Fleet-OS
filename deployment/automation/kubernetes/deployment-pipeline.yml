@@ -1,0 +1,839 @@
+# AtlasMesh Fleet OS - Production Deployment Automation
+# Blue-green deployment, canary releases, rollback procedures, environment promotion
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: atlasmesh-production
+  labels:
+    name: atlasmesh-production
+    environment: production
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: atlasmesh-staging
+  labels:
+    name: atlasmesh-staging
+    environment: staging
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: atlasmesh-canary
+  labels:
+    name: atlasmesh-canary
+    environment: canary
+
+---
+# Blue-Green Deployment Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleet-manager-service
+  namespace: atlasmesh-production
+  labels:
+    app: fleet-manager
+    deployment-strategy: blue-green
+spec:
+  selector:
+    app: fleet-manager
+    version: blue  # This will be switched between blue/green
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  type: ClusterIP
+
+---
+# Blue Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-manager-blue
+  namespace: atlasmesh-production
+  labels:
+    app: fleet-manager
+    version: blue
+    deployment-strategy: blue-green
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fleet-manager
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: fleet-manager
+        version: blue
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: fleet-manager
+        image: atlasmesh/fleet-manager:v1.0.0
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: VERSION
+          value: "blue"
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: host
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+---
+# Green Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-manager-green
+  namespace: atlasmesh-production
+  labels:
+    app: fleet-manager
+    version: green
+    deployment-strategy: blue-green
+spec:
+  replicas: 0  # Initially scaled to 0
+  selector:
+    matchLabels:
+      app: fleet-manager
+      version: green
+  template:
+    metadata:
+      labels:
+        app: fleet-manager
+        version: green
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: fleet-manager
+        image: atlasmesh/fleet-manager:v1.1.0  # New version
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: VERSION
+          value: "green"
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: host
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+---
+# Canary Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-manager-canary
+  namespace: atlasmesh-canary
+  labels:
+    app: fleet-manager
+    version: canary
+    deployment-strategy: canary
+spec:
+  replicas: 1  # Small number for canary
+  selector:
+    matchLabels:
+      app: fleet-manager
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: fleet-manager
+        version: canary
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: fleet-manager
+        image: atlasmesh/fleet-manager:canary
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "canary"
+        - name: VERSION
+          value: "canary"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+# Canary Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleet-manager-canary-service
+  namespace: atlasmesh-canary
+  labels:
+    app: fleet-manager
+    version: canary
+spec:
+  selector:
+    app: fleet-manager
+    version: canary
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  type: ClusterIP
+
+---
+# Ingress for Traffic Splitting (Canary)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fleet-manager-ingress
+  namespace: atlasmesh-production
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "10"  # 10% traffic to canary
+    nginx.ingress.kubernetes.io/canary-by-header: "X-Canary"
+    nginx.ingress.kubernetes.io/canary-by-header-value: "true"
+spec:
+  rules:
+  - host: api.atlasmesh.ae
+    http:
+      paths:
+      - path: /api/v1/fleet
+        pathType: Prefix
+        backend:
+          service:
+            name: fleet-manager-service
+            port:
+              number: 80
+
+---
+# Canary Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fleet-manager-canary-ingress
+  namespace: atlasmesh-canary
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: canary.atlasmesh.ae
+    http:
+      paths:
+      - path: /api/v1/fleet
+        pathType: Prefix
+        backend:
+          service:
+            name: fleet-manager-canary-service
+            port:
+              number: 80
+
+---
+# Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: fleet-manager-hpa
+  namespace: atlasmesh-production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fleet-manager-blue  # This will be updated during deployment
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+
+---
+# Pod Disruption Budget
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: fleet-manager-pdb
+  namespace: atlasmesh-production
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: fleet-manager
+
+---
+# Network Policy for Security
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fleet-manager-network-policy
+  namespace: atlasmesh-production
+spec:
+  podSelector:
+    matchLabels:
+      app: fleet-manager
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    - podSelector:
+        matchLabels:
+          app: prometheus
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: database
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: redis
+    ports:
+    - protocol: TCP
+      port: 6379
+
+---
+# Service Monitor for Prometheus
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fleet-manager-service-monitor
+  namespace: atlasmesh-production
+  labels:
+    app: fleet-manager
+spec:
+  selector:
+    matchLabels:
+      app: fleet-manager
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s
+    scrapeTimeout: 10s
+
+---
+# Deployment Automation ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deployment-automation-config
+  namespace: atlasmesh-production
+data:
+  deployment-strategy: "blue-green"
+  canary-percentage: "10"
+  rollback-threshold: "5"  # 5% error rate threshold
+  health-check-timeout: "300"  # 5 minutes
+  traffic-split-duration: "600"  # 10 minutes
+  monitoring-window: "900"  # 15 minutes
+  success-criteria: |
+    - error_rate < 0.01
+    - response_time_p95 < 500ms
+    - cpu_utilization < 80%
+    - memory_utilization < 85%
+    - health_check_success_rate > 99%
+
+---
+# Deployment Automation Job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deployment-automation-job
+  namespace: atlasmesh-production
+spec:
+  template:
+    metadata:
+      labels:
+        app: deployment-automation
+    spec:
+      serviceAccountName: deployment-automation-sa
+      containers:
+      - name: deployment-controller
+        image: atlasmesh/deployment-automation:latest
+        env:
+        - name: KUBERNETES_NAMESPACE
+          value: "atlasmesh-production"
+        - name: DEPLOYMENT_STRATEGY
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-automation-config
+              key: deployment-strategy
+        - name: PROMETHEUS_URL
+          value: "http://prometheus:9090"
+        - name: GRAFANA_URL
+          value: "http://grafana:3000"
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: notification-secrets
+              key: slack-webhook-url
+        volumeMounts:
+        - name: deployment-scripts
+          mountPath: /scripts
+        command:
+        - /bin/bash
+        - /scripts/deploy.sh
+      volumes:
+      - name: deployment-scripts
+        configMap:
+          name: deployment-scripts
+          defaultMode: 0755
+      restartPolicy: Never
+  backoffLimit: 3
+
+---
+# Service Account for Deployment Automation
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: deployment-automation-sa
+  namespace: atlasmesh-production
+
+---
+# Cluster Role for Deployment Automation
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: deployment-automation-role
+rules:
+- apiGroups: [""]
+  resources: ["services", "pods", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["monitoring.coreos.com"]
+  resources: ["servicemonitors"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+# Cluster Role Binding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: deployment-automation-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: deployment-automation-role
+subjects:
+- kind: ServiceAccount
+  name: deployment-automation-sa
+  namespace: atlasmesh-production
+
+---
+# Deployment Scripts ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deployment-scripts
+  namespace: atlasmesh-production
+data:
+  deploy.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    
+    # AtlasMesh Fleet OS - Automated Deployment Script
+    # Handles blue-green deployments, canary releases, and rollbacks
+    
+    NAMESPACE=${KUBERNETES_NAMESPACE:-atlasmesh-production}
+    STRATEGY=${DEPLOYMENT_STRATEGY:-blue-green}
+    APP_NAME="fleet-manager"
+    NEW_IMAGE=${NEW_IMAGE:-atlasmesh/fleet-manager:latest}
+    
+    echo "🚀 Starting deployment automation for $APP_NAME"
+    echo "📦 Strategy: $STRATEGY"
+    echo "🏷️  New Image: $NEW_IMAGE"
+    
+    # Function to check deployment health
+    check_deployment_health() {
+        local deployment_name=$1
+        local timeout=${2:-300}
+        
+        echo "🔍 Checking health of deployment: $deployment_name"
+        
+        # Wait for deployment to be ready
+        kubectl rollout status deployment/$deployment_name -n $NAMESPACE --timeout=${timeout}s
+        
+        # Check if all pods are ready
+        local ready_pods=$(kubectl get deployment $deployment_name -n $NAMESPACE -o jsonpath='{.status.readyReplicas}')
+        local desired_pods=$(kubectl get deployment $deployment_name -n $NAMESPACE -o jsonpath='{.spec.replicas}')
+        
+        if [ "$ready_pods" != "$desired_pods" ]; then
+            echo "❌ Deployment health check failed: $ready_pods/$desired_pods pods ready"
+            return 1
+        fi
+        
+        echo "✅ Deployment health check passed: $ready_pods/$desired_pods pods ready"
+        return 0
+    }
+    
+    # Function to perform blue-green deployment
+    blue_green_deploy() {
+        echo "🔵🟢 Performing blue-green deployment"
+        
+        # Determine current active version
+        local current_version=$(kubectl get service $APP_NAME-service -n $NAMESPACE -o jsonpath='{.spec.selector.version}')
+        local new_version
+        
+        if [ "$current_version" = "blue" ]; then
+            new_version="green"
+        else
+            new_version="blue"
+        fi
+        
+        echo "📊 Current version: $current_version, New version: $new_version"
+        
+        # Update the inactive deployment with new image
+        kubectl set image deployment/$APP_NAME-$new_version $APP_NAME=$NEW_IMAGE -n $NAMESPACE
+        
+        # Scale up the new deployment
+        kubectl scale deployment/$APP_NAME-$new_version --replicas=3 -n $NAMESPACE
+        
+        # Wait for new deployment to be ready
+        if ! check_deployment_health "$APP_NAME-$new_version"; then
+            echo "❌ New deployment failed health check, rolling back"
+            kubectl scale deployment/$APP_NAME-$new_version --replicas=0 -n $NAMESPACE
+            exit 1
+        fi
+        
+        # Run smoke tests
+        if ! run_smoke_tests "$new_version"; then
+            echo "❌ Smoke tests failed, rolling back"
+            kubectl scale deployment/$APP_NAME-$new_version --replicas=0 -n $NAMESPACE
+            exit 1
+        fi
+        
+        # Switch traffic to new version
+        kubectl patch service $APP_NAME-service -n $NAMESPACE -p '{"spec":{"selector":{"version":"'$new_version'"}}}'
+        
+        # Update HPA target
+        kubectl patch hpa $APP_NAME-hpa -n $NAMESPACE -p '{"spec":{"scaleTargetRef":{"name":"'$APP_NAME-$new_version'"}}}'
+        
+        echo "🔄 Traffic switched to $new_version"
+        
+        # Monitor for 5 minutes
+        sleep 300
+        
+        # Check metrics and decide whether to keep or rollback
+        if check_deployment_metrics "$new_version"; then
+            echo "✅ Deployment successful, scaling down old version"
+            kubectl scale deployment/$APP_NAME-$current_version --replicas=0 -n $NAMESPACE
+            send_notification "✅ Blue-Green deployment successful: $APP_NAME switched to $new_version"
+        else
+            echo "❌ Metrics check failed, rolling back"
+            rollback_deployment "$current_version"
+        fi
+    }
+    
+    # Function to perform canary deployment
+    canary_deploy() {
+        echo "🐤 Performing canary deployment"
+        
+        # Deploy to canary namespace
+        kubectl set image deployment/$APP_NAME-canary $APP_NAME=$NEW_IMAGE -n atlasmesh-canary
+        
+        # Wait for canary deployment
+        if ! check_deployment_health "$APP_NAME-canary" 180; then
+            echo "❌ Canary deployment failed"
+            exit 1
+        fi
+        
+        # Gradually increase canary traffic
+        local canary_percentages=(10 25 50 75 100)
+        
+        for percentage in "${canary_percentages[@]}"; do
+            echo "📈 Setting canary traffic to ${percentage}%"
+            
+            # Update ingress annotation for traffic splitting
+            kubectl annotate ingress $APP_NAME-ingress -n $NAMESPACE \
+                nginx.ingress.kubernetes.io/canary-weight=$percentage --overwrite
+            
+            # Monitor for 10 minutes
+            sleep 600
+            
+            # Check metrics
+            if ! check_canary_metrics $percentage; then
+                echo "❌ Canary metrics check failed at ${percentage}%, rolling back"
+                rollback_canary
+                exit 1
+            fi
+        done
+        
+        echo "✅ Canary deployment successful, promoting to production"
+        promote_canary_to_production
+    }
+    
+    # Function to check deployment metrics
+    check_deployment_metrics() {
+        local version=$1
+        echo "📊 Checking deployment metrics for version: $version"
+        
+        # Query Prometheus for error rate
+        local error_rate=$(curl -s "$PROMETHEUS_URL/api/v1/query?query=rate(http_requests_total{job=\"$APP_NAME\",version=\"$version\",status=~\"5..\"}[5m])/rate(http_requests_total{job=\"$APP_NAME\",version=\"$version\"}[5m])" | jq -r '.data.result[0].value[1] // "0"')
+        
+        # Query for response time
+        local response_time=$(curl -s "$PROMETHEUS_URL/api/v1/query?query=histogram_quantile(0.95,rate(http_request_duration_seconds_bucket{job=\"$APP_NAME\",version=\"$version\"}[5m]))" | jq -r '.data.result[0].value[1] // "0"')
+        
+        echo "📈 Error rate: $error_rate"
+        echo "⏱️  P95 response time: ${response_time}s"
+        
+        # Check thresholds
+        if (( $(echo "$error_rate > 0.01" | bc -l) )); then
+            echo "❌ Error rate too high: $error_rate > 0.01"
+            return 1
+        fi
+        
+        if (( $(echo "$response_time > 0.5" | bc -l) )); then
+            echo "❌ Response time too high: ${response_time}s > 0.5s"
+            return 1
+        fi
+        
+        echo "✅ Metrics check passed"
+        return 0
+    }
+    
+    # Function to rollback deployment
+    rollback_deployment() {
+        local rollback_version=$1
+        echo "🔙 Rolling back to version: $rollback_version"
+        
+        # Switch service back
+        kubectl patch service $APP_NAME-service -n $NAMESPACE -p '{"spec":{"selector":{"version":"'$rollback_version'"}}}'
+        
+        # Update HPA target
+        kubectl patch hpa $APP_NAME-hpa -n $NAMESPACE -p '{"spec":{"scaleTargetRef":{"name":"'$APP_NAME-$rollback_version'"}}}'
+        
+        send_notification "🔙 Deployment rolled back to $rollback_version due to health check failure"
+    }
+    
+    # Function to run smoke tests
+    run_smoke_tests() {
+        local version=$1
+        echo "🧪 Running smoke tests for version: $version"
+        
+        # Get service endpoint
+        local service_ip=$(kubectl get service $APP_NAME-service -n $NAMESPACE -o jsonpath='{.spec.clusterIP}')
+        
+        # Basic health check
+        if ! curl -f -s "http://$service_ip/health" > /dev/null; then
+            echo "❌ Health check failed"
+            return 1
+        fi
+        
+        # API endpoint check
+        if ! curl -f -s "http://$service_ip/api/v1/fleets" > /dev/null; then
+            echo "❌ API endpoint check failed"
+            return 1
+        fi
+        
+        echo "✅ Smoke tests passed"
+        return 0
+    }
+    
+    # Function to send notifications
+    send_notification() {
+        local message=$1
+        echo "📢 $message"
+        
+        if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+            curl -X POST -H 'Content-type: application/json' \
+                --data "{\"text\":\"🚀 AtlasMesh Deployment: $message\"}" \
+                "$SLACK_WEBHOOK_URL" || true
+        fi
+    }
+    
+    # Main deployment logic
+    case $STRATEGY in
+        "blue-green")
+            blue_green_deploy
+            ;;
+        "canary")
+            canary_deploy
+            ;;
+        *)
+            echo "❌ Unknown deployment strategy: $STRATEGY"
+            exit 1
+            ;;
+    esac
+    
+    echo "🎉 Deployment automation completed successfully"
+
+  rollback.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    
+    # AtlasMesh Fleet OS - Automated Rollback Script
+    
+    NAMESPACE=${KUBERNETES_NAMESPACE:-atlasmesh-production}
+    APP_NAME="fleet-manager"
+    
+    echo "🔙 Starting automated rollback for $APP_NAME"
+    
+    # Get current and previous versions
+    current_version=$(kubectl get service $APP_NAME-service -n $NAMESPACE -o jsonpath='{.spec.selector.version}')
+    
+    if [ "$current_version" = "blue" ]; then
+        rollback_version="green"
+    else
+        rollback_version="blue"
+    fi
+    
+    echo "📊 Current: $current_version, Rolling back to: $rollback_version"
+    
+    # Check if rollback version exists and is ready
+    if ! kubectl get deployment $APP_NAME-$rollback_version -n $NAMESPACE > /dev/null 2>&1; then
+        echo "❌ Rollback version deployment not found"
+        exit 1
+    fi
+    
+    # Scale up rollback version if needed
+    kubectl scale deployment/$APP_NAME-$rollback_version --replicas=3 -n $NAMESPACE
+    
+    # Wait for rollback version to be ready
+    kubectl rollout status deployment/$APP_NAME-$rollback_version -n $NAMESPACE --timeout=300s
+    
+    # Switch traffic
+    kubectl patch service $APP_NAME-service -n $NAMESPACE -p '{"spec":{"selector":{"version":"'$rollback_version'"}}}'
+    
+    # Update HPA
+    kubectl patch hpa $APP_NAME-hpa -n $NAMESPACE -p '{"spec":{"scaleTargetRef":{"name":"'$APP_NAME-$rollback_version'"}}}'
+    
+    # Scale down failed version
+    kubectl scale deployment/$APP_NAME-$current_version --replicas=0 -n $NAMESPACE
+    
+    echo "✅ Rollback completed successfully"
+    
+    # Send notification
+    if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+        curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"🔙 AtlasMesh Fleet OS: Emergency rollback completed from $current_version to $rollback_version\"}" \
+            "$SLACK_WEBHOOK_URL" || true
+    fi

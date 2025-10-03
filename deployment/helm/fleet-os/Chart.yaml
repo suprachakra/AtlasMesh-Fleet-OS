@@ -1,0 +1,42 @@
+apiVersion: v2
+name: fleet-os
+description: AtlasMesh Fleet OS - Vehicle-agnostic autonomous fleet management system
+type: application
+version: 1.0.0
+appVersion: "v1.0.0"
+home: https://github.com/atlasmesh/fleet-os
+sources:
+  - https://github.com/atlasmesh/fleet-os
+maintainers:
+  - name: AtlasMesh Platform Team
+    email: platform@atlasmesh.ae
+keywords:
+  - autonomous-vehicles
+  - fleet-management
+  - uae
+  - ros2
+  - microservices
+annotations:
+  category: Fleet Management
+  licenses: Apache-2.0
+dependencies:
+  - name: postgresql
+    version: "12.1.9"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: redis
+    version: "17.3.7"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
+  - name: kafka
+    version: "20.0.6"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: kafka.enabled
+  - name: prometheus
+    version: "15.18.0"
+    repository: "https://prometheus-community.github.io/helm-charts"
+    condition: monitoring.prometheus.enabled
+  - name: grafana
+    version: "6.50.7"
+    repository: "https://grafana.github.io/helm-charts"
+    condition: monitoring.grafana.enabled

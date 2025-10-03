@@ -1,0 +1,158 @@
+{
+  "$schema": "../../base/schema/capability_manifest_schema.json",
+  "vehicle_id": "haul_truck_cat_797f",
+  "vehicle_class": "mining",
+  "dimensions": {
+    "length": 15.0,
+    "width": 7.4,
+    "height": 7.2,
+    "wheelbase": 6.2
+  },
+  "weight": {
+    "empty": 240000,
+    "max_gross": 623700,
+    "max_payload": 363000
+  },
+  "max_speed": 65,
+  "max_payload": 363000,
+  "max_grade": 25,
+  "drive_by_wire": {
+    "steering": {
+      "available": true,
+      "min_angle": -45,
+      "max_angle": 45,
+      "resolution": 0.5
+    },
+    "throttle": {
+      "available": true,
+      "min_position": 0,
+      "max_position": 100,
+      "resolution": 1.0
+    },
+    "brake": {
+      "available": true,
+      "min_pressure": 0,
+      "max_pressure": 100,
+      "abs_available": true,
+      "emergency_brake": true
+    },
+    "gear": {
+      "available": true,
+      "gears": ["park", "neutral", "drive", "reverse", "manual1", "manual2", "manual3", "manual4"],
+      "automatic": false
+    },
+    "parking_brake": true,
+    "turn_signals": true
+  },
+  "sensors": [
+    {
+      "type": "radar",
+      "model": "continental_ars540",
+      "manufacturer": "Continental",
+      "count": 6,
+      "range": {
+        "min": 0.5,
+        "max": 300
+      },
+      "frame_rate": 20
+    },
+    {
+      "type": "camera",
+      "model": "mobileye_eyeq5",
+      "manufacturer": "Mobileye", 
+      "count": 8,
+      "resolution": "1920x1200",
+      "frame_rate": 30
+    },
+    {
+      "type": "lidar",
+      "model": "ouster_os1_64",
+      "manufacturer": "Ouster",
+      "count": 2,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 7.5,
+        "roll": 0,
+        "pitch": 0,
+        "yaw": 0
+      },
+      "field_of_view": {
+        "horizontal": 360,
+        "vertical": 45
+      },
+      "range": {
+        "min": 0.3,
+        "max": 120
+      },
+      "frame_rate": 20
+    },
+    {
+      "type": "ultrasonic",
+      "model": "bosch_uss4",
+      "manufacturer": "Bosch",
+      "count": 12,
+      "range": {
+        "min": 0.15,
+        "max": 8.0
+      }
+    },
+    {
+      "type": "imu",
+      "model": "honeywell_hg4930",
+      "manufacturer": "Honeywell",
+      "count": 1
+    },
+    {
+      "type": "gps",
+      "model": "trimble_bd982",
+      "manufacturer": "Trimble",
+      "count": 2
+    }
+  ],
+  "compute": {
+    "platform": "nvidia_drive_agx_pegasus",
+    "cpu_cores": 12,
+    "cpu_arch": "aarch64",
+    "memory_gb": 64,
+    "gpu_memory_gb": 16,
+    "storage_gb": 2000,
+    "storage_type": "ssd_nvme",
+    "ai_accelerator": "nvidia_xavier_gpu"
+  },
+  "power": {
+    "type": "diesel",
+    "capacity": "4540L",
+    "voltage": "24V",
+    "max_power": "2000kW",
+    "charging_types": ["fuel_station"],
+    "backup_power": true
+  },
+  "operating_conditions": {
+    "temperature": {
+      "min": -40,
+      "max": 60
+    },
+    "humidity": {
+      "min": 0,
+      "max": 100
+    },
+    "altitude": {
+      "min": 0,
+      "max": 4500
+    },
+    "ingress_protection": "IP54",
+    "vibration_class": "ISO-8608-Class-8",
+    "dust_resistance": true,
+    "water_resistance": false
+  },
+  "supported_odds": [
+    "mining_site"
+  ],
+  "certifications": [
+    "iso_3449",
+    "iso_6683",
+    "msha_approved"
+  ],
+  "safety_integrity_level": "sil3"
+}
