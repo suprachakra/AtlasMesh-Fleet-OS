@@ -1,6 +1,4 @@
----
-title: ROS2 Vehicle Agent - Node Graph
----
+%%{init: {'flowchart': {'htmlLabels': true}} }%%
 graph TB
     %% AtlasMesh Fleet OS - Edge stack ROS2 nodes and topic flows
     %% Version 1.0 | Generated from: ROS2 launch files + ros2 graph | Edge Stack
@@ -11,57 +9,45 @@ graph TB
 
     %% Safety Critical Nodes
     subgraph SAFETY["🚨 SAFETY CRITICAL NODES"]
-        SAFETY_MONITOR[🛡️ safety_monitor<br/>**Safety Monitor Node**<br/>• Monitors all system health<br/>• Enforces safety constraints<br/>• Triggers emergency stops<br/>• Validates sensor data<br/>**QoS:** RELIABLE, KEEP_LAST 1<br/>**Frequency:** 100 Hz<br/>**Priority:** HIGHEST]
-        
-        EMERGENCY_STOP[🛑 emergency_stop<br/>**Emergency Stop Node**<br/>• Immediate brake activation<br/>• Autonomy system shutdown<br/>• Hazard light control<br/>• Safe state enforcement<br/>**QoS:** RELIABLE, KEEP_LAST 1<br/>**Latency:** <10ms<br/>**Priority:** CRITICAL]
-        
-        WATCHDOG[👁️ watchdog<br/>**System Watchdog**<br/>• Node health monitoring<br/>• Heartbeat validation<br/>• Automatic restart<br/>• Failover coordination<br/>**QoS:** RELIABLE, KEEP_LAST 10<br/>**Frequency:** 10 Hz<br/>**Priority:** HIGH]
+        SAFETY_MONITOR[🛡️ safety_monitor<br/><b>Safety Monitor Node</b><br/>&bull; Monitors all system health<br/>&bull; Enforces safety constraints<br/>&bull; Triggers emergency stops<br/>&bull; Validates sensor data<br/><b>QoS:</b> RELIABLE, KEEP_LAST 1<br/><b>Frequency:</b> 100 Hz<br/><b>Priority:</b> HIGHEST]
+        EMERGENCY_STOP[🛑 emergency_stop<br/><b>Emergency Stop Node</b><br/>&bull; Immediate brake activation<br/>&bull; Autonomy system shutdown<br/>&bull; Hazard light control<br/>&bull; Safe state enforcement<br/><b>QoS:</b> RELIABLE, KEEP_LAST 1<br/><b>Latency:</b> &lt;10ms<br/><b>Priority:</b> CRITICAL]
+        WATCHDOG[👁️ watchdog<br/><b>System Watchdog</b><br/>&bull; Node health monitoring<br/>&bull; Heartbeat validation<br/>&bull; Automatic restart<br/>&bull; Failover coordination<br/><b>QoS:</b> RELIABLE, KEEP_LAST 10<br/><b>Frequency:</b> 10 Hz<br/><b>Priority:</b> HIGH]
     end
 
     %% Perception Stack
     subgraph PERCEPTION["🔍 PERCEPTION STACK"]
-        LIDAR[📡 lidar_driver<br/>**LiDAR Driver**<br/>• Point cloud generation<br/>• Obstacle detection<br/>• Range measurements<br/>• Calibration management<br/>**QoS:** BEST_EFFORT, KEEP_LAST 3<br/>**Frequency:** 20 Hz<br/>**Data:** PointCloud2]
-        
-        CAMERA[📷 camera_driver<br/>**Camera Driver**<br/>• Image capture<br/>• Lane detection<br/>• Traffic sign recognition<br/>• Object classification<br/>**QoS:** BEST_EFFORT, KEEP_LAST 5<br/>**Frequency:** 30 Hz<br/>**Data:** Image, CompressedImage]
-        
-        RADAR[📶 radar_driver<br/>**Radar Driver**<br/>• Velocity measurements<br/>• Weather-robust detection<br/>• Long-range sensing<br/>• Doppler analysis<br/>**QoS:** RELIABLE, KEEP_LAST 3<br/>**Frequency:** 25 Hz<br/>**Data:** RadarScan]
-        
-        SENSOR_FUSION[🔄 sensor_fusion<br/>**Sensor Fusion**<br/>• Multi-sensor integration<br/>• Kalman filtering<br/>• Uncertainty quantification<br/>• Confidence scoring<br/>**QoS:** RELIABLE, KEEP_LAST 1<br/>**Frequency:** 50 Hz<br/>**Algorithm:** Extended Kalman Filter]
-        
-        PERCEPTION_PIPELINE[🧠 perception_pipeline<br/>**Perception Pipeline**<br/>• Object tracking<br/>• Semantic segmentation<br/>• Depth estimation<br/>• Scene understanding<br/>**QoS:** RELIABLE, KEEP_LAST 1<br/>**Frequency:** 20 Hz<br/>**ML Models:** YOLO, SegNet]
+        LIDAR[📡 lidar_driver<br/><b>LiDAR Driver</b><br/>&bull; Point cloud generation<br/>&bull; Obstacle detection<br/>&bull; Range measurements<br/>&bull; Calibration management<br/><b>QoS:</b> BEST_EFFORT, KEEP_LAST 3<br/><b>Frequency:</b> 20 Hz<br/><b>Data:</b> PointCloud2]
+        CAMERA[📷 camera_driver<br/><b>Camera Driver</b><br/>&bull; Image capture<br/>&bull; Lane detection<br/>&bull; Traffic sign recognition<br/>&bull; Object classification<br/><b>QoS:</b> BEST_EFFORT, KEEP_LAST 5<br/><b>Frequency:</b> 30 Hz<br/><b>Data:</b> Image, CompressedImage]
+        RADAR[📶 radar_driver<br/><b>Radar Driver</b><br/>&bull; Velocity measurements<br/>&bull; Weather-robust detection<br/>&bull; Long-range sensing<br/>&bull; Doppler analysis<br/><b>QoS:</b> RELIABLE, KEEP_LAST 3<br/><b>Frequency:</b> 25 Hz<br/><b>Data:</b> RadarScan]
+        SENSOR_FUSION[🔄 sensor_fusion<br/><b>Sensor Fusion</b><br/>&bull; Multi-sensor integration<br/>&bull; Kalman filtering<br/>&bull; Uncertainty quantification<br/>&bull; Confidence scoring<br/><b>QoS:</b> RELIABLE, KEEP_LAST 1<br/><b>Frequency:</b> 50 Hz<br/><b>Algorithm:</b> Extended Kalman Filter]
+        PERCEPTION_PIPELINE[🧠 perception_pipeline<br/><b>Perception Pipeline</b><br/>&bull; Object tracking<br/>&bull; Semantic segmentation<br/>&bull; Depth estimation<br/>&bull; Scene understanding<br/><b>QoS:</b> RELIABLE, KEEP_LAST 1<br/><b>Frequency:</b> 20 Hz<br/><b>ML Models:</b> YOLO, SegNet]
     end
 
     %% Control Stack
     subgraph CONTROL["🎮 CONTROL STACK"]
-        LOCALIZATION[🗺️ localization<br/>**Localization Node**<br/>• GNSS/IMU fusion<br/>• Map matching<br/>• Pose estimation<br/>• Coordinate transforms<br/>**QoS:** RELIABLE, KEEP_LAST 1<br/>**Frequency:** 100 Hz<br/>**Accuracy:** <10cm]
-        
-        PATH_PLANNER[🛤️ path_planner<br/>**Path Planner**<br/>• Route optimization<br/>• Obstacle avoidance<br/>• Traffic rule compliance<br/>• Dynamic re-planning<br/>**QoS:** RELIABLE, KEEP_LAST 1<br/>**Frequency:** 10 Hz<br/>**Algorithm:** A*, RRT*]
-        
-        MOTION_CONTROLLER[🎯 motion_controller<br/>**Motion Controller**<br/>• Trajectory following<br/>• Speed regulation<br/>• Steering control<br/>• Brake management<br/>**QoS:** RELIABLE, KEEP_LAST 1<br/>**Frequency:** 100 Hz<br/>**Control:** PID, MPC]
-        
-        VEHICLE_INTERFACE[🔌 vehicle_interface<br/>**Vehicle Interface**<br/>• CAN bus communication<br/>• Actuator commands<br/>• Sensor data collection<br/>• Hardware abstraction<br/>**QoS:** RELIABLE, KEEP_LAST 1<br/>**Frequency:** 1000 Hz<br/>**Protocol:** CAN, Ethernet]
+        LOCALIZATION[🗺️ localization<br/><b>Localization Node</b><br/>&bull; GNSS/IMU fusion<br/>&bull; Map matching<br/>&bull; Pose estimation<br/>&bull; Coordinate transforms<br/><b>QoS:</b> RELIABLE, KEEP_LAST 1<br/><b>Frequency:</b> 100 Hz<br/><b>Accuracy:</b> &lt;10cm]
+        PATH_PLANNER[🛤️ path_planner<br/><b>Path Planner</b><br/>&bull; Route optimization<br/>&bull; Obstacle avoidance<br/>&bull; Traffic rule compliance<br/>&bull; Dynamic re-planning<br/><b>QoS:</b> RELIABLE, KEEP_LAST 1<br/><b>Frequency:</b> 10 Hz<br/><b>Algorithm:</b> A*, RRT*]
+        MOTION_CONTROLLER[🎯 motion_controller<br/><b>Motion Controller</b><br/>&bull; Trajectory following<br/>&bull; Speed regulation<br/>&bull; Steering control<br/>&bull; Brake management<br/><b>QoS:</b> RELIABLE, KEEP_LAST 1<br/><b>Frequency:</b> 100 Hz<br/><b>Control:</b> PID, MPC]
+        VEHICLE_INTERFACE[🔌 vehicle_interface<br/><b>Vehicle Interface</b><br/>&bull; CAN bus communication<br/>&bull; Actuator commands<br/>&bull; Sensor data collection<br/>&bull; Hardware abstraction<br/><b>QoS:</b> RELIABLE, KEEP_LAST 1<br/><b>Frequency:</b> 1000 Hz<br/><b>Protocol:</b> CAN, Ethernet]
     end
 
     %% Communication Stack
     subgraph COMMUNICATION["📡 COMMUNICATION STACK"]
-        FLEET_GATEWAY[🌐 fleet_gateway<br/>**Fleet Gateway**<br/>• WebSocket client<br/>• Command processing<br/>• Telemetry transmission<br/>• Status reporting<br/>**QoS:** RELIABLE, KEEP_LAST 10<br/>**Frequency:** 10 Hz<br/>**Protocol:** WebSocket, MQTT]
-        
-        V2X_COMM[📻 v2x_communication<br/>**V2X Communication**<br/>• Vehicle-to-vehicle V2V<br/>• Vehicle-to-infrastructure V2I<br/>• DSRC/5G connectivity<br/>• Cooperative awareness<br/>**QoS:** BEST_EFFORT, KEEP_LAST 5<br/>**Frequency:** 10 Hz<br/>**Standard:** IEEE 802.11p]
-        
-        TELEMETRY_COLLECTOR[📊 telemetry_collector<br/>**Telemetry Collector**<br/>• Data aggregation<br/>• Compression<br/>• Buffering<br/>• Transmission scheduling<br/>**QoS:** RELIABLE, KEEP_LAST 100<br/>**Frequency:** 1 Hz<br/>**Compression:** LZ4]
+        FLEET_GATEWAY[🌐 fleet_gateway<br/><b>Fleet Gateway</b><br/>&bull; WebSocket client<br/>&bull; Command processing<br/>&bull; Telemetry transmission<br/>&bull; Status reporting<br/><b>QoS:</b> RELIABLE, KEEP_LAST 10<br/><b>Frequency:</b> 10 Hz<br/><b>Protocol:</b> WebSocket, MQTT]
+        V2X_COMM[📻 v2x_communication<br/><b>V2X Communication</b><br/>&bull; Vehicle-to-vehicle V2V<br/>&bull; Vehicle-to-infrastructure V2I<br/>&bull; DSRC/5G connectivity<br/>&bull; Cooperative awareness<br/><b>QoS:</b> BEST_EFFORT, KEEP_LAST 5<br/><b>Frequency:</b> 10 Hz<br/><b>Standard:</b> IEEE 802.11p]
+        TELEMETRY_COLLECTOR[📊 telemetry_collector<br/><b>Telemetry Collector</b><br/>&bull; Data aggregation<br/>&bull; Compression<br/>&bull; Buffering<br/>&bull; Transmission scheduling<br/><b>QoS:</b> RELIABLE, KEEP_LAST 100<br/><b>Frequency:</b> 1 Hz<br/><b>Compression:</b> LZ4]
     end
 
     %% Monitoring Stack
     subgraph MONITORING["📈 MONITORING STACK"]
-        DIAGNOSTICS[🔧 diagnostics<br/>**Diagnostics Node**<br/>• System health monitoring<br/>• Performance metrics<br/>• Error detection<br/>• Log aggregation<br/>**QoS:** RELIABLE, KEEP_LAST 50<br/>**Frequency:** 1 Hz<br/>**Metrics:** CPU, Memory, Network]
-        
-        DATA_RECORDER[💾 data_recorder<br/>**Data Recorder**<br/>• ROS bag recording<br/>• Selective logging<br/>• Compression<br/>• Storage management<br/>**QoS:** BEST_EFFORT, KEEP_LAST 1<br/>**Storage:** 500GB SSD<br/>**Retention:** 7 days]
+        DIAGNOSTICS[🔧 diagnostics<br/><b>Diagnostics Node</b><br/>&bull; System health monitoring<br/>&bull; Performance metrics<br/>&bull; Error detection<br/>&bull; Log aggregation<br/><b>QoS:</b> RELIABLE, KEEP_LAST 50<br/><b>Frequency:</b> 1 Hz<br/><b>Metrics:</b> CPU, Memory, Network]
+        DATA_RECORDER[💾 data_recorder<br/><b>Data Recorder</b><br/>&bull; ROS bag recording<br/>&bull; Selective logging<br/>&bull; Compression<br/>&bull; Storage management<br/><b>QoS:</b> BEST_EFFORT, KEEP_LAST 1<br/><b>Storage:</b> 500GB SSD<br/><b>Retention:</b> 7 days]
     end
 
     %% ROS2 Topic Flows (Safety Critical)
-    SAFETY_MONITOR -->|/emergency_stop<br/>{trigger, reason}| EMERGENCY_STOP
-    WATCHDOG -->|/node_health<br/>{status, heartbeat}| SAFETY_MONITOR
-    EMERGENCY_STOP -->|/brake_command<br/>{force, immediate}| VEHICLE_INTERFACE
+    SAFETY_MONITOR -->|/emergency_stop<br/>&#123;trigger, reason&#125;| EMERGENCY_STOP
+    WATCHDOG -->|/node_health<br/>&#123;status, heartbeat&#125;| SAFETY_MONITOR
+    EMERGENCY_STOP -->|/brake_command<br/>&#123;force, immediate&#125;| VEHICLE_INTERFACE
 
     %% Perception Topic Flows
     LIDAR -->|/lidar/points<br/>PointCloud2| SENSOR_FUSION
@@ -92,18 +78,15 @@ graph TB
 
     %% Topic Annotations
     subgraph TOPICS["📋 ROS2 TOPIC CATEGORIES"]
-        SAFETY_TOPICS[🚨 **SAFETY CRITICAL TOPICS:**<br/>• /emergency_stop - Immediate brake activation<br/>• /safety_status - Continuous safety monitoring<br/>• /system_health - Node health validation<br/>• All safety topics use RELIABLE QoS]
-        
-        PERCEPTION_TOPICS[👁️ **PERCEPTION TOPICS:**<br/>• /lidar/points - 3D point clouds 20Hz<br/>• /camera/image - RGB images 30Hz<br/>• /radar/scan - Radar detections 25Hz<br/>• /fused_objects - Sensor fusion output 50Hz]
-        
-        CONTROL_TOPICS[🎮 **CONTROL TOPICS:**<br/>• /planned_path - Trajectory waypoints 10Hz<br/>• /control_commands - Actuator commands 100Hz<br/>• /current_pose - Vehicle localization 100Hz<br/>• All control topics use RELIABLE QoS]
-        
-        COMM_TOPICS[📡 **COMMUNICATION TOPICS:**<br/>• /fleet_commands - Commands from fleet async<br/>• /vehicle_telemetry - Status to fleet 10Hz<br/>• /v2x_objects - V2X cooperative data 10Hz<br/>• WebSocket and MQTT protocols supported]
+        SAFETY_TOPICS[🚨 <b>SAFETY CRITICAL TOPICS:</b><br/>&bull; /emergency_stop - Immediate brake activation<br/>&bull; /safety_status - Continuous safety monitoring<br/>&bull; /system_health - Node health validation<br/>&bull; All safety topics use RELIABLE QoS]
+        PERCEPTION_TOPICS[👁️ <b>PERCEPTION TOPICS:</b><br/>&bull; /lidar/points - 3D point clouds 20Hz<br/>&bull; /camera/image - RGB images 30Hz<br/>&bull; /radar/scan - Radar detections 25Hz<br/>&bull; /fused_objects - Sensor fusion output 50Hz]
+        CONTROL_TOPICS[🎮 <b>CONTROL TOPICS:</b><br/>&bull; /planned_path - Trajectory waypoints 10Hz<br/>&bull; /control_commands - Actuator commands 100Hz<br/>&bull; /current_pose - Vehicle localization 100Hz<br/>&bull; All control topics use RELIABLE QoS]
+        COMM_TOPICS[📡 <b>COMMUNICATION TOPICS:</b><br/>&bull; /fleet_commands - Commands from fleet async<br/>&bull; /vehicle_telemetry - Status to fleet 10Hz<br/>&bull; /v2x_objects - V2X cooperative data 10Hz<br/>&bull; WebSocket and MQTT protocols supported]
     end
 
     %% Deployment Configuration
     subgraph DEPLOYMENT["🚀 DEPLOYMENT CONFIGURATION"]
-        CONFIG[📋 **DEPLOYMENT NOTES:**<br/>• ROS2 Humble LTS on Ubuntu 22.04<br/>• DDS Middleware: Fast-DDS default<br/>• Real-time kernel for control nodes<br/>• Docker containers for isolation<br/>• systemd services for auto-start<br/>• Resource limits per node<br/>• CPU affinity for critical nodes]
+        CONFIG[📋 <b>DEPLOYMENT NOTES:</b><br/>&bull; ROS2 Humble LTS on Ubuntu 22.04<br/>&bull; DDS Middleware: Fast-DDS default<br/>&bull; Real-time kernel for control nodes<br/>&bull; Docker containers for isolation<br/>&bull; systemd services for auto-start<br/>&bull; Resource limits per node<br/>&bull; CPU affinity for critical nodes]
     end
 
     %% Styling
