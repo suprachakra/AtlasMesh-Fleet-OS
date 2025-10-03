@@ -12,7 +12,7 @@ flowchart TB
         Auth[🔐 Auth Service<br/>Authentication]
         VGW[🌐 Vehicle Gateway<br/>Communication Hub]
         CmdDB[(🗄️ Command Database<br/>Persistent Storage)]
-        Kafka[(📨 Event Bus (Kafka)<br/>Message Queue)]
+        Kafka[(📨 Event Bus Kafka<br/>Message Queue)]
     end
 
     subgraph TB3["🚗 TRUST BOUNDARY: Vehicle Network"]
@@ -129,6 +129,7 @@ flowchart TB
     class CmdDB,Kafka system
     class SCENARIO1,SCENARIO2,SCENARIO3,SCENARIO4 scenario
     class AUTH_CONTROLS,COMM_CONTROLS,DATA_CONTROLS,MONITOR_CONTROLS,INCIDENT_CONTROLS controls
+
 
 
 
