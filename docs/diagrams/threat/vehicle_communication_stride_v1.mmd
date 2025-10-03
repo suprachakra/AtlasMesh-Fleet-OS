@@ -72,7 +72,7 @@ flowchart TB
             R_CRYPTO[✅ Cryptographic command signatures]
             R_LOG[✅ Comprehensive audit logging]
             R_CERT[✅ Non-repudiation certificates]
-            R_CHAIN[✅ Blockchain audit trail (future)]
+            R_CHAIN[✅ Blockchain audit trail -future]
         end
         subgraph DISCLOSURE_MIT["🔍 INFO DISCLOSURE MITIGATIONS"]
             I_E2E[✅ End-to-end encryption]
@@ -95,13 +95,14 @@ flowchart TB
     end
 
     %% HIGH-RISK ATTACK SCENARIOS
-    subgraph SCENARIOS["🚨 HIGH-RISK ATTACK SCENARIOS"]
-        direction TB
-        SCENARIO1[🔴 SCENARIO 1: Malicious Command Injection<br/>1) Compromise operator creds (S1)<br/>2) Issue fleet-wide stop (T1)<br/>MITIGATION: Dual authorization]
-        SCENARIO2[🔴 SCENARIO 2: Vehicle Hijacking<br/>1) Spoof vehicle certs (S2)<br/>2) Inject false telemetry<br/>MITIGATION: HSM + mTLS]
-        SCENARIO3[🔴 SCENARIO 3: Privacy Breach<br/>1) Intercept telemetry (I1)<br/>2) Track locations/PII<br/>MITIGATION: E2EE + anonymization]
-        SCENARIO4[🔴 SCENARIO 4: Service Disruption<br/>1) Flood vehicle GW (D2)<br/>2) Disrupt real-time comms<br/>MITIGATION: DDoS + priority queues]
-    end
+%% HIGH-RISK ATTACK SCENARIOS
+subgraph SCENARIOS["🚨 HIGH-RISK ATTACK SCENARIOS"]
+    direction TB
+    SCENARIO1["🔴 <b>SCENARIO 1: Malicious Command Injection</b><br/>&bull; Compromise operator creds (S1)<br/>&bull; Issue fleet-wide stop (T1)<br/><b>MITIGATION:</b> Dual authorization"]
+    SCENARIO3["🔴 <b>SCENARIO 3: Privacy Breach</b><br/>&bull; Intercept telemetry (I1)<br/>&bull; Track locations/PII<br/><b>MITIGATION:</b> E2EE + anonymization"]
+    SCENARIO4["🔴 <b>SCENARIO 4: Service Disruption</b><br/>&bull; Flood vehicle GW (D2)<br/>&bull; Disrupt real-time comms<br/><b>MITIGATION:</b> DDoS + priority queues"]
+end
+
 
     %% SECURITY CONTROLS MAPPING
     subgraph CONTROLS["🔧 SECURITY CONTROLS"]
@@ -126,11 +127,8 @@ flowchart TB
     class Attacker threatHigh
     class Operator external
     class Gateway,Auth,VGW,Agent,Vehicle system
-    class CmdDB,Kafka system
+           direction TB
+SCENARIO1["🔴 <b>SCENARIO 1: Malicious Command Injection</b><br/>&bull; Compromise operator creds (S1)<br/>&bull; Issue fleet-wide stop (T1)<br/><b>MITIGATION:</b> Dual authorization"]
+class CmdDB,Kafka system
     class SCENARIO1,SCENARIO2,SCENARIO3,SCENARIO4 scenario
     class AUTH_CONTROLS,COMM_CONTROLS,DATA_CONTROLS,MONITOR_CONTROLS,INCIDENT_CONTROLS controls
-
-
-
-
-
