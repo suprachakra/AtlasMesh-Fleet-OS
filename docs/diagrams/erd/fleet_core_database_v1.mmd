@@ -1,283 +1,232 @@
----
-title: Fleet Core Database - Entity Relationship Diagram
----
 erDiagram
-    %% AtlasMesh Fleet OS - Core fleet management entities and relationships
-    %% Version 1.0 | Generated from: PostgreSQL schema | Source: fleet-manager/migrations/001_create_fleet_tables.sql
-    %% DATABASE: PostgreSQL with PostGIS extension for geospatial data
-    %% SCHEMA: fleet_core - Core fleet management entities
-    %% COMPLIANCE: Multi-tenant isolation with organization_id foreign keys
-    %% PERFORMANCE: Indexes on frequently queried columns
+    title Fleet Core Database - Entity Relationship Diagram
 
     ORGANIZATIONS {
-        uuid organization_id PK "Primary identifier - UUID for security"
-        varchar name "Organization name - required"
-        varchar sector "Business sector - CHECK constraint"
-        jsonb configuration "Feature flags and settings"
-        jsonb entitlements "Available features per org"
-        varchar subscription_tier "basic, professional, enterprise, custom"
-        varchar primary_contact_name "Billing contact"
-        varchar primary_contact_email "Support contact"
-        varchar primary_contact_phone "Emergency contact"
-        jsonb address "Flexible address structure"
-        varchar status "active, suspended, terminated"
-        timestamptz created_at "Audit trail"
-        timestamptz updated_at "Last modification"
-        text_array compliance_frameworks "ISO, UAE regulations, etc"
-        jsonb data_residency_requirements "PII and telemetry rules"
-        jsonb metadata "Extensible metadata"
+        uuid organization_id PK
+        varchar name
+        varchar sector
+        jsonb configuration
+        jsonb entitlements
+        varchar subscription_tier
+        varchar primary_contact_name
+        varchar primary_contact_email
+        varchar primary_contact_phone
+        jsonb address
+        varchar status
+        timestamptz created_at
+        timestamptz updated_at
+        text[] compliance_frameworks
+        jsonb data_residency_requirements
+        jsonb metadata
     }
 
     FLEETS {
-        uuid fleet_id PK "Primary identifier"
-        uuid organization_id FK "Multi-tenant isolation"
-        varchar name "Fleet name - required"
-        text description "Fleet description"
-        varchar fleet_type "ridehail, logistics, mining, etc"
-        jsonb configuration "Fleet-specific settings"
-        integer max_vehicles "Capacity limit"
-        varchar status "active, inactive, maintenance"
-        timestamptz created_at "Creation timestamp"
-        timestamptz updated_at "Last update"
-        varchar created_by "Audit - who created"
-        varchar updated_by "Audit - who updated"
-        jsonb operational_hours "Operating schedule"
-        geometry service_area "PostGIS polygon for coverage"
-        jsonb metadata "Additional data"
+        uuid fleet_id PK
+        uuid organization_id FK
+        varchar name
+        text description
+        varchar fleet_type
+        jsonb configuration
+        integer max_vehicles
+        varchar status
+        timestamptz created_at
+        timestamptz updated_at
+        varchar created_by
+        varchar updated_by
+        jsonb operational_hours
+        geometry service_area
+        jsonb metadata
     }
 
     VEHICLES {
-        uuid vehicle_id PK "Primary identifier"
-        uuid fleet_id FK "Fleet membership"
-        uuid organization_id FK "Multi-tenant isolation"
-        varchar asset_tag UK "Unique asset identifier"
-        varchar vin UK "Vehicle identification number"
-        varchar license_plate "Registration plate"
-        varchar manufacturer "Vehicle manufacturer"
-        varchar model "Vehicle model"
-        integer year "Manufacturing year"
-        jsonb vehicle_profile "Capabilities and specs"
-        varchar autonomy_level "L0, L1, L2, L3, L4, L5"
-        varchar operational_status "driving_av, idle, maintenance, charging"
-        varchar autonomy_status "active, degraded, fallback, manual"
-        geometry current_location "PostGIS point - real-time location"
-        decimal current_heading "Compass heading in degrees"
-        decimal current_speed "Speed in m/s"
-        decimal battery_level "Battery percentage 0-100"
-        decimal fuel_level "Fuel percentage 0-100"
-        decimal health_score "Overall health 0-100"
-        decimal odometer_km "Total distance traveled"
-        uuid current_trip_id "Active trip reference"
-        timestamptz last_seen "Last communication timestamp"
-        timestamptz created_at "Vehicle registration"
-        timestamptz updated_at "Last status update"
-        varchar created_by "Who registered vehicle"
-        varchar updated_by "Who last updated"
-        jsonb maintenance_schedule "Scheduled maintenance"
-        jsonb insurance_info "Insurance details"
-        jsonb certification_data "Safety certifications"
-        jsonb metadata "Additional vehicle data"
+        uuid vehicle_id PK
+        uuid fleet_id FK
+        uuid organization_id FK
+        varchar asset_tag UK
+        varchar vin UK
+        varchar license_plate
+        varchar manufacturer
+        varchar model
+        integer year
+        jsonb vehicle_profile
+        varchar autonomy_level
+        varchar operational_status
+        varchar autonomy_status
+        geometry current_location
+        decimal current_heading
+        decimal current_speed
+        decimal battery_level
+        decimal fuel_level
+        decimal health_score
+        decimal odometer_km
+        uuid current_trip_id
+        timestamptz last_seen
+        timestamptz created_at
+        timestamptz updated_at
+        varchar created_by
+        varchar updated_by
+        jsonb maintenance_schedule
+        jsonb insurance_info
+        jsonb certification_data
+        jsonb metadata
     }
 
     VEHICLE_COMMANDS {
-        uuid command_id PK "Unique command identifier"
-        uuid vehicle_id FK "Target vehicle"
-        varchar command_type "Command category"
-        jsonb command_payload "Command parameters"
-        varchar priority "LOW, NORMAL, HIGH, CRITICAL, EMERGENCY"
-        varchar issued_by "Command issuer"
-        varchar status "pending, sent, acknowledged, completed, failed"
-        timestamptz issued_at "When command was issued"
-        timestamptz sent_at "When sent to vehicle"
-        timestamptz acknowledged_at "Vehicle acknowledgment"
-        timestamptz completed_at "Execution completion"
-        timestamptz expires_at "Command expiration"
-        jsonb result "Execution result"
-        text error_message "Error details if failed"
-        integer retry_count "Number of retries"
-        uuid correlation_id "Request tracing"
-        varchar dual_auth_operator "Second operator for safety commands"
-        boolean safety_override "Safety system override flag"
-        jsonb metadata "Additional command data"
+        uuid command_id PK
+        uuid vehicle_id FK
+        varchar command_type
+        jsonb command_payload
+        varchar priority
+        varchar issued_by
+        varchar status
+        timestamptz issued_at
+        timestamptz sent_at
+        timestamptz acknowledged_at
+        timestamptz completed_at
+        timestamptz expires_at
+        jsonb result
+        text error_message
+        integer retry_count
+        uuid correlation_id
+        varchar dual_auth_operator
+        boolean safety_override
+        jsonb metadata
     }
 
     TRIPS {
-        uuid trip_id PK "Unique trip identifier"
-        uuid vehicle_id FK "Assigned vehicle"
-        uuid fleet_id FK "Fleet context"
-        uuid organization_id FK "Multi-tenant isolation"
-        varchar trip_type "passenger, cargo, maintenance, test"
-        varchar status "scheduled, active, completed, cancelled"
-        geometry origin "Trip start location"
-        geometry destination "Trip end location"
-        geometry planned_route "Planned path - LineString"
-        geometry actual_route "Actual path taken"
-        timestamptz scheduled_start "Planned start time"
-        timestamptz actual_start "Actual start time"
-        timestamptz scheduled_end "Planned end time"
-        timestamptz actual_end "Actual end time"
-        decimal distance_km "Trip distance"
-        integer duration_minutes "Trip duration"
-        integer passenger_count "Number of passengers"
-        decimal cargo_weight_kg "Cargo weight"
-        timestamptz created_at "Trip creation"
-        timestamptz updated_at "Last update"
-        varchar created_by "Trip creator"
-        varchar updated_by "Last updater"
-        jsonb weather_conditions "Weather during trip"
-        jsonb traffic_conditions "Traffic data"
-        jsonb incidents "Any incidents during trip"
-        jsonb cost_breakdown "Trip cost analysis"
-        decimal customer_rating "Customer satisfaction 1-5"
-        jsonb metadata "Additional trip data"
+        uuid trip_id PK
+        uuid vehicle_id FK
+        uuid fleet_id FK
+        uuid organization_id FK
+        varchar trip_type
+        varchar status
+        geometry origin
+        geometry destination
+        geometry planned_route
+        geometry actual_route
+        timestamptz scheduled_start
+        timestamptz actual_start
+        timestamptz scheduled_end
+        timestamptz actual_end
+        decimal distance_km
+        integer duration_minutes
+        integer passenger_count
+        decimal cargo_weight_kg
+        timestamptz created_at
+        timestamptz updated_at
+        varchar created_by
+        varchar updated_by
+        jsonb weather_conditions
+        jsonb traffic_conditions
+        jsonb incidents
+        jsonb cost_breakdown
+        decimal customer_rating
+        jsonb metadata
     }
 
     MAINTENANCE_RECORDS {
-        uuid maintenance_id PK "Maintenance record ID"
-        uuid vehicle_id FK "Vehicle being serviced"
-        varchar maintenance_type "preventive, corrective, emergency"
-        varchar status "scheduled, in_progress, completed, cancelled"
-        timestamptz scheduled_date "Planned maintenance date"
-        timestamptz actual_date "Actual service date"
-        text description "Maintenance description"
-        varchar technician "Service technician"
-        varchar location "Service location"
-        decimal odometer_at_service "Odometer reading"
-        decimal cost "Maintenance cost"
-        jsonb parts_used "Parts and quantities"
-        decimal labor_hours "Labor time"
-        decimal next_service_km "Next service odometer"
-        timestamptz next_service_date "Next service date"
-        timestamptz created_at "Record creation"
-        timestamptz updated_at "Last update"
-        varchar created_by "Record creator"
-        jsonb warranty_info "Warranty details"
-        jsonb compliance_certificates "Safety certificates"
-        jsonb metadata "Additional maintenance data"
+        uuid maintenance_id PK
+        uuid vehicle_id FK
+        varchar maintenance_type
+        varchar status
+        timestamptz scheduled_date
+        timestamptz actual_date
+        text description
+        varchar technician
+        varchar location
+        decimal odometer_at_service
+        decimal cost
+        jsonb parts_used
+        decimal labor_hours
+        decimal next_service_km
+        timestamptz next_service_date
+        timestamptz created_at
+        timestamptz updated_at
+        varchar created_by
+        jsonb warranty_info
+        jsonb compliance_certificates
+        jsonb metadata
     }
 
     INCIDENTS {
-        uuid incident_id PK "Incident identifier"
-        uuid vehicle_id FK "Involved vehicle"
-        uuid trip_id FK "Related trip if applicable"
-        varchar incident_type "accident, breakdown, violation, near_miss"
-        varchar severity "low, medium, high, critical"
-        varchar status "reported, investigating, resolved, closed"
-        timestamptz occurred_at "When incident occurred"
-        geometry location "Incident location"
-        text description "Incident description"
-        varchar reported_by "Who reported incident"
-        varchar assigned_to "Investigator assigned"
-        timestamptz resolved_at "Resolution timestamp"
-        text resolution_notes "Resolution details"
-        timestamptz created_at "Report creation"
-        timestamptz updated_at "Last update"
-        jsonb weather_at_incident "Weather conditions"
-        jsonb vehicle_state_at_incident "Vehicle state data"
-        jsonb witness_statements "Witness accounts"
-        jsonb media_attachments "Photos, videos"
-        varchar insurance_claim_id "Insurance reference"
-        varchar regulatory_report_id "Regulatory filing"
-        jsonb root_cause_analysis "RCA findings"
-        jsonb corrective_actions "Actions taken"
-        jsonb metadata "Additional incident data"
+        uuid incident_id PK
+        uuid vehicle_id FK
+        uuid trip_id FK
+        varchar incident_type
+        varchar severity
+        varchar status
+        timestamptz occurred_at
+        geometry location
+        text description
+        varchar reported_by
+        varchar assigned_to
+        timestamptz resolved_at
+        text resolution_notes
+        timestamptz created_at
+        timestamptz updated_at
+        jsonb weather_at_incident
+        jsonb vehicle_state_at_incident
+        jsonb witness_statements
+        jsonb media_attachments
+        varchar insurance_claim_id
+        varchar regulatory_report_id
+        jsonb root_cause_analysis
+        jsonb corrective_actions
+        jsonb metadata
     }
 
     POLICIES {
-        uuid policy_id PK "Policy identifier"
-        uuid organization_id FK "Policy owner"
-        varchar policy_name UK "Unique policy name"
-        varchar policy_type "safety, operational, compliance"
-        integer version "Policy version number"
-        text policy_content "OPA/Rego policy content"
-        varchar status "draft, active, deprecated"
-        timestamptz created_at "Policy creation"
-        timestamptz updated_at "Last modification"
-        varchar created_by "Policy author"
-        varchar updated_by "Last editor"
-        timestamptz effective_from "Policy start date"
-        timestamptz effective_until "Policy end date"
-        varchar approval_status "pending, approved, rejected"
-        varchar approved_by "Approver"
-        timestamptz approved_at "Approval timestamp"
-        text_array tags "Policy tags"
-        jsonb metadata "Additional policy data"
+        uuid policy_id PK
+        uuid organization_id FK
+        varchar policy_name UK
+        varchar policy_type
+        integer version
+        text policy_content
+        varchar status
+        timestamptz created_at
+        timestamptz updated_at
+        varchar created_by
+        varchar updated_by
+        timestamptz effective_from
+        timestamptz effective_until
+        varchar approval_status
+        varchar approved_by
+        timestamptz approved_at
+        text[] tags
+        jsonb metadata
     }
 
     AUDIT_LOGS {
-        uuid audit_id PK "Audit record identifier"
-        uuid organization_id FK "Multi-tenant isolation"
-        varchar event_type "Event category"
-        varchar entity_type "Entity being audited"
-        uuid entity_id "Entity identifier"
-        varchar action "create, read, update, delete"
-        varchar performed_by "Who performed action"
-        timestamptz performed_at "When action occurred"
-        jsonb old_values "Previous values"
-        jsonb new_values "New values"
-        inet ip_address "Source IP address"
-        text user_agent "Client user agent"
-        varchar session_id "Session identifier"
-        uuid correlation_id "Request correlation"
-        text_array compliance_flags "Compliance markers"
-        timestamptz retention_until "Data retention limit"
-        jsonb metadata "Additional audit data"
+        uuid audit_id PK
+        uuid organization_id FK
+        varchar event_type
+        varchar entity_type
+        uuid entity_id
+        varchar action
+        varchar performed_by
+        timestamptz performed_at
+        jsonb old_values
+        jsonb new_values
+        inet ip_address
+        text user_agent
+        varchar session_id
+        uuid correlation_id
+        text[] compliance_flags
+        timestamptz retention_until
+        jsonb metadata
     }
 
-    %% Relationships
-    ORGANIZATIONS ||--o{ FLEETS : "owns"
-    ORGANIZATIONS ||--o{ VEHICLES : "owns"
-    ORGANIZATIONS ||--o{ POLICIES : "defines"
-    ORGANIZATIONS ||--o{ AUDIT_LOGS : "generates"
-    
-    FLEETS ||--o{ VEHICLES : "contains"
-    FLEETS ||--o{ TRIPS : "operates"
-    
-    VEHICLES ||--o{ VEHICLE_COMMANDS : "receives"
-    VEHICLES ||--o{ TRIPS : "performs"
-    VEHICLES ||--o{ MAINTENANCE_RECORDS : "undergoes"
-    VEHICLES ||--o{ INCIDENTS : "involved_in"
-    
-    TRIPS ||--o{ INCIDENTS : "may_have"
+    ORGANIZATIONS ||--o{ FLEETS : owns
+    ORGANIZATIONS ||--o{ VEHICLES : owns
+    ORGANIZATIONS ||--o{ POLICIES : defines
+    ORGANIZATIONS ||--o{ AUDIT_LOGS : generates
 
-    %% Business Rules and Constraints
-    %%{wrap}%%
-    %% BUSINESS RULES:
-    %% • sector determines available features
-    %% • Only 'active' orgs can operate vehicles  
-    %% • compliance_frameworks array for regulations
-    %% • data_residency_requirements for privacy
-    %%
-    %% SAFETY CONSTRAINTS:
-    %% • health_score >= 70 required for dispatch
-    %% • autonomy_level must match vehicle capabilities
-    %% • current_location updated every 10 seconds
-    %% • last_seen timeout triggers alerts
-    %%
-    %% SECURITY RULES:
-    %% • Safety-critical commands require dual_auth
-    %% • Commands expire after timeout period
-    %% • All commands logged for audit trail
-    %% • correlation_id for request tracing
-    %%
-    %% OPERATIONAL RULES:
-    %% • planned vs actual route comparison
-    %% • Weather/traffic conditions recorded
-    %% • Customer rating for service quality
-    %% • Cost breakdown for billing
-    %%
-    %% COMPLIANCE:
-    %% • All data changes audited
-    %% • Retention policies enforced
-    %% • IP address and session tracking
-    %% • Correlation IDs for tracing
-    %%
-    %% PERFORMANCE INDEXES:
-    %% • idx_vehicles_location (GiST)
-    %% • idx_vehicles_fleet_status
-    %% • idx_vehicles_last_seen
-    %% • idx_vehicles_health_score
-    %% • idx_trips_origin (GiST)
-    %% • idx_trips_destination (GiST)
-    %% • idx_trips_route (GiST)
-    %% • idx_trips_scheduled_start
+    FLEETS ||--o{ VEHICLES : contains
+    FLEETS ||--o{ TRIPS : operates
+
+    VEHICLES ||--o{ VEHICLE_COMMANDS : receives
+    VEHICLES ||--o{ TRIPS : performs
+    VEHICLES ||--o{ MAINTENANCE_RECORDS : undergoes
+    VEHICLES ||--o{ INCIDENTS : involved_in
+
+    TRIPS ||--o{ INCIDENTS : may_have
