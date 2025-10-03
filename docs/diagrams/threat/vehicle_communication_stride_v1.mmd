@@ -59,7 +59,7 @@ flowchart TB
         subgraph SPOOFING_MIT["🔒 SPOOFING MITIGATIONS"]
             S_MFA[✅ Multi-factor authentication]
             S_CERT[✅ Certificate-based vehicle identity]
-            S_JWT[✅ JWT tokens (short TTL)]
+            S_JWT[✅ JWT tokens short TTL]
             S_MTLS[✅ mTLS for all communications]
         end
         subgraph TAMPERING_MIT["🔐 TAMPERING MITIGATIONS"]
@@ -129,6 +129,7 @@ flowchart TB
     class CmdDB,Kafka system
     class SCENARIO1,SCENARIO2,SCENARIO3,SCENARIO4 scenario
     class AUTH_CONTROLS,COMM_CONTROLS,DATA_CONTROLS,MONITOR_CONTROLS,INCIDENT_CONTROLS controls
+
 
 
 
