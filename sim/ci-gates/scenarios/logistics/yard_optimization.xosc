@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="1" date="2024-01-01T00:00:00" description="Logistics yard optimization with multiple vehicle coordination" author="AtlasMesh"/>
+  
+  <ParameterDeclarations>
+    <ParameterDeclaration name="NumVehicles" parameterType="integer" value="5"/>
+    <ParameterDeclaration name="YardCongestionLevel" parameterType="double" value="0.7"/>
+    <ParameterDeclaration name="TargetThroughput" parameterType="double" value="20.0"/>
+  </ParameterDeclarations>
+  
+  <CatalogLocations>
+    <VehicleCatalog>
+      <Directory path="../../../configs/vehicles"/>
+    </VehicleCatalog>
+  </CatalogLocations>
+  
+  <RoadNetwork>
+    <LogicFile filepath="../../../configs/map/examples/logistics/port_yard.xodr"/>
+  </RoadNetwork>
+  
+  <Entities>
+    <ScenarioObject name="YardTruck1">
+      <CatalogReference catalogName="VehicleCatalog" entryName="yard_truck"/>
+    </ScenarioObject>
+    <ScenarioObject name="YardTruck2">
+      <CatalogReference catalogName="VehicleCatalog" entryName="yard_truck"/>
+    </ScenarioObject>
+    <ScenarioObject name="YardTruck3">
+      <CatalogReference catalogName="VehicleCatalog" entryName="yard_truck"/>
+    </ScenarioObject>
+    <ScenarioObject name="ContainerCrane">
+      <CatalogReference catalogName="VehicleCatalog" entryName="container_crane"/>
+    </ScenarioObject>
+    <ScenarioObject name="ReachStacker">
+      <CatalogReference catalogName="VehicleCatalog" entryName="reach_stacker"/>
+    </ScenarioObject>
+  </Entities>
+  
+  <Storyboard>
+    <Init>
+      <Actions>
+        <GlobalAction>
+          <EnvironmentAction>
+            <Environment name="PortYard">
+              <TimeOfDay animation="false" dateTime="2024-01-01T14:00:00"/>
+              <Weather cloudState="free">
+                <Sun intensity="0.8" azimuth="0.0" elevation="1.2"/>
+                <Fog visualRange="5000.0"/>
+                <Precipitation precipitationType="dry" intensity="0.0"/>
+              </Weather>
+              <RoadCondition frictionScaleFactor="0.9"/>
+            </Environment>
+          </EnvironmentAction>
+        </GlobalAction>
+        
+        <Private entityRef="YardTruck1">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="1" laneId="-1" offset="0" s="0"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Private>
+        
+        <Private entityRef="YardTruck2">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="2" laneId="-1" offset="0" s="0"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Private>
+        
+        <Private entityRef="YardTruck3">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="3" laneId="-1" offset="0" s="0"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Private>
+        
+        <Private entityRef="ContainerCrane">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="10" laneId="-1" offset="0" s="50"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Private>
+        
+        <Private entityRef="ReachStacker">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="11" laneId="-1" offset="0" s="25"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Private>
+      </Actions>
+    </Init>
+    
+    <Story name="YardOptimizationScenario">
+      <Act name="ContainerOperations">
+        <ManeuverGroup maximumExecutionCount="1" name="CoordinatedOperations">
+          <Actors selectTriggeringEntities="false">
+            <EntityRef entityRef="YardTruck1"/>
+            <EntityRef entityRef="YardTruck2"/>
+            <EntityRef entityRef="YardTruck3"/>
+            <EntityRef entityRef="ContainerCrane"/>
+            <EntityRef entityRef="ReachStacker"/>
+          </Actors>
+          
+          <Maneuver name="OptimizedRouting">
+            <Event name="StartOperations" priority="overwrite">
+              <Action name="BeginYardOperations">
+                <UserDefinedAction>
+                  <CustomCommandAction>
+                    <Command>YARD_OPTIMIZATION_START</Command>
+                  </CustomCommandAction>
+                </UserDefinedAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="StartCondition">
+                    <ByValueCondition>
+                      <SimulationTimeCondition value="0" rule="greaterThan"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+            
+            <Event name="CongestionTest" priority="overwrite">
+              <Action name="InduceCongestion">
+                <UserDefinedAction>
+                  <CustomCommandAction>
+                    <Command>INDUCE_YARD_CONGESTION</Command>
+                    <Parameter name="level" value="$YardCongestionLevel"/>
+                  </CustomCommandAction>
+                </UserDefinedAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="CongestionStartCondition">
+                    <ByValueCondition>
+                      <SimulationTimeCondition value="60.0" rule="greaterThan"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+            
+            <Event name="MeasureThroughput" priority="overwrite">
+              <Action name="ThroughputMeasurement">
+                <UserDefinedAction>
+                  <CustomCommandAction>
+                    <Command>MEASURE_THROUGHPUT</Command>
+                    <Parameter name="target" value="$TargetThroughput"/>
+                  </CustomCommandAction>
+                </UserDefinedAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="MeasureCondition">
+                    <ByValueCondition>
+                      <SimulationTimeCondition value="120.0" rule="greaterThan"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+          </Maneuver>
+        </ManeuverGroup>
+        
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="ActStartCondition">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0" rule="greaterThan"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Act>
+    </Story>
+    
+    <StopTrigger>
+      <ConditionGroup>
+        <Condition name="EndCondition">
+          <ByValueCondition>
+            <SimulationTimeCondition value="300.0" rule="greaterThan"/>
+          </ByValueCondition>
+        </Condition>
+      </ConditionGroup>
+    </StopTrigger>
+  </Storyboard>
+</OpenSCENARIO>

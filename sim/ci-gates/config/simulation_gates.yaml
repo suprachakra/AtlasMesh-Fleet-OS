@@ -1,0 +1,179 @@
+# AtlasMesh Fleet OS - Simulation Gates Configuration
+
+# Global simulation settings
+global:
+  timeout_seconds: 300
+  parallel_executions: 8
+  simulator: "carla"  # Options: carla, gazebo
+  log_level: "info"
+  record_metrics: true
+  record_videos: true
+  metrics_output_dir: "/tmp/sim-metrics"
+  video_output_dir: "/tmp/sim-videos"
+
+# Test suites configuration
+test_suites:
+  - name: "core_safety"
+    description: "Core safety scenarios that must pass for all PRs"
+    scenarios:
+      - "common/emergency_braking.xosc"
+      - "common/obstacle_avoidance.xosc"
+      - "common/pedestrian_crossing.xosc"
+      - "common/safe_stop.xosc"
+    vehicle_profiles:
+      - "mining_haul_truck"
+      - "defense_logistics_truck"
+      - "logistics_yard_tractor"
+      - "ridehail_shuttle"
+    required_for_merge: true
+    timeout_seconds: 120
+    
+  - name: "mining_scenarios"
+    description: "Mining-specific scenarios"
+    scenarios:
+      - "mining/haul_road_intersection.xosc"
+      - "mining/loading_zone.xosc"
+      - "mining/dumping_zone.xosc"
+      - "mining/steep_grade.xosc"
+      - "mining/dust_conditions.xosc"
+    vehicle_profiles:
+      - "mining_haul_truck_loaded"
+      - "mining_haul_truck_empty"
+      - "mining_water_truck"
+      - "mining_service_vehicle"
+    required_for_merge: true
+    timeout_seconds: 180
+    
+  - name: "defense_scenarios"
+    description: "Defense-specific scenarios"
+    scenarios:
+      - "defense/convoy_operation.xosc"
+      - "defense/off_road.xosc"
+      - "defense/gps_denied.xosc"
+      - "defense/comms_limited.xosc"
+    vehicle_profiles:
+      - "defense_logistics_truck"
+      - "defense_tactical_vehicle"
+      - "defense_ugv_small"
+    required_for_merge: true
+    timeout_seconds: 180
+    
+  - name: "logistics_scenarios"
+    description: "Logistics-specific scenarios"
+    scenarios:
+      - "logistics/yard_maneuvers.xosc"
+      - "logistics/loading_dock.xosc"
+      - "logistics/trailer_connect.xosc"
+      - "logistics/container_terminal.xosc"
+    vehicle_profiles:
+      - "logistics_yard_tractor"
+      - "logistics_truck"
+      - "logistics_forklift"
+    required_for_merge: true
+    timeout_seconds: 180
+    
+  - name: "ridehail_scenarios"
+    description: "Ride-hail-specific scenarios"
+    scenarios:
+      - "ride-hail/passenger_pickup.xosc"
+      - "ride-hail/urban_traffic.xosc"
+      - "ride-hail/curbside_operation.xosc"
+      - "ride-hail/passenger_emergency.xosc"
+    vehicle_profiles:
+      - "ridehail_shuttle"
+      - "ridehail_car"
+    required_for_merge: true
+    timeout_seconds: 180
+    
+  - name: "extended_scenarios"
+    description: "Extended scenario set for nightly builds"
+    scenarios:
+      - "common/*.xosc"
+      - "mining/*.xosc"
+      - "defense/*.xosc"
+      - "logistics/*.xosc"
+      - "ride-hail/*.xosc"
+    vehicle_profiles:
+      - "mining_haul_truck"
+      - "defense_logistics_truck"
+      - "logistics_yard_tractor"
+      - "ridehail_shuttle"
+    required_for_merge: false
+    run_on_schedule: "nightly"
+    timeout_seconds: 600
+
+# Environmental variations
+environments:
+  - name: "clear_day"
+    time_of_day: "12:00"
+    weather:
+      cloud_state: "free"
+      precipitation: "dry"
+      precipitation_intensity: 0.0
+    visibility: 1000.0
+    
+  - name: "night"
+    time_of_day: "00:00"
+    weather:
+      cloud_state: "free"
+      precipitation: "dry"
+      precipitation_intensity: 0.0
+    visibility: 500.0
+    
+  - name: "rain"
+    time_of_day: "12:00"
+    weather:
+      cloud_state: "overcast"
+      precipitation: "rain"
+      precipitation_intensity: 0.5
+    visibility: 300.0
+    
+  - name: "dust_storm"
+    time_of_day: "12:00"
+    weather:
+      cloud_state: "free"
+      precipitation: "dry"
+      precipitation_intensity: 0.0
+    visibility: 100.0
+    dust:
+      intensity: 0.8
+      particle_size: 0.3
+
+# CI/CD integration
+ci_integration:
+  github_actions:
+    workflow_file: ".github/workflows/simulation-gates.yml"
+    artifacts:
+      - metrics
+      - videos
+      - logs
+    timeout_minutes: 30
+    
+  reporting:
+    format: "markdown"
+    include_metrics: true
+    include_screenshots: true
+    include_video_links: true
+    
+  notifications:
+    slack_channel: "#sim-gates-status"
+    email_on_failure: "sim-alerts@atlasmesh.io"
+
+# Performance thresholds
+performance_thresholds:
+  execution_time_max_seconds: 300
+  memory_usage_max_mb: 4096
+  cpu_usage_max_percent: 80
+  fps_min: 20
+  
+# Regression detection
+regression_detection:
+  enabled: true
+  baseline_branch: "main"
+  metrics:
+    - "safety_distance_min"
+    - "control_latency_p95"
+    - "decision_latency_p95"
+    - "perception_accuracy"
+  threshold_percent: 5
+  alert_on_regression: true

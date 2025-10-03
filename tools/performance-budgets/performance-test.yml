@@ -1,0 +1,209 @@
+# AtlasMesh Fleet OS - Performance Test Configuration
+# Artillery.js load testing for Abu Dhabi autonomous vehicle fleet operations
+
+config:
+  target: 'http://localhost:8080'
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm-up"
+    
+    # Ramp-up phase
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 50
+      name: "Ramp-up"
+    
+    # Sustained load phase (Abu Dhabi peak hours simulation)
+    - duration: 300
+      arrivalRate: 50
+      name: "Peak load (Abu Dhabi rush hour)"
+    
+    # Spike test phase
+    - duration: 60
+      arrivalRate: 100
+      name: "Spike test"
+    
+    # Cool-down phase
+    - duration: 60
+      arrivalRate: 10
+      name: "Cool-down"
+
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+      User-Agent: 'AtlasMesh-LoadTest/1.0'
+      X-Region: 'abu-dhabi'
+
+  # Performance thresholds
+  ensure:
+    # API response time budgets (milliseconds)
+    - p95: 200  # 95th percentile under 200ms
+    - p99: 500  # 99th percentile under 500ms
+    - maxErrorRate: 1  # Max 1% error rate
+    
+    # Abu Dhabi specific requirements
+    - medianResponseTime: 100  # Median under 100ms for real-time operations
+
+  # Load test plugins
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true
+    
+    # Performance budget enforcement
+    ensure: {}
+    
+    # Real-time metrics
+    statsd:
+      host: localhost
+      port: 8125
+      prefix: 'atlasmesh.loadtest'
+
+# Test scenarios
+scenarios:
+  # Fleet Management Operations
+  - name: "Fleet Overview Dashboard"
+    weight: 30
+    flow:
+      - get:
+          url: "/api/v1/fleet/overview"
+          name: "Fleet Overview"
+          headers:
+            Authorization: "Bearer {{ $randomString() }}"
+      
+      - get:
+          url: "/api/v1/vehicles"
+          name: "Vehicle List"
+          qs:
+            region: "abu_dhabi"
+            status: "operational"
+      
+      - think: 2  # User reading time
+      
+      - get:
+          url: "/api/v1/fleet/metrics"
+          name: "Fleet Metrics"
+
+  # Vehicle Operations (Critical for Abu Dhabi safety)
+  - name: "Vehicle Command Operations"
+    weight: 25
+    flow:
+      - post:
+          url: "/api/v1/vehicles/{{ $randomInt(1, 100) }}/commands"
+          name: "Vehicle Command"
+          json:
+            command: "{{ $pick(['start', 'stop', 'pause', 'resume']) }}"
+            priority: "{{ $pick(['normal', 'high']) }}"
+            metadata:
+              region: "abu_dhabi"
+              operator_id: "test_operator_{{ $randomInt(1, 10) }}"
+      
+      - think: 1
+      
+      - get:
+          url: "/api/v1/vehicles/{{ $randomInt(1, 100) }}/status"
+          name: "Vehicle Status Check"
+
+  # Policy Evaluation (Critical for compliance)
+  - name: "Policy Evaluation"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/v1/policies/evaluate"
+          name: "Policy Evaluation"
+          json:
+            vehicle_id: "AUH_{{ $randomInt(1000, 9999) }}"
+            location:
+              lat: "{{ $randomFloat(24.2, 24.6) }}"  # Abu Dhabi bounds
+              lng: "{{ $randomFloat(54.0, 55.0) }}"
+            speed: "{{ $randomInt(0, 80) }}"
+            conditions:
+              weather: "{{ $pick(['clear', 'cloudy', 'rain', 'sandstorm']) }}"
+              traffic: "{{ $pick(['light', 'moderate', 'heavy']) }}"
+              time_of_day: "{{ $pick(['morning', 'afternoon', 'evening', 'night']) }}"
+            uae_specific:
+              ramadan_mode: "{{ $pick([true, false]) }}"
+              prayer_time_proximity: "{{ $randomInt(0, 60) }}"
+
+  # Route Planning (Abu Dhabi specific)
+  - name: "Route Planning"
+    weight: 15
+    flow:
+      - post:
+          url: "/api/v1/routes/calculate"
+          name: "Route Calculation"
+          json:
+            origin:
+              lat: "{{ $randomFloat(24.3, 24.5) }}"
+              lng: "{{ $randomFloat(54.2, 54.8) }}"
+            destination:
+              lat: "{{ $randomFloat(24.3, 24.5) }}"
+              lng: "{{ $randomFloat(54.2, 54.8) }}"
+            preferences:
+              avoid_toll: false
+              avoid_highways: false
+              optimize_for: "{{ $pick(['time', 'fuel', 'safety']) }}"
+            abu_dhabi_options:
+              avoid_prayer_times: true
+              prefer_main_roads: true
+              consider_sandstorm_routes: true
+      
+      - think: 3  # Route processing time
+      
+      - get:
+          url: "/api/v1/routes/{{ $randomString() }}/waypoints"
+          name: "Route Waypoints"
+
+  # Telemetry Ingestion (High volume)
+  - name: "Telemetry Data Ingestion"
+    weight: 10
+    flow:
+      - post:
+          url: "/api/v1/telemetry/ingest"
+          name: "Telemetry Ingestion"
+          json:
+            vehicle_id: "AUH_{{ $randomInt(1000, 9999) }}"
+            timestamp: "{{ $timestamp() }}"
+            location:
+              lat: "{{ $randomFloat(24.2, 24.6) }}"
+              lng: "{{ $randomFloat(54.0, 55.0) }}"
+              heading: "{{ $randomInt(0, 360) }}"
+              speed: "{{ $randomInt(0, 120) }}"
+            sensors:
+              lidar:
+                status: "{{ $pick(['operational', 'warning', 'critical']) }}"
+                point_cloud_size: "{{ $randomInt(10000, 100000) }}"
+              camera:
+                status: "{{ $pick(['operational', 'warning']) }}"
+                resolution: "1920x1080"
+                fps: "{{ $randomInt(25, 30) }}"
+              gps:
+                status: "operational"
+                satellites: "{{ $randomInt(8, 15) }}"
+                accuracy: "{{ $randomFloat(1.0, 5.0) }}"
+            vehicle:
+              battery_level: "{{ $randomInt(20, 100) }}"
+              engine_temp: "{{ $randomInt(80, 110) }}"
+              speed: "{{ $randomInt(0, 120) }}"
+            environment:
+              weather:
+                temperature: "{{ $randomInt(25, 45) }}"  # Abu Dhabi temperatures
+                humidity: "{{ $randomInt(30, 80) }}"
+                visibility: "{{ $randomInt(5, 20) }}"
+                conditions: "{{ $pick(['clear', 'cloudy', 'dusty', 'sandstorm']) }}"
+
+# Abu Dhabi specific test scenarios
+before:
+  flow:
+    - log: "Starting AtlasMesh Fleet OS performance tests for Abu Dhabi operations"
+    - log: "Testing autonomous vehicle fleet management system"
+    - log: "Simulating peak traffic conditions and UAE-specific scenarios"
+
+after:
+  flow:
+    - log: "Performance test completed"
+    - log: "Validating Abu Dhabi fleet operation requirements"
+
+# Custom functions for Abu Dhabi context
+processor: "./performance-test-processor.js"

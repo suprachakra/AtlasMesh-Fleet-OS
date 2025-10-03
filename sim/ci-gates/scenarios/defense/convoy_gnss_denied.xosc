@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="1" date="2024-01-01T00:00:00" description="Defense convoy operation under GNSS-denied conditions" author="AtlasMesh"/>
+  
+  <ParameterDeclarations>
+    <ParameterDeclaration name="ConvoySize" parameterType="integer" value="3"/>
+    <ParameterDeclaration name="GNSSJamStartTime" parameterType="double" value="30.0"/>
+    <ParameterDeclaration name="GNSSJamDuration" parameterType="double" value="120.0"/>
+    <ParameterDeclaration name="MaxSpeedKmh" parameterType="double" value="40.0"/>
+  </ParameterDeclarations>
+  
+  <CatalogLocations>
+    <VehicleCatalog>
+      <Directory path="../../../configs/vehicles"/>
+    </VehicleCatalog>
+  </CatalogLocations>
+  
+  <RoadNetwork>
+    <LogicFile filepath="../../../configs/map/examples/defense/desert_convoy_route.xodr"/>
+  </RoadNetwork>
+  
+  <Entities>
+    <ScenarioObject name="LeadVehicle">
+      <CatalogReference catalogName="VehicleCatalog" entryName="ugv_themis"/>
+    </ScenarioObject>
+    <ScenarioObject name="FollowVehicle1">
+      <CatalogReference catalogName="VehicleCatalog" entryName="ugv_themis"/>
+    </ScenarioObject>
+    <ScenarioObject name="FollowVehicle2">
+      <CatalogReference catalogName="VehicleCatalog" entryName="ugv_themis"/>
+    </ScenarioObject>
+  </Entities>
+  
+  <Storyboard>
+    <Init>
+      <Actions>
+        <GlobalAction>
+          <EnvironmentAction>
+            <Environment name="Desert">
+              <TimeOfDay animation="false" dateTime="2024-01-01T12:00:00"/>
+              <Weather cloudState="free">
+                <Sun intensity="1.0" azimuth="0.0" elevation="1.57"/>
+                <Fog visualRange="10000.0"/>
+                <Precipitation precipitationType="dry" intensity="0.0"/>
+              </Weather>
+              <RoadCondition frictionScaleFactor="0.8"/>
+            </Environment>
+          </EnvironmentAction>
+        </GlobalAction>
+        
+        <Private entityRef="LeadVehicle">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="1" laneId="-1" offset="0" s="10"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Private>
+        
+        <Private entityRef="FollowVehicle1">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="1" laneId="-1" offset="0" s="0"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Private>
+        
+        <Private entityRef="FollowVehicle2">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <LanePosition roadId="1" laneId="-1" offset="0" s="-10"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Private>
+      </Actions>
+    </Init>
+    
+    <Story name="ConvoyGNSSDeniedScenario">
+      <Act name="ConvoyFormation">
+        <ManeuverGroup maximumExecutionCount="1" name="FormConvoy">
+          <Actors selectTriggeringEntities="false">
+            <EntityRef entityRef="LeadVehicle"/>
+            <EntityRef entityRef="FollowVehicle1"/>
+            <EntityRef entityRef="FollowVehicle2"/>
+          </Actors>
+          
+          <Maneuver name="StartConvoy">
+            <Event name="StartMoving" priority="overwrite">
+              <Action name="StartConvoyAction">
+                <PrivateAction>
+                  <LongitudinalAction>
+                    <SpeedAction>
+                      <SpeedActionDynamics dynamicsShape="step" value="0" dynamicsDimension="time"/>
+                      <SpeedActionTarget>
+                        <AbsoluteTargetSpeed value="11.11"/> <!-- 40 km/h -->
+                      </SpeedActionTarget>
+                    </SpeedAction>
+                  </LongitudinalAction>
+                </PrivateAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="StartCondition">
+                    <ByValueCondition>
+                      <SimulationTimeCondition value="0" rule="greaterThan"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+          </Maneuver>
+        </ManeuverGroup>
+        
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="ActStartCondition">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0" rule="greaterThan"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Act>
+      
+      <Act name="GNSSJamming">
+        <ManeuverGroup maximumExecutionCount="1" name="JamGNSS">
+          <Actors selectTriggeringEntities="false">
+            <EntityRef entityRef="LeadVehicle"/>
+            <EntityRef entityRef="FollowVehicle1"/>
+            <EntityRef entityRef="FollowVehicle2"/>
+          </Actors>
+          
+          <Maneuver name="InitiateJamming">
+            <Event name="StartJamming" priority="overwrite">
+              <Action name="GNSSJamAction">
+                <UserDefinedAction>
+                  <CustomCommandAction>
+                    <Command>GNSS_JAM_START</Command>
+                  </CustomCommandAction>
+                </UserDefinedAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="JamStartCondition">
+                    <ByValueCondition>
+                      <SimulationTimeCondition value="$GNSSJamStartTime" rule="greaterThan"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+            
+            <Event name="StopJamming" priority="overwrite">
+              <Action name="GNSSJamStopAction">
+                <UserDefinedAction>
+                  <CustomCommandAction>
+                    <Command>GNSS_JAM_STOP</Command>
+                  </CustomCommandAction>
+                </UserDefinedAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="JamStopCondition">
+                    <ByValueCondition>
+                      <SimulationTimeCondition value="150.0" rule="greaterThan"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+          </Maneuver>
+        </ManeuverGroup>
+        
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="JamActStartCondition">
+              <ByValueCondition>
+                <SimulationTimeCondition value="$GNSSJamStartTime" rule="greaterThan"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Act>
+    </Story>
+    
+    <StopTrigger>
+      <ConditionGroup>
+        <Condition name="EndCondition">
+          <ByValueCondition>
+            <SimulationTimeCondition value="300.0" rule="greaterThan"/>
+          </ByValueCondition>
+        </Condition>
+      </ConditionGroup>
+    </StopTrigger>
+  </Storyboard>
+</OpenSCENARIO>

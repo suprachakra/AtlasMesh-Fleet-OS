@@ -1,123 +1,147 @@
-# AtlasMesh Fleet OS Documentation
+# AtlasMesh Fleet OS - Documentation Site Configuration
+# MkDocs Material with Kroki integration for diagrams-as-code
 
-site_name: AtlasMesh Fleet Operating System
-site_description: Vehicle-agnostic, Platform-agnostic, Sector-agnostic L4 Fleet Management System
-site_author: AtlasMesh Team
-site_url: https://docs.atlasmesh.ai
+site_name: AtlasMesh Fleet OS
+site_description: Vehicle-agnostic, platform-agnostic, sector-agnostic L4 autonomous fleet operating system
+site_author: AtlasMesh Engineering Team
+site_url: https://docs.atlasmesh.com
 
-# Repository
+# Repository information
 repo_name: AtlasMesh-Fleet-OS
 repo_url: https://github.com/atlasmesh/fleet-os
 edit_uri: edit/main/docs/
 
+# Copyright
+copyright: Copyright &copy; 2024 AtlasMesh Technologies
+
 # Configuration
 theme:
   name: material
-  language: en
+  custom_dir: docs/overrides
+  
+  # Theme features
   features:
-    - navigation.tabs
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.prune
     - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.top
     - navigation.tracking
     - search.highlight
     - search.share
     - search.suggest
-    - content.code.copy
-    - content.action.edit
+    - toc.follow
+    - toc.integrate
+
+  # Color palette
   palette:
-    - scheme: default
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
       primary: blue
       accent: orange
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - scheme: slate
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
       primary: blue
       accent: orange
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-  logo: assets/images/atlasmesh-logo.png
+
+  # Fonts
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  # Logo and favicon
+  logo: assets/images/atlasmesh-logo.svg
   favicon: assets/images/favicon.ico
 
-# Navigation
-nav:
-  - Home: index.md
-  
-  - Strategy:
-    - Executive Summary: strategy/01_executive_summary_and_vision.md
-    - Market Analysis: strategy/02_market_and_user_insights.md
-    - OKRs: strategy/03_okrs.md
-    - Product Strategy: strategy/04_product_and_marketplace_strategy.md
-    - Roadmap: strategy/05_roadmap_and_milestones.md
-    - Risk Management: strategy/06_risk_and_governance.md
-    - Change Management: strategy/07_change_management.md
-    - Marketing Plan: strategy/08_marketing_plan.md
-    - Finance Model: strategy/09_finance_cost_model.md
-    - Launch Strategy: strategy/10_launch_strategy.md
-    - Onboarding: strategy/11_onboarding.md
-    - User Training: strategy/12_user_training.md
-    
-  - Technical:
-    - Architecture: technical/01_architecture.md
-    - Epics & Alignment: technical/02_epics_and_portfolio_alignment.md
-    - Requirements: technical/03_requirements_frs_nfrs.md
-    - Data & Analytics: technical/04_data_and_analytics_integration.md
-    - AI Models: technical/05_ai_model_documentation.md
-    - QA & Testing: technical/06_qa_and_test_automation.md
-    - Security: technical/07_security_implementation.md
-    - DevOps: technical/08_devops_pipeline_and_deployment.md
-    - APIs: technical/09_api_documentation.md
-    - UX Design: technical/10_ux_wireframes.md
-    - Integration: technical/11_integration_and_contribution_guidelines.md
-    - FAQ & Changes: technical/12_faq_and_change_log.md
-    
-  - Sector Packs:
-    - Defense: sector-packs/defense.md
-    - Mining: sector-packs/mining.md
-    - Logistics: sector-packs/logistics_supply_chain.md
-    - Ride Hailing: sector-packs/ride_hail.md
-    
-  - Vehicle Integration:
-    - UGV Themis: vehicle-packs/ugv_themis.md
-    
-  - Regional Operations:
-    - Abu Dhabi: city-odd/abu_dhabi.md
-    
-  - Safety & Compliance:
-    - Safety Case: safety/README.md
-    - Compliance: compliance/README.md
-    
-  - Operations:
-    - Runbooks: runbooks/README.md
-    - RFCs: rfcs/README.md
+  # Language
+  language: en
 
-# Extensions
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+  - git-committers:
+      repository: atlasmesh/fleet-os
+      branch: main
+  - kroki:
+      ServerURL: https://kroki.io
+      FencePrefix: kroki-
+      EnableBlockDiag: true
+      EnableBpmn: true
+      EnableExcalidraw: true
+      EnableMermaid: true
+      EnableStructurizr: true
+      EnableC4PlantUML: false
+  - mermaid2:
+      version: 10.6.1
+  - awesome-pages
+  - macros:
+      module_name: docs/macros
+  - tags:
+      tags_file: tags.md
+
+# Markdown extensions
 markdown_extensions:
+  - abbr
   - admonition
-  - codehilite:
-      guess_lang: false
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
   - toc:
       permalink: true
+      title: On this page
+  - tables
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.caret
-  - pymdownx.critic
   - pymdownx.details
   - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - pymdownx.highlight
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.magiclink:
+      normalize_issue_symbols: true
       repo_url_shorthand: true
       user: atlasmesh
       repo: fleet-os
   - pymdownx.mark
   - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -125,41 +149,159 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
 
-# Plugins
-plugins:
-  - search:
-      lang: en
-  - minify:
-      minify_html: true
-  - git-revision-date-localized:
-      type: date
-  - awesome-pages
-  - mermaid2
+# Navigation structure
+nav:
+  - Home: index.md
+  
+  - Architecture:
+    - architecture/index.md
+    - Overview: architecture/overview.md
+    - C4 Model: 
+      - architecture/c4/index.md
+      - System Context: architecture/c4/context.md
+      - Container View: architecture/c4/container.md
+      - Component View: architecture/c4/component.md
+    - Decision Records: architecture/adr/
+    
+  - Diagrams:
+    - diagrams/index.md
+    - Safety Critical:
+      - diagrams/safety-critical/index.md
+      - Emergency Stop: diagrams/safety-critical/emergency-stop.md
+      - Command Dispatch: diagrams/safety-critical/command-dispatch.md
+      - Autonomy Fallback: diagrams/safety-critical/autonomy-fallback.md
+    - System Flows:
+      - diagrams/flows/index.md
+      - Authentication: diagrams/flows/authentication.md
+      - Telemetry Pipeline: diagrams/flows/telemetry.md
+      - Data Processing: diagrams/flows/data-processing.md
+    - Data Models:
+      - diagrams/data/index.md
+      - Fleet Database: diagrams/data/fleet-erd.md
+      - API Topology: diagrams/data/api-topology.md
+    - Security:
+      - diagrams/security/index.md
+      - Threat Models: diagrams/security/threat-models.md
+      - Data Flow Security: diagrams/security/data-flow.md
+    - Edge Stack:
+      - diagrams/edge/index.md
+      - ROS2 Nodes: diagrams/edge/ros2-nodes.md
+      - Vehicle Agent: diagrams/edge/vehicle-agent.md
 
-# Extra
+  - API Reference:
+    - api/index.md
+    - Core Services:
+      - Fleet Manager: api/fleet-manager.md
+      - Vehicle Gateway: api/vehicle-gateway.md
+      - Policy Engine: api/policy-engine.md
+      - Auth Service: api/auth-service.md
+    - Data Services:
+      - Telemetry Ingest: api/telemetry-ingest.md
+      - Analytics Engine: api/analytics-engine.md
+      - Data Lineage: api/data-lineage.md
+    - Integration:
+      - UAE Government: api/uae-integration.md
+      - Weather Fusion: api/weather-fusion.md
+      - Map Data Contract: api/map-data-contract.md
+
+  - Development:
+    - development/index.md
+    - Getting Started: development/getting-started.md
+    - Local Development: development/local-setup.md
+    - Testing: development/testing.md
+    - Contributing: development/contributing.md
+    - Code Standards: development/code-standards.md
+    - Diagrams as Code: development/diagrams-as-code.md
+
+  - Operations:
+    - operations/index.md
+    - Deployment: operations/deployment.md
+    - Monitoring: operations/monitoring.md
+    - Troubleshooting: operations/troubleshooting.md
+    - Runbooks: operations/runbooks/
+    - Security: operations/security.md
+
+  - Strategy:
+    - strategy/index.md
+    - Executive Summary: strategy/executive-summary.md
+    - Market Analysis: strategy/market-analysis.md
+    - Product Roadmap: strategy/product-roadmap.md
+    - Technical Vision: strategy/technical-vision.md
+
+  - Compliance:
+    - compliance/index.md
+    - UAE Regulations: compliance/uae-regulations.md
+    - Safety Standards: compliance/safety-standards.md
+    - Data Privacy: compliance/data-privacy.md
+    - Audit Trail: compliance/audit-trail.md
+
+# Extra CSS and JavaScript
+extra_css:
+  - assets/stylesheets/extra.css
+  - assets/stylesheets/diagrams.css
+
+extra_javascript:
+  - assets/javascripts/extra.js
+  - assets/javascripts/diagrams.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# Extra configuration
 extra:
   version:
     provider: mike
-  analytics:
-    provider: google
-    property: G-XXXXXXXXXX
+    default: latest
+  
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/atlasmesh/fleet-os
     - icon: fontawesome/brands/docker
-      link: https://hub.docker.com/orgs/atlasmesh
-    - icon: fontawesome/solid/envelope
-      link: mailto:team@atlasmesh.ai
+      link: https://hub.docker.com/u/atlasmesh
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/company/atlasmesh
+  
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: >- 
+            Thanks for your feedback! Help us improve this page by
+            <a href="https://github.com/atlasmesh/fleet-os/issues/new/?title=[Feedback]+{title}+-+{url}" target="_blank" rel="noopener">telling us what you found lacking</a>.
 
-extra_css:
-  - assets/css/custom.css
+  consent:
+    title: Cookie consent
+    description: >- 
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
 
-extra_javascript:
-  - assets/js/mathjax.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-  - https://unpkg.com/mermaid/dist/mermaid.min.js
+# Validation
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+
+# Watch additional files
+watch:
+  - docs/
+  - mkdocs.yml
+  - Makefile.diagrams

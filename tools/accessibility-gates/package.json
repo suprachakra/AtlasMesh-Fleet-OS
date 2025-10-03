@@ -1,0 +1,32 @@
+{
+  "name": "@atlasmesh/accessibility-gates",
+  "version": "1.0.0",
+  "description": "WCAG 2.2 AA compliance and UX validation tools for AtlasMesh Fleet OS",
+  "main": "accessibility-validator.js",
+  "scripts": {
+    "validate": "node accessibility-validator.js development",
+    "validate:staging": "node accessibility-validator.js staging",
+    "validate:prod": "node accessibility-validator.js production",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "accessibility",
+    "wcag",
+    "ux",
+    "validation",
+    "autonomous-vehicles",
+    "fleet-management"
+  ],
+  "author": "AtlasMesh",
+  "license": "BUSL-1.1",
+  "dependencies": {
+    "@axe-core/puppeteer": "^4.8.2",
+    "puppeteer": "^21.5.2",
+    "lighthouse": "^11.4.0",
+    "chrome-launcher": "^1.1.0",
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

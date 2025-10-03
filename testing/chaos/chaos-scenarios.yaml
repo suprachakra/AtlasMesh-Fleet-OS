@@ -1,0 +1,307 @@
+# AtlasMesh Fleet OS - Chaos Engineering Scenarios
+# These scenarios test system resilience under various failure conditions
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chaos-scenarios
+  namespace: fleet-os-testing
+data:
+  # Network Chaos Scenarios
+  network-partition.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: NetworkChaos
+    metadata:
+      name: network-partition-fleet-manager
+      namespace: fleet-os-staging
+    spec:
+      action: partition
+      mode: one
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          app: fleet-manager
+      direction: both
+      duration: "2m"
+      scheduler:
+        cron: "@every 30m"
+
+  network-delay.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: NetworkChaos
+    metadata:
+      name: network-delay-vehicle-gateway
+      namespace: fleet-os-staging
+    spec:
+      action: delay
+      mode: all
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          app: vehicle-gateway
+      delay:
+        latency: "200ms"
+        correlation: "100"
+        jitter: "50ms"
+      duration: "5m"
+
+  network-loss.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: NetworkChaos
+    metadata:
+      name: network-loss-telemetry
+      namespace: fleet-os-staging
+    spec:
+      action: loss
+      mode: all
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          app: telemetry-ingest
+      loss:
+        loss: "2"
+        correlation: "100"
+      duration: "3m"
+
+  # Pod Chaos Scenarios
+  pod-kill.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: PodChaos
+    metadata:
+      name: pod-kill-random-service
+      namespace: fleet-os-staging
+    spec:
+      action: pod-kill
+      mode: one
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          component: service
+      duration: "30s"
+      scheduler:
+        cron: "@every 15m"
+
+  pod-failure.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: PodChaos
+    metadata:
+      name: pod-failure-policy-engine
+      namespace: fleet-os-staging
+    spec:
+      action: pod-failure
+      mode: fixed
+      value: "1"
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          app: policy-engine
+      duration: "2m"
+
+  # Stress Testing Scenarios
+  cpu-stress.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: StressChaos
+    metadata:
+      name: cpu-stress-fleet-manager
+      namespace: fleet-os-staging
+    spec:
+      mode: one
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          app: fleet-manager
+      duration: "3m"
+      stressors:
+        cpu:
+          workers: 2
+          load: 80
+
+  memory-stress.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: StressChaos
+    metadata:
+      name: memory-stress-vehicle-gateway
+      namespace: fleet-os-staging
+    spec:
+      mode: one
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          app: vehicle-gateway
+      duration: "2m"
+      stressors:
+        memory:
+          workers: 1
+          size: "1GB"
+
+  # IO Chaos Scenarios
+  io-delay.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: IOChaos
+    metadata:
+      name: io-delay-database
+      namespace: fleet-os-staging
+    spec:
+      action: delay
+      mode: one
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          app: postgresql
+      volumePath: /var/lib/postgresql/data
+      path: "**/*"
+      delay: "100ms"
+      percent: 50
+      duration: "2m"
+
+  # DNS Chaos Scenarios
+  dns-chaos.yaml: |
+    apiVersion: chaos-mesh.org/v1alpha1
+    kind: DNSChaos
+    metadata:
+      name: dns-chaos-external-services
+      namespace: fleet-os-staging
+    spec:
+      action: error
+      mode: all
+      selector:
+        namespaces:
+          - fleet-os-staging
+        labelSelectors:
+          app: weather-fusion
+      patterns:
+        - "api.openweathermap.org"
+        - "api.weatherapi.com"
+      duration: "1m"
+
+---
+# Chaos Engineering Test Suite Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chaos-test-config
+  namespace: fleet-os-testing
+data:
+  config.yaml: |
+    chaos_scenarios:
+      - name: "Network Resilience Test"
+        description: "Test system behavior under network failures"
+        scenarios:
+          - network-partition
+          - network-delay
+          - network-loss
+        duration: "10m"
+        success_criteria:
+          - metric: "service_availability"
+            threshold: ">= 99%"
+          - metric: "error_rate"
+            threshold: "<= 5%"
+          - metric: "response_time_p95"
+            threshold: "<= 2s"
+
+      - name: "Service Resilience Test"
+        description: "Test system behavior when services fail"
+        scenarios:
+          - pod-kill
+          - pod-failure
+        duration: "5m"
+        success_criteria:
+          - metric: "service_recovery_time"
+            threshold: "<= 30s"
+          - metric: "data_consistency"
+            threshold: "100%"
+
+      - name: "Resource Stress Test"
+        description: "Test system behavior under resource pressure"
+        scenarios:
+          - cpu-stress
+          - memory-stress
+        duration: "5m"
+        success_criteria:
+          - metric: "service_degradation"
+            threshold: "<= 10%"
+          - metric: "auto_scaling_trigger"
+            threshold: "true"
+
+      - name: "Storage Resilience Test"
+        description: "Test system behavior under storage issues"
+        scenarios:
+          - io-delay
+        duration: "3m"
+        success_criteria:
+          - metric: "database_availability"
+            threshold: ">= 99%"
+          - metric: "query_timeout_rate"
+            threshold: "<= 1%"
+
+      - name: "External Dependency Test"
+        description: "Test system behavior when external services fail"
+        scenarios:
+          - dns-chaos
+        duration: "2m"
+        success_criteria:
+          - metric: "fallback_activation"
+            threshold: "true"
+          - metric: "service_continuity"
+            threshold: ">= 95%"
+
+  monitoring.yaml: |
+    # Monitoring configuration for chaos tests
+    prometheus_queries:
+      service_availability: |
+        avg_over_time(up{job=~"fleet-manager|vehicle-gateway|policy-engine"}[5m]) * 100
+      
+      error_rate: |
+        sum(rate(http_requests_total{status=~"5.."}[5m])) / 
+        sum(rate(http_requests_total[5m])) * 100
+      
+      response_time_p95: |
+        histogram_quantile(0.95, 
+          sum(rate(http_request_duration_seconds_bucket[5m])) by (le)
+        )
+      
+      service_recovery_time: |
+        time() - on() kube_pod_start_time{pod=~".*fleet-manager.*"}
+      
+      auto_scaling_trigger: |
+        increase(kube_hpa_status_current_replicas[5m]) > 0
+      
+      database_availability: |
+        avg_over_time(up{job="postgresql"}[5m]) * 100
+      
+      query_timeout_rate: |
+        sum(rate(postgresql_slow_queries_total[5m])) / 
+        sum(rate(postgresql_queries_total[5m])) * 100
+
+    alert_rules:
+      - alert: ChaosTestFailure
+        expr: chaos_test_success_rate < 0.8
+        for: 1m
+        labels:
+          severity: warning
+          team: platform
+        annotations:
+          summary: "Chaos test failure rate is high"
+          description: "Chaos test success rate is {{ $value | humanizePercentage }}"
+
+      - alert: SystemInstabilityDuringChaos
+        expr: |
+          (
+            rate(http_requests_total{status=~"5.."}[5m]) /
+            rate(http_requests_total[5m])
+          ) > 0.1 and on() chaos_test_active == 1
+        for: 2m
+        labels:
+          severity: critical
+          team: platform
+        annotations:
+          summary: "System showing instability during chaos test"
+          description: "Error rate is {{ $value | humanizePercentage }} during chaos test"
