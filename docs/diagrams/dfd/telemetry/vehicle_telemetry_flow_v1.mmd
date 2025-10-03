@@ -127,7 +127,7 @@ graph TB
         ClickHouse
         TimescaleDB
         MinIO
-        note4[📝 Storage Strategy:<br/>• Hot: ClickHouse (7 days)<br/>• Warm: TimescaleDB (90 days)<br/>• Cold: MinIO (7 years)<br/>• Automatic tiering]
+        note4["📝 Storage Strategy:<br>&bull; Hot: ClickHouse (7 days)<br>&bull; Warm: TimescaleDB (90 days)<br>&bull; Cold: MinIO (7 years)<br>&bull; Automatic tiering"]
     end
     
     subgraph "Analytics Layer"
@@ -148,7 +148,7 @@ graph TB
     %% === DATA QUALITY & GOVERNANCE ===
     
     subgraph "Data Quality"
-        quality1[✅ Validation:<br/>• Schema validation (Avro)<br/>• Range checks<br/>• Timestamp validation<br/>• Duplicate detection]
+        quality1["✅ Validation:<br>&bull; Schema validation (Avro)<br>&bull; Range checks<br>&bull; Timestamp validation<br>&bull; Duplicate detection"]
         quality2[🔍 Monitoring:<br/>• Data freshness<br/>• Completeness<br/>• Accuracy scores<br/>• Drift detection]
         quality3[🛡️ Privacy:<br/>• PII redaction<br/>• Data residency<br/>• Retention policies<br/>• Access controls]
     end
