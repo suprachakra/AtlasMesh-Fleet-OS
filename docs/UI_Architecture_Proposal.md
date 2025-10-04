@@ -1,8 +1,8 @@
-# UI Architecture
+## UI Architecture
 
-## 🏗️ **P4-Module Structure**
+### 🏗️ **P4-Module Structure**
 
-### **1. Operations Command Center** 
+#### **1. Operations Command Center** 
 
 **Primary Users**: Dispatchers, Safety Operators, Fleet Managers
 **Core Purpose**: Real-time fleet monitoring and immediate response
@@ -23,7 +23,7 @@
 
 ---
 
-### **2. Planning & Scheduling**
+#### **2. Planning & Scheduling**
 
 **Primary Users**: Fleet Planners, Dispatchers
 **Core Purpose**: Trip planning, resource allocation, schedule optimization
@@ -46,7 +46,7 @@
 
 ---
 
-### **3. Fleet Management**
+#### **3. Fleet Management**
 
 **Primary Users**: Fleet Managers, Maintenance Teams, Compliance Officers
 **Core Purpose**: Vehicle lifecycle management, compliance tracking
@@ -71,7 +71,7 @@
 
 ---
 
-### **4. System Administration**
+#### **4. System Administration**
 
 **Primary Users**: System Administrators, IT Teams
 **Core Purpose**: System configuration, user management, integrations
@@ -90,108 +90,108 @@
 - Technical users prefer consolidated admin interface
 - Separate from operational workflows
 
-## 🔄 **Information Architecture Improvements**
+### 🔄 **Information Architecture Improvements**
 
-### **Contextual Integration Examples**
+#### **Contextual Integration Examples**
 
-#### **Alerts Integration**:
+##### **Alerts Integration**:
 - **Critical Alerts**: Show in Operations Command Center
 - **Vehicle Alerts**: Show in Vehicle Management detail view
 - **System Alerts**: Show in System Administration
 - **No Separate Alerts Page**: Alerts are contextual to their domain
 
-#### **Compliance Integration**:
+##### **Compliance Integration**:
 - **Vehicle Compliance**: Integrated into each vehicle's detail view
 - **Fleet Compliance**: Summary metrics in Operations Command Center
 - **Compliance Reports**: Available in Fleet Management with export options
 - **No Separate Compliance Page**: Compliance is vehicle/fleet-specific
 
-#### **Fleet Overview Integration**:
+##### **Fleet Overview Integration**:
 - **Real-time KPIs**: Embedded in Operations Command Center
 - **Historical Analytics**: Available in Fleet Management with drill-down
 - **Executive Dashboard**: Separate view for C-level (if needed)
 - **No Separate Overview Page**: Metrics are contextual to operations
 
-## 🚀 **Implementation Strategy**
+### 🚀 **Implementation Strategy**
 
-### **Phase 1: Core Operations** (Immediate)
+#### **Phase 1: Core Operations** (Immediate)
 1. **Operations Command Center**: Merge LiveOps + Alerts + FleetOverview
 2. **Enhanced Planning**: Improve FleetScheduling with what-if analysis
 3. **Integrated Fleet Management**: Merge VehicleManagement + Compliance
 
-### **Phase 2: Advanced Features** (Next Sprint)
+#### **Phase 2: Advanced Features** (Next Sprint)
 1. **System Administration**: Comprehensive admin interface
 2. **Mobile Optimization**: Responsive design for field operations
 3. **Role-Based Views**: Customize interface per user role
 
-### **Phase 3: Intelligence** (Future)
+#### **Phase 3: Intelligence** (Future)
 1. **Predictive Analytics**: Embedded insights in each module
 2. **AI Recommendations**: Contextual suggestions
 3. **Workflow Automation**: Reduce manual operations
 
-## 🎨 **Design Principles**
+### 🎨 **Design Principles**
 
-### **Progressive Disclosure**
+#### **Progressive Disclosure**
 - **Level 1**: Overview/Summary (always visible)
 - **Level 2**: Details (click to expand/drill-down)
 - **Level 3**: Deep analysis (dedicated views/modals)
 
-### **Contextual Actions**
+#### **Contextual Actions**
 - Actions appear where they're needed
 - No hunting through menus
 - Bulk operations available where selections are made
 
-### **Unified Data Model**
+#### **Unified Data Model**
 - Single source of truth for each entity
 - Real-time updates across all views
 - Consistent state management
 
-## 📊 **Expected Benefits**
+### 📊 **Expected Benefits**
 
-### **Operational Efficiency**
+#### **Operational Efficiency**
 - **50% reduction** in page navigation during incidents
 - **30% faster** trip planning with integrated conflict detection
 - **40% reduction** in compliance tracking time
 
-### **User Experience**
+#### **User Experience**
 - **Cognitive load reduction**: Related information co-located
 - **Workflow continuity**: Less context switching
 - **Faster onboarding**: Intuitive task-based organization
 
-### **Development Efficiency**
+#### **Development Efficiency**
 - **Reduced code duplication**: Shared components across modules
 - **Easier maintenance**: Logical component boundaries
 - **Better testing**: Module-based test suites
 
-## 🔍 **User Journey Examples**
+### 🔍 **User Journey Examples**
 
-### **Incident Response Journey**
+#### **Incident Response Journey**
 **Current**: LiveOps → Alerts → VehicleDetails → back to LiveOps → FleetOverview
 **Proposed**: Stay in Operations Command Center → drill-down in same view
 
-### **Vehicle Maintenance Journey**
+#### **Vehicle Maintenance Journey**
 **Current**: VehicleManagement → Compliance → back to VehicleManagement → Alerts
 **Proposed**: Fleet Management → vehicle detail tabs (all info in one place)
 
-### **Trip Planning Journey**
+#### **Trip Planning Journey**
 **Current**: FleetScheduling → FleetOverview → VehicleManagement → back to FleetScheduling
 **Proposed**: Planning & Scheduling with integrated availability and conflict detection
 
-## ✅ **Decision Framework**
+### ✅ **Decision Framework**
 
-### **Keep Separate If**:
+#### **Keep Separate If**:
 - Different primary users with different mental models
 - Significantly different interaction patterns
 - Independent workflows with minimal overlap
 - Different security/access requirements
 
-### **Integrate If**:
+#### **Integrate If**:
 - Same users need information simultaneously
 - Workflows are interdependent
 - Information is contextually related
 - Reduces cognitive load and task switching
 
-## 🎯 **Recommendation**
+### 🎯 **Recommendation**
 
 **Implement the 4-module structure**:
 1. **Operations Command Center** (real-time operations)
@@ -200,4 +200,5 @@
 4. **System Administration** (configuration)
 
 This reduces 8 pages to 4 focused modules while improving user workflows and reducing cognitive overhead.
+
 
