@@ -79,6 +79,12 @@ graph TB
     class ApacheSpark,ApacheKafka,ClickHouse,ElasticSearch engine
     class RealTimeAnalytics,BatchAnalytics,AdHocQueries,ScheduledReports type
     class FleetKPIs,OperationalMetrics,FinancialAnalytics,SafetyAnalytics business
+
+    style subGraph0 fill:transparent
+    style subGraph1 stroke:#000000,fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph4 fill:transparent
 ```
 
 ### ⚡ **How it talks** - Real-time Analytics Pipeline
@@ -295,3 +301,4 @@ fleet_kpis:
 | Data quality issues | Review validation rules, check data sources |
 
 ---
+
