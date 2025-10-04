@@ -59,6 +59,12 @@ graph TB
     class FleetOp,SafetyOp,Admin user
     class Vault,PolicyEngine,Database security
     class FleetManager,VehicleGateway,ControlCenter,AllServices service
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
+
 ```
 
 ### ⚡ **How it talks** - JWT Authentication Flow
@@ -184,6 +190,12 @@ flowchart TB
     class RateLimit,CORS,Headers,Audit security
     class BruteForce,TokenReplay,SessionHijack,Injection threat
     class FleetOps,VehicleControl,SafetySystems,AdminFunctions resource
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph4 fill:transparent
 ```
 
 ## 🔗 **API Contracts**
@@ -241,5 +253,3 @@ curl http://localhost:8080/health
 | Rate limiting triggers | Adjust limits, investigate potential attacks |
 
 ---
-
-**🎯 Owner:** Security Platform Team | **📧 Contact:** security-team@atlasmesh.com
