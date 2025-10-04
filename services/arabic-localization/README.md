@@ -60,6 +60,11 @@ graph TB
     class TranslationEngine,RTLProcessor,CulturalAdapter,LocalizationManager,LocalizationAPI localization
     class RTLSupport,ArabicFonts,DateTimeFormats,NumberFormats feature
     class EmiratiDialect,LocalRegulations,CulturalNorms,IslamicCalendar adaptation
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent    
 ```
 
 ## 📈 **SLOs & Performance**
@@ -73,4 +78,3 @@ graph TB
 
 ---
 
-**🎯 Owner:** Localization Team | **📧 Contact:** localization@atlasmesh.com
