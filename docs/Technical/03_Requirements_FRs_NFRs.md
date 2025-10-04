@@ -3,6 +3,99 @@
 **Positioning:** *AtlasMesh is a Fleet OS — vendor-neutral, vehicle-agnostic, sector-aware. This doc is the single source of truth for product requirements (FRs & NFRs).*
 ---
 
+## 0) Definition of Ready (DoR) & Definition of Done (DoD)
+
+### Definition of Ready (DoR) - For Epics/FRs/NFRs
+
+Before any Epic/FR/NFR enters development, it must meet these criteria:
+
+**Evidence Pack Attached**:
+- [ ] 5-7 contextual interviews (ops/safety/maintenance) OR
+- [ ] Telemetry analysis (30-day slice) OR
+- [ ] Sim/twin scenario impact analysis
+- [ ] Policy & compliance review completed
+
+**Requirements Defined**:
+- [ ] Opportunity Canvas or Problem Statement documented
+- [ ] Target user roles & Jobs-To-Be-Done (JTBD) identified
+- [ ] Acceptance criteria written (Given/When/Then + negative cases)
+- [ ] Risks & mitigations documented
+
+**Technical Clarity**:
+- [ ] SLIs/SLAs defined with thresholds
+- [ ] Telemetry events and fields specified
+- [ ] Test hooks planned (unit, integration, e2e, sim)
+- [ ] Dependencies mapped (FR/NFR, services, partners)
+
+**Traceability Complete**:
+- [ ] OKR linkage documented (which KRs this moves)
+- [ ] Epic assignment confirmed
+- [ ] Cross-references to related FRs/NFRs
+- [ ] Gate requirements identified (if applicable)
+
+**Rollout & Safety**:
+- [ ] Rollout plan defined (flags, canary, pilot sites)
+- [ ] Rollback procedure documented
+- [ ] Safety/compliance sign-off (if policy-touching)
+- [ ] Variant budget estimate (≤5% code, ≤25% test delta)
+
+**Ownership & Priority**:
+- [ ] Department owners assigned
+- [ ] Priority tier confirmed (P0/P1/P2/P3)
+- [ ] Sector scope defined
+- [ ] Triad sign-off (PM + Design + Eng)
+
+### Definition of Done (DoD) - For Releases
+
+Before any feature ships to production, it must meet these criteria:
+
+**Quality Gates**:
+- [ ] All CI tests green (unit, integration, e2e, perf, sim/twin)
+- [ ] Code coverage ≥80% for new code
+- [ ] Performance SLOs met (p50/p95 within targets)
+- [ ] Accessibility checks passed (WCAG 2.2 AA)
+- [ ] Security scan clean (no P0/P1 vulnerabilities)
+
+**Observability**:
+- [ ] SLIs instrumented and emitting metrics
+- [ ] Dashboards created/updated in Grafana
+- [ ] Alerts configured with runbook links
+- [ ] Correlation IDs propagated across services
+- [ ] Logs structured and PII-scrubbed
+
+**Evidence & Compliance**:
+- [ ] Evidence artifacts attached to release tag
+- [ ] Safety case bundle updated (if autonomy-impacting)
+- [ ] Audit trail complete and cryptographically signed
+- [ ] Compliance requirements validated (ISO 26262/SOTIF/R155/R156)
+
+**Documentation & Support**:
+- [ ] Technical documentation updated
+- [ ] User-facing documentation updated
+- [ ] Runbooks/playbooks created or updated
+- [ ] Support macros/scripts prepared
+- [ ] Release notes generated
+
+**Rollout Readiness**:
+- [ ] Feature flags configured and tested
+- [ ] Canary/pilot plan executed successfully
+- [ ] Rollback procedure tested and verified
+- [ ] Kill-switch functionality validated
+- [ ] Customer communications prepared
+
+**Variant Budget Compliance**:
+- [ ] Code delta ≤5% per dimension (vehicle/sector/platform)
+- [ ] Test delta ≤25% per dimension
+- [ ] Variant budget CI check passed
+- [ ] CCB approval obtained (if budget exceeded)
+
+**Outcome Measurement**:
+- [ ] 30-day OQ (Outcome Quality) review scheduled
+- [ ] Success criteria defined and baseline captured
+- [ ] Comparison methodology documented
+
+---
+
 ## 1) Conventions & Columns
 
 **Per-row columns** (FRs and NFRs):
