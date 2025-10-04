@@ -67,6 +67,11 @@ graph TB
     class LoadBalancer,AuthMiddleware,RateLimiter,RequestRouter,ResponseCache gateway
     class FleetManager,VehicleGateway,AuthService,PolicyEngine,TelemetryIngest service
     class Monitoring,Logging,Tracing,Metrics observability
+
+    style subGraph1 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph0 fill:transparent
 ```
 
 ### ⚡ **How it talks** - Request Processing Pipeline
@@ -199,6 +204,12 @@ flowchart TB
     class UserLimits,IPLimits,ServiceLimits,GlobalLimits limits
     class Caching,Compression,CORS,Security response
     class Fleet,Vehicles,Auth,Telemetry,Emergency service
+
+    style subGraph1 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph4 fill:transparent
 ```
 
 ## 🔗 **API Contracts**
@@ -275,3 +286,4 @@ rate_limits:
 ---
 
 **🎯 Owner:** Platform Infrastructure Team | **📧 Contact:** platform-team@atlasmesh.com
+
