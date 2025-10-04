@@ -295,5 +295,3 @@ fleet_kpis:
 | Data quality issues | Review validation rules, check data sources |
 
 ---
-
-**🎯 Owner:** Data Analytics Team | **📧 Contact:** analytics-team@atlasmesh.com
