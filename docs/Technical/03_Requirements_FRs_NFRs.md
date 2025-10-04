@@ -1,11 +1,12 @@
-# 03_Requirements_FRs_NFRs.md
+## 03_Requirements_FRs_NFRs.md
 
 **Positioning:** *AtlasMesh is a Fleet OS — vendor-neutral, vehicle-agnostic, sector-aware. This doc is the single source of truth for product requirements (FRs & NFRs).*
+
 ---
 
-## 0) Definition of Ready (DoR) & Definition of Done (DoD)
+### 0) Definition of Ready (DoR) & Definition of Done (DoD)
 
-### Definition of Ready (DoR) - For Epics/FRs/NFRs
+#### Definition of Ready (DoR) - For Epics/FRs/NFRs
 
 Before any Epic/FR/NFR enters development, it must meet these criteria:
 
@@ -45,7 +46,7 @@ Before any Epic/FR/NFR enters development, it must meet these criteria:
 - [ ] Sector scope defined
 - [ ] Triad sign-off (PM + Design + Eng)
 
-### Definition of Done (DoD) - For Releases
+#### Definition of Done (DoD) - For Releases
 
 Before any feature ships to production, it must meet these criteria:
 
@@ -96,7 +97,7 @@ Before any feature ships to production, it must meet these criteria:
 
 ---
 
-## 1) Conventions & Columns
+### 1) Conventions & Columns
 
 **Per-row columns** (FRs and NFRs):
 
@@ -106,7 +107,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-## 2) Functional Requirements (FRs)
+### 2) Functional Requirements (FRs)
 
 > *All rows from v6.0 preserved; refined where noted; now include Epic/OKR and, where relevant, Gate.*
 
@@ -195,7 +196,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-## 3) Non-Functional Requirements (NFRs)
+### 3) Non-Functional Requirements (NFRs)
 
 | NFR ID          | Attribute (Metric)                 | Requirement / Target                             | SLI/Measurement                                          | Alert Policy / Error Budget           | Risk & Fallback                   | Owner       | Pri | Sector | Epic          | OKR     |
 | --------------- | ---------------------------------- | ------------------------------------------------ | -------------------------------------------------------- | ------------------------------------- | --------------------------------- | ----------- | :-: | ------ | ------------- | ------- |
@@ -254,9 +255,9 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-## 8) Execution & Readiness Control Plane
+### 8) Execution & Readiness Control Plane
 
-### 8.1 Dependencies & Auto-Resolution
+#### 8.1 Dependencies & Auto-Resolution
 
 | Feature/Req                         | Auto-Requires                                         | Notes                                        |
 | ----------------------------------- | ----------------------------------------------------- | -------------------------------------------- |
@@ -271,7 +272,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.2 Rollout Gates (Go/No-Go)
+#### 8.2 Rollout Gates (Go/No-Go)
 
 | Gate ID             | Criterion (blocking)                             | Unlocks                                  |
 | ------------------- | ------------------------------------------------ | ---------------------------------------- |
@@ -282,7 +283,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.3 Traceability (OKR → Epic → FR/NFR)
+#### 8.3 Traceability (OKR → Epic → FR/NFR)
 
 * **Safety (O-1):** E1/E3/E4/E7/E10 → FR-003/004/020/041/042/043/060/065; NFR-S-01/02/03, NFR-P-01, NFR-Port-03
 * **Time-to-Value (O-2):** E1/E5/E9/E12 → FR-001/002/015/051/063/028; NFR-Port-01/02/03, NFR-M-02
@@ -292,7 +293,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.4 CI / Test / Evidence Hooks
+#### 8.4 CI / Test / Evidence Hooks
 
 * **For every FR:** BDD spec (Given/When/Then), sim or integration test, **telemetry probe** proving SLI emission.
 * **For every NFR:** Load/latency test generating the SLI; **auto-attach evidence** into the release bundle (**FR-029**, **NFR-Comp-01**).
@@ -300,14 +301,14 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.5 DoR / DoD (per FR & NFR)
+#### 8.5 DoR / DoD (per FR & NFR)
 
 * **DoR:** BDD present · telemetry fields defined · owner & epic tagged · risk/mitigation captured · dependency list filled.
 * **DoD:** CI green (FR+NFR tests) · SLI on dashboards · evidence artifacts attached · docs updated · runbooks updated if ops-impacting.
 
 ---
 
-### 8.6 Supportability SLOs & Ops Maturity
+#### 8.6 Supportability SLOs & Ops Maturity
 
 * **TTD/TTF/MTTR dashboards** per service; drill-through to cases & runbooks (ties to **NFR-Op-04/05/06**).
 * **On-call health:** alert noise ≤ **2%** false positives/mo (**NFR-Ob-02**).
@@ -315,7 +316,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.7 Compliance & Certifications (Blocking)
+#### 8.7 Compliance & Certifications (Blocking)
 
 | Program               | Acceptance Criteria                                                                      | Blocking Artifacts                                                                        |
 | --------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -328,7 +329,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.8 Data Governance Enhancements
+#### 8.8 Data Governance Enhancements
 
 * **Biometrics = Sensitive:** exports require **purpose binding** + **dual approval** (**FR-075**, **NFR-Gov-01**, **NFR-Priv-01**).
 * **Regional regimes:** CCPA/LGPD selectors in residency engine; tenant policy manifests in code.
@@ -336,14 +337,14 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.9 Interoperability & Developer Experience
+#### 8.9 Interoperability & Developer Experience
 
 * **OpenAPI/SDK conformance** (ties to **NFR-DX-01**): blocking CI with golden recordings; 6-month deprecation; 2 major versions supported.
 * **Interop matrices** (ROS2/VDA5050/ISO 23725): remain **hard blockers** (**FR-063**, **NFR-I-04**).
 
 ---
 
-### 8.10 Commercial Readiness
+#### 8.10 Commercial Readiness
 
 * **Entitlements** (**FR-074**): server-side checks; config drift auto-heal every 5 min.
 * **Migrations:** atomic tier changes with back-out; customer-visible change log auto-generated (**FR-045**).
@@ -351,7 +352,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.11 RACI (baseline)
+#### 8.11 RACI (baseline)
 
 | Area                  | R            | A          | C              | I           |
 | --------------------- | ------------ | ---------- | -------------- | ----------- |
@@ -366,10 +367,11 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.12 Open Risks & Follow-ups
+#### 8.12 Open Risks & Follow-ups
 
 * **Cost budgets** require X values per env/scale → **Owner:** FinOps.
 * **Export policy** SoT integration with Legal’s system → **Owner:** Gov Lead.
 * **LMS integration** for sector certifications across customers → **Owner:** UX/PM.
 
 ---
+
