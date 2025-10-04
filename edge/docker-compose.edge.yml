@@ -1,0 +1,291 @@
+# AtlasMesh Edge Development Environment
+# Docker Compose for vehicle edge components development and testing
+
+version: '3.8'
+
+services:
+  # ROS2 Vehicle Agent
+  vehicle-agent:
+    build:
+      context: ./vehicle-agent
+      dockerfile: Dockerfile
+    container_name: atlasmesh-vehicle-agent
+    hostname: vehicle-agent
+    privileged: true  # Required for hardware access
+    network_mode: host  # Required for ROS2 discovery
+    volumes:
+      - /dev:/dev  # Hardware device access
+      - ./vehicle-agent/config:/opt/atlasmesh/config:ro
+      - ./vehicle-agent/logs:/opt/atlasmesh/logs
+      - vehicle_data:/opt/atlasmesh/data
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw  # For GUI applications
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_DOMAIN_ID=42
+      - VEHICLE_ID=${VEHICLE_ID:-vehicle_001}
+      - VEHICLE_TYPE=${VEHICLE_TYPE:-ugv_themis}
+      - SECTOR=${SECTOR:-logistics}
+      - CLOUD_ENDPOINT=${CLOUD_ENDPOINT:-https://api.atlasmesh.com}
+      - MQTT_BROKER=${MQTT_BROKER:-mqtt.atlasmesh.com}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - USE_SIMULATION=${USE_SIMULATION:-true}
+    depends_on:
+      - cloud-bridge
+      - ota-manager
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ros2", "node", "list", "|", "grep", "vehicle_agent"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Cloud Bridge Service
+  cloud-bridge:
+    build:
+      context: ./cloud-bridge
+      dockerfile: Dockerfile
+    container_name: atlasmesh-cloud-bridge
+    hostname: cloud-bridge
+    ports:
+      - "8883:8883"  # MQTT over TLS
+      - "9090:9090"  # WebSocket
+    volumes:
+      - ./cloud-bridge/config:/opt/atlasmesh/config:ro
+      - ./cloud-bridge/logs:/opt/atlasmesh/logs
+      - cloud_bridge_data:/opt/atlasmesh/data
+      - ./certs:/opt/atlasmesh/certs:ro
+    environment:
+      - VEHICLE_ID=${VEHICLE_ID:-vehicle_001}
+      - CLOUD_ENDPOINT=${CLOUD_ENDPOINT:-https://api.atlasmesh.com}
+      - MQTT_BROKER=${MQTT_BROKER:-mqtt.atlasmesh.com}
+      - MQTT_PORT=8883
+      - USE_TLS=true
+      - STORE_AND_FORWARD_ENABLED=true
+      - MAX_QUEUE_SIZE=10000
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # OTA Update Manager
+  ota-manager:
+    build:
+      context: ./ota-manager
+      dockerfile: Dockerfile
+    container_name: atlasmesh-ota-manager
+    hostname: ota-manager
+    volumes:
+      - ./ota-manager/config:/opt/atlasmesh/config:ro
+      - ./ota-manager/logs:/opt/atlasmesh/logs
+      - ota_updates:/opt/atlasmesh/updates
+      - ota_backups:/opt/atlasmesh/backups
+      - ./certs:/opt/atlasmesh/certs:ro
+    environment:
+      - VEHICLE_ID=${VEHICLE_ID:-vehicle_001}
+      - UPDATE_SERVER_URL=${UPDATE_SERVER_URL:-https://updates.atlasmesh.com}
+      - AUTO_UPDATE_ENABLED=false
+      - UPDATE_WINDOW_START_HOUR=2
+      - UPDATE_WINDOW_END_HOUR=6
+      - CHECK_INTERVAL_HOURS=1
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  # MQTT Broker (for local testing)
+  mqtt-broker:
+    image: eclipse-mosquitto:2.0
+    container_name: atlasmesh-mqtt-broker
+    hostname: mqtt-broker
+    ports:
+      - "1883:1883"  # MQTT
+      - "8883:8883"  # MQTT over TLS
+      - "9001:9001"  # WebSocket
+    volumes:
+      - ./mqtt/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mqtt/data:/mosquitto/data
+      - ./mqtt/logs:/mosquitto/log
+      - ./certs:/mosquitto/certs:ro
+    environment:
+      - MOSQUITTO_USERNAME=${MQTT_USERNAME:-atlasmesh}
+      - MOSQUITTO_PASSWORD=${MQTT_PASSWORD:-secure_password}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-t", "test", "-m", "health_check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Simulation Environment (CARLA/Gazebo)
+  simulation:
+    image: carlasim/carla:0.9.14
+    container_name: atlasmesh-simulation
+    hostname: simulation
+    ports:
+      - "2000-2002:2000-2002"  # CARLA ports
+    volumes:
+      - ./simulation/maps:/opt/carla/CarlaUE4/Content/Carla/Maps/Custom
+      - ./simulation/scenarios:/opt/carla/PythonAPI/examples/scenarios
+      - simulation_data:/opt/carla/data
+    environment:
+      - DISPLAY=${DISPLAY}
+      - CARLA_SERVER=true
+      - CARLA_WORLD=${CARLA_WORLD:-Town01}
+      - CARLA_QUALITY_LEVEL=${CARLA_QUALITY_LEVEL:-Low}
+    command: ["./CarlaUE4.sh", "-carla-server", "-benchmark", "-fps=20"]
+    restart: unless-stopped
+    profiles:
+      - simulation
+    healthcheck:
+      test: ["CMD", "python3", "/opt/carla/PythonAPI/util/check_server.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  # ROS2 Bridge for Simulation
+  ros2-bridge:
+    build:
+      context: ./ros2-bridge
+      dockerfile: Dockerfile
+    container_name: atlasmesh-ros2-bridge
+    hostname: ros2-bridge
+    network_mode: host
+    volumes:
+      - ./ros2-bridge/config:/opt/atlasmesh/config:ro
+      - ./ros2-bridge/logs:/opt/atlasmesh/logs
+    environment:
+      - ROS_DOMAIN_ID=42
+      - CARLA_HOST=simulation
+      - CARLA_PORT=2000
+      - VEHICLE_ID=${VEHICLE_ID:-vehicle_001}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      - simulation
+    restart: unless-stopped
+    profiles:
+      - simulation
+
+  # Edge Monitoring (Prometheus Node Exporter)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: atlasmesh-node-exporter
+    hostname: node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+
+  # Edge Log Aggregation
+  fluent-bit:
+    image: fluent/fluent-bit:2.0
+    container_name: atlasmesh-fluent-bit
+    hostname: fluent-bit
+    ports:
+      - "24224:24224"
+    volumes:
+      - ./fluent-bit/config/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./fluent-bit/config/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - /var/log:/var/log:ro
+      - fluent_bit_data:/fluent-bit/data
+    environment:
+      - CLOUD_ENDPOINT=${CLOUD_ENDPOINT:-https://api.atlasmesh.com}
+      - VEHICLE_ID=${VEHICLE_ID:-vehicle_001}
+    restart: unless-stopped
+
+  # Edge Database (SQLite for local storage)
+  edge-db:
+    image: alpine:latest
+    container_name: atlasmesh-edge-db
+    hostname: edge-db
+    volumes:
+      - edge_db_data:/data
+      - ./edge-db/init:/docker-entrypoint-initdb.d:ro
+    command: >
+      sh -c "
+        apk add --no-cache sqlite &&
+        mkdir -p /data &&
+        sqlite3 /data/edge.db < /docker-entrypoint-initdb.d/init.sql &&
+        tail -f /dev/null
+      "
+    restart: unless-stopped
+
+  # Development Tools Container
+  dev-tools:
+    build:
+      context: ./dev-tools
+      dockerfile: Dockerfile
+    container_name: atlasmesh-dev-tools
+    hostname: dev-tools
+    network_mode: host
+    volumes:
+      - .:/workspace
+      - dev_tools_cache:/root/.cache
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_DOMAIN_ID=42
+    command: ["sleep", "infinity"]
+    profiles:
+      - development
+
+  # Network Simulator (for testing connectivity issues)
+  network-sim:
+    image: nicolaka/netshoot
+    container_name: atlasmesh-network-sim
+    hostname: network-sim
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./network-sim/scripts:/scripts:ro
+    command: ["sleep", "infinity"]
+    profiles:
+      - testing
+
+volumes:
+  vehicle_data:
+    driver: local
+  cloud_bridge_data:
+    driver: local
+  ota_updates:
+    driver: local
+  ota_backups:
+    driver: local
+  simulation_data:
+    driver: local
+  fluent_bit_data:
+    driver: local
+  edge_db_data:
+    driver: local
+  dev_tools_cache:
+    driver: local
+
+networks:
+  default:
+    name: atlasmesh-edge
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Health check configuration
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 30s

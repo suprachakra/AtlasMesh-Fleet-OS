@@ -1,0 +1,411 @@
+# AtlasMesh Fleet OS - Integration Testing Suite
+# End-to-end testing, API contract testing, external system mocking, regression testing
+
+version: '3.8'
+
+services:
+  # Test Orchestrator
+  test-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.test-orchestrator
+    container_name: integration-test-orchestrator
+    environment:
+      - TEST_ENV=integration
+      - FLEET_API_BASE_URL=http://fleet-manager:8080
+      - VEHICLE_GATEWAY_URL=http://vehicle-gateway:8080
+      - POLICY_ENGINE_URL=http://policy-engine:8080
+      - WEATHER_FUSION_URL=http://weather-fusion:8080
+      - PREDICTIVE_MAINTENANCE_URL=http://predictive-maintenance:8080
+      - GARAGE_TOOLS_URL=http://garage-tools:8080
+      - POSTGRES_HOST=postgres-test
+      - POSTGRES_DB=atlasmesh_fleet_os_test
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+      - REDIS_HOST=redis-test
+      - KAFKA_BROKERS=kafka-test:9092
+      - TEST_DATA_PATH=/app/test-data
+      - RESULTS_PATH=/app/results
+      - PARALLEL_TESTS=${PARALLEL_TESTS:-4}
+    volumes:
+      - ./test-suites:/app/test-suites
+      - ./test-data:/app/test-data
+      - ./results:/app/results
+      - ./config:/app/config
+      - ./reports:/app/reports
+    networks:
+      - integration-test
+    ports:
+      - "8094:8080"
+    depends_on:
+      - postgres-test
+      - redis-test
+      - kafka-test
+    restart: unless-stopped
+
+  # API Contract Testing with Pact
+  pact-broker:
+    image: pactfoundation/pact-broker:2.107.1
+    container_name: pact-broker
+    environment:
+      - PACT_BROKER_DATABASE_URL=postgres://pact_user:pact_password@postgres-pact:5432/pact_broker
+      - PACT_BROKER_BASIC_AUTH_USERNAME=admin
+      - PACT_BROKER_BASIC_AUTH_PASSWORD=admin_password_2024!
+      - PACT_BROKER_PUBLIC_HEARTBEAT=true
+    ports:
+      - "9292:9292"
+    networks:
+      - integration-test
+    depends_on:
+      - postgres-pact
+    restart: unless-stopped
+
+  # Pact Database
+  postgres-pact:
+    image: postgres:15-alpine
+    container_name: postgres-pact
+    environment:
+      - POSTGRES_USER=pact_user
+      - POSTGRES_PASSWORD=pact_password
+      - POSTGRES_DB=pact_broker
+    volumes:
+      - pact-postgres-data:/var/lib/postgresql/data
+    networks:
+      - integration-test
+    restart: unless-stopped
+
+  # Contract Testing Service
+  contract-tester:
+    build:
+      context: .
+      dockerfile: Dockerfile.contract-tester
+    container_name: contract-tester
+    environment:
+      - PACT_BROKER_URL=http://pact-broker:9292
+      - PACT_BROKER_USERNAME=admin
+      - PACT_BROKER_PASSWORD=admin_password_2024!
+      - PROVIDER_BASE_URL=http://fleet-manager:8080
+      - CONSUMER_VERSION=${BUILD_NUMBER:-1.0.0}
+      - PROVIDER_VERSION=${BUILD_NUMBER:-1.0.0}
+    volumes:
+      - ./contract-tests:/app/contract-tests
+      - ./pact-results:/app/pact-results
+    networks:
+      - integration-test
+    ports:
+      - "8095:8080"
+    depends_on:
+      - pact-broker
+    restart: unless-stopped
+
+  # End-to-End Testing with Playwright
+  e2e-tester:
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e-tester
+    container_name: e2e-tester
+    environment:
+      - BASE_URL=http://control-center:3000
+      - API_BASE_URL=http://fleet-manager:8080
+      - HEADLESS=${HEADLESS:-true}
+      - BROWSER=${BROWSER:-chromium}
+      - PARALLEL_WORKERS=${E2E_PARALLEL_WORKERS:-2}
+      - TEST_TIMEOUT=${TEST_TIMEOUT:-30000}
+      - SCREENSHOT_ON_FAILURE=true
+      - VIDEO_ON_FAILURE=true
+    volumes:
+      - ./e2e-tests:/app/tests
+      - ./e2e-results:/app/test-results
+      - ./e2e-reports:/app/playwright-report
+    networks:
+      - integration-test
+    ports:
+      - "8096:8080"
+    restart: unless-stopped
+    shm_size: 2gb
+
+  # API Testing with Newman (Postman)
+  newman-tester:
+    image: postman/newman:5.3.2-alpine
+    container_name: newman-tester
+    environment:
+      - NEWMAN_COLLECTION_PATH=/collections
+      - NEWMAN_ENVIRONMENT_PATH=/environments
+      - NEWMAN_RESULTS_PATH=/results
+    volumes:
+      - ./postman/collections:/collections
+      - ./postman/environments:/environments
+      - ./postman/results:/results
+    networks:
+      - integration-test
+    command: >
+      sh -c "
+        echo 'Newman API Testing Ready' &&
+        tail -f /dev/null
+      "
+    restart: unless-stopped
+
+  # External System Mocks
+  wiremock:
+    image: wiremock/wiremock:3.2.0
+    container_name: wiremock-server
+    ports:
+      - "8097:8080"
+      - "8443:8443"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+      - ./wiremock/files:/home/wiremock/__files
+    networks:
+      - integration-test
+    command: >
+      --global-response-templating
+      --verbose
+      --enable-stub-cors
+    restart: unless-stopped
+
+  # Mock External APIs
+  mock-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.mock-server
+    container_name: mock-server
+    environment:
+      - MOCK_CONFIG_PATH=/app/config/mocks.yml
+      - LOG_LEVEL=info
+    volumes:
+      - ./mocks/config:/app/config
+      - ./mocks/data:/app/data
+      - ./mocks/logs:/app/logs
+    networks:
+      - integration-test
+    ports:
+      - "8098:8080"
+    restart: unless-stopped
+
+  # Test Database
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: postgres-test
+    environment:
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_DB=atlasmesh_fleet_os_test
+    volumes:
+      - ./test-data/sql:/docker-entrypoint-initdb.d
+      - postgres-test-data:/var/lib/postgresql/data
+    networks:
+      - integration-test
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+
+  # Test Redis
+  redis-test:
+    image: redis:7.2-alpine
+    container_name: redis-test
+    networks:
+      - integration-test
+    ports:
+      - "6380:6379"
+    restart: unless-stopped
+
+  # Test Kafka
+  kafka-test:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-test
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper-test:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-test:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    networks:
+      - integration-test
+    depends_on:
+      - zookeeper-test
+    ports:
+      - "9093:9092"
+    restart: unless-stopped
+
+  # Test Zookeeper
+  zookeeper-test:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper-test
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    networks:
+      - integration-test
+    ports:
+      - "2182:2181"
+    restart: unless-stopped
+
+  # Regression Testing Service
+  regression-tester:
+    build:
+      context: .
+      dockerfile: Dockerfile.regression-tester
+    container_name: regression-tester
+    environment:
+      - BASELINE_VERSION=${BASELINE_VERSION:-v1.0.0}
+      - CURRENT_VERSION=${CURRENT_VERSION:-v1.1.0}
+      - REGRESSION_THRESHOLD=${REGRESSION_THRESHOLD:-5}  # 5% performance degradation threshold
+      - PROMETHEUS_URL=http://prometheus:9090
+      - GRAFANA_URL=http://grafana:3000
+    volumes:
+      - ./regression-tests:/app/regression-tests
+      - ./regression-results:/app/results
+      - ./baseline-data:/app/baseline-data
+    networks:
+      - integration-test
+    ports:
+      - "8099:8080"
+    restart: unless-stopped
+
+  # Test Data Generator
+  test-data-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile.test-data-generator
+    container_name: test-data-generator
+    environment:
+      - POSTGRES_HOST=postgres-test
+      - POSTGRES_DB=atlasmesh_fleet_os_test
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+      - REDIS_HOST=redis-test
+      - KAFKA_BROKERS=kafka-test:9092
+      - DATA_SCALE=${DATA_SCALE:-medium}  # small, medium, large
+      - SEED_DATA=${SEED_DATA:-true}
+    volumes:
+      - ./test-data/templates:/app/templates
+      - ./test-data/generated:/app/generated
+    networks:
+      - integration-test
+    ports:
+      - "8100:8080"
+    depends_on:
+      - postgres-test
+      - redis-test
+      - kafka-test
+    restart: unless-stopped
+
+  # Test Results Aggregator
+  test-aggregator:
+    build:
+      context: .
+      dockerfile: Dockerfile.test-aggregator
+    container_name: test-aggregator
+    environment:
+      - RESULTS_SOURCES=e2e-tester,contract-tester,newman-tester,regression-tester
+      - REPORT_FORMAT=${REPORT_FORMAT:-html,json,junit}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - EMAIL_SMTP_HOST=${EMAIL_SMTP_HOST}
+      - ALERT_EMAIL=${ALERT_EMAIL}
+    volumes:
+      - ./results:/app/input
+      - ./reports:/app/output
+      - ./templates:/app/templates
+    networks:
+      - integration-test
+    ports:
+      - "8101:8080"
+    restart: unless-stopped
+
+  # Test Environment Monitor
+  test-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.test-monitor
+    container_name: test-monitor
+    environment:
+      - MONITORED_SERVICES=fleet-manager,vehicle-gateway,policy-engine,weather-fusion
+      - HEALTH_CHECK_INTERVAL=${HEALTH_CHECK_INTERVAL:-30}
+      - PROMETHEUS_URL=http://prometheus:9090
+    volumes:
+      - ./monitoring/config:/app/config
+      - ./monitoring/logs:/app/logs
+    networks:
+      - integration-test
+    ports:
+      - "8102:8080"
+    restart: unless-stopped
+
+  # Chaos Testing (Optional)
+  chaos-monkey:
+    image: quay.io/linki/chaoskube:v0.21.0
+    container_name: chaos-monkey
+    environment:
+      - CHAOSKUBE_INTERVAL=10m
+      - CHAOSKUBE_DRY_RUN=${CHAOS_DRY_RUN:-true}
+      - CHAOSKUBE_TIMEZONE=UTC
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - integration-test
+    restart: unless-stopped
+    command: >
+      --interval=10m
+      --dry-run=${CHAOS_DRY_RUN:-true}
+      --log-level=info
+
+  # Test Dashboard
+  test-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.test-dashboard
+    container_name: test-dashboard
+    environment:
+      - TEST_ORCHESTRATOR_URL=http://test-orchestrator:8080
+      - PACT_BROKER_URL=http://pact-broker:9292
+      - E2E_RESULTS_URL=http://e2e-tester:8080
+      - CONTRACT_RESULTS_URL=http://contract-tester:8080
+      - REGRESSION_RESULTS_URL=http://regression-tester:8080
+    volumes:
+      - ./dashboard/config:/app/config
+      - ./results:/app/results:ro
+      - ./reports:/app/reports:ro
+    networks:
+      - integration-test
+    ports:
+      - "8103:8080"
+    restart: unless-stopped
+
+volumes:
+  pact-postgres-data:
+    driver: local
+  postgres-test-data:
+    driver: local
+
+networks:
+  integration-test:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.29.0.0/16
+
+# Test execution profiles
+x-test-profiles:
+  - &smoke-tests
+    name: "Smoke Tests"
+    description: "Quick validation of core functionality"
+    duration: "5m"
+    tests: ["health-checks", "basic-api", "core-flows"]
+    
+  - &regression-tests
+    name: "Regression Tests"
+    description: "Full regression testing suite"
+    duration: "2h"
+    tests: ["all-api-tests", "e2e-flows", "performance-baseline"]
+    
+  - &contract-tests
+    name: "Contract Tests"
+    description: "API contract validation"
+    duration: "30m"
+    tests: ["pact-verification", "schema-validation", "backward-compatibility"]
+    
+  - &integration-tests
+    name: "Integration Tests"
+    description: "Cross-service integration testing"
+    duration: "1h"
+    tests: ["service-integration", "data-flow", "external-apis"]
