@@ -284,6 +284,3 @@ rate_limits:
 | Routing errors | Review route configuration, check service discovery |
 
 ---
-
-**🎯 Owner:** Platform Infrastructure Team | **📧 Contact:** platform-team@atlasmesh.com
-
