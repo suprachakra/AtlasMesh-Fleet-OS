@@ -60,6 +60,11 @@ graph TB
     class AuditLogger,CryptoSigner,ImmutableStore,AuditAnalyzer,AuditAPI audit
     class DigitalSignatures,TamperEvidence,ChainOfCustody,RetentionPolicies feature
     class AuditReports,ForensicAnalysis,ComplianceValidation,RegulatoryEvidence output
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
 ```
 
 ## 📈 **SLOs & Performance**
@@ -73,4 +78,3 @@ graph TB
 
 ---
 
-**🎯 Owner:** Audit & Compliance Team | **📧 Contact:** audit@atlasmesh.com
