@@ -1,0 +1,111 @@
+# AtlasMesh Fleet OS - Product Intake Form
+# Single funnel for all product requests
+# Auto-labels: Sector, Safety Tier, Variant Budget
+
+# Basic Information
+title: ""
+requester: ""           # Team/contact email
+submitted_date: ""      # YYYY-MM-DD
+priority_tier: ""       # P0|P1|P2|P3 (suggested, will be validated)
+
+# Problem Definition
+problem_statement: ""   # Clear, concise problem description
+evidence_links:         # Links to supporting evidence
+  - ""                  # Interview notes, telemetry dashboards, incident reports
+
+# User Context
+target_user_roles:      # Who experiences this problem?
+  - ""                  # Fleet Operator, Maintenance Tech, Safety Manager, etc.
+
+jobs_to_be_done:        # What are they trying to accomplish?
+  - ""                  # Specific JTBD statements
+
+# Strategic Alignment
+okrs:                   # Which OKRs does this move?
+  - ""                  # O-1, O-2, KR.O1.1, etc.
+
+epics:                  # Which epics does this relate to?
+  - ""                  # E-01, E-02, etc.
+
+# Scope
+sector_scope:           # Which sectors are impacted?
+  - ""                  # defense, mining, logistics, ride_hail
+
+vehicle_classes:        # Which vehicle classes?
+  - ""                  # ClassA_LightIndustrial, ClassB_HeavyDuty, etc.
+
+platform_scope:         # Which platforms?
+  - ""                  # azure_eks, aws_eks, on_prem_k3s
+
+# Risk & Safety
+risk_tier: ""           # P0 (safety-critical), P1 (operational), P2 (enhancement), P3 (nice-to-have)
+
+safety_impact: ""       # none|low|medium|high|critical
+compliance_impact:      # Which compliance frameworks affected?
+  - ""                  # ISO 26262, SOTIF, UN R155/R156, GDPR, etc.
+
+# Dependencies
+dependencies:           # What must exist first?
+  functional:
+    - ""                # FR-###, NFR-###
+  technical:
+    - ""                # Services, infrastructure, partners
+  external:
+    - ""                # Third-party integrations, regulatory approvals
+
+# Variant Budget Estimate
+variant_budget_estimate:
+  core_code_delta_pct: 0    # Estimated code delta (0-5%)
+  test_time_delta_pct: 0    # Estimated test delta (0-25%)
+  justification: ""         # Why this delta is necessary
+
+# Success Criteria
+sli_targets:            # Service Level Indicators
+  - name: ""
+    objective: ""       # What we're measuring
+    threshold: ""       # Target value (e.g., "P95 ≤100ms", "≥99.5%")
+    window: ""          # Measurement window (e.g., "30 days")
+
+business_metrics:       # Business impact metrics
+  - metric: ""
+    target: ""
+    timeframe: ""
+
+# Evidence & Validation Plan
+evidence_plan:          # How will we validate this?
+  - type: ""            # interviews|telemetry|sim|field|beta
+    description: ""
+    timeline: ""        # Weeks to complete
+
+minimum_evidence_pack:  # Required before PRD
+  interviews_count: 0   # Target: 5-7 contextual interviews
+  telemetry_days: 0     # Target: 30-day telemetry slice
+  sim_scenarios: 0      # Target: Relevant scenario coverage
+  policy_review: false  # Required: true/false
+
+# Rollout Strategy
+rollout_approach:
+  - ""                  # flag|canary|pilot_sites|ring_deployment
+
+rollback_plan: ""       # How do we revert if needed?
+
+kill_switch: ""         # Emergency disable mechanism
+
+# Additional Context
+related_use_cases:      # Links to use case docs
+  - ""                  # docs/prd/use-cases/sector/use-case-##.md
+
+design_artifacts:       # Links to designs/wireframes
+  - ""
+
+technical_specs:        # Links to technical specifications
+  - ""
+
+# Review & Approval (filled by PM CoP)
+reviewed_by: ""         # CoP Steward
+reviewed_date: ""       # YYYY-MM-DD
+decision: ""            # approved|needs_evidence|deferred|rejected
+decision_rationale: ""
+assigned_to: ""         # PM owner
+target_quarter: ""      # Q1 2025, Q2 2025, etc.
+
