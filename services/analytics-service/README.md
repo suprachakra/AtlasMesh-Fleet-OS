@@ -209,6 +209,13 @@ flowchart TB
     class CostAnalysis,RevenueTracking,ROIAnalysis,BudgetForecasting financial
     class SafetyMetrics,ComplianceTracking,RiskAssessment,AuditAnalytics safety
     class SatisfactionMetrics,UsagePatterns,ChurnAnalysis,SegmentAnalysis customer
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph4 fill:transparent
+
 ```
 
 ## 🔗 **API Contracts**
@@ -301,4 +308,5 @@ fleet_kpis:
 | Data quality issues | Review validation rules, check data sources |
 
 ---
+
 
