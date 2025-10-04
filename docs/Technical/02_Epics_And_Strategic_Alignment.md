@@ -1,9 +1,10 @@
-# 02_Epics_and_Strategic_Alignment.md
+## Epics_and_Strategic_Alignment
 
-**Positioning:** *AtlasMesh is a Fleet OS — not an autonomy stack.* We orchestrate mixed fleets, decisions, evidence, and operations across vendors, vehicles, sensors, maps, and clouds.
+*Positioning:** *AtlasMesh is a Fleet OS — not an autonomy stack.* We orchestrate mixed fleets, decisions, evidence, and operations across vendors, vehicles, sensors, maps, and clouds.
+
 ---
 
-## 1) Epic-to-Problem Mapping
+### 1) Epic-to-Problem Mapping
 
 | Core Problem                           | Primary Epic(s)                                                               | Secondary Epic(s)                                   | Customer Impact                                                  |
 | -------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------- |
@@ -15,7 +16,7 @@
 
 ---
 
-## 2) Epic Overview & Strategic Mapping
+### 2) Epic Overview & Strategic Mapping
 
 > Abbreviations: OKRs O-1..O-5 as in PRD; FR/NFR refer to PRD requirement IDs. Metrics are labeled **MET.***
 
@@ -36,7 +37,7 @@
 
 ---
 
-## 3) Now / Next / Later Roadmap (with gates & risks)
+### 3) Now / Next / Later Roadmap (with gates & risks)
 
 **Now (execution window 0–2 quarters)**
 
@@ -66,7 +67,7 @@
 
 ---
 
-## 4) Metrics Canon (MET.*) & Crosswalk
+### 4) Metrics Canon (MET.*) & Crosswalk
 
 | Metric ID                      | Definition / SLI                   | OKR     | FR/NFR Sources               |
 | ------------------------------ | ---------------------------------- | ------- | ---------------------------- |
@@ -89,7 +90,7 @@
 
 ---
 
-## 5) Geographic & Partner Phasing (E5/E6 alignment)
+### 5) Geographic & Partner Phasing (E5/E6 alignment)
 
 | Phase                 | Regions & Archetype Sites                      | Priority Epics        | Partner Motifs                                        | Exit Criteria                                                    |
 | --------------------- | ---------------------------------------------- | --------------------- | ----------------------------------------------------- | ---------------------------------------------------------------- |
@@ -101,7 +102,7 @@
 
 ---
 
-## 6) Financial Tie-Ins (per Epic) — pointer to `07_Business_Model_and_Financials.md`
+### 6) Financial Tie-Ins (per Epic) — pointer to `07_Business_Model_and_Financials.md`
 
 | Epic    | Primary Revenue Levers                                                          | Secondary Levers / Cost Impact                    | Notes                                          |
 | ------- | ------------------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------- |
@@ -120,7 +121,7 @@
 
 ---
 
-## 7) Traceability View (Strategy → Epics → PRD)
+### 7) Traceability View (Strategy → Epics → PRD)
 
 * **Safety (O-1):** E1/E2/E3/E4/E6/E7/E8/E9/E10/E12 → FR-003/004/009/011/020/041/042/043/060/062; NFR-S-01/02/03.
 * **Time-to-Value (O-2):** E1/E5/E9/E12 → FR-001/002/015/051/063; NFR-Port-01/02/03.
@@ -130,7 +131,7 @@
 
 ---
 
-## 8) Verification & Exit Gates per Epic
+### 8) Verification & Exit Gates per Epic
 
 | Epic    | Must-Pass Gates (extract)                                                             |
 | ------- | ------------------------------------------------------------------------------------- |
@@ -149,7 +150,7 @@
 
 ---
 
-## 9) Ownership & RASCI (abbrev.)
+### 9) Ownership & RASCI (abbrev.)
 
 * **E1** Platform Lead (Edge/BE) — R; QA/SRE — A; PM — S; OEM Partners — C; Security — I
 * **E2** Policy Lead — R; Compliance — A; BE — S; Legal/Reg — C; SRE — I
@@ -166,7 +167,7 @@
 
 ---
 
-## 10) Pointers to PRD & Specs (keep this doc lean)
+### 10) Pointers to PRD & Specs (keep this doc lean)
 
 * Functional/NFR detail, APIs, and test specs: **see PRD v3.0** (sections 3, 4, 7, 11).
 * Financials & comps: **see `07_Business_Model_and_Financials.md`** (for ARR levers, margins).
@@ -174,7 +175,7 @@
 
 ---
 
-### Appendix A — Quick Index (Epic ↔ FR/NFR anchors)
+#### Appendix A — Quick Index (Epic ↔ FR/NFR anchors)
 
 * **E1:** FR-001/002/003/004/005; NFR-Port-01/02/03
 * **E2:** FR-009/010/011; NFR-Comp-01/02/03, NFR-P-02
@@ -190,3 +191,4 @@
 * **E12:** FR-015/016/017/018; NFR-Port-02/03
 
 ---
+
