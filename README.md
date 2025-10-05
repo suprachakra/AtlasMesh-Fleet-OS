@@ -132,6 +132,11 @@ graph TB
     class B1,B2,B3,B4,B5,B6 completed
     class D1,D2,D3,D4,D5,D6 completed
     class C1,C2,C3,C4,C5,C6,C7,C8 operations
+
+    style subGraph1 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph0 fill:transparent
 ```
 
 ## User Journey - Complete System Interactions
@@ -349,6 +354,17 @@ graph TB
     class PM,JG,LG,GF monitoring
     class ERP,MAP,WX external
     class ML,FS,MR,PM analytics
+
+    style subGraph1 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph4 fill:transparent
+    style subGraph5 fill:transparent
+    style subGraph6 fill:transparent
+    style subGraph7 fill:transparent
+    style subGraph8 fill:transparent
+    style subGraph9 fill:transparent
 ```
 
 ## 🚀 Key Features
