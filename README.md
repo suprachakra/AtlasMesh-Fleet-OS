@@ -121,19 +121,25 @@ graph TB
     D3 -.-> A1
     D4 -.-> C1
     
-    classDef completed fill:#d4edda,stroke:#28a745,stroke-width:2px
-    classDef pending fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    classDef Phase1 stroke-width:1px, stroke-dasharray:none, stroke:#B39DBC, fill:#ECE3F5, color:#4E3A5E
+    classDef Phase2 stroke-width:1px, stroke-dasharray:none, stroke:#E3B448, fill:#FDF6C9, color:#7D5A17
+    classDef Phase3 stroke-width:1px, stroke-dasharray:none, stroke:#A7C796, fill:#E6F4E2, color:#3E6A42
     classDef operations fill:#e7f3ff,stroke:#007bff,stroke-width:2px
     
-    class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10 completed
-    class B1,B2,B3,B4,B5,B6 completed
-    class D1,D2,D3,D4,D5,D6 completed
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10 Phase1
+    class B1,B2,B3,B4,B5,B6 Phase2
+    class D1,D2,D3,D4,D5,D6 Phase3
     class C1,C2,C3,C4,C5,C6,C7,C8 operations
 
     style subGraph1 fill:transparent
     style subGraph3 fill:transparent
     style subGraph2 fill:transparent
     style subGraph0 fill:transparent
+
+        classDef client fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef gateway fill:#e1f5fe,stroke:#01579b,stroke-width:3px
+    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef observability fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
 ```
 
 ## User Journey - Complete System Interactions
@@ -336,21 +342,24 @@ graph TB
     %% Styling
     classDef edge fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
     classDef ingestion fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef storage fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef storage stroke-width:1px, stroke-dasharray:none, stroke:#CC0000, fill:#FFCCCC, color:#990000
     classDef services fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
     classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px
-    classDef monitoring fill:#f1f8e9,stroke:#33691e,stroke-width:2px
-    classDef external fill:#fafafa,stroke:#424242,stroke-width:2px
-    classDef analytics fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef monitoring stroke-width:1px, stroke-dasharray:none, stroke:#E3B448, fill:#FDF6C9, color:#7D5A17
+    classDef feature troke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
+    classDef external stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
+    classDef analytics stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
     
     class V1,V2,VA,CB,MQ1 edge
     class KF,SR,TI,DV ingestion
-    class CH,RD,MO,DL,NG,PG storage
+    class CH,RD,MO,DL,NG,CC,GF storage
     class AG,PS,TS,DS,RS,FM,AS,FF services
-    class VT,OPA,PKI security
-    class PM,JG,LG,GF monitoring
-    class ERP,MAP,WX external
-    class ML,FS,MR,PM analytics
+    class FF feature
+    class PG feature
+    class VT,OPA security
+    class PM,JG,LG monitoring
+    class ERP,MAP,WX,PKI external
+    class ML,FS,MR analytics
 
     style subGraph1 fill:transparent
     style subGraph3 fill:transparent
@@ -482,8 +491,8 @@ atlasmesh-fleet-os/
 ├─ PRODUCTION_RUNBOOK.md                 # Production operations guide
 ├─ .github/                              # GitHub workflows and templates
 ├─ docs/                                 # Documentation
-│  ├─ strategy/                          # Vision, market, OKRs, product strategy
-│  ├─ Technical/                         # Architecture, requirements, APIs
+│  ├─ Strategy/                          # Vision, OKRs, Product strategy, Personas, Financials,  GTM, Roadmap
+│  ├─ Technical/                         # Architecture, Epics, requirements(FRs, NFRs), APIs
 │  │  ├─ 01_Architecture.md              # System architecture
 │  │  ├─ 08_Qualified_Agnosticism.md     # Qualified agnosticism guide
 │  │  ├─ 09_Five_Constraining_Realities.md  # Technical constraints
@@ -496,9 +505,9 @@ atlasmesh-fleet-os/
 │  │  ├─ 0011-qualified-agnosticism.md   # ADR for qualified agnosticism
 │  │  ├─ 0012-variant-budget-enforcement.md  # ADR for variant budgets
 │  │  └─ 0013-conformance-testing.md     # ADR for conformance testing
-│  ├─ prd/use-cases/                     # Use case specifications by sector
+│  ├─ use-cases/                         # Use case specifications by sector
 │  ├─ architecture/                      # Diagrams and technical designs
-│  ├─ diagrams/                          # Mermaid diagrams-as-code
+│  ├─ diagrams/                          # ERDs, DFDs, Business flows, Sequence diagrams
 │  └─ troubleshooting/                   # Troubleshooting guides
 ├─ configs/                              # Configuration overlays
 │  ├─ base/                              # Base configurations
