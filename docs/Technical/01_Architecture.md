@@ -1,19 +1,19 @@
-# AtlasMesh Fleet OS — Architecture
+## AtlasMesh Fleet OS — Architecture
 
 
-## 📋 Table of Contents
+### 📋 Table of Contents
 
 <div align="center">
 
 | 🎯 **[Executive Summary](#-executive-summary-qualified-agnosticism)** | 🏗️ **[System Context](#%EF%B8%8F-1-system-context-c4-model)** | 🔧 **[Core Components](#%EF%B8%8F-3-component-architecture-principles)** | 📊 **[Data Architecture](#-4-data-flow-architecture)** | 🚀 **[Deployment](#-5-deployment-architecture)** |
 |:---:|:---:|:---:|:---:|:---:|
-| 🛡️ **[Failure Domains & Resilience](#%EF%B8%8F-6-failure-domains--resilience)** | 🔒 **[Security](#5-security-architecture)** | 📈 **[Monitoring](#6-monitoring--observability)** | 🧪 **[Testing](#7-testing-strategy)** |🎯 **[Key Architectural Decisions**](#-13-key-architectural-decisions)** | 
+| 🛡️ **[Failure Domains & Resilience](#%EF%B8%8F-6-failure-domains--resilience)** | 🔒 **[Security](#5-security-architecture)** | 📈 **[Monitoring](#6-monitoring--observability)** | 🧪 **[Testing](#7-testing-strategy)** |🎯 **[Key Architectural Decisions](#-13-key-architectural-decisions)** | 
 
 </div>
 
 ---
 
-## 🎯 Executive Summary: Qualified Agnosticism
+### 🎯 Executive Summary: Qualified Agnosticism
 
 AtlasMesh Fleet OS implements **"qualified agnosticism"** - a pragmatic approach to vehicle-agnostic, sector-agnostic, and platform-agnostic autonomous fleet operations. Rather than claiming universal compatibility, we achieve **bounded agnosticism** through:
 
@@ -21,7 +21,7 @@ AtlasMesh Fleet OS implements **"qualified agnosticism"** - a pragmatic approach
 - **🏢 Sector-Agnostic**: Policy overlays targeting ≥90% code reuse
 - **☁️ Platform-Agnostic**: Contract-driven infrastructure with conformance testing
 
-### 🎯 **Agnosticism Reality Check**
+#### 🚙 **Agnosticism Reality Check**
 
 <div align="center">
 
@@ -34,7 +34,7 @@ AtlasMesh Fleet OS implements **"qualified agnosticism"** - a pragmatic approach
 
 </div>
 
-## 🏗️ **1) System Context (C4 Model)**
+### 🏗️ **1) System Context (C4 Model)**
 
 AtlasMesh Fleet OS operates as a **qualified agnostic** platform that orchestrates autonomous fleet operations across multiple vehicle classes, sectors, and infrastructure platforms. The system context diagram below illustrates the high-level interactions between AtlasMesh and external entities.
 
@@ -69,9 +69,9 @@ C4Context
     Rel(fms, cloud, "Deployed on")
 ```
 
-## 🎯 **1.1) Qualified Agnosticism Architecture**
+### 🎯 **1.1) Qualified Agnosticism Architecture**
 
-### Vehicle Hardware Abstraction Layer (HAL)
+#### Vehicle Hardware Abstraction Layer (HAL)
 
 The Vehicle HAL enables **vehicle-agnostic** operations through config-driven profiles:
 
@@ -120,7 +120,7 @@ graph TB
     class MotionPlanner,PathFollower,VehicleController control
 ```
 
-### Variant Budget Enforcement
+#### Variant Budget Enforcement
 
 The Variant Budget system ensures **qualified agnosticism** stays within defined limits:
 
@@ -144,7 +144,7 @@ graph LR
     class CodeChanges,DeltaAnalyzer,BudgetChecker process
 ```
 
-## 🔧 **2) Container Diagram (Services & Components)**
+### 🔧 **2) Container Diagram (Services & Components)**
 
 The container diagram below shows the major components of the AtlasMesh Fleet OS and their interactions, including the new qualified agnosticism services.
 
@@ -265,11 +265,11 @@ C4Container
     Rel(digital_twin_sim, predictive_maint, "Validates models", "gRPC")
 ```
 
-## 🏗️ **3) Component Architecture Principles**
+### 🏗️ **3) Component Architecture Principles**
 
 AtlasMesh Fleet OS is built on the following architectural principles:
 
-### 3.1 Agnostic by Design
+#### 3.1 Agnostic by Design
 
 The system is designed to be agnostic across multiple dimensions:
 
@@ -281,7 +281,7 @@ The system is designed to be agnostic across multiple dimensions:
 - **Weather-agnostic**: Multi-source weather data fusion, confidence scoring, and fallback strategies
 - **Comms-agnostic**: Multi-layer communication stack, store-and-forward capabilities, offline operation
 
-### 3.2 Service-Oriented Architecture
+#### 3.2 Service-Oriented Architecture
 
 The system follows a service-oriented architecture with the following characteristics:
 
@@ -291,7 +291,7 @@ The system follows a service-oriented architecture with the following characteri
 - **Stateless services**: Externalized state for scalability and resilience
 - **Idempotent operations**: Safe retries and exactly-once semantics where needed
 
-### 3.3 Security & Compliance by Design
+#### 3.3 Security & Compliance by Design
 
 Security and compliance are fundamental to the architecture:
 
@@ -301,7 +301,7 @@ Security and compliance are fundamental to the architecture:
 - **Secure by default**: Least privilege, encryption in transit and at rest, secrets management
 - **Verifiable builds**: Reproducible builds, signed artifacts, SBOM generation
 
-## 📊 **4) Data Flow Architecture**
+### 📊 **4) Data Flow Architecture**
 
 The diagram below illustrates the key data flows within the AtlasMesh Fleet OS:
 
@@ -370,7 +370,7 @@ flowchart TD
     RS -->|Routes| VA
 ```
 
-### 4.1 ROS2-Based Edge Architecture
+#### 4.1 ROS2-Based Edge Architecture
 
 ```mermaid
 flowchart TD
@@ -431,7 +431,7 @@ flowchart TD
     StoreForward -.->|Reconnection| SecurityBridge
 ```
 
-### 4.2 Behavior Tree Decision Framework
+#### 4.2 Behavior Tree Decision Framework
 
 ```mermaid
 flowchart TD
@@ -474,11 +474,11 @@ flowchart TD
     VehicleState -->|Feedback| ML
 ```
 
-## 🚀 **5) Deployment Architecture**
+### 🚀 **5) Deployment Architecture**
 
 AtlasMesh Fleet OS supports multiple deployment topologies to accommodate different operational requirements:
 
-### 5.1 Cloud-Based Deployment
+#### 5.1 Cloud-Based Deployment
 
 ```mermaid
 flowchart TD
@@ -517,7 +517,7 @@ flowchart TD
     DA -->|HTTPS| Data
 ```
 
-### 5.2 Hybrid Deployment
+#### 5.2 Hybrid Deployment
 
 ```mermaid
 flowchart TD
@@ -565,7 +565,7 @@ flowchart TD
     EdgeDB <-->|Replication| CloudDB
 ```
 
-### 5.3 Air-Gapped Deployment
+#### 5.3 Air-Gapped Deployment
 
 ```mermaid
 flowchart TD
@@ -612,11 +612,11 @@ flowchart TD
     Import -->|Controlled| DB
 ```
 
-## 🛡️ **6) Failure Domains & Resilience**
+### 🛡️ **6) Failure Domains & Resilience**
 
 AtlasMesh Fleet OS is designed with resilience in mind, with the following failure domains and mitigation strategies:
 
-### 6.1 Communication Failures
+#### 6.1 Communication Failures
 
 | Failure Mode | Impact | Mitigation |
 |--------------|--------|------------|
@@ -624,7 +624,7 @@ AtlasMesh Fleet OS is designed with resilience in mind, with the following failu
 | V2V/V2X disruption | Reduced coordination between vehicles | Independent operation modes; conservative safety parameters |
 | GPS/GNSS denial | Position uncertainty | Multi-modal localization (SLAM, visual, inertial); degraded operation modes |
 
-### 6.2 Service Failures
+#### 6.2 Service Failures
 
 | Failure Mode | Impact | Mitigation |
 |--------------|--------|------------|
@@ -632,7 +632,7 @@ AtlasMesh Fleet OS is designed with resilience in mind, with the following failu
 | Routing Service outage | New routes cannot be calculated | Cached routes used; simplified routing fallbacks |
 | Policy Engine outage | Policy decisions unavailable | Conservative default policies; cached decisions |
 
-### 6.3 Environmental Challenges
+#### 6.3 Environmental Challenges
 
 | Failure Mode | Impact | Mitigation |
 |--------------|--------|------------|
@@ -640,9 +640,9 @@ AtlasMesh Fleet OS is designed with resilience in mind, with the following failu
 | Dust/sand storms | Sensor occlusion | Multi-modal sensing; cleaning systems; confidence-aware fusion |
 | Heavy precipitation | Reduced visibility and traction | Weather-aware routing; speed adaptation; safe harbor protocols |
 
-## 🔗 **7) Key Interfaces & Integration Points**
+### 🔗 **7) Key Interfaces & Integration Points**
 
-### 7.1 External Interfaces
+#### 7.1 External Interfaces
 
 | Interface | Purpose | Protocol | Notes |
 |-----------|---------|----------|-------|
@@ -651,7 +651,7 @@ AtlasMesh Fleet OS is designed with resilience in mind, with the following failu
 | Weather Service | Weather data ingestion | REST/MQTT | Multi-source fusion; confidence scoring |
 | Regulatory Reporting | Compliance documentation | REST/SFTP | Jurisdiction-specific formats |
 
-### 7.2 Internal Interfaces
+#### 7.2 Internal Interfaces
 
 | Interface | Purpose | Protocol | Notes |
 |-----------|---------|----------|-------|
@@ -660,7 +660,7 @@ AtlasMesh Fleet OS is designed with resilience in mind, with the following failu
 | Event Bus | Event distribution | Kafka | Exactly-once; ordered; durable |
 | Policy Evaluation | Rule enforcement | OPA/Rego | Versioned; auditable; testable |
 
-### 7.3 Edge-Cloud Interface
+#### 7.3 Edge-Cloud Interface
 
 ```mermaid
 sequenceDiagram
@@ -696,9 +696,9 @@ sequenceDiagram
     VA->>VA: Safe operational boundaries
 ```
 
-### 7.4 Data Contracts
+#### 7.4 Data Contracts
 
-#### Vehicle Telemetry Contract
+##### Vehicle Telemetry Contract
 
 ```json
 {
@@ -771,7 +771,7 @@ sequenceDiagram
 }
 ```
 
-#### Vehicle Command Contract
+##### Vehicle Command Contract
 
 ```json
 {
@@ -826,29 +826,29 @@ sequenceDiagram
 }
 ```
 
-## 🚀 **8) Phase 2 Advanced Services**
+### 🚀 **8) Phase 2 Advanced Services**
 
 AtlasMesh Fleet OS Phase 2 introduces advanced capabilities for production-scale operations:
 
-### 8.1 Advanced Analytics & ML
+#### 8.1 Advanced Analytics & ML
 - **Predictive Maintenance**: RUL models, feature store integration, work-order automation
 - **Feature Store & Registry**: ML lifecycle management, drift detection, model versioning
 - **Telemetry Lakehouse**: Hot/cold data paths, streaming ETL, cost optimization
 
-### 8.2 Enhanced Security & Compliance
+#### 8.2 Enhanced Security & Compliance
 - **Zero-Trust IAM**: SPIFFE/SPIRE service identity, mTLS enforcement, policy centralization
 - **Key & Secret Management**: Vault/KMS integration, rotation SLAs, envelope encryption
 - **Evidence Engine**: Continuous evidence collection, automated audit bundles
 - **Auditability**: Cryptographically signed decision logs, retention automation
 
-### 8.3 Sector Customization & Multi-Tenancy
+#### 8.3 Sector Customization & Multi-Tenancy
 - **Sector Overlays**: Policy/UI tokens for sector-specific customizations without code forks
 - **Tenant Entitlements**: Token-based entitlement model, multi-tenant isolation
 
-### 8.4 Digital Twin & Simulation
+#### 8.4 Digital Twin & Simulation
 - **Digital Twin & Simulation**: Scenario banks, golden replays, fault injection for robust testing
 
-## 📈 **9) Observability & Monitoring**
+### 📈 **9) Observability & Monitoring**
 
 AtlasMesh Fleet OS implements a comprehensive observability strategy:
 
@@ -859,7 +859,7 @@ AtlasMesh Fleet OS implements a comprehensive observability strategy:
 - **SLOs**: Service Level Objectives with error budgets; SLI monitoring
 - **Unified Observability**: Correlation IDs across all services, SLO dashboards, alert fatigue prevention
 
-## 📡 **10) Eventing Backbone**
+### 📡 **10) Eventing Backbone**
 
 AtlasMesh Fleet OS uses a robust eventing architecture for system-wide communication:
 
@@ -868,7 +868,7 @@ AtlasMesh Fleet OS uses a robust eventing architecture for system-wide communica
 - **Dead Letter Queues**: Comprehensive DLQ patterns for failed message processing
 - **Event Bus Service**: Central event hub with routing, validation, and correlation ID propagation
 
-## 🔒 **11) Security Architecture**
+### 🔒 **11) Security Architecture**
 
 The security architecture follows defense-in-depth principles:
 
@@ -880,7 +880,7 @@ The security architecture follows defense-in-depth principles:
 - **Incident Response**: Detection, containment, eradication, recovery procedures
 - **Zero-Trust**: Service-to-service mTLS, policy centralization, continuous verification
 
-## 📋 **12) Compliance Architecture**
+### 📋 **12) Compliance Architecture**
 
 The compliance architecture ensures regulatory adherence:
 
@@ -890,7 +890,7 @@ The compliance architecture ensures regulatory adherence:
 - **Privacy Controls**: Data minimization; purpose limitation; retention policies
 - **Evidence-as-Code**: Automated audit bundle generation with cryptographic signing
 
-## 🎯 **13) Key Architectural Decisions**
+### 🎯 **13) Key Architectural Decisions**
 
 | ADR ID | Decision | Rationale | Alternatives Considered |
 |--------|----------|-----------|-------------------------|
@@ -907,7 +907,7 @@ The compliance architecture ensures regulatory adherence:
 | ADR-011 | Event Sourcing | Audit trail; temporal queries; resilience | CRUD; synchronous APIs |
 | ADR-012 | Policy as Code | Versioned rules; testable policies; separation of concerns | Hardcoded rules; config files |
 
-## 🗺️ **14) Architecture Evolution & Roadmap**
+### 🗺️ **14) Architecture Evolution & Roadmap**
 
 | Phase | Architectural Focus | Key Deliverables | Status |
 |-------|---------------------|------------------|--------|
@@ -917,7 +917,7 @@ The compliance architecture ensures regulatory adherence:
 | Phase 4 | Operational excellence; resilience | Chaos engineering; degraded modes; on-call runbooks; time sync | 🔄 **NEXT** |
 | Future | Advanced intelligence; self-optimization | ML-driven optimization; predictive operations; autonomous healing | 📋 **PLANNED** |
 
-## 🏛️ **15) Architecture Governance**
+### 🏛️ **15) Architecture Governance**
 
 The architecture governance process ensures quality and alignment:
 
@@ -927,16 +927,16 @@ The architecture governance process ensures quality and alignment:
 - **Technical Debt Management**: Regular assessment; remediation planning
 - **Innovation Pipeline**: Exploration; prototyping; evaluation; integration
 
-## 📚 **16) References & Related Documents**
+### 📚 **16) References & Related Documents**
 
-### Core Technical Documentation
+#### Core Technical Documentation
 - [System Requirements](03_Requirements_FRs_NFRs.md)
 - [Security & Compliance](05_Security_and_Compliance.md)
 - [Operations & Runbooks](06_Operations_and_Runbooks.md)
 - [Data & Analytics Integration](04_Data_and_Analytics_Integration.md)
 - [Architecture Decision Records](../ADR/README.md)
 
-### Qualified Agnosticism Documentation
+#### Qualified Agnosticism Documentation
 - [Qualified Agnosticism Overview](08_Qualified_Agnosticism.md)
 - [Five Constraining Realities](09_Five_Constraining_Realities.md)
 - [Feasibility Scorecard](10_Feasibility_Scorecard.md)
@@ -944,4 +944,5 @@ The architecture governance process ensures quality and alignment:
 - [Cross-Department Checklist](12_Cross_Department_Checklist.md)
 - [Programmatic Proof Points](13_Programmatic_Proof_Points.md)
 - [Architecture Reality Check](14_Architecture_Reality_Check.md)
+
 
