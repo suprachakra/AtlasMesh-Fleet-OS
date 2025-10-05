@@ -314,6 +314,3 @@ npm run test:a11y
 | Arabic text rendering | Verify font loading, check CSS direction properties |
 
 ---
-
-
-**🎯 Owner:** Frontend Platform Team | **📧 Contact:** frontend-team@atlasmesh.com
