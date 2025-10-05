@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📋 Requirements (FRs & NFRs)
+## 📋 Requirements (FRs & NFRs)
 
 **AtlasMesh is a Fleet OS — vendor-neutral, vehicle-agnostic, sector-aware.** This doc is the single source of truth for product requirements (FRs & NFRs).
 
@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 Table of Contents
+### 📋 Table of Contents
 
 <div align="center">
 
@@ -24,9 +24,9 @@
 
 ---
 
-## ✅ **0) Definition of Ready (DoR) & Definition of Done (DoD)**
+### ✅ **0) Definition of Ready (DoR) & Definition of Done (DoD)**
 
-### 📊 **Definition of Ready (DoR) - For Epics/FRs/NFRs**
+#### 📊 **Definition of Ready (DoR) - For Epics/FRs/NFRs**
 
 Before any Epic/FR/NFR enters development, it must meet these criteria:
 
@@ -36,7 +36,7 @@ Before any Epic/FR/NFR enters development, it must meet these criteria:
 |:---:|:---:|:---:|:---:|
 | 5-7 contextual interviews (ops/safety/maintenance) OR | Opportunity Canvas or Problem Statement documented | SLIs/SLAs defined with thresholds | OKR linkage documented (which KRs this moves) |
 | Telemetry analysis (30-day slice) OR | Target user roles & Jobs-To-Be-Done (JTBD) identified | Telemetry events and fields specified | Epic assignment confirmed |
-| Sim/twin scenario impact analysis | Acceptance criteria written (Given/When/Then + negative cases) | Test hooks planned (unit, integration, e2e, sim) | Cross-references to related FRs/NFRs |
+| Sim/twin scenario impact analysis | Acceptance criteria written (Given/<br>When/<br>Then + <br>Negative cases) | Test hooks planned (unit, integration, e2e, sim) | Cross-references to related FRs/NFRs |
 | Policy & compliance review completed | Risks & mitigations documented | Dependencies mapped (FR/NFR, services, partners) | Gate requirements identified (if applicable) |
 
 | 🚀 **Rollout & Safety** | 👥 **Ownership & Priority** |
@@ -48,7 +48,7 @@ Before any Epic/FR/NFR enters development, it must meet these criteria:
 
 </div>
 
-### 📊 **PM CoP Craft Metrics**
+#### 📊 **PM CoP Craft Metrics**
 
 <div align="center">
 
@@ -62,7 +62,7 @@ Before any Epic/FR/NFR enters development, it must meet these criteria:
 
 </div>
 
-### Definition of Done (DoD) - For Releases
+#### Definition of Done (DoD) - For Releases
 
 Before any feature ships to production, it must meet these criteria:
 
@@ -113,78 +113,250 @@ Before any feature ships to production, it must meet these criteria:
 
 ---
 
-## 📝 **1) Conventions & Columns**
+### 📝 **1) Conventions & Columns**
+### 🎯 **Requirements Flow & Relationships**
 
+```mermaid
+graph TB
+    subgraph "Strategic Foundation"
+        OKR[🎯 OKRs<br/>O-1 to O-5]
+        Vision[👁️ Vision<br/>Qualified Agnosticism]
+        Strategy[📋 Strategy<br/>Evidence-First PM]
+    end
+    
+    subgraph "Epic Layer"
+        Epic1[🚙 E1: Vehicle-Agnostic Control]
+        Epic2[📋 E2: Policy & Compliance]
+        Epic3[🎯 E3: Dispatch & Dynamic Ops]
+        Epic4[🎮 E4: Tele-Assist & Control Center]
+        Epic5[🏭 E5: Sector Packs & Marketplace]
+        Epic6[📊 E6: Evidence & Safety Case]
+        Epic7[🛡️ E7: Reliability & Degradation]
+        Epic8[🧪 E8: Data & Digital Twin]
+        Epic9[🔐 E9: Privacy/Security/Zero-Trust]
+        Epic10[📱 E10: Mobile & Edge UX]
+        Epic11[💰 E11: Cost/Carbon & Analytics]
+        Epic12[🌐 E12: Map/Weather/Comms Agnosticism]
+    end
+    
+    subgraph "Requirements Layer"
+        FR[🎯 Functional Requirements<br/>FR-001 to FR-075]
+        NFR[🛡️ Non-Functional Requirements<br/>NFR-P-01 to NFR-Gov-01]
+    end
+    
+    subgraph "Quality Gates"
+        DoR[✅ Definition of Ready<br/>Evidence Pack + Technical Clarity]
+        DoD[✅ Definition of Done<br/>Testing + Rollout + Safety]
+        Gates[🚪 Gate Requirements<br/>Compliance + Performance + Security]
+    end
+    
+    subgraph "Success Metrics"
+        SLI[📊 Service Level Indicators<br/>Performance + Safety + Reliability]
+        SLO[🎯 Service Level Objectives<br/>Error Budgets + Thresholds]
+        PMCoP[📈 PM CoP Craft Metrics<br/>Evidence + Traceability + Outcomes]
+    end
+    
+    subgraph "Testing & Validation"
+        Unit[🧪 Unit Tests<br/>Service Logic]
+        Integration[🔗 Integration Tests<br/>Cross-Service]
+        E2E[🎯 End-to-End Tests<br/>Full Workflows]
+        Conformance[✅ Conformance Tests<br/>Multi-Dimensional Matrix]
+        Simulation[🎮 Simulation Tests<br/>Scenario Validation]
+    end
+    
+    subgraph "Sectors & Platforms"
+        Sectors[🏭 Sectors<br/>Defense + Mining + Logistics + Ride-hail]
+        Vehicles[🚙 Vehicles<br/>Terminal Tractor + Mine Haul + UTV + Passenger]
+        Platforms[☁️ Platforms<br/>Azure EKS + AWS EKS + On-prem K3s]
+    end
+    
+    subgraph "Traceability & Governance"
+        Traceability[🔗 Traceability<br/>OKR → Epic → FR/NFR → Tests → SLIs]
+        Ownership[👥 Ownership<br/>RASCI Matrix]
+        Budget[💰 Variant Budget<br/>≤5% Code Delta + ≤25% Test Delta]
+    end
+    
+    %% Strategic Flow
+    Vision --> OKR
+    Strategy --> OKR
+    OKR --> Epic1
+    OKR --> Epic2
+    OKR --> Epic3
+    OKR --> Epic4
+    OKR --> Epic5
+    OKR --> Epic6
+    OKR --> Epic7
+    OKR --> Epic8
+    OKR --> Epic9
+    OKR --> Epic10
+    OKR --> Epic11
+    OKR --> Epic12
+    
+    %% Epic to Requirements
+    Epic1 --> FR
+    Epic2 --> FR
+    Epic3 --> FR
+    Epic4 --> FR
+    Epic5 --> FR
+    Epic6 --> FR
+    Epic7 --> FR
+    Epic8 --> FR
+    Epic9 --> FR
+    Epic10 --> FR
+    Epic11 --> FR
+    Epic12 --> FR
+    
+    Epic1 --> NFR
+    Epic2 --> NFR
+    Epic3 --> NFR
+    Epic4 --> NFR
+    Epic5 --> NFR
+    Epic6 --> NFR
+    Epic7 --> NFR
+    Epic8 --> NFR
+    Epic9 --> NFR
+    Epic10 --> NFR
+    Epic11 --> NFR
+    Epic12 --> NFR
+    
+    %% Quality Gates
+    FR --> DoR
+    NFR --> DoR
+    DoR --> DoD
+    DoD --> Gates
+    
+    %% Success Metrics
+    FR --> SLI
+    NFR --> SLI
+    SLI --> SLO
+    SLO --> PMCoP
+    
+    %% Testing
+    FR --> Unit
+    FR --> Integration
+    FR --> E2E
+    NFR --> Conformance
+    Epic8 --> Simulation
+    
+    %% Sectors & Platforms
+    Epic1 --> Sectors
+    Epic1 --> Vehicles
+    Epic1 --> Platforms
+    Epic5 --> Sectors
+    Epic12 --> Platforms
+    
+    %% Traceability
+    OKR --> Traceability
+    Epic1 --> Traceability
+    Epic2 --> Traceability
+    Epic3 --> Traceability
+    Epic4 --> Traceability
+    Epic5 --> Traceability
+    Epic6 --> Traceability
+    Epic7 --> Traceability
+    Epic8 --> Traceability
+    Epic9 --> Traceability
+    Epic10 --> Traceability
+    Epic11 --> Traceability
+    Epic12 --> Traceability
+    FR --> Traceability
+    NFR --> Traceability
+    
+    %% Governance
+    Traceability --> Ownership
+    Ownership --> Budget
+    
+    %% Styling
+    classDef strategic fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef epic fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef requirements fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef quality fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef metrics fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef testing fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef sectors fill:#fafafa,stroke:#424242,stroke-width:2px
+    classDef governance fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    
+    class OKR,Vision,Strategy strategic
+    class Epic1,Epic2,Epic3,Epic4,Epic5,Epic6,Epic7,Epic8,Epic9,Epic10,Epic11,Epic12 epic
+    class FR,NFR requirements
+    class DoR,DoD,Gates quality
+    class SLI,SLO,PMCoP metrics
+    class Unit,Integration,E2E,Conformance,Simulation testing
+    class Sectors,Vehicles,Platforms sectors
+    class Traceability,Ownership,Budget governance
+```
+
+---
 **Per-row columns** (FRs and NFRs):
 
-* **ID** · **Description** · **Acceptance Criteria** (Given/When/Then + one negative) · **Risks & Mitigations** · **Telemetry** (event/fields) · **Depts** · **Pri** · **Sector** · **Epic** · **OKR** · **Gate** *(if any)*
+* **ID** · **Description** · **Acceptance Criteria** (Given/<br>When/<br>Then + one <br>Negative) · **Risks & Mitigations** · **Telemetry** (event/fields) · **Depts** · **Pri** · **Sector** · **Epic** · **OKR** · **Gate** *(if any)*
 
 Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-## 🎯 **2) Functional Requirements (FRs)**
+### 🎯 **2) Functional Requirements (FRs)**
 
 > *All rows from v6.0 preserved; refined where noted; now include Epic/OKR and, where relevant, Gate.*
 
-| FR ID      | Description                                       | Acceptance Criteria (Given/When/Then + negative)                                                                                                                      | Risks & Mitigations                                          | Telemetry (events/fields)                                                                                      | Depts          | Pri | Sector             | Epic          | OKR     | Gate |
+| FR ID      | Description                                       | Acceptance Criteria (Given/<br>When/<br>Then + <br>Negative)                                                                                                                      | Risks & Mitigations                                          | Telemetry (events/fields)                                                                                      | Depts          | Pri | Sector             | Epic          | OKR     | Gate |
 | ---------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- | -------------- | :-: | ------------------ | ------------- | ------- | ---- |
-| **FR-001** | Vehicle profile load ≤30s (agnostic HAL)          | Given vehicle connects When operator selects profile Then mass/dimensions/capabilities shown ≤30s; **Neg:** invalid profile → “validation failed: reason” and blocked | Vendor drift → schema-versioned profiles + conformance tests | `vehicle.profile_load_start`, `profile_load_duration_ms`, `profile_validation_result`                          | Edge, BE, QA   |  P0 | CORE               | **E1**        | O-2/O-1 | G-3  |
-| **FR-002** | Unified drive-by-wire API across OEMs             | When `move_to(lat,lon,speed)` sent Then all vehicles execute with ≤10ms API overhead; **Neg:** unsupported capability → typed error + fallback suggestion             | Hidden OEM quirks → adapter shims + golden tests             | `hal.command_sent`, `hal.command_ack_ms`, `hal.error_type`                                                     | Edge, BE, QA   |  P0 | CORE               | **E1**        | O-2/O-1 | G-3  |
-| **FR-003** | ODD compliance gate pre-mission                   | When mission starts Then ODD checker validates constraints; blocks with explicit clause on mismatch                                                                   | False blocks → explainable rules + audited override path     | `mission.odd_check_start`, `odd.validation_result`, `odd.blocked_reason`                                       | BE, UX, Gov    |  P0 | CORE               | **E1/E2**     | O-1/O-4 | —    |
-| **FR-004** | Safe-stop within profile limits                   | When critical fault Then safe stop within decel curve; **Neg:** stop fails → emergency protocol tier-2                                                                | Terrain variance → terrain-aware curves                      | `fault.critical_detected`, `safe_stop.initiated`, `safe_stop.deceleration_ms2`, `emergency_protocol.triggered` | Edge, QA       |  P0 | CORE               | **E1/E7**     | O-1     | —    |
-| **FR-005** | Hot-swap configs in maintenance mode (no reboot)  | Apply ≤30s with validation; **Neg:** incompatible → blocked with diff                                                                                                 | Partial apply → transactional apply + rollback               | `config.swap_initiated`, `config.apply_duration_ms`, `config.validation_result`                                | Edge, BE       |  P1 | CORE               | **E1/E9**     | O-2     | —    |
-| **FR-006** | Trip lifecycle FSM                                | Enforce legal transitions; **Neg:** illegal transition → 409 + rationale                                                                                              | State explosion → single FSM lib + idempotency               | `trip.status_transition{from,to}`, `trip.transition_error`                                                     | BE, FE, QA     |  P0 | CORE               | **E3**        | O-3     | —    |
+| **FR-001** | Vehicle profile load ≤30s (agnostic HAL)          | Given vehicle connects <br>When operator selects profile <br>Then mass/dimensions/capabilities shown ≤30s; **<br>Neg:** invalid profile → “validation failed: reason” and blocked | Vendor drift → schema-versioned profiles + conformance tests | `vehicle.profile_load_start`, `profile_load_duration_ms`, `profile_validation_result`                          | Edge, BE, QA   |  P0 | CORE               | **E1**        | O-2/O-1 | G-3  |
+| **FR-002** | Unified drive-by-wire API across OEMs             | <br>When `move_to(lat,lon,speed)` sent <br>Then all vehicles execute with ≤10ms API overhead; **<br>Neg:** unsupported capability → typed error + fallback suggestion             | Hidden OEM quirks → adapter shims + golden tests             | `hal.command_sent`, `hal.command_ack_ms`, `hal.error_type`                                                     | Edge, BE, QA   |  P0 | CORE               | **E1**        | O-2/O-1 | G-3  |
+| **FR-003** | ODD compliance gate pre-mission                   | <br>When mission starts <br>Then ODD checker validates constraints; blocks with explicit clause on mismatch                                                                   | False blocks → explainable rules + audited override path     | `mission.odd_check_start`, `odd.validation_result`, `odd.blocked_reason`                                       | BE, UX, Gov    |  P0 | CORE               | **E1/E2**     | O-1/O-4 | —    |
+| **FR-004** | Safe-stop within profile limits                   | <br>When critical fault <br>Then safe stop within decel curve; **<br>Neg:** stop fails → emergency protocol tier-2                                                                | Terrain variance → terrain-aware curves                      | `fault.critical_detected`, `safe_stop.initiated`, `safe_stop.deceleration_ms2`, `emergency_protocol.triggered` | Edge, QA       |  P0 | CORE               | **E1/E7**     | O-1     | —    |
+| **FR-005** | Hot-swap configs in maintenance mode (no reboot)  | Apply ≤30s with validation; **<br>Neg:** incompatible → blocked with diff                                                                                                 | Partial apply → transactional apply + rollback               | `config.swap_initiated`, `config.apply_duration_ms`, `config.validation_result`                                | Edge, BE       |  P1 | CORE               | **E1/E9**     | O-2     | —    |
+| **FR-006** | Trip lifecycle FSM                                | Enforce legal transitions; **<br>Neg:** illegal transition → 409 + rationale                                                                                              | State explosion → single FSM lib + idempotency               | `trip.status_transition{from,to}`, `trip.transition_error`                                                     | BE, FE, QA     |  P0 | CORE               | **E3**        | O-3     | —    |
 | **FR-007** | Trip create form (version pins)                   | Save validates all fields; audit entry written                                                                                                                        | Bad defaults → sector templates                              | `trip.create_form_submit`, `form.validation_status`, `trip.audit_entry_id`                                     | FE, BE, UX     |  P0 | CORE               | **E3/E6**     | O-2/O-4 | —    |
-| **FR-008** | Trip types (release, ops, charging, etc.)         | Filterable list per sector; **Neg:** unknown type → reject                                                                                                            | Type creep → central enum + RFC gate                         | `trip.type_selected`, `trip.type_filter_applied`                                                               | PM, BE         |  P0 | CORE               | **E3/E5**     | O-2/O-3 | —    |
-| **FR-009** | Policy engine on routing/dispatch                 | Decision includes policy IDs & rationale; **Neg:** conflict → blocked + alternative                                                                                   | Perf → P99 ≤10ms; in-mem cache                               | `policy.evaluation_start`, `policy.decision_result`, `policy.blocked_reason`                                   | BE, Sec, Gov   |  P0 | CORE               | **E2**        | O-4/O-1 | G-1  |
+| **FR-008** | Trip types (release, ops, charging, etc.)         | Filterable list per sector; **<br>Neg:** unknown type → reject                                                                                                            | Type creep → central enum + RFC gate                         | `trip.type_selected`, `trip.type_filter_applied`                                                               | PM, BE         |  P0 | CORE               | **E3/E5**     | O-2/O-3 | —    |
+| **FR-009** | Policy engine on routing/dispatch                 | Decision includes policy IDs & rationale; **<br>Neg:** conflict → blocked + alternative                                                                                   | Perf → P99 ≤10ms; in-mem cache                               | `policy.evaluation_start`, `policy.decision_result`, `policy.blocked_reason`                                   | BE, Sec, Gov   |  P0 | CORE               | **E2**        | O-4/O-1 | G-1  |
 | **FR-010** | Policy versioning + rollback ≤5m                  | Rollback activates ≤5m; decisions re-evaluated                                                                                                                        | Blast radius → shadow eval + diff report                     | `policy.rollback_initiated`, `policy.rollback_duration_ms`                                                     | BE, SRE        |  P1 | CORE               | **E2**        | O-4     | —    |
-| **FR-011** | Immutable, signed policy audit log                | Each decision signed w/ inputs hash; **Neg:** integrity fail → alert + use replica                                                                                    | Storage growth → tiered retention                            | `audit.policy_decision`, `audit.integrity_status`                                                              | BE, Sec, Data  |  P0 | CORE               | **E2/E6/E10** | O-4     | —    |
-| **FR-012** | Multi-objective routing                           | Returns optimal under weights; **Neg:** infeasible → reasoned fallback                                                                                                | Oscillation → hysteresis/penalties                           | `route.request`, `route.optimization_duration_ms`, `route.fallback_reason`                                     | BE, ML, Maps   |  P0 | CORE,CITY          | **E3/E11**    | O-3     | —    |
-| **FR-013** | Convoy coordination (mixed)                       | Spacing, speed sync, comm loss handling; **Neg:** leader loss → safe regroup                                                                                          | RF loss → V2V mesh + roles                                   | `convoy.created`, `convoy.sync_status`, `convoy.regroup_plan_activated`                                        | Edge, BE       |  P1 | MIN, DEF, LGX      | **E3/E12**    | O-1/O-3 | —    |
-| **FR-014** | **Local** dynamic reroute on closures/weather ≤5s | Triggered by localized event; **Neg:** no safe alt → pause + alert                                                                                                    | Flapping → debounce windows                                  | `route.reroute_triggered`, `reroute.duration_ms`, `route.no_alternative_alert`                                 | BE, Maps, FE   |  P0 | CORE               | **E3/E12**    | O-3/O-1 | —    |
-| **FR-015** | Map source agnostic                               | Selected source loads with QA checks; **Neg:** failed QA → block deploy                                                                                               | Source mismatch → adapters + contracts                       | `map.source_loaded`, `map.qa_status`, `map.deploy_blocked_reason`                                              | Maps, BE       |  P0 | CORE               | **E12**       | O-2     | —    |
+| **FR-011** | Immutable, signed policy audit log                | Each decision signed w/ inputs hash; **<br>Neg:** integrity fail → alert + use replica                                                                                    | Storage growth → tiered retention                            | `audit.policy_decision`, `audit.integrity_status`                                                              | BE, Sec, Data  |  P0 | CORE               | **E2/E6/E10** | O-4     | —    |
+| **FR-012** | Multi-objective routing                           | Returns optimal under weights; **<br>Neg:** infeasible → reasoned fallback                                                                                                | Oscillation → hysteresis/penalties                           | `route.request`, `route.optimization_duration_ms`, `route.fallback_reason`                                     | BE, ML, Maps   |  P0 | CORE,CITY          | **E3/E11**    | O-3     | —    |
+| **FR-013** | Convoy coordination (mixed)                       | Spacing, speed sync, comm loss handling; **<br>Neg:** leader loss → safe regroup                                                                                          | RF loss → V2V mesh + roles                                   | `convoy.created`, `convoy.sync_status`, `convoy.regroup_plan_activated`                                        | Edge, BE       |  P1 | MIN, DEF, LGX      | **E3/E12**    | O-1/O-3 | —    |
+| **FR-014** | **Local** dynamic reroute on closures/weather ≤5s | Triggered by localized event; **<br>Neg:** no safe alt → pause + alert                                                                                                    | Flapping → debounce windows                                  | `route.reroute_triggered`, `reroute.duration_ms`, `route.no_alternative_alert`                                 | BE, Maps, FE   |  P0 | CORE               | **E3/E12**    | O-3/O-1 | —    |
+| **FR-015** | Map source agnostic                               | Selected source loads with QA checks; **<br>Neg:** failed QA → block deploy                                                                                               | Source mismatch → adapters + contracts                       | `map.source_loaded`, `map.qa_status`, `map.deploy_blocked_reason`                                              | Maps, BE       |  P0 | CORE               | **E12**       | O-2     | —    |
 | **FR-016** | Map delta pipeline + QA                           | Weekly/on-demand; coverage ≥99.9%; regressions <0.1% auto-reject                                                                                                      | Stale maps → freshness SLAs                                  | `map.delta_published`, `map.coverage_pct`, `map.regression_count`                                              | Maps, SRE      |  P1 | CORE               | **E12/E3**    | O-2/O-3 | —    |
-| **FR-017** | Weather fusion + confidence                       | Fused nowcast + confidence; **Neg:** low confidence → conservative policy                                                                                             | Bad feed → health scoring/fallbacks                          | `weather.fusion_event`, `weather.confidence_score`, `weather.policy_conservative`                              | BE, Data       |  P1 | CORE               | **E12/E2**    | O-1/O-4 | —    |
-| **FR-018** | Comms agnostic w/ auto-failover ≤2s               | On degradation switch ≤2s; **Neg:** total loss → store-and-forward + degraded mode                                                                                    | Split-brain → lease/epoch tokens                             | `comms.link_degraded`, `comms.failover_duration_ms`, `comms.mode_degraded`                                     | Edge, SRE, Sec |  P0 | CORE               | **E12/E7**    | O-1/O-3 | —    |
-| **FR-019** | Telemetry ingest → Kafka + schema registry        | Validate; DLQ on violation; **Neg:** incompatible schema → reject + notify                                                                                            | Drift → compat tests in CI                                   | `telemetry.ingest_count`, `telemetry.validation_status`, `telemetry.dlq_count`                                 | BE, Data, SRE  |  P0 | CORE               | **E8**        | O-3/O-1 | —    |
-| **FR-020** | Assist workflow with budgets                      | Triage ≤10s; route to operator; **Neg:** SLA breach → escalate + queue ETA                                                                                            | Overload → queuing, caps, overflow sites                     | `assist.request`, `assist.triage_duration_ms`, `assist.operator_assigned`, `assist.queue_position`             | FE, BE, UX     |  P0 | CORE               | **E4**        | O-1/O-5 | —    |
+| **FR-017** | Weather fusion + confidence                       | Fused nowcast + confidence; **<br>Neg:** low confidence → conservative policy                                                                                             | Bad feed → health scoring/fallbacks                          | `weather.fusion_event`, `weather.confidence_score`, `weather.policy_conservative`                              | BE, Data       |  P1 | CORE               | **E12/E2**    | O-1/O-4 | —    |
+| **FR-018** | Comms agnostic w/ auto-failover ≤2s               | On degradation switch ≤2s; **<br>Neg:** total loss → store-and-forward + degraded mode                                                                                    | Split-brain → lease/epoch tokens                             | `comms.link_degraded`, `comms.failover_duration_ms`, `comms.mode_degraded`                                     | Edge, SRE, Sec |  P0 | CORE               | **E12/E7**    | O-1/O-3 | —    |
+| **FR-019** | Telemetry ingest → Kafka + schema registry        | Validate; DLQ on violation; **<br>Neg:** incompatible schema → reject + notify                                                                                            | Drift → compat tests in CI                                   | `telemetry.ingest_count`, `telemetry.validation_status`, `telemetry.dlq_count`                                 | BE, Data, SRE  |  P0 | CORE               | **E8**        | O-3/O-1 | —    |
+| **FR-020** | Assist workflow with budgets                      | Triage ≤10s; route to operator; **<br>Neg:** SLA breach → escalate + queue ETA                                                                                            | Overload → queuing, caps, overflow sites                     | `assist.request`, `assist.triage_duration_ms`, `assist.operator_assigned`, `assist.queue_position`             | FE, BE, UX     |  P0 | CORE               | **E4**        | O-1/O-5 | —    |
 | **FR-021** | Operator console map + vehicle details            | Click → VIN/mode/autonomous hours+km/heartbeat/MPI/events load                                                                                                        | Info overload → progressive disclosure                       | `console.vehicle_click`, `vehicle.details_load_ms`, `vehicle.details_viewed`                                   | FE, UX, BE     |  P0 | CORE               | **E4**        | O-5     | —    |
-| **FR-022** | Vehicle list (filters/search)                     | Combined filters; **Neg:** 0 hits → helpful empty state                                                                                                               | Perf at scale → server paging                                | `vehicle_list.view`, `vehicle_list.filter_applied`, `vehicle_list.search_query`                                | FE, BE         |  P0 | CORE               | **E4**        | O-5     | —    |
+| **FR-022** | Vehicle list (filters/search)                     | Combined filters; **<br>Neg:** 0 hits → helpful empty state                                                                                                               | Perf at scale → server paging                                | `vehicle_list.view`, `vehicle_list.filter_applied`, `vehicle_list.search_query`                                | FE, BE         |  P0 | CORE               | **E4**        | O-5     | —    |
 | **FR-023** | Vehicle events timeline → evidence deep links     | Missing evidence flagged                                                                                                                                              | Privacy → role-based redaction                               | `vehicle_details.timeline_view`, `event.evidence_linked`, `evidence.missing_flag`                              | FE, BE, Sec    |  P1 | CORE               | **E4/E6**     | O-4/O-5 | —    |
 | **FR-024** | Garage PC (flash bays, SBOM attest)               | Hash mismatch → block                                                                                                                                                 | Brick risk → A/B partitions                                  | `garage.status_view`, `firmware.flash_queue`, `sbom.attestation_status`                                        | FE, Edge, Sec  |  P1 | CORE               | **E9/E10**    | O-2/O-4 | —    |
-| **FR-025** | Predictive maintenance (RUL→work orders)          | RUL<thresh → ticket; **Neg:** low confidence → inspection                                                                                                             | Label scarcity → hybrid rules + ML                           | `pdm.rul_threshold_breached`, `pdm.work_order_created`, `pdm.inspection_scheduled`                             | ML, BE, FE     |  P1 | CORE               | **E3/E7**     | O-3     | —    |
-| **FR-026** | Energy/charging optimizer                         | Schedules reduce idle/fees; **Neg:** grid constraint → stagger plan                                                                                                   | Contention → queue sim                                       | `energy.optimization_run`, `charging.idle_reduced_pct`, `charging.fees_reduced_pct`                            | BE, ML         |  P1 | CORE               | **E3/E11**    | O-3     | —    |
+| **FR-025** | Predictive maintenance (RUL→work orders)          | RUL<thresh → ticket; **<br>Neg:** low confidence → inspection                                                                                                             | Label scarcity → hybrid rules + ML                           | `pdm.rul_threshold_breached`, `pdm.work_order_created`, `pdm.inspection_scheduled`                             | ML, BE, FE     |  P1 | CORE               | **E3/E7**     | O-3     | —    |
+| **FR-026** | Energy/charging optimizer                         | Schedules reduce idle/fees; **<br>Neg:** grid constraint → stagger plan                                                                                                   | Contention → queue sim                                       | `energy.optimization_run`, `charging.idle_reduced_pct`, `charging.fees_reduced_pct`                            | BE, ML         |  P1 | CORE               | **E3/E11**    | O-3     | —    |
 | **FR-027** | V2X integration (PKI, misbehavior)                | Signed messages accepted; invalid certs dropped                                                                                                                       | Spoofing → PKI pinning                                       | `v2x.message_received`, `v2x.signature_status`, `v2x.misbehavior_detected`                                     | Edge, Sec      |  P2 | CORE,CITY          | **E12/E10**   | O-1/O-4 | —    |
-| **FR-028** | Secure OTA (signed, staged, rollback)             | Cohorts; **Neg:** health fail → auto rollback                                                                                                                         | Fleet brick → ring rollout                                   | `ota.update_initiated`, `ota.cohort_status`, `ota.rollback_triggered`                                          | Sec, SRE, Edge |  P0 | CORE               | **E9/E10**    | O-2/O-1 | —    |
+| **FR-028** | Secure OTA (signed, staged, rollback)             | Cohorts; **<br>Neg:** health fail → auto rollback                                                                                                                         | Fleet brick → ring rollout                                   | `ota.update_initiated`, `ota.cohort_status`, `ota.rollback_triggered`                                          | Sec, SRE, Edge |  P0 | CORE               | **E9/E10**    | O-2/O-1 | —    |
 | **FR-029** | Evidence bundles per release (100% complete)      | Gap → release blocked with diff                                                                                                                                       | Toil → auto-extraction in CI                                 | `evidence.bundle_generated`, `bundle.completeness_score`, `release.blocked_reason`                             | BE, QA, Gov    |  P0 | CORE               | **E6/E2**     | O-4/O-3 | G-5  |
-| **FR-030** | Multi-tenant isolation (RBAC/ABAC)                | Tenant boundaries enforced; **Neg:** attempted cross-tenant → alert                                                                                                   | Data bleed → policy engine at DB                             | `tenant.access_attempt`, `access.denied_reason`, `security.alert_triggered`                                    | BE, Sec        |  P0 | CORE               | **E10**       | O-4     | —    |
-| **FR-031** | i18n + RTL                                        | Locale switches incl. RTL; **Neg:** missing strings → flagged                                                                                                         | Hard-coded text → lints                                      | `ui.locale_changed`, `ui.rtl_enabled`, `i18n.missing_string_count`                                             | FE, UX         |  P2 | CORE               | **E4/E5**     | O-5     | —    |
+| **FR-030** | Multi-tenant isolation (RBAC/ABAC)                | Tenant boundaries enforced; **<br>Neg:** attempted cross-tenant → alert                                                                                                   | Data bleed → policy engine at DB                             | `tenant.access_attempt`, `access.denied_reason`, `security.alert_triggered`                                    | BE, Sec        |  P0 | CORE               | **E10**       | O-4     | —    |
+| **FR-031** | i18n + RTL                                        | Locale switches incl. RTL; **<br>Neg:** missing strings → flagged                                                                                                         | Hard-coded text → lints                                      | `ui.locale_changed`, `ui.rtl_enabled`, `i18n.missing_string_count`                                             | FE, UX         |  P2 | CORE               | **E4/E5**     | O-5     | —    |
 | **FR-032** | Accessibility WCAG 2.2 AA                         | Audit fail → release blocked                                                                                                                                          | Regressions → axe in CI                                      | `a11y.audit_run`, `a11y.compliance_status`, `release.blocked_reason`                                           | FE, QA         |  P1 | CORE               | **E4**        | O-5     | —    |
-| **FR-033** | Privacy controls (purpose binding, redaction)     | Exports require purpose+approval; **Neg:** PII in raw video export → block                                                                                            | Over-collection → privacy tags                               | `data.export_initiated`, `data.purpose_validated`, `data.pii_redaction_status`                                 | Sec, Data, Gov |  P0 | CORE               | **E10/E6**    | O-4     | —    |
-| **FR-034** | Idempotent APIs (request keys)                    | Retries don’t dupe state; **Neg:** stale retry → 409 idempotency                                                                                                      | Dupes → key TTL                                              | `api.request_received`, `api.idempotency_status`, `api.duplicate_request_count`                                | BE, QA         |  P0 | CORE               | **E7/E9**     | O-3     | —    |
-| **FR-035** | Incident mgmt (alerts→playbooks→status)           | P1 → on-call, playbook runs; **Neg:** missing runbook → block                                                                                                         | Slow MTTR → drills                                           | `incident.alert_triggered`, `incident.playbook_run`, `incident.status_page_updated`                            | SRE, FE        |  P1 | CORE               | **E7**        | O-3     | —    |
-| **FR-036** | Digital twin CI gates                             | PR blocked if KRs dip; **Neg:** flaky sim → quarantine                                                                                                                | Sim drift → scenario miner                                   | `ci.twin_gate_run`, `twin_gate.pass_fail_status`, `twin_gate.scenario_quarantined`                             | ML, QA, SRE    |  P0 | CORE               | **E8**        | O-1/O-3 | G-4  |
-| **FR-037** | Sector overlays (rules/UI presets)                | Selecting sector loads rules/UI; **Neg:** cross-contam → block                                                                                                        | Config sprawl → typed overlays                               | `sector.overlay_selected`, `sector.rules_loaded`                                                               | PM, BE         |  P1 | CORE               | **E5**        | O-2/O-3 | —    |
-| **FR-038** | Marketplace adapters (ERP/WMS/TOS/maps)           | Contract-tested; **Neg:** rate limit → back-off                                                                                                                       | API changes → contract tests                                 | `adapter.connection_status`, `adapter.contract_test_status`                                                    | BE, QA         |  P1 | RH, LGX, CITY, DEF | **E5/E12**    | O-2/O-3 | —    |
-| **FR-039** | Governance dashboard (OKRs, SLOs)                 | Live progress; **Neg:** missing data → red banner                                                                                                                     | Metric rot → owner registry                                  | `gov.dashboard_view`, `okr.progress_updated`, `slo.error_budget_status`                                        | FE, Data       |  P2 | CORE               | **E7/E11**    | O-3/O-5 | —    |
-| **FR-040** | Cost & carbon ledger (trip/vehicle/site)          | Emits cost & CO₂e per trip; **Neg:** input gap → estimated flag                                                                                                       | Greenwashing → provenance                                    | `trip.cost_emitted`, `trip.co2eq_emitted`, `cost.input_gap_flag`                                               | Data, BE       |  P2 | CORE               | **E11**       | O-3     | —    |
-| **FR-041** | **Full** route recalculation ≤30s (≥20% impact)   | Significant change detected → replan ≤30s; **Neg:** timeout → continue + operator prompt                                                                              | Over-triggering → change detector thresholds                 | `route.recalculation_triggered`, `impact_percentage`, `recalculation_duration_ms`                              | BE, Maps       |  P0 | CORE               | **E3/E12**    | O-3/O-1 | —    |
+| **FR-033** | Privacy controls (purpose binding, redaction)     | Exports require purpose+approval; **<br>Neg:** PII in raw video export → block                                                                                            | Over-collection → privacy tags                               | `data.export_initiated`, `data.purpose_validated`, `data.pii_redaction_status`                                 | Sec, Data, Gov |  P0 | CORE               | **E10/E6**    | O-4     | —    |
+| **FR-034** | Idempotent APIs (request keys)                    | Retries don’t dupe state; **<br>Neg:** stale retry → 409 idempotency                                                                                                      | Dupes → key TTL                                              | `api.request_received`, `api.idempotency_status`, `api.duplicate_request_count`                                | BE, QA         |  P0 | CORE               | **E7/E9**     | O-3     | —    |
+| **FR-035** | Incident mgmt (alerts→playbooks→status)           | P1 → on-call, playbook runs; **<br>Neg:** missing runbook → block                                                                                                         | Slow MTTR → drills                                           | `incident.alert_triggered`, `incident.playbook_run`, `incident.status_page_updated`                            | SRE, FE        |  P1 | CORE               | **E7**        | O-3     | —    |
+| **FR-036** | Digital twin CI gates                             | PR blocked if KRs dip; **<br>Neg:** flaky sim → quarantine                                                                                                                | Sim drift → scenario miner                                   | `ci.twin_gate_run`, `twin_gate.pass_fail_status`, `twin_gate.scenario_quarantined`                             | ML, QA, SRE    |  P0 | CORE               | **E8**        | O-1/O-3 | G-4  |
+| **FR-037** | Sector overlays (rules/UI presets)                | Selecting sector loads rules/UI; **<br>Neg:** cross-contam → block                                                                                                        | Config sprawl → typed overlays                               | `sector.overlay_selected`, `sector.rules_loaded`                                                               | PM, BE         |  P1 | CORE               | **E5**        | O-2/O-3 | —    |
+| **FR-038** | Marketplace adapters (ERP/WMS/TOS/maps)           | Contract-tested; **<br>Neg:** rate limit → back-off                                                                                                                       | API changes → contract tests                                 | `adapter.connection_status`, `adapter.contract_test_status`                                                    | BE, QA         |  P1 | RH, LGX, CITY, DEF | **E5/E12**    | O-2/O-3 | —    |
+| **FR-039** | Governance dashboard (OKRs, SLOs)                 | Live progress; **<br>Neg:** missing data → red banner                                                                                                                     | Metric rot → owner registry                                  | `gov.dashboard_view`, `okr.progress_updated`, `slo.error_budget_status`                                        | FE, Data       |  P2 | CORE               | **E7/E11**    | O-3/O-5 | —    |
+| **FR-040** | Cost & carbon ledger (trip/vehicle/site)          | Emits cost & CO₂e per trip; **<br>Neg:** input gap → estimated flag                                                                                                       | Greenwashing → provenance                                    | `trip.cost_emitted`, `trip.co2eq_emitted`, `cost.input_gap_flag`                                               | Data, BE       |  P2 | CORE               | **E11**       | O-3     | —    |
+| **FR-041** | **Full** route recalculation ≤30s (≥20% impact)   | Significant change detected → replan ≤30s; **<br>Neg:** timeout → continue + operator prompt                                                                              | Over-triggering → change detector thresholds                 | `route.recalculation_triggered`, `impact_percentage`, `recalculation_duration_ms`                              | BE, Maps       |  P0 | CORE               | **E3/E12**    | O-3/O-1 | —    |
 | **FR-042** | Heartbeats & MPI thresholds                       | Missed heartbeat ≥N → page; adaptive thresholds                                                                                                                       | Noise → dynamic thresholds                                   | `vehicle.heartbeat_received`, `vehicle.mpi_status`, `alert.heartbeat_missed`                                   | Edge, SRE      |  P0 | CORE               | **E7**        | O-3/O-1 | —    |
-| **FR-043** | Degraded modes (network/sensor)                   | Apply caps, store-and-forward; **Neg:** mis-entry → alert                                                                                                             | UX clarity → banners                                         | `system.degraded_mode_activated`, `degraded_mode.type`                                                         | Edge, FE       |  P0 | CORE               | **E7/E12**    | O-1/O-3 | —    |
-| **FR-044** | Sandbox/demo seed                                 | Local stack runs; **Neg:** missing assets → docs link                                                                                                                 | Onboarding friction → prebuilt                               | `sandbox.setup_initiated`, `sandbox.seed_status`                                                               | DevEx, PM      |  P3 | CORE               | **E8/E9**     | O-2/O-5 | —    |
-| **FR-045** | Auto release notes                                | Human-readable per tenant; **Neg:** mapping gap → CI fail                                                                                                             | Silent changes → CI gate                                     | `release.notes_generated`, `ci.release_notes_status`                                                           | BE, PM         |  P2 | CORE               | **E9**        | O-2     | —    |
-| **FR-046** | Right-sized logging (PII-safe)                    | Debug logs scrubbed; **Neg:** PII detected → drop + alert                                                                                                             | PII leak → scanners                                          | `log.event_emitted`, `log.pii_scrubbed`, `security.pii_alert`                                                  | Sec, SRE       |  P0 | CORE               | **E10/E6**    | O-4     | —    |
-| **FR-047** | SLA reporting                                     | Monthly PDF/JSON per tenant; **Neg:** metric missing → marked                                                                                                         | Disputes → signed reports                                    | `sla.report_generated`, `sla.metric_status`, `sla.dispute_flag`                                                | BE, Data       |  P2 | CORE               | **E6/E11**    | O-3/O-4 | —    |
-| **FR-048** | Operator workload guardrails                      | Hard limits + rotations; **Neg:** over-allocation → auto-shed                                                                                                         | Human error → scheduling                                     | `operator.workload_status`, `operator.assist_count`, `operator.fatigue_alert`                                  | FE, PM         |  P2 | CORE               | **E4**        | O-5/O-1 | —    |
-| **FR-049** | Training mode (sim/live, watermark)               | Safe training; **Neg:** wrong mode → block risky actions                                                                                                              | Unsafe actions → strong affordances                          | `training.mode_activated`, `training.watermark_status`                                                         | FE, UX         |  P3 | CORE               | **E4/E8**     | O-5     | —    |
-| **FR-050** | Data retention policies                           | Auto purge per class; **Neg:** early delete → legal hold                                                                                                              | Over-retention → DPO review                                  | `data.retention_policy_applied`, `data.purge_event`, `data.legal_hold_status`                                  | Data, Sec, Gov |  P1 | CORE               | **E10/E6**    | O-4     | —    |
+| **FR-043** | Degraded modes (network/sensor)                   | Apply caps, store-and-forward; **<br>Neg:** mis-entry → alert                                                                                                             | UX clarity → banners                                         | `system.degraded_mode_activated`, `degraded_mode.type`                                                         | Edge, FE       |  P0 | CORE               | **E7/E12**    | O-1/O-3 | —    |
+| **FR-044** | Sandbox/demo seed                                 | Local stack runs; **<br>Neg:** missing assets → docs link                                                                                                                 | Onboarding friction → prebuilt                               | `sandbox.setup_initiated`, `sandbox.seed_status`                                                               | DevEx, PM      |  P3 | CORE               | **E8/E9**     | O-2/O-5 | —    |
+| **FR-045** | Auto release notes                                | Human-readable per tenant; **<br>Neg:** mapping gap → CI fail                                                                                                             | Silent changes → CI gate                                     | `release.notes_generated`, `ci.release_notes_status`                                                           | BE, PM         |  P2 | CORE               | **E9**        | O-2     | —    |
+| **FR-046** | Right-sized logging (PII-safe)                    | Debug logs scrubbed; **<br>Neg:** PII detected → drop + alert                                                                                                             | PII leak → scanners                                          | `log.event_emitted`, `log.pii_scrubbed`, `security.pii_alert`                                                  | Sec, SRE       |  P0 | CORE               | **E10/E6**    | O-4     | —    |
+| **FR-047** | SLA reporting                                     | Monthly PDF/JSON per tenant; **<br>Neg:** metric missing → marked                                                                                                         | Disputes → signed reports                                    | `sla.report_generated`, `sla.metric_status`, `sla.dispute_flag`                                                | BE, Data       |  P2 | CORE               | **E6/E11**    | O-3/O-4 | —    |
+| **FR-048** | Operator workload guardrails                      | Hard limits + rotations; **<br>Neg:** over-allocation → auto-shed                                                                                                         | Human error → scheduling                                     | `operator.workload_status`, `operator.assist_count`, `operator.fatigue_alert`                                  | FE, PM         |  P2 | CORE               | **E4**        | O-5/O-1 | —    |
+| **FR-049** | Training mode (sim/live, watermark)               | Safe training; **<br>Neg:** wrong mode → block risky actions                                                                                                              | Unsafe actions → strong affordances                          | `training.mode_activated`, `training.watermark_status`                                                         | FE, UX         |  P3 | CORE               | **E4/E8**     | O-5     | —    |
+| **FR-050** | Data retention policies                           | Auto purge per class; **<br>Neg:** early delete → legal hold                                                                                                              | Over-retention → DPO review                                  | `data.retention_policy_applied`, `data.purge_event`, `data.legal_hold_status`                                  | Data, Sec, Gov |  P1 | CORE               | **E10/E6**    | O-4     | —    |
 | **FR-051** | OEM/Operator connector framework                  | Health-check 100% contract tests                                                                                                                                      | API variance → per-brand adapters                            | `connector.health`, `oem_brand`                                                                                | BE, QA         |  P0 | CORE               | **E1/E5**     | O-2     | G-3  |
-| **FR-060** | Vehicle HAL profile-driven abstraction            | Given vehicle profile When motion command issued Then executed within profile constraints (≤5% code delta); **Neg:** profile missing → reject with error              | Profile drift → automated validation + CI gates              | `hal.profile_loaded`, `hal.constraint_validated`, `hal.code_delta_pct`                                         | Edge, BE, QA   |  P0 | CORE               | **E1**        | O-2/O-1 | G-6  |
-| **FR-061** | Variant budget enforcement (≤5% code delta)       | When code committed Then delta analyzed; hard limit breach → build blocked + CCB trigger; **Neg:** CCB approval → exception logged                                   | Budget creep → automated CI enforcement + trend alerts       | `budget.delta_analyzed`, `budget.violation_detected`, `ccb.exception_requested`                                 | BE, SRE, QA    |  P0 | CORE               | **E1/E2/E3**  | O-2     | G-6  |
-| **FR-062** | Conformance testing (vehicle×sector×platform)     | Given test matrix When executed Then ≥95% critical paths pass; evidence bundle auto-generated; **Neg:** conformance fail → deployment blocked                         | Matrix explosion → priority-based sampling + parallel exec   | `conformance.test_executed`, `conformance.pass_rate_pct`, `evidence.bundle_generated`                          | QA, BE, SRE    |  P0 | CORE               | **E1/E2/E3**  | O-2/O-4 | G-6  |
-| **FR-063** | Sensor pack modularity (Rugged/Urban/Highway)     | Given sensor pack When swapped Then perception KPIs at target (≤30min swap); **Neg:** pack incompatible → reject with compatible alternatives                         | Sensor drift → online monitoring + recalibration automation  | `sensor_pack.loaded`, `sensor_pack.swap_duration_ms`, `perception.kpi_status`                                  | Edge, ML, QA   |  P1 | CORE               | **E1/E8**     | O-2/O-3 | —    |
-| **FR-064** | Platform adapter conformance (storage/messaging)  | Given platform adapter When deployed Then 100% S3/Kafka API compatibility + performance parity ≥95%; **Neg:** incompatibility → fail with details                     | Platform-specific features → contract-driven abstraction     | `adapter.deployed`, `adapter.conformance_pct`, `adapter.performance_parity_pct`                                 | BE, SRE, QA    |  P0 | CORE               | **E3**        | O-2     | G-6  |
+| **FR-060** | Vehicle HAL profile-driven abstraction            | Given vehicle profile <br>When motion command issued <br>Then executed within profile constraints (≤5% code delta); **<br>Neg:** profile missing → reject with error              | Profile drift → automated validation + CI gates              | `hal.profile_loaded`, `hal.constraint_validated`, `hal.code_delta_pct`                                         | Edge, BE, QA   |  P0 | CORE               | **E1**        | O-2/O-1 | G-6  |
+| **FR-061** | Variant budget enforcement (≤5% code delta)       | <br>When code committed <br>Then delta analyzed; hard limit breach → build blocked + CCB trigger; **<br>Neg:** CCB approval → exception logged                                   | Budget creep → automated CI enforcement + trend alerts       | `budget.delta_analyzed`, `budget.violation_detected`, `ccb.exception_requested`                                 | BE, SRE, QA    |  P0 | CORE               | **E1/E2/E3**  | O-2     | G-6  |
+| **FR-062** | Conformance testing (vehicle×sector×platform)     | Given test matrix <br>When executed <br>Then ≥95% critical paths pass; evidence bundle auto-generated; **<br>Neg:** conformance fail → deployment blocked                         | Matrix explosion → priority-based sampling + parallel exec   | `conformance.test_executed`, `conformance.pass_rate_pct`, `evidence.bundle_generated`                          | QA, BE, SRE    |  P0 | CORE               | **E1/E2/E3**  | O-2/O-4 | G-6  |
+| **FR-063** | Sensor pack modularity (Rugged/Urban/Highway)     | Given sensor pack <br>When swapped <br>Then perception KPIs at target (≤30min swap); **<br>Neg:** pack incompatible → reject with compatible alternatives                         | Sensor drift → online monitoring + recalibration automation  | `sensor_pack.loaded`, `sensor_pack.swap_duration_ms`, `perception.kpi_status`                                  | Edge, ML, QA   |  P1 | CORE               | **E1/E8**     | O-2/O-3 | —    |
+| **FR-064** | Platform adapter conformance (storage/messaging)  | Given platform adapter <br>When deployed <br>Then 100% S3/Kafka API compatibility + performance parity ≥95%; **<br>Neg:** incompatibility → fail with details                     | Platform-specific features → contract-driven abstraction     | `adapter.deployed`, `adapter.conformance_pct`, `adapter.performance_parity_pct`                                 | BE, SRE, QA    |  P0 | CORE               | **E3**        | O-2     | G-6  |
 | **FR-052** | Brand-segmented zero-trust                        | Cross-brand access denied + page                                                                                                                                      | Lateral movement → micro-seg                                 | `brand_boundary_violation`                                                                                     | Sec, SRE       |  P0 | CORE               | **E10**       | O-4     | —    |
 | **FR-053** | Multi-tier dispatch & zones                       | Match returns auditable tier+zone; surge caps enforced                                                                                                                | Fairness → constraints                                       | `dispatch.tier`, `pricing.multiplier`                                                                          | BE, Data       |  P0 | RH, MT, CITY, LGX  | **E3/E5**     | O-3     | —    |
 | **FR-054** | Pricing, payments & reconciliation                | Settle ±0.01; dispute flow                                                                                                                                            | Payment failures → retries                                   | `invoice.issued`, `recon.delta`                                                                                | BE, FinOps     |  P0 | RH, LGX, MT        | **E5/E11**    | O-3     | —    |
@@ -199,20 +371,20 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 | **FR-063** | ROS2/VDA5050/ISO 23725 interop                    | Version matrix 100% green                                                                                                                                             | Version skew → pinning                                       | `interop.matrix_result`                                                                                        | BE, QA         |  P0 | CORE, LGX, MIN     | **E1/E5/E12** | O-2/O-3 | —    |
 | **FR-064** | Data residency & sovereignty                      | PII region-locked; cross-border needs waiver                                                                                                                          | Misconfig → policy checks                                    | `data.residency_assertion`                                                                                     | Sec, Data, Gov |  P0 | CORE               | **E10/E2**    | O-4     | —    |
 | **FR-065** | High-rate telemetry ≤200ms (P95)                  | Degraded state marked                                                                                                                                                 | Bandwidth → adaptive throttling                              | `telemetry.interval_ms`, `telemetry.degraded_flag`                                                             | Edge, Data     |  P0 | CORE               | **E8/E12**    | O-1/O-3 | —    |
-| **FR-066** | Legal/Export Control Gating (ITAR/EAR)            | **Given** tenant with export restrictions **When** enabling defense pack **Then** system verifies export license + geo/role policy and enables only compliant modules; **Negative:** mismatch → enable blocked with `export_violation: rule_id`. | Risk: misclassification; **Mit:** policy source of truth + external compliance sync, human override with audit. | `legal.export_check_start`, `legal.export_check_result`, `export_rule_id`, `export_override_used`     | Gov, Sec, BE         | P0  | DEF           |
-| **FR-067** | PCI-scoped Payments Isolation                     | **Given** payment flow **When** processing card data **Then** traffic stays inside PCI zone/services; **Negative:** attempt from non-PCI service → blocked + alert.                                                                              | Risk: scope creep; **Mit:** network segmentation + tokenization + DLP scans in CI/CD.                           | `pci.tx_started`, `pci.scope_boundary_violation`, `tokenization.success`                              | FinOps, Sec, BE, SRE | P0  | RH, LGX, MT   |
-| **FR-068** | Support Console & Case Lifecycle      | **Given** P1 incident **When** created **Then** case auto-links to services, runbooks, and live metrics; SLA clock starts; **Negative:** missing runbook → case blocked with owner page.                                                         | Risk: tool sprawl; **Mit:** single source for runbooks, ownership metadata required.                            | `support.case_created`, `support.runbook_linked`, `support.sla_clock_start`, `support.blocked_reason` | SRE, FE, BE          | P1  | CORE          |
-| **FR-069** | Runbook Execution & Evidence          | **Given** on-call opens runbook **When** steps executed **Then** actions recorded, guardrails enforce destructive steps with approvals; **Negative:** step skipped in P0 → require justification.                                                | Risk: human error; **Mit:** checklists + preflight validators + dry-runs.                                       | `runbook.step_executed`, `runbook.approval_granted`, `runbook.deviation_note`                         | SRE, Sec, FE         | P1  | CORE          |
-| **FR-070** | Vendor Risk & SBOM Intake             | **Given** new adapter/vendor lib **When** onboarding **Then** SBOM + CVE diff + license scan required; **Negative:** critical CVE open → block deploy.                                                                                           | Risk: hidden transitive deps; **Mit:** SBOM attestation & recurring scans.                                      | `vendor.onboard_started`, `sbom.submitted`, `cve.diff_count`, `deploy.blocked_reason`                 | Sec, BE, QA          | P1  | CORE          |
-| **FR-071** | Sector Training & Certification       | **Given** operator in mining **When** requesting live controls **Then** system verifies MSHA/sector modules passed in last 12 months; **Negative:** expired → training mode only.                                                                | Risk: stale records; **Mit:** LMS sync, grace windows, audit.                                                   | `training.cert_verified`, `training.mode_forced`, `cert.expiry_days`                                  | UX, PM, Gov          | P1  | MIN, LGX, RH  |
-| **FR-072** | OpenAPI/SDK Conformance Gate          | **Given** a PR **When** CI runs **Then** SDK conformance tests (Python/JS) must pass 100%; **Negative:** breaking change without deprecation → fail.                                                                                             | Risk: hidden breaking changes; **Mit:** golden recordings & canary SDKs.                                        | `sdk.conformance_pass_pct`, `api.breaking_change_detected`, `ci.block_reason`                         | BE, QA, DevEx        | P0  | CORE          |
-| **FR-073** | Capacity & Cost Budgets               | **Given** service deploy **When** canary runs **Then** projected cost ≤ budget (e.g., $/veh-month) and CPU/RAM within perf budget; **Negative:** over-budget → auto rollback.                                                                    | Risk: cost drift; **Mit:** per-tenant budgets, FinOps dashboards, alerts.                                       | `finops.cost_forecast_usd`, `perf.cpu_budget_pct`, `deploy.auto_rollback_reason`                      | SRE, FinOps, BE      | P1  | CORE          |
-| **FR-074** | SKU/Tier Entitlements & Migration     | **Given** tenant tier change **When** applying **Then** entitlements enforced atomically across services; **Negative:** partial apply → auto-revert and support case.                                                                            | Risk: split-brain entitlements; **Mit:** central entitlement service + 2PC.                                     | `entitlement.apply_start`, `entitlement.apply_status`, `entitlement.reverted`                         | PM, BE, SRE          | P1  | CORE          |
-| **FR-075** | Biometric & Sensitive Data Controls   | **Given** biometric access or passenger video **When** exporting **Then** purpose binding + redaction mandatory with approval chain; **Negative:** raw export without purpose → blocked.                                                         | Risk: privacy breach; **Mit:** data classes, PII detectors in pipelines.                                        | `data.export_request`, `purpose.binding_id`, `redaction.status`, `privacy.blocked_reason`             | Sec, Data, Gov       | P0  | RH, DEF, CORE |
+| **FR-066** | Legal/Export Control Gating (ITAR/EAR)            | **Given** tenant with export restrictions **<br>When** enabling defense pack **<br>Then** system verifies export license + geo/role policy and enables only compliant modules; **<br>Negative:** mismatch → enable blocked with `export_violation: rule_id`. | Risk: misclassification; **Mit:** policy source of truth + external compliance sync, human override with audit. | `legal.export_check_start`, `legal.export_check_result`, `export_rule_id`, `export_override_used`     | Gov, Sec, BE         | P0  | DEF           |
+| **FR-067** | PCI-scoped Payments Isolation                     | **Given** payment flow **<br>When** processing card data **<br>Then** traffic stays inside PCI zone/services; **<br>Negative:** attempt from non-PCI service → blocked + alert.                                                                              | Risk: scope creep; **Mit:** network segmentation + tokenization + DLP scans in CI/CD.                           | `pci.tx_started`, `pci.scope_boundary_violation`, `tokenization.success`                              | FinOps, Sec, BE, SRE | P0  | RH, LGX, MT   |
+| **FR-068** | Support Console & Case Lifecycle      | **Given** P1 incident **<br>When** created **<br>Then** case auto-links to services, runbooks, and live metrics; SLA clock starts; **<br>Negative:** missing runbook → case blocked with owner page.                                                         | Risk: tool sprawl; **Mit:** single source for runbooks, ownership metadata required.                            | `support.case_created`, `support.runbook_linked`, `support.sla_clock_start`, `support.blocked_reason` | SRE, FE, BE          | P1  | CORE          |
+| **FR-069** | Runbook Execution & Evidence          | **Given** on-call opens runbook **<br>When** steps executed **<br>Then** actions recorded, guardrails enforce destructive steps with approvals; **<br>Negative:** step skipped in P0 → require justification.                                                | Risk: human error; **Mit:** checklists + preflight validators + dry-runs.                                       | `runbook.step_executed`, `runbook.approval_granted`, `runbook.deviation_note`                         | SRE, Sec, FE         | P1  | CORE          |
+| **FR-070** | Vendor Risk & SBOM Intake             | **Given** new adapter/vendor lib **<br>When** onboarding **<br>Then** SBOM + CVE diff + license scan required; **<br>Negative:** critical CVE open → block deploy.                                                                                           | Risk: hidden transitive deps; **Mit:** SBOM attestation & recurring scans.                                      | `vendor.onboard_started`, `sbom.submitted`, `cve.diff_count`, `deploy.blocked_reason`                 | Sec, BE, QA          | P1  | CORE          |
+| **FR-071** | Sector Training & Certification       | **Given** operator in mining **<br>When** requesting live controls **<br>Then** system verifies MSHA/sector modules passed in last 12 months; **<br>Negative:** expired → training mode only.                                                                | Risk: stale records; **Mit:** LMS sync, grace windows, audit.                                                   | `training.cert_verified`, `training.mode_forced`, `cert.expiry_days`                                  | UX, PM, Gov          | P1  | MIN, LGX, RH  |
+| **FR-072** | OpenAPI/SDK Conformance Gate          | **Given** a PR **<br>When** CI runs **<br>Then** SDK conformance tests (Python/JS) must pass 100%; **<br>Negative:** breaking change without deprecation → fail.                                                                                             | Risk: hidden breaking changes; **Mit:** golden recordings & canary SDKs.                                        | `sdk.conformance_pass_pct`, `api.breaking_change_detected`, `ci.block_reason`                         | BE, QA, DevEx        | P0  | CORE          |
+| **FR-073** | Capacity & Cost Budgets               | **Given** service deploy **<br>When** canary runs **<br>Then** projected cost ≤ budget (e.g., $/veh-month) and CPU/RAM within perf budget; **<br>Negative:** over-budget → auto rollback.                                                                    | Risk: cost drift; **Mit:** per-tenant budgets, FinOps dashboards, alerts.                                       | `finops.cost_forecast_usd`, `perf.cpu_budget_pct`, `deploy.auto_rollback_reason`                      | SRE, FinOps, BE      | P1  | CORE          |
+| **FR-074** | SKU/Tier Entitlements & Migration     | **Given** tenant tier change **<br>When** applying **<br>Then** entitlements enforced atomically across services; **<br>Negative:** partial apply → auto-revert and support case.                                                                            | Risk: split-brain entitlements; **Mit:** central entitlement service + 2PC.                                     | `entitlement.apply_start`, `entitlement.apply_status`, `entitlement.reverted`                         | PM, BE, SRE          | P1  | CORE          |
+| **FR-075** | Biometric & Sensitive Data Controls   | **Given** biometric access or passenger video **<br>When** exporting **<br>Then** purpose binding + redaction mandatory with approval chain; **<br>Negative:** raw export without purpose → blocked.                                                         | Risk: privacy breach; **Mit:** data classes, PII detectors in pipelines.                                        | `data.export_request`, `purpose.binding_id`, `redaction.status`, `privacy.blocked_reason`             | Sec, Data, Gov       | P0  | RH, DEF, CORE |
 
 ---
 
-## 🛡️ **3) Non-Functional Requirements (NFRs)**
+### 🛡️ **3) Non-Functional Requirements (NFRs)**
 
 | NFR ID          | Attribute (Metric)                 | Requirement / Target                             | SLI/Measurement                                          | Alert Policy / Error Budget           | Risk & Fallback                   | Owner       | Pri | Sector | Epic          | OKR     |
 | --------------- | ---------------------------------- | ------------------------------------------------ | -------------------------------------------------------- | ------------------------------------- | --------------------------------- | ----------- | :-: | ------ | ------------- | ------- |
@@ -271,9 +443,9 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-## 🚀 **8) Execution & Readiness Control Plane**
+### 🚀 **8) Execution & Readiness Control Plane**
 
-### 8.1 Dependencies & Auto-Resolution
+#### 8.1 Dependencies & Auto-Resolution
 
 | Feature/Req                         | Auto-Requires                                         | Notes                                        |
 | ----------------------------------- | ----------------------------------------------------- | -------------------------------------------- |
@@ -288,7 +460,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.2 Rollout Gates (Go/No-Go)
+#### 8.2 Rollout Gates (Go/No-Go)
 
 | Gate ID             | Criterion (blocking)                             | Unlocks                                  |
 | ------------------- | ------------------------------------------------ | ---------------------------------------- |
@@ -299,7 +471,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.3 Traceability (OKR → Epic → FR/NFR)
+#### 8.3 Traceability (OKR → Epic → FR/NFR)
 
 * **Safety (O-1):** E1/E3/E4/E7/E10 → FR-003/004/020/041/042/043/060/065; NFR-S-01/02/03, NFR-P-01, NFR-Port-03
 * **Time-to-Value (O-2):** E1/E5/E9/E12 → FR-001/002/015/051/063/028; NFR-Port-01/02/03, NFR-M-02
@@ -309,22 +481,22 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.4 CI / Test / Evidence Hooks
+#### 8.4 CI / Test / Evidence Hooks
 
-* **For every FR:** BDD spec (Given/When/Then), sim or integration test, **telemetry probe** proving SLI emission.
+* **For every FR:** BDD spec (Given/<br>When/<br>Then), sim or integration test, **telemetry probe** proving SLI emission.
 * **For every NFR:** Load/latency test generating the SLI; **auto-attach evidence** into the release bundle (**FR-029**, **NFR-Comp-01**).
 * **Hard gates (always blocking):** Accessibility (**FR-032**), Policy P99 (**NFR-P-02**), OTA integrity (**NFR-Sec-03**), Audit integrity (**NFR-Comp-02**).
 
 ---
 
-### 8.5 DoR / DoD (per FR & NFR)
+#### 8.5 DoR / DoD (per FR & NFR)
 
 * **DoR:** BDD present · telemetry fields defined · owner & epic tagged · risk/mitigation captured · dependency list filled.
 * **DoD:** CI green (FR+NFR tests) · SLI on dashboards · evidence artifacts attached · docs updated · runbooks updated if ops-impacting.
 
 ---
 
-### 8.6 Supportability SLOs & Ops Maturity
+#### 8.6 Supportability SLOs & Ops Maturity
 
 * **TTD/TTF/MTTR dashboards** per service; drill-through to cases & runbooks (ties to **NFR-Op-04/05/06**).
 * **On-call health:** alert noise ≤ **2%** false positives/mo (**NFR-Ob-02**).
@@ -332,7 +504,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.7 Compliance & Certifications (Blocking)
+#### 8.7 Compliance & Certifications (Blocking)
 
 | Program               | Acceptance Criteria                                                                      | Blocking Artifacts                                                                        |
 | --------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -341,11 +513,11 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 | **PCI DSS**           | Segmentation; tokenization; quarterly ASV scans; SAQ D/ROC as applicable                 | `pci_scope_diagram.vsdx`, `asv_scan_reports.zip`, `tokenization_attest.json`              |
 | **Export (ITAR/EAR)** | Tenant/geo classification; role policy; deployment gate                                  | `export_policy.json`, `tenant_classification.csv`, `export_gate_logs.jsonl`               |
 
-> **Policy:** Releases **block** on missing/failed artifacts when in scope.
+> **Policy:** Releases **block** on missing/failed artifacts <br>When in scope.
 
 ---
 
-### 8.8 Data Governance Enhancements
+#### 8.8 Data Governance Enhancements
 
 * **Biometrics = Sensitive:** exports require **purpose binding** + **dual approval** (**FR-075**, **NFR-Gov-01**, **NFR-Priv-01**).
 * **Regional regimes:** CCPA/LGPD selectors in residency engine; tenant policy manifests in code.
@@ -353,14 +525,14 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.9 Interoperability & Developer Experience
+#### 8.9 Interoperability & Developer Experience
 
 * **OpenAPI/SDK conformance** (ties to **NFR-DX-01**): blocking CI with golden recordings; 6-month deprecation; 2 major versions supported.
 * **Interop matrices** (ROS2/VDA5050/ISO 23725): remain **hard blockers** (**FR-063**, **NFR-I-04**).
 
 ---
 
-### 8.10 Commercial Readiness
+#### 8.10 Commercial Readiness
 
 * **Entitlements** (**FR-074**): server-side checks; config drift auto-heal every 5 min.
 * **Migrations:** atomic tier changes with back-out; customer-visible change log auto-generated (**FR-045**).
@@ -368,7 +540,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.11 RACI (baseline)
+#### 8.11 RACI (baseline)
 
 | Area                  | R            | A          | C              | I           |
 | --------------------- | ------------ | ---------- | -------------- | ----------- |
@@ -383,10 +555,11 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8.12 Open Risks & Follow-ups
+#### 8.12 Open Risks & Follow-ups
 
 * **Cost budgets** require X values per env/scale → **Owner:** FinOps.
 * **Export policy** SoT integration with Legal’s system → **Owner:** Gov Lead.
 * **LMS integration** for sector certifications across customers → **Owner:** UX/PM.
 
 ---
+
