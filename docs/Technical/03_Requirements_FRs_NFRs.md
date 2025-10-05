@@ -1,65 +1,68 @@
-## Requirements_FRs_NFRs.md
+<div align="center">
 
-**Positioning:** *AtlasMesh is a Fleet OS — vendor-neutral, vehicle-agnostic, sector-aware. This doc is the single source of truth for product requirements (FRs & NFRs).*
+# 📋 Requirements (FRs & NFRs)
+
+**AtlasMesh is a Fleet OS — vendor-neutral, vehicle-agnostic, sector-aware.** This doc is the single source of truth for product requirements (FRs & NFRs).
+
+</div>
 
 ---
 
-### 0) Definition of Ready (DoR) & Definition of Done (DoD)
+## 📋 Table of Contents
 
-#### Definition of Ready (DoR) - For Epics/FRs/NFRs
+<div align="center">
+
+| ✅ **[Definition of Ready/Done](#0-definition-of-ready-dor--definition-of-done-dod)** | 🎯 **[Functional Requirements](#1-functional-requirements-frs)** | 🛡️ **[Non-Functional Requirements](#2-non-functional-requirements-nfrs)** | 📊 **[Success Metrics](#3-success-metrics--slis)** |
+|:---:|:---:|:---:|:---:|
+| **DoR/DoD Criteria** | **Core Functionality** | **Quality Attributes** | **Measurement Framework** |
+
+| 🔗 **[Traceability](#4-traceability--cross-references)** | 🧪 **[Testing Strategy](#5-testing-strategy)** | 📈 **[Acceptance Criteria](#6-acceptance-criteria)** | 📚 **[References](#7-references--related-docs)** |
+|:---:|:---:|:---:|:---:|
+| **Requirements Mapping** | **Test Coverage** | **Validation Gates** | **Supporting Documentation** |
+
+</div>
+
+---
+
+## ✅ **0) Definition of Ready (DoR) & Definition of Done (DoD)**
+
+### 📊 **Definition of Ready (DoR) - For Epics/FRs/NFRs**
 
 Before any Epic/FR/NFR enters development, it must meet these criteria:
 
-**Evidence Pack Attached**:
-- [ ] 5-7 contextual interviews (ops/safety/maintenance) OR
-- [ ] Telemetry analysis (30-day slice) OR
-- [ ] Sim/twin scenario impact analysis
-- [ ] Policy & compliance review completed
+<div align="center">
 
-**Requirements Defined**:
-- [ ] Opportunity Canvas or Problem Statement documented
-- [ ] Target user roles & Jobs-To-Be-Done (JTBD) identified
-- [ ] Acceptance criteria written (Given/When/Then + negative cases)
-- [ ] Risks & mitigations documented
+| 📋 **Evidence Pack Attached** | 🎯 **Requirements Defined** | 🔧 **Technical Clarity** | 🔗 **Traceability Complete** |
+|:---:|:---:|:---:|:---:|
+| 5-7 contextual interviews (ops/safety/maintenance) OR | Opportunity Canvas or Problem Statement documented | SLIs/SLAs defined with thresholds | OKR linkage documented (which KRs this moves) |
+| Telemetry analysis (30-day slice) OR | Target user roles & Jobs-To-Be-Done (JTBD) identified | Telemetry events and fields specified | Epic assignment confirmed |
+| Sim/twin scenario impact analysis | Acceptance criteria written (Given/When/Then + negative cases) | Test hooks planned (unit, integration, e2e, sim) | Cross-references to related FRs/NFRs |
+| Policy & compliance review completed | Risks & mitigations documented | Dependencies mapped (FR/NFR, services, partners) | Gate requirements identified (if applicable) |
 
-**Technical Clarity**:
-- [ ] SLIs/SLAs defined with thresholds
-- [ ] Telemetry events and fields specified
-- [ ] Test hooks planned (unit, integration, e2e, sim)
-- [ ] Dependencies mapped (FR/NFR, services, partners)
+| 🚀 **Rollout & Safety** | 👥 **Ownership & Priority** |
+|:---:|:---:|
+| Rollout plan defined (flags, canary, pilot sites) | Department owners assigned |
+| Rollback procedure documented | Priority tier confirmed (P0/P1/P2/P3) |
+| Safety/compliance sign-off (if policy-touching) | Sector scope defined |
+| Variant budget estimate (≤5% code, ≤25% test delta) | Triad sign-off (PM + Design + Eng) |
 
-**Traceability Complete**:
-- [ ] OKR linkage documented (which KRs this moves)
-- [ ] Epic assignment confirmed
-- [ ] Cross-references to related FRs/NFRs
-- [ ] Gate requirements identified (if applicable)
+</div>
 
-**Rollout & Safety**:
-- [ ] Rollout plan defined (flags, canary, pilot sites)
-- [ ] Rollback procedure documented
-- [ ] Safety/compliance sign-off (if policy-touching)
-- [ ] Variant budget estimate (≤5% code, ≤25% test delta)
+### 📊 **PM CoP Craft Metrics**
 
-**Ownership & Priority**:
-- [ ] Department owners assigned
-- [ ] Priority tier confirmed (P0/P1/P2/P3)
-- [ ] Sector scope defined
-- [ ] Triad sign-off (PM + Design + Eng)
+<div align="center">
 
+| 📋 **Evidence Coverage** | 🔗 **Traceability Completeness** | 💰 **Variant Budget Compliance** | 🗺️ **Roadmap Accuracy** |
+|:---:|:---:|:---:|:---:|
+| ≥90% epics with evidence pack | 100% for shipped features | 0 breaches per quarter | ≥80% within ±1 sprint |
 
-> #### PM CoP Craft Metrics
-> 
-> **Evidence Coverage**: ≥90% epics with evidence pack<br>
-> **Traceability Completeness**: 100% for shipped features<br>
-> **Variant Budget Compliance**: 0 breaches per quarter<br>
-> **Roadmap Accuracy**: ≥80% within ±1 sprint<br>
-> **Outcome Hit Rate**: ≥70% KRs achieved<br>
-> **Accessibility Pass Rate**: 100% on P0 flows<br>
-> **Escaped Defects (P0/P1)**: ↓ QoQ<br>
-> **Operator SUS**: ≥80<br> 
+| 🎯 **Outcome Hit Rate** | ♿ **Accessibility Pass Rate** | 🐛 **Escaped Defects (P0/P1)** | 👤 **Operator SUS** |
+|:---:|:---:|:---:|:---:|
+| ≥70% KRs achieved | 100% on P0 flows | ↓ QoQ | ≥80 |
 
+</div>
 
-#### Definition of Done (DoD) - For Releases
+### Definition of Done (DoD) - For Releases
 
 Before any feature ships to production, it must meet these criteria:
 
@@ -110,7 +113,7 @@ Before any feature ships to production, it must meet these criteria:
 
 ---
 
-### 1) Conventions & Columns
+## 📝 **1) Conventions & Columns**
 
 **Per-row columns** (FRs and NFRs):
 
@@ -120,7 +123,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 2) Functional Requirements (FRs)
+## 🎯 **2) Functional Requirements (FRs)**
 
 > *All rows from v6.0 preserved; refined where noted; now include Epic/OKR and, where relevant, Gate.*
 
@@ -209,7 +212,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 3) Non-Functional Requirements (NFRs)
+## 🛡️ **3) Non-Functional Requirements (NFRs)**
 
 | NFR ID          | Attribute (Metric)                 | Requirement / Target                             | SLI/Measurement                                          | Alert Policy / Error Budget           | Risk & Fallback                   | Owner       | Pri | Sector | Epic          | OKR     |
 | --------------- | ---------------------------------- | ------------------------------------------------ | -------------------------------------------------------- | ------------------------------------- | --------------------------------- | ----------- | :-: | ------ | ------------- | ------- |
@@ -268,9 +271,9 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-### 8) Execution & Readiness Control Plane
+## 🚀 **8) Execution & Readiness Control Plane**
 
-#### 8.1 Dependencies & Auto-Resolution
+### 8.1 Dependencies & Auto-Resolution
 
 | Feature/Req                         | Auto-Requires                                         | Notes                                        |
 | ----------------------------------- | ----------------------------------------------------- | -------------------------------------------- |
@@ -285,7 +288,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.2 Rollout Gates (Go/No-Go)
+### 8.2 Rollout Gates (Go/No-Go)
 
 | Gate ID             | Criterion (blocking)                             | Unlocks                                  |
 | ------------------- | ------------------------------------------------ | ---------------------------------------- |
@@ -296,7 +299,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.3 Traceability (OKR → Epic → FR/NFR)
+### 8.3 Traceability (OKR → Epic → FR/NFR)
 
 * **Safety (O-1):** E1/E3/E4/E7/E10 → FR-003/004/020/041/042/043/060/065; NFR-S-01/02/03, NFR-P-01, NFR-Port-03
 * **Time-to-Value (O-2):** E1/E5/E9/E12 → FR-001/002/015/051/063/028; NFR-Port-01/02/03, NFR-M-02
@@ -306,7 +309,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.4 CI / Test / Evidence Hooks
+### 8.4 CI / Test / Evidence Hooks
 
 * **For every FR:** BDD spec (Given/When/Then), sim or integration test, **telemetry probe** proving SLI emission.
 * **For every NFR:** Load/latency test generating the SLI; **auto-attach evidence** into the release bundle (**FR-029**, **NFR-Comp-01**).
@@ -314,14 +317,14 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.5 DoR / DoD (per FR & NFR)
+### 8.5 DoR / DoD (per FR & NFR)
 
 * **DoR:** BDD present · telemetry fields defined · owner & epic tagged · risk/mitigation captured · dependency list filled.
 * **DoD:** CI green (FR+NFR tests) · SLI on dashboards · evidence artifacts attached · docs updated · runbooks updated if ops-impacting.
 
 ---
 
-#### 8.6 Supportability SLOs & Ops Maturity
+### 8.6 Supportability SLOs & Ops Maturity
 
 * **TTD/TTF/MTTR dashboards** per service; drill-through to cases & runbooks (ties to **NFR-Op-04/05/06**).
 * **On-call health:** alert noise ≤ **2%** false positives/mo (**NFR-Ob-02**).
@@ -329,7 +332,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.7 Compliance & Certifications (Blocking)
+### 8.7 Compliance & Certifications (Blocking)
 
 | Program               | Acceptance Criteria                                                                      | Blocking Artifacts                                                                        |
 | --------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -342,7 +345,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.8 Data Governance Enhancements
+### 8.8 Data Governance Enhancements
 
 * **Biometrics = Sensitive:** exports require **purpose binding** + **dual approval** (**FR-075**, **NFR-Gov-01**, **NFR-Priv-01**).
 * **Regional regimes:** CCPA/LGPD selectors in residency engine; tenant policy manifests in code.
@@ -350,14 +353,14 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.9 Interoperability & Developer Experience
+### 8.9 Interoperability & Developer Experience
 
 * **OpenAPI/SDK conformance** (ties to **NFR-DX-01**): blocking CI with golden recordings; 6-month deprecation; 2 major versions supported.
 * **Interop matrices** (ROS2/VDA5050/ISO 23725): remain **hard blockers** (**FR-063**, **NFR-I-04**).
 
 ---
 
-#### 8.10 Commercial Readiness
+### 8.10 Commercial Readiness
 
 * **Entitlements** (**FR-074**): server-side checks; config drift auto-heal every 5 min.
 * **Migrations:** atomic tier changes with back-out; customer-visible change log auto-generated (**FR-045**).
@@ -365,7 +368,7 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.11 RACI (baseline)
+### 8.11 RACI (baseline)
 
 | Area                  | R            | A          | C              | I           |
 | --------------------- | ------------ | ---------- | -------------- | ----------- |
@@ -380,11 +383,10 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ---
 
-#### 8.12 Open Risks & Follow-ups
+### 8.12 Open Risks & Follow-ups
 
 * **Cost budgets** require X values per env/scale → **Owner:** FinOps.
 * **Export policy** SoT integration with Legal’s system → **Owner:** Gov Lead.
 * **LMS integration** for sector certifications across customers → **Owner:** UX/PM.
 
 ---
-
