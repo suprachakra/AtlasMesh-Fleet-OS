@@ -13,6 +13,25 @@
 </div>
 
 ---
+## 📋 Table of Contents
+
+<div align="center">
+
+| 🎯 **[What Makes AtlasMesh Different](#-what-makes-atlasmesh-different)** | ✨ **[Key Features](#-key-features)** | 🚙 **[Roadmap](#-roadmap)** | 🚀 **[Quick Start](#-quick-start)** |
+|:---:|:---:|:---:|:---:|
+| **Core Value Proposition** | **Technical Capabilities** | **Development Timeline** | **Get Started in Minutes** |
+
+| 🏃‍♂️ **[Running Locally](#-running-locally)** | 🧪 **[Testing](#-testing)** | 🤝 **[Contributing](#-contributing)** | 🔒 **[Security & Compliance](#-security)** |
+|:---:|:---:|:---:|:---:|
+| **Local Development** | **Test Suite & Conformance** | **How to Contribute** | **Safety & Regulatory** |
+
+| 📚 **[Documentation](#documentation)** | 🛡️ **[PM Framework](#product-management-framework)** | 📄 **[License](#-license)** |
+|:---:|:---:|:---:|
+| **Technical Documentation** | **Product Management** | **Business Source License** |
+
+</div>
+
+---
 
 ## 🎯 What Makes AtlasMesh Different?
 
@@ -29,7 +48,7 @@ AtlasMesh Fleet OS implements **qualified agnosticism** - a pragmatic, engineeri
 
 **Multi-Sector Support**: Defense → Mining → Logistics → Ride-hail  
 **Multi-Platform**: Azure EKS → AWS EKS → On-prem K3s  
-**Multi-Vehicle**: Terminal Tractors → Mine Hauls → UGVs → Passenger Vehicles
+**Multi-Vehicle**: Terminal Tractors → Mine Hauls → UGVs → Passenger Vehicles 
 
 ## ✨ What Sets Us Apart
 
@@ -512,7 +531,7 @@ atlasmesh-fleet-os/
 └─ tools/                                # Development tools
 ```
 
-## 🗺️ Roadmap
+## 🚚 Roadmap 🚙
 
 <div align="center">
 
