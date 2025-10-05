@@ -1,6 +1,30 @@
-# Market Insights & Jobs-To-Be-Done (JTBD)
+<div align="center">
 
-## 0) Purpose & guardrails (baked in)
+# 📊 Market Insights & Jobs-To-Be-Done (JTBD)
+
+**Market Analysis and Customer Job Mapping**
+
+</div>
+
+---
+
+## 📋 Table of Contents
+
+<div align="center">
+
+| 📊 **[Market Analysis](#1-market-layers-provenance--sensitivity)** | 🎯 **[Customer Segments](#2-customer-segments--personas)** | 💼 **[Jobs-To-Be-Done](#3-jobs-to-be-done-jtbd)** | 🏭 **[Sector Analysis](#4-sector-deep-dives)** |
+|:---:|:---:|:---:|:---:|
+| **Market Size & TAM/SAM/SOM** | **Target Customer Profiles** | **Customer Job Mapping** | **Sector-Specific Insights** |
+
+| 🌍 **[Regional Analysis](#5-regional-analysis)** | 📈 **[Market Trends](#6-market-trends--drivers)** | 📚 **[References](#7-references--related-docs)** |
+|:---:|:---:|:---:|
+| **Geographic Market Focus** | **Industry Trends & Drivers** | **Supporting Documentation** |
+
+</div>
+
+---
+
+## 🎯 **0) Purpose & guardrails (baked in)**
 
 This document maps the market we serve, what buyers hire us to accomplish, and what harsh ODDs demand—so product, GTM, and engineering ship the right things first.
 **Guardrails:**
@@ -11,38 +35,54 @@ This document maps the market we serve, what buyers hire us to accomplish, and w
 
 ---
 
-## 1) Market layers, provenance & sensitivity
+## 📊 **1) Market layers, provenance & sensitivity**
 
-| Layer                  | Definition                                                                                         |   2024 size |                    2034 outlook | Provenance                               | Notes                                       |
-| ---------------------- | -------------------------------------------------------------------------------------------------- | ----------: | ------------------------------: | ---------------------------------------- | ------------------------------------------- |
-| Global AV TAM          | All AV use cases & regions (consumer + enterprise)                                                 | **$207.4B** |        **$4,450B @ 36.3% CAGR** | **Directional** (multi-report synthesis) | Context only                                |
-| Focused Enterprise TAM | Regulated, industrial & government ODDs we serve (Defense, Mining, Logistics, geofenced Ride-hail) |  **$12.5B** | Expands with permits & adapters | **Authoritative** (internal roll-up)     | Basis for sector plans                      |
-| SAM                    | Priority regions with workable permits & buyer pull                                                |  **$3.73B** |       ↑ with jurisdiction packs | **Authoritative** (Finance)              | Source of truth in finance model            |
-| 3-yr SOM               | Realistic capture (lighthouse → replication)                                                       | **$131.3M** |               Sensitivity-bound | **Authoritative** (Finance)              | Bounded by install rate & evidence velocity |
+<div align="center">
 
-**Sensitivity knobs (owned assumptions)**
+| 🌍 **Market Layer** | 📋 **Definition** | 💰 **2024 Size** | 📈 **2034 Outlook** | 📊 **Provenance** | 📝 **Notes** |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| **🌍 Global AV TAM** | All AV use cases & regions (consumer + enterprise) | **$207.4B** | **$4,450B @ 36.3% CAGR** | **Directional** (multi-report synthesis) | Context only |
+| **🏢 Focused Enterprise TAM** | Regulated, industrial & government ODDs we serve (Defense, Mining, Logistics, geofenced Ride-hail) | **$12.5B** | Expands with permits & adapters | **Authoritative** (internal roll-up) | Basis for sector plans |
+| **🎯 SAM** | Priority regions with workable permits & buyer pull | **$3.73B** | ↑ with jurisdiction packs | **Authoritative** (Finance) | Source of truth in finance model |
+| **📊 3-yr SOM** | Realistic capture (lighthouse → replication) | **$131.3M** | Sensitivity-bound | **Authoritative** (Finance) | Bounded by install rate & evidence velocity |
 
-| Assumption                         |        Low |             Base |         High | Owner             | Review cadence |
-| ---------------------------------- | ---------: | ---------------: | -----------: | ----------------- | -------------- |
-| Permit velocity (priority regions) | 1 city/qtr | **2 cities/qtr** | 3 cities/qtr | Compliance        | 90 days        |
-| Adapter coverage (WMS/TOS/ERP)     |        60% |          **75%** |          90% | Integrations      | 60 days        |
-| Evidence bundle pass rate          |        85% |          **95%** |          99% | Safety/Compliance | Per release    |
-| Install throughput (veh/week)      |         20 |           **35** |           50 | Operations        | 60 days        |
+</div>
+
+### 🎛️ **Sensitivity knobs (owned assumptions)**
+
+<div align="center">
+
+| 📊 **Assumption** | 📉 **Low** | 📊 **Base** | 📈 **High** | 👤 **Owner** | ⏰ **Review Cadence** |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| **🏛️ Permit velocity (priority regions)** | 1 city/qtr | **2 cities/qtr** | 3 cities/qtr | Compliance | 90 days |
+| **🔗 Adapter coverage (WMS/TOS/ERP)** | 60% | **75%** | 90% | Integrations | 60 days |
+| **📋 Evidence bundle pass rate** | 85% | **95%** | 99% | Safety/Compliance | Per release |
+| **🚗 Install throughput (veh/week)** | 20 | **35** | 50 | Operations | 60 days |
+
+</div>
 
 > If any **Base** drops to **Low** for >1 review, re-cast SOM in Finance and reflect changes in OKRs.
 
 ---
 
-## 2) Segmentation—application, geography, autonomy
+## 🎯 **2) Segmentation—application, geography, autonomy**
 
-### 2.1 Application (directional 2024 snapshot)
+### 🏭 **2.1 Application (directional 2024 snapshot)**
 
-| Segment                   | Share / Size            |           Growth signal | Demand drivers                      | Headwinds                                         |
-| ------------------------- | ----------------------- | ----------------------: | ----------------------------------- | ------------------------------------------------- |
-| Transportation / Robotaxi | **~82.5%**, **$189.9B** |                    Fast | 24/7 urban mobility; TNC ops        | Regulatory fragmentation; mixed-traffic incidents |
-| Defense                   | **~17.5%**, **$17.5B**  | **Fastest (~45% CAGR)** | Force protection; contested ops     | Export controls; ROE evidence                     |
-| Freight & Logistics       | **$31.5B** (42% CAGR)   |                    High | Driver shortage; yard/corridor SLAs | Adapter sprawl; customs friction                  |
-| Industrial / Mining       | **$17.2B** (41% CAGR)   |                    High | Safety; tons/hour                   | Heat/dust; heavy-class hardware                   |
+<div align="center">
+
+| 🚗 **Transportation / Robotaxi** | 🛡️ **Defense** | 🚛 **Freight & Logistics** | ⛏️ **Industrial / Mining** |
+|:---:|:---:|:---:|:---:|
+| **Share/Size** | **Share/Size** | **Share/Size** | **Share/Size** |
+| **~82.5%**, **$189.9B** | **~17.5%**, **$17.5B** | **$31.5B** (42% CAGR) | **$17.2B** (41% CAGR) |
+| **Growth Signal** | **Growth Signal** | **Growth Signal** | **Growth Signal** |
+| Fast | **Fastest (~45% CAGR)** | High | High |
+| **Demand Drivers** | **Demand Drivers** | **Demand Drivers** | **Demand Drivers** |
+| 24/7 urban mobility; TNC ops | Force protection; contested ops | Driver shortage; yard/corridor SLAs | Safety; tons/hour |
+| **Headwinds** | **Headwinds** | **Headwinds** | **Headwinds** |
+| Regulatory fragmentation; mixed-traffic incidents | Export controls; ROE evidence | Adapter sprawl; customs friction | Heat/dust; heavy-class hardware |
+
+</div>
 
 ### 2.2 Geography
 
