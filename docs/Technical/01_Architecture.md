@@ -1,6 +1,20 @@
 # AtlasMesh Fleet OS — Architecture
 
-## Executive Summary: Qualified Agnosticism
+
+## 📋 Table of Contents
+
+<div align="center">
+
+| 🎯 **[Executive Summary](#executive-summary-qualified-agnosticism)** | 🏗️ **[System Context](#1-system-context-c4-model)** | 🔧 **[Core Components](#2-core-components)** | 📊 **[Data Architecture](#3-data-architecture)** |
+|:---:|:---:|:---:|:---:|
+| 🚀 **[Deployment](#4-deployment-architecture)** | 🔒 **[Security](#5-security-architecture)** | 📈 **[Monitoring](#6-monitoring--observability)** | 🧪 **[Testing](#7-testing-strategy)** |
+
+
+</div>
+
+---
+
+## 🎯 Executive Summary: Qualified Agnosticism
 
 AtlasMesh Fleet OS implements **"qualified agnosticism"** - a pragmatic approach to vehicle-agnostic, sector-agnostic, and platform-agnostic autonomous fleet operations. Rather than claiming universal compatibility, we achieve **bounded agnosticism** through:
 
@@ -8,13 +22,18 @@ AtlasMesh Fleet OS implements **"qualified agnosticism"** - a pragmatic approach
 - **🏢 Sector-Agnostic**: Policy overlays targeting ≥90% code reuse
 - **☁️ Platform-Agnostic**: Contract-driven infrastructure with conformance testing
 
-### Agnosticism Reality Check
+### 🎯 **Agnosticism Reality Check**
 
-| Dimension | What "Yes" Looks Like | Feasibility | Implementation |
-|-----------|----------------------|-------------|----------------|
-| **Vehicle-Agnostic** | Shared core; per-model profiles; HiL & track re-cert | **Medium-High** | Vehicle HAL + Profile System |
-| **Sector-Agnostic** | Shared backbone; policy/UX overlays; evidence mappers | **High** | Policy Engine + Sector Overlays |
-| **Platform-Agnostic** | K8s-first; provider adapters; conformance suite | **High** | Infrastructure Adapters |
+<div align="center">
+
+| 🚙 **Vehicle-Agnostic** | 🏭 **Sector-Agnostic** | ☁️ **Platform-Agnostic** |
+|:---:|:---:|:---:|
+| **What "Yes" Looks Like** | **What "Yes" Looks Like** | **What "Yes" Looks Like** |
+| Shared core; per-model profiles; HiL & track re-cert | Shared backbone; policy/UX overlays; evidence mappers | K8s-first; provider adapters; conformance suite |
+| **Feasibility: Medium-High** | **Feasibility: High** | **Feasibility: High** |
+| **Implementation: Vehicle HAL + Profile System** | **Implementation: Policy Engine + Sector Overlays** | **Implementation: Infrastructure Adapters** |
+
+</div>
 
 ## 1) System Context (C4 Model)
 
@@ -926,3 +945,4 @@ The architecture governance process ensures quality and alignment:
 - [Cross-Department Checklist](12_Cross_Department_Checklist.md)
 - [Programmatic Proof Points](13_Programmatic_Proof_Points.md)
 - [Architecture Reality Check](14_Architecture_Reality_Check.md)
+
