@@ -35,7 +35,7 @@ AtlasMesh Fleet OS implements **"qualified agnosticism"** - a pragmatic approach
 
 </div>
 
-## 1) System Context (C4 Model)
+## 🏗️ **1) System Context (C4 Model)**
 
 AtlasMesh Fleet OS operates as a **qualified agnostic** platform that orchestrates autonomous fleet operations across multiple vehicle classes, sectors, and infrastructure platforms. The system context diagram below illustrates the high-level interactions between AtlasMesh and external entities.
 
@@ -70,7 +70,7 @@ C4Context
     Rel(fms, cloud, "Deployed on")
 ```
 
-## 1.1) Qualified Agnosticism Architecture
+## 🎯 **1.1) Qualified Agnosticism Architecture**
 
 ### Vehicle Hardware Abstraction Layer (HAL)
 
@@ -145,7 +145,7 @@ graph LR
     class CodeChanges,DeltaAnalyzer,BudgetChecker process
 ```
 
-## 2) Container Diagram (Services & Components)
+## 🔧 **2) Container Diagram (Services & Components)**
 
 The container diagram below shows the major components of the AtlasMesh Fleet OS and their interactions, including the new qualified agnosticism services.
 
@@ -266,7 +266,7 @@ C4Container
     Rel(digital_twin_sim, predictive_maint, "Validates models", "gRPC")
 ```
 
-## 3) Component Architecture Principles
+## 🏗️ **3) Component Architecture Principles**
 
 AtlasMesh Fleet OS is built on the following architectural principles:
 
@@ -302,7 +302,7 @@ Security and compliance are fundamental to the architecture:
 - **Secure by default**: Least privilege, encryption in transit and at rest, secrets management
 - **Verifiable builds**: Reproducible builds, signed artifacts, SBOM generation
 
-## 4) Data Flow Architecture
+## 📊 **4) Data Flow Architecture**
 
 The diagram below illustrates the key data flows within the AtlasMesh Fleet OS:
 
@@ -475,7 +475,7 @@ flowchart TD
     VehicleState -->|Feedback| ML
 ```
 
-## 5) Deployment Architecture
+## 🚀 **5) Deployment Architecture**
 
 AtlasMesh Fleet OS supports multiple deployment topologies to accommodate different operational requirements:
 
@@ -613,7 +613,7 @@ flowchart TD
     Import -->|Controlled| DB
 ```
 
-## 6) Failure Domains & Resilience
+## 🛡️ **6) Failure Domains & Resilience**
 
 AtlasMesh Fleet OS is designed with resilience in mind, with the following failure domains and mitigation strategies:
 
@@ -641,7 +641,7 @@ AtlasMesh Fleet OS is designed with resilience in mind, with the following failu
 | Dust/sand storms | Sensor occlusion | Multi-modal sensing; cleaning systems; confidence-aware fusion |
 | Heavy precipitation | Reduced visibility and traction | Weather-aware routing; speed adaptation; safe harbor protocols |
 
-## 7) Key Interfaces & Integration Points
+## 🔗 **7) Key Interfaces & Integration Points**
 
 ### 7.1 External Interfaces
 
@@ -827,7 +827,7 @@ sequenceDiagram
 }
 ```
 
-## 8) Phase 2 Advanced Services
+## 🚀 **8) Phase 2 Advanced Services**
 
 AtlasMesh Fleet OS Phase 2 introduces advanced capabilities for production-scale operations:
 
@@ -849,7 +849,7 @@ AtlasMesh Fleet OS Phase 2 introduces advanced capabilities for production-scale
 ### 8.4 Digital Twin & Simulation
 - **Digital Twin & Simulation**: Scenario banks, golden replays, fault injection for robust testing
 
-## 9) Observability & Monitoring
+## 📈 **9) Observability & Monitoring**
 
 AtlasMesh Fleet OS implements a comprehensive observability strategy:
 
@@ -860,7 +860,7 @@ AtlasMesh Fleet OS implements a comprehensive observability strategy:
 - **SLOs**: Service Level Objectives with error budgets; SLI monitoring
 - **Unified Observability**: Correlation IDs across all services, SLO dashboards, alert fatigue prevention
 
-## 10) Eventing Backbone
+## 📡 **10) Eventing Backbone**
 
 AtlasMesh Fleet OS uses a robust eventing architecture for system-wide communication:
 
@@ -869,7 +869,7 @@ AtlasMesh Fleet OS uses a robust eventing architecture for system-wide communica
 - **Dead Letter Queues**: Comprehensive DLQ patterns for failed message processing
 - **Event Bus Service**: Central event hub with routing, validation, and correlation ID propagation
 
-## 11) Security Architecture
+## 🔒 **11) Security Architecture**
 
 The security architecture follows defense-in-depth principles:
 
@@ -881,7 +881,7 @@ The security architecture follows defense-in-depth principles:
 - **Incident Response**: Detection, containment, eradication, recovery procedures
 - **Zero-Trust**: Service-to-service mTLS, policy centralization, continuous verification
 
-## 12) Compliance Architecture
+## 📋 **12) Compliance Architecture**
 
 The compliance architecture ensures regulatory adherence:
 
@@ -891,7 +891,7 @@ The compliance architecture ensures regulatory adherence:
 - **Privacy Controls**: Data minimization; purpose limitation; retention policies
 - **Evidence-as-Code**: Automated audit bundle generation with cryptographic signing
 
-## 13) Key Architectural Decisions
+## 🎯 **13) Key Architectural Decisions**
 
 | ADR ID | Decision | Rationale | Alternatives Considered |
 |--------|----------|-----------|-------------------------|
@@ -908,7 +908,7 @@ The compliance architecture ensures regulatory adherence:
 | ADR-011 | Event Sourcing | Audit trail; temporal queries; resilience | CRUD; synchronous APIs |
 | ADR-012 | Policy as Code | Versioned rules; testable policies; separation of concerns | Hardcoded rules; config files |
 
-## 14) Architecture Evolution & Roadmap
+## 🗺️ **14) Architecture Evolution & Roadmap**
 
 | Phase | Architectural Focus | Key Deliverables | Status |
 |-------|---------------------|------------------|--------|
@@ -918,7 +918,7 @@ The compliance architecture ensures regulatory adherence:
 | Phase 4 | Operational excellence; resilience | Chaos engineering; degraded modes; on-call runbooks; time sync | 🔄 **NEXT** |
 | Future | Advanced intelligence; self-optimization | ML-driven optimization; predictive operations; autonomous healing | 📋 **PLANNED** |
 
-## 15) Architecture Governance
+## 🏛️ **15) Architecture Governance**
 
 The architecture governance process ensures quality and alignment:
 
@@ -928,7 +928,7 @@ The architecture governance process ensures quality and alignment:
 - **Technical Debt Management**: Regular assessment; remediation planning
 - **Innovation Pipeline**: Exploration; prototyping; evaluation; integration
 
-## 16) References & Related Documents
+## 📚 **16) References & Related Documents**
 
 ### Core Technical Documentation
 - [System Requirements](03_Requirements_FRs_NFRs.md)
@@ -945,4 +945,5 @@ The architecture governance process ensures quality and alignment:
 - [Cross-Department Checklist](12_Cross_Department_Checklist.md)
 - [Programmatic Proof Points](13_Programmatic_Proof_Points.md)
 - [Architecture Reality Check](14_Architecture_Reality_Check.md)
+
 
