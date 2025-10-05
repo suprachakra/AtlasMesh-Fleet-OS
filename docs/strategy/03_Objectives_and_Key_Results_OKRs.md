@@ -1,10 +1,36 @@
-# 03_Objectives_and_Key_Results (OKRs)
+<div align="center">
+
+## 🎯 Objectives and Key Results (OKRs)
+
+**Strategic Objectives and Measurable Key Results**
+
+</div>
+
+---
+
+### 📋 Table of Contents
+
+<div align="center">
+
+| 🎯 **[Company Objectives](#a-company-objectives-commit--stretch)** | 🛡️ **[O1: Safety & Operations](#o1--prove-repeatable-l4-operations-in-harsh--controlled-odds)** | 💰 **[O2: Commercial Proof](#o2--demonstrate-roi-and-scalability-commercial-proof)** | 🌐 **[O3: Agnosticism](#o3--prove-were-credibly-agnostic-vehicle-sensor-map-cloud)** |
+|:---:|:---:|:---:|:---:|
+| **Strategic Objectives Overview** | **Safety & Reliability** | **Commercial Success** | **Platform Agnosticism** |
+
+| 📋 **[O4: Regulatory](#o4--evidence--compliance-automation)** | 👤 **[O5: User Experience](#o5--operator-experience-excellence)** | 📊 **[Success Metrics](#b-success-metrics--measurement)** | 📚 **[References](#c-references--related-docs)** |
+|:---:|:---:|:---:|:---:|
+| **Compliance & Evidence** | **User Experience** | **Measurement Framework** | **Supporting Documentation** |
+
+</div>
+
+---
 
 This file defines **what we commit to this period** and **how we score it**. All metric math/SQL lives only in the Metrics Canon.
 
-## A) Company Objectives (commit → stretch)
+---
 
-### O1 — Prove repeatable L4 operations in harsh & controlled ODDs
+### 🎯 **A) Company Objectives (commit → stretch)**
+
+#### O1 — Prove repeatable L4 operations in harsh & controlled ODDs
 
 | KR ID       | Key Result                                                      | Target (this period)                                                          | Measurement (SoT)                         | Linked Metrics (IDs)                                                                                 | Hard Gate                 |
 | ----------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------- |
@@ -17,7 +43,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-### O2 — Demonstrate ROI and scalability (commercial proof)
+#### O2 — Demonstrate ROI and scalability (commercial proof)
 
 | KR ID       | Key Result                               | Target (this period)                                                                         | Measurement (SoT)          | Linked Metrics (IDs)                                               |
 | ----------- | ---------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------ |
@@ -29,7 +55,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-### O3 — Prove we’re credibly agnostic (vehicle, sensor, map, cloud)
+#### O3 — Prove we’re credibly agnostic (vehicle, sensor, map, cloud)
 
 | KR ID       | Key Result                | Target (this period)                                                    | Evidence (SoT)                      |
 | ----------- | ------------------------- | ----------------------------------------------------------------------- | ----------------------------------- |
@@ -42,9 +68,9 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-## B) Workstream OKRs (feed O1–O3)
+### B) Workstream OKRs (feed O1–O3)
 
-### Product Management
+#### Product Management
 
 | KR ID       | Key Result                 | Target                                             | Evidence         |
 | ----------- | -------------------------- | -------------------------------------------------- | ---------------- |
@@ -52,7 +78,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 | **KR.PM.2** | Use-case spec coverage     | **100%** scenario rows → specs with sim/twin gates | Docs CI          |
 | **KR.PM.3** | Ops NPS (site supervisors) | **≥50**                                            | Quarterly survey |
 
-### Design & UX
+#### Design & UX
 
 | KR ID       | Key Result              | Target                                               | Linked Metrics                         |
 | ----------- | ----------------------- | ---------------------------------------------------- | -------------------------------------- |
@@ -60,7 +86,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 | **KR.DS.2** | Incident triage speed   | **≤60s P95** (usability tests)                       | (Field proxy) MET.OPS.DISPATCH_LAT_P95 |
 | **KR.DS.3** | LE/First-Responder flow | Validated by **2** agencies; **0** miscomm incidents | MET.SAFETY.ZERO_HARM (proxy)           |
 
-### Engineering (Platform & Edge)
+#### Engineering (Platform & Edge)
 
 | KR ID        | Key Result        | Target                                         | Evidence        |
 | ------------ | ----------------- | ---------------------------------------------- | --------------- |
@@ -68,7 +94,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 | **KR.ENG.2** | OTA reliability   | Blue/green + attestation; rollback **<5 min**  | Release metrics |
 | **KR.ENG.3** | CI twin gates     | Scenario pass **≥95%** for merge               | CI dashboard    |
 
-### Data / ML
+#### Data / ML
 
 | KR ID         | Key Result             | Target                                                | Linked Metrics                                         |
 | ------------- | ---------------------- | ----------------------------------------------------- | ------------------------------------------------------ |
@@ -76,7 +102,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 | **KR.DATA.2** | PdM impact             | Unscheduled downtime **−20%**                         | MET.RELIAB.MTBF (↑) · MET.RELIAB.AVAIL_ODD (↑)         |
 | **KR.DATA.3** | Demand/dispatch uplift | Seat-fill **+10%** (RH) or loader idle **−25%** (MIN) | MET.EXP.ETA_P95 (↓) · MET.PROD.TONS_PER_HOUR (↑)       |
 
-### QA & Safety
+#### QA & Safety
 
 | KR ID       | Key Result          | Target                                                      | Linked Metrics                |
 | ----------- | ------------------- | ----------------------------------------------------------- | ----------------------------- |
@@ -84,14 +110,14 @@ This file defines **what we commit to this period** and **how we score it**. All
 | **KR.QA.2** | Evidence automation | **100%** HARA/STPA & bundles per release                    | MET.GOV.AUDIT_BUNDLE_COMPLETE |
 | **KR.QA.3** | Drills              | EW/jam, sensor loss, LE stop, HAZMAT • fixes **<2 sprints** | Drill log                     |
 
-### Security
+#### Security
 
 | KR ID        | Key Result  | Target                                                  | Linked Metrics                                     |
 | ------------ | ----------- | ------------------------------------------------------- | -------------------------------------------------- |
 | **KR.SEC.1** | mTLS + SBOM | **100%** releases signed; **no critical CVEs >15 days** | MET.SEC.SBOM_SIGNED · MET.SEC.P1_FINDINGS_OPEN (0) |
 | **KR.SEC.2** | Red-team    | **2×/year**; **no P1 >30 days**                         | MET.SEC.INCIDENTS_P1 (0)                           |
 
-### Operations
+#### Operations
 
 | KR ID        | Key Result     | Target                                             | Evidence / Metrics   |
 | ------------ | -------------- | -------------------------------------------------- | -------------------- |
@@ -99,7 +125,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 | **KR.OPS.2** | Spares & RMA   | Turnaround **<72h**                                | Ops tracker          |
 | **KR.OPS.3** | On-call SLO    | Page-ack **P95 <5 min**                            | MET.OPS.MTTR (proxy) |
 
-### GTM & Partnerships
+#### GTM & Partnerships
 
 | KR ID        | Key Result          | Target                                                | Evidence        |
 | ------------ | ------------------- | ----------------------------------------------------- | --------------- |
@@ -109,7 +135,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-## C) Interdependencies & guardrails
+### C) Interdependencies & guardrails
 
 | Objective / KR      | Depends On                   | Enables                  | Risk If Missed           | Catch-Up Plan                           |
 | ------------------- | ---------------------------- | ------------------------ | ------------------------ | --------------------------------------- |
@@ -121,7 +147,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-## D) Scoring, reviews & evidence
+### D) Scoring, reviews & evidence
 
 * **Scoring:** 0.0–1.0; **0.7–0.8 = success**, 1.0 = stretch.
 * **Reviews:** Monthly exec; bi-weekly program; weekly CCB/Safety for gated KRs.
@@ -130,7 +156,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-## E) Crosswalk to Metrics Canon
+### E) Crosswalk to Metrics Canon
 
 (See the Canon file below for definitions/formulas.)
 
@@ -147,7 +173,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-### Appendix A — KR ↔ Canon Traceability (with SoT & Owners)
+#### Appendix A — KR ↔ Canon Traceability (with SoT & Owners)
 
 > Keep this near the end, after your OKR tables.
 
@@ -165,7 +191,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-### Appendix B — KR Evidence Pack (close-out schema)
+#### Appendix B — KR Evidence Pack (close-out schema)
 
 > Standardizes what “proof” looks like. Auditors love this.
 
@@ -197,7 +223,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-### Appendix C — KR Scoring Rules (0.0–1.0)
+#### Appendix C — KR Scoring Rules (0.0–1.0)
 
 * **Threshold:** hit target = **0.7–0.8** (success), hit stretch = **1.0**, linear taper to **0.0** at fail band.
 * **Directional:** normalize delta vs baseline; clamp [0,1]; baseline declared in evidence pack.
@@ -208,7 +234,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-### Appendix D — Gates & Stop-Conditions (enforced)
+#### Appendix D — Gates & Stop-Conditions (enforced)
 
 * **Build/Merge:** block if **twin scenario pass <95%** (KR.ENG.3).
 * **Release:** block if **MET.GOV.AUDIT_BUNDLE_COMPLETE < 1.0**; block if **MET.SEC.P1_FINDINGS_OPEN > 0** or critical CVEs >15d.
@@ -218,7 +244,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-### Appendix E — Alerting & Review Cadence
+#### Appendix E — Alerting & Review Cadence
 
 | Family | Red threshold source | Who’s paged                | Channel         | Cadence                     |
 | ------ | -------------------- | -------------------------- | --------------- | --------------------------- |
@@ -231,7 +257,7 @@ This file defines **what we commit to this period** and **how we score it**. All
 
 ---
 
-### Appendix F — Reviewer Mini-Checklist
+#### Appendix F — Reviewer Mini-Checklist
 
 * [ ] Canon IDs exist (not deprecated)
 * [ ] Evidence manifest valid (view versions + query hashes present)
@@ -240,6 +266,52 @@ This file defines **what we commit to this period** and **how we score it**. All
 * [ ] A/R sign-offs included
 * [ ] Score per declared KR type
 * [ ] No red Canon metrics for the KR window
+
+### OKR → Epic → FR/NFR Traceability Flow
+
+#### Formal Traceability Model
+
+**Level 1: Strategic Objectives (O-1 to O-5)**
+- **O-1 Safety**: Prove repeatable L4 operations in harsh & controlled ODDs
+- **O-2 Time-to-Value**: Demonstrate ROI and scalability (commercial proof)  
+- **O-3 Agnosticism**: Prove we're credibly agnostic (vehicle, sensor, map, cloud)
+- **O-4 Regulatory**: Evidence & compliance automation
+- **O-5 UX**: Operator experience excellence
+
+**Level 2: Key Results (KR.O1.1 to KR.GTM.3)**
+- Each KR maps to 1-3 Canon metrics
+- Each KR has evidence pack requirements
+- Each KR has success criteria and gates
+
+**Level 3: Epics (E-1 to E-12)**
+- Each Epic maps to 1-2 Strategic Objectives
+- Each Epic has DoR checklist (evidence pack, variant budget, SLI targets)
+- Each Epic has verification methodology and exit gates
+
+**Level 4: Functional Requirements (FR-001 to FR-075)**
+- Each FR maps to 1 Epic and 1-2 OKRs
+- Each FR has acceptance criteria, telemetry, and traceability
+- Each FR has department ownership and priority
+
+**Level 5: Non-Functional Requirements (NFR-P-01 to NFR-Gov-01)**
+- Each NFR maps to 1-2 Epics and OKRs
+- Each NFR has SLI/SLA definitions and alert policies
+- Each NFR has measurement methodology and gates
+
+#### Verification Methodology
+
+**Monthly Traceability Audit**:
+- [ ] 100% KRs have Canon metric mappings
+- [ ] 100% Epics have DoR evidence packs
+- [ ] 100% FRs have OKR linkages
+- [ ] 100% NFRs have SLI instrumentation
+- [ ] 100% features have traceability chains
+
+**Quarterly Outcome Quality (OQ) Review**:
+- [ ] Compare SLIs vs targets for shipped features
+- [ ] Validate evidence pack completeness
+- [ ] Assess traceability chain integrity
+- [ ] Feed learnings back into playbooks
 
 ---
 
