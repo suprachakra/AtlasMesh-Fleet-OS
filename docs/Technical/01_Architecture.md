@@ -5,10 +5,9 @@
 
 <div align="center">
 
-| 🎯 **[Executive Summary](#-executive-summary-qualified-agnosticism)** | 🏗️ **[System Context](#%EF%B8%8F-1-system-context-c4-model)** | 🔧 **[Core Components](#%EF%B8%8F-3-component-architecture-principles)** | 📊 **[Data Architecture](#-4-data-flow-architecture)** |
-|:---:|:---:|:---:|:---:|
-| 🚀 **[Deployment](#-5-deployment-architecture)** | 🔒 **[Security](#5-security-architecture)** | 📈 **[Monitoring](#6-monitoring--observability)** | 🧪 **[Testing](#7-testing-strategy)** |📈 **[Monitoring](#-13-key-architectural-decisions)** | 
-
+| 🎯 **[Executive Summary](#-executive-summary-qualified-agnosticism)** | 🏗️ **[System Context](#%EF%B8%8F-1-system-context-c4-model)** | 🔧 **[Core Components](#%EF%B8%8F-3-component-architecture-principles)** | 📊 **[Data Architecture](#-4-data-flow-architecture)** | 🚀 **[Deployment](#-5-deployment-architecture)** |
+|:---:|:---:|:---:|:---:|:---:|
+| 🛡️ **[Failure Domains & Resilience](#%EF%B8%8F-6-failure-domains--resilience)** | 🔒 **[Security](#5-security-architecture)** | 📈 **[Monitoring](#6-monitoring--observability)** | 🧪 **[Testing](#7-testing-strategy)** |📈 **[Monitoring](#-13-key-architectural-decisions)** | 
 
 </div>
 
@@ -945,8 +944,3 @@ The architecture governance process ensures quality and alignment:
 - [Cross-Department Checklist](12_Cross_Department_Checklist.md)
 - [Programmatic Proof Points](13_Programmatic_Proof_Points.md)
 - [Architecture Reality Check](14_Architecture_Reality_Check.md)
-
-
-
-
-
