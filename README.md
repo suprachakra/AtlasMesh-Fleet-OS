@@ -894,7 +894,7 @@ graph LR
 - **[Deprecation](docs/strategy/playbooks/Deprecation_Playbook.md)** - Feature sunset process
 
 **Requirements & Governance**:
-- **[Requirements (FRs/NFRs)](docs/Technical/03_Requirements_FRs_NFRs.md)** - With DoR/DoD checklists
+- **[Requirements (FRs/NFRs)](docs/Technical/03_Requirements_FRs_NFRs.md#2-functional-requirements-frs)** - With DoR/DoD checklists
 - **[Epics & Alignment](docs/Technical/02_Epics_And_Strategic_Alignment.md)** - Epic-to-OKR mapping
 - **[Cross-Department Checklist](docs/Technical/12_Cross_Department_Checklist.md)** - No-loopholes governance
 
