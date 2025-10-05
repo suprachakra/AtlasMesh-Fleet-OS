@@ -136,7 +136,7 @@ graph TB
     style subGraph2 fill:transparent
     style subGraph0 fill:transparent
 
-        classDef client fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef client fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
     classDef gateway fill:#e1f5fe,stroke:#01579b,stroke-width:3px
     classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     classDef observability fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
@@ -191,9 +191,9 @@ sequenceDiagram
     DS-->>AG: Assignment: vehicle-001 → trip-123
     AG-->>CC: Assignment confirmed
     end
-    
+
+    rect rgb(255, 248, 240)
     Note over U,FF: Mission Execution
-       rect rgb(255, 248, 240)
     DS->>VA: Send mission to vehicle-001
     VA->>VA: Load vehicle profile & policies
     VA->>RS: Get detailed route
