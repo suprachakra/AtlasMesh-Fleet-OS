@@ -6,28 +6,25 @@
 
 [![License](https://img.shields.io/badge/License-BUSL%201.1-blue.svg)](LICENSE)
 [![CI Status](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](https://github.com/atlasmesh/fleet-os/actions)
-[![Safety Case](https://img.shields.io/badge/Safety%20Case-Verified-brightgreen.svg)](docs/safety/safety_case_structure.md)
+[![Safety Case](https://img.shields.io/badge/Safety%20Case-Verified-orange.svg)](docs/safety/safety_case_structure.md)
 [![Documentation](https://img.shields.io/badge/Docs-Latest-blue.svg)](docs/README.md)
 [![Product Management](https://img.shields.io/badge/PM%20Framework-Evidence--First-purple.svg)](docs/strategy/PM_COP_MAPPING.md)
 
 </div>
 
 ---
-## 📋 Table of Contents
-
 <div align="center">
+    
+*The Universal AV Fleet Management system That Actually Works - One Codebase, Any Vehicle, Every Sector, Any Cloud*
+<br>
 
 | 🎯 **[What Makes AtlasMesh Different](#-what-makes-atlasmesh-different)** | ✨ **[Key Features](#-key-features)** | 🚙 **[Roadmap](#-roadmap)** | 🚀 **[Quick Start](#-quick-start)** |
 |:---:|:---:|:---:|:---:|
 | **Core Value Proposition** | **Technical Capabilities** | **Development Timeline** | **Get Started in Minutes** |
 
-| 🏃‍♂️ **[Running Locally](#-running-locally)** | 🧪 **[Testing](#-testing)** | 🤝 **[Contributing](#-contributing)** | 🔒 **[Security & Compliance](#-security)** |
+| 🏃‍♂️ **[Running Locally](#-running-locally)** | 🧪 **[Testing](#-testing)** | 🛡️ **[PM Framework](#product-management-framework)** | 📚 **[Documentation](#documentation)**  |
 |:---:|:---:|:---:|:---:|
-| **Local Development** | **Test Suite & Conformance** | **How to Contribute** | **Safety & Regulatory** |
-
-| 📚 **[Documentation](#documentation)** | 🛡️ **[PM Framework](#product-management-framework)** | 📄 **[License](#-license)** |
-|:---:|:---:|:---:|
-| **Technical Documentation** | **Product Management** | **Business Source License** |
+| **Local Development** | **Test Suite & Conformance** | **Product Management** | **Technical Documentation** |
 
 </div>
 
