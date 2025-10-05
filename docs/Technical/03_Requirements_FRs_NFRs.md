@@ -46,16 +46,18 @@ Before any Epic/FR/NFR enters development, it must meet these criteria:
 - [ ] Sector scope defined
 - [ ] Triad sign-off (PM + Design + Eng)
 
-#### PM CoP Craft Metrics
 
-**Evidence Coverage**: ≥90% epics with evidence pack
-**Traceability Completeness**: 100% for shipped features  
-**Variant Budget Compliance**: 0 breaches per quarter
-**Roadmap Accuracy**: ≥80% within ±1 sprint
-**Outcome Hit Rate**: ≥70% KRs achieved
-**Accessibility Pass Rate**: 100% on P0 flows
-**Escaped Defects (P0/P1)**: ↓ QoQ
-**Operator SUS**: ≥80
+> #### PM CoP Craft Metrics
+> 
+> **Evidence Coverage**: ≥90% epics with evidence pack<br>
+> **Traceability Completeness**: 100% for shipped features<br>
+> **Variant Budget Compliance**: 0 breaches per quarter<br>
+> **Roadmap Accuracy**: ≥80% within ±1 sprint<br>
+> **Outcome Hit Rate**: ≥70% KRs achieved<br>
+> **Accessibility Pass Rate**: 100% on P0 flows<br>
+> **Escaped Defects (P0/P1)**: ↓ QoQ<br>
+> **Operator SUS**: ≥80<br> 
+
 
 #### Definition of Done (DoD) - For Releases
 
@@ -385,3 +387,4 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 * **LMS integration** for sector certifications across customers → **Owner:** UX/PM.
 
 ---
+
