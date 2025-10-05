@@ -1,31 +1,61 @@
-# AtlasMesh Fleet OS — Data & Analytics Integration
+<div align="center">
 
-## 1) Data Strategy Overview
+## 📊 AtlasMesh Fleet OS — Data & Analytics Integration
+
+**Comprehensive Data Strategy for Evidence-Based Operations**
+
+</div>
+
+---
+
+### 📋 Table of Contents
+
+<div align="center">
+
+| 📊 **[Data Strategy](#1-data-strategy-overview)** | 🏗️ **[Data Architecture](#2-data-architecture)** | 🔄 **[Integration Patterns](#3-integration-patterns)** | 📈 **[Analytics Capabilities](#4-analytics-capabilities)** |
+|:---:|:---:|:---:|:---:|
+| **Core Principles & Domains** | **Logical & Physical Models** | **Data Flow & Processing** | **ML/AI & Insights** |
+
+| 🔒 **[Data Governance](#5-data-governance)** | 🧪 **[Testing Strategy](#6-testing-strategy)** | 📚 **[References](#7-references--related-docs)** |
+|:---:|:---:|:---:|
+| **Privacy, Security & Compliance** | **Data Quality & Validation** | **Supporting Documentation** |
+
+</div>
+
+---
+
+### 📊 **1) Data Strategy Overview**
 
 AtlasMesh Fleet OS implements a comprehensive data strategy that enables evidence-based operations, continuous improvement, and regulatory compliance. This document outlines the data architecture, integration patterns, and analytics capabilities that power the platform.
 
-### 1.1 Core Data Principles
+#### 🎯 **1.1 Core Data Principles**
 
-- **Provenance-aware**: All data carries source, confidence, and lineage metadata
-- **Privacy by design**: Minimized PII collection; purpose-limited processing; retention controls
-- **Evidence-first**: Data capture designed to support safety cases and regulatory compliance
-- **Freshness vs. credibility**: Explicit trade-off policies for data currency vs. reliability
-- **Offline resilience**: Store-and-forward capabilities; conflict resolution; eventual consistency
+<div align="center">
 
-### 1.2 Data Domains
+| 🔍 **Provenance-aware** | 🔒 **Privacy by Design** | 📋 **Evidence-first** | ⚖️ **Freshness vs. Credibility** | 🛡️ **Offline Resilience** |
+|:---:|:---:|:---:|:---:|:---:|
+| All data carries source, confidence, and lineage metadata | Minimized PII collection; purpose-limited processing; retention controls | Data capture designed to support safety cases and regulatory compliance | Explicit trade-off policies for data currency vs. reliability | Store-and-forward capabilities; conflict resolution; eventual consistency |
 
-| Domain | Description | Key Entities | Primary Consumers |
-|--------|-------------|--------------|-------------------|
-| **Vehicle Telemetry** | Operational data from vehicles | Sensor readings, status, diagnostics | Fleet health, PdM, safety monitoring |
-| **Trip & Mission** | Trip lifecycle and execution | Routes, assignments, events | Dispatch, routing, analytics |
-| **Maps & Geospatial** | Spatial data and features | Map tiles, routes, POIs | Routing, mission planning |
-| **Weather & Environment** | Environmental conditions | Weather readings, forecasts, alerts | Routing, ODD management |
-| **Safety & Compliance** | Evidence and documentation | Incidents, decisions, audit trails | Regulators, safety case |
-| **Enterprise Integration** | Business system data | Orders, inventory, schedules | Trip planning, analytics |
+</div>
 
-## 2) Data Architecture
+#### 🏗️ **1.2 Data Domains**
 
-### 2.1 Logical Data Model
+<div align="center">
+
+| 🚙 **Vehicle Telemetry** | 🎯 **Trip & Mission** | 🗺️ **Maps & Geospatial** | 🌤️ **Weather & Environment** | 🛡️ **Safety & Compliance** | 🏢 **Enterprise Integration** |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Description** | **Description** | **Description** | **Description** | **Description** | **Description** |
+| Operational data from vehicles | Trip lifecycle and execution | Spatial data and features | Environmental conditions | Evidence and documentation | Business system data |
+| **Key Entities** | **Key Entities** | **Key Entities** | **Key Entities** | **Key Entities** | **Key Entities** |
+| Sensor readings, status, diagnostics | Routes, assignments, events | Map tiles, routes, POIs | Weather readings, forecasts, alerts | Incidents, decisions, audit trails | Orders, inventory, schedules |
+| **Primary Consumers** | **Primary Consumers** | **Primary Consumers** | **Primary Consumers** | **Primary Consumers** | **Primary Consumers** |
+| Fleet health, PdM, safety monitoring | Dispatch, routing, analytics | Routing, mission planning | Routing, ODD management | Regulators, safety case | Trip planning, analytics |
+
+</div>
+
+### 🏗️ **2) Data Architecture**
+
+#### 📊 **2.1 Logical Data Model**
 
 ```mermaid
 erDiagram
@@ -133,7 +163,7 @@ erDiagram
     POLICY ||--o{ POLICY_DECISION : "governs"
 ```
 
-### 2.2 Physical Data Architecture
+#### 2.2 Physical Data Architecture
 
 ```mermaid
 flowchart TD
@@ -202,9 +232,9 @@ flowchart TD
     S3 -->|Metadata| DataCatalog
 ```
 
-## 3) Data Contracts & Schemas
+### 3) Data Contracts & Schemas
 
-### 3.1 Schema Management
+#### 3.1 Schema Management
 
 AtlasMesh Fleet OS uses a schema-first approach with centralized schema registry:
 
@@ -213,9 +243,9 @@ AtlasMesh Fleet OS uses a schema-first approach with centralized schema registry
 - **Validation**: Runtime schema validation with rejection of non-conforming data
 - **Evolution**: Compatibility checking in CI; breaking changes require version bump
 
-### 3.2 Core Schema Examples
+#### 3.2 Core Schema Examples
 
-#### Vehicle Telemetry Schema (Protobuf)
+##### Vehicle Telemetry Schema (Protobuf)
 
 ```protobuf
 syntax = "proto3";
@@ -276,7 +306,7 @@ message VehicleTelemetry {
 }
 ```
 
-#### Trip Event Schema (Avro)
+##### Trip Event Schema (Avro)
 
 ```json
 {
@@ -355,9 +385,9 @@ message VehicleTelemetry {
 }
 ```
 
-## 4) Data Lineage & Provenance
+### 4) Data Lineage & Provenance
 
-### 4.1 Provenance Tracking
+#### 4.1 Provenance Tracking
 
 All data in AtlasMesh Fleet OS includes provenance information:
 
@@ -367,17 +397,17 @@ All data in AtlasMesh Fleet OS includes provenance information:
 - **Processing history**: Transformations, enrichments, aggregations applied
 - **Authorization chain**: Decision authorities, approval records, policy references
 
-### 4.2 Freshness vs. Credibility Trade-offs
+#### 4.2 Freshness vs. Credibility Trade-offs
 
 The system implements explicit policies for balancing data freshness against credibility:
 
 ```yaml
-# Example freshness vs. credibility policy for map data
+## Example freshness vs. credibility policy for map data
 map_data_policy:
   default:
     min_credibility_score: 0.8
-    max_age_hours: 168  # 7 days
-    freshness_override_threshold: 0.95  # Very fresh data can override credibility requirement
+    max_age_hours: 168  ## 7 days
+    freshness_override_threshold: 0.95  ## Very fresh data can override credibility requirement
   
   construction_zones:
     min_credibility_score: 0.9
@@ -386,11 +416,11 @@ map_data_policy:
   
   regulatory_features:
     min_credibility_score: 0.95
-    max_age_hours: 720  # 30 days
+    max_age_hours: 720  ## 30 days
     freshness_override_threshold: 0.99
 ```
 
-### 4.3 Lineage Graph
+#### 4.3 Lineage Graph
 
 ```mermaid
 graph TD
@@ -422,9 +452,9 @@ graph TD
     TripAnalytics --> Reports[Reports]
 ```
 
-## 5) Data Privacy & Security
+### 5) Data Privacy & Security
 
-### 5.1 Privacy Controls
+#### 5.1 Privacy Controls
 
 AtlasMesh Fleet OS implements privacy-by-design principles:
 
@@ -435,7 +465,7 @@ AtlasMesh Fleet OS implements privacy-by-design principles:
 - **Consent management**: Recording and enforcement of processing permissions
 - **Data subject rights**: Mechanisms for access, rectification, erasure, portability
 
-### 5.2 Data Classification
+#### 5.2 Data Classification
 
 | Classification | Description | Examples | Controls |
 |----------------|-------------|----------|----------|
@@ -444,7 +474,7 @@ AtlasMesh Fleet OS implements privacy-by-design principles:
 | **Confidential** | Business sensitive, restricted access | Customer data, detailed operations | Strong encryption, access logging |
 | **Restricted** | Highly sensitive, strict controls | PII, security configurations, credentials | Encryption, access control, audit |
 
-### 5.3 Security Controls
+#### 5.3 Security Controls
 
 - **Encryption**: TLS 1.3 for transit; AES-256 for rest; envelope encryption for keys
 - **Access control**: RBAC/ABAC with least privilege; just-in-time access; MFA
@@ -452,9 +482,9 @@ AtlasMesh Fleet OS implements privacy-by-design principles:
 - **Data loss prevention**: Egress controls; watermarking; exfiltration detection
 - **Secure deletion**: Cryptographic erasure; retention enforcement; verification
 
-## 6) Analytics & Reporting
+### 6) Analytics & Reporting
 
-### 6.1 KPI Framework
+#### 6.1 KPI Framework
 
 AtlasMesh Fleet OS implements a comprehensive KPI framework aligned with strategic objectives:
 
@@ -467,7 +497,7 @@ AtlasMesh Fleet OS implements a comprehensive KPI framework aligned with strateg
 | **Experience** | On-Time Performance | On-time arrivals / Total arrivals | ≥95% | `trip_events` |
 | **Energy** | Energy Efficiency | kWh/km or L/km | Sector-specific | `energy_telemetry` |
 
-### 6.2 Metrics Implementation
+#### 6.2 Metrics Implementation
 
 Each KPI is implemented as a dbt model with clear definitions and lineage:
 
@@ -525,7 +555,7 @@ FULL OUTER JOIN assists a
 GROUP BY 1, 2, 3
 ```
 
-### 6.3 Reporting & Dashboards
+#### 6.3 Reporting & Dashboards
 
 AtlasMesh Fleet OS provides multi-level reporting capabilities:
 
@@ -534,9 +564,9 @@ AtlasMesh Fleet OS provides multi-level reporting capabilities:
 - **Compliance reports**: Automated generation of regulatory documentation
 - **Executive dashboards**: Strategic KPIs, business impact metrics, ROI tracking
 
-## 7) Machine Learning Integration
+### 7) Machine Learning Integration
 
-### 7.1 ML Pipeline Architecture
+#### 7.1 ML Pipeline Architecture
 
 ```mermaid
 flowchart TD
@@ -584,7 +614,7 @@ flowchart TD
     Monitoring --> Training
 ```
 
-### 7.2 Key ML Models
+#### 7.2 Key ML Models
 
 | Model | Purpose | Features | Architecture | Performance |
 |-------|---------|----------|--------------|------------|
@@ -593,7 +623,7 @@ flowchart TD
 | **Energy Optimization** | Charging/refueling optimization | Energy usage, prices, schedules | Reinforcement Learning | Cost reduction ≥15% |
 | **Anomaly Detection** | Unusual behavior identification | Telemetry, historical patterns | Isolation Forest/Autoencoder | Precision ≥85%, Recall ≥80% |
 
-### 7.3 ML Governance
+#### 7.3 ML Governance
 
 - **Model cards**: Standardized documentation of model purpose, training, limitations
 - **Explainability**: Feature importance, SHAP values, counterfactual explanations
@@ -601,9 +631,9 @@ flowchart TD
 - **Versioning**: Model versioning aligned with data and code versions
 - **Evaluation**: Standardized metrics, A/B testing, shadow deployment
 
-## 8) Data Integration Patterns
+### 8) Data Integration Patterns
 
-### 8.1 Enterprise Integration
+#### 8.1 Enterprise Integration
 
 AtlasMesh Fleet OS integrates with enterprise systems using the following patterns:
 
@@ -613,7 +643,7 @@ AtlasMesh Fleet OS integrates with enterprise systems using the following patter
 - **Idempotent operations**: Safe retry mechanisms for reliable integration
 - **Circuit breakers**: Fault isolation and graceful degradation
 
-### 8.2 External Data Sources
+#### 8.2 External Data Sources
 
 | Source | Integration Method | Update Frequency | Validation |
 |--------|-------------------|------------------|------------|
@@ -622,9 +652,9 @@ AtlasMesh Fleet OS integrates with enterprise systems using the following patter
 | **Traffic Services** | REST API / Streaming | 5-15 minutes | Temporal consistency, spatial validation |
 | **Regulatory Data** | Batch import / API | Weekly / On-change | Schema validation, authority verification |
 
-## 9) Data Quality & Governance
+### 9) Data Quality & Governance
 
-### 9.1 Data Quality Framework
+#### 9.1 Data Quality Framework
 
 AtlasMesh Fleet OS implements a comprehensive data quality framework:
 
@@ -633,7 +663,7 @@ AtlasMesh Fleet OS implements a comprehensive data quality framework:
 - **Monitoring**: Continuous quality metrics, anomaly detection, drift identification
 - **Remediation**: Error handling, correction workflows, root cause analysis
 
-### 9.2 Data Quality Dimensions
+#### 9.2 Data Quality Dimensions
 
 | Dimension | Definition | Measurement | Controls |
 |-----------|------------|-------------|----------|
@@ -643,7 +673,7 @@ AtlasMesh Fleet OS implements a comprehensive data quality framework:
 | **Timeliness** | Data is available when needed | Processing latency, freshness | SLAs, monitoring, alerting |
 | **Uniqueness** | Entities are represented once | Duplication rate | Deduplication, identity resolution |
 
-### 9.3 Data Governance
+#### 9.3 Data Governance
 
 - **Ownership**: Clear data domain ownership with RACI matrix
 - **Metadata management**: Comprehensive data catalog with business context
@@ -651,7 +681,7 @@ AtlasMesh Fleet OS implements a comprehensive data quality framework:
 - **Lifecycle management**: Creation, retention, archival, deletion workflows
 - **Compliance monitoring**: Regulatory requirement tracking and verification
 
-## 10) Metrics Dictionary
+### 10) Metrics Dictionary
 
 The metrics dictionary provides precise definitions for all KPIs and metrics used in the system:
 
@@ -663,7 +693,7 @@ The metrics dictionary provides precise definitions for all KPIs and metrics use
 | `energy_efficiency` | Energy consumption per distance | `SUM(energy_consumed) / SUM(distance_km)` | kWh/km or L/km | AVG | vehicle_type, sector |
 | `empty_miles_ratio` | Percentage of distance without payload | `SUM(empty_distance_km) / SUM(total_distance_km) * 100` | % | AVG | vehicle_type, sector |
 
-## 11) References & Related Documents
+### 11) References & Related Documents
 
 - [Architecture](01_Architecture.md)
 - [Requirements](03_Requirements_FRs_NFRs.md)
