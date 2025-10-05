@@ -1,17 +1,41 @@
-# 00_Problem_Statement_and_Solution_ALL_SECTORS.md
+<div align="center">
 
-> **Scope:** This page is **Problem + Solution only** across **Defense, Mining, Logistics, Ride-hailing**. Personas, JTBD, OKRs, KPIs math, and architecture live in their own files (links at bottom).
-> **House rules:** Tables over prose. Every outcome has a target, time window, and **source-of-truth (SoT)** in `kpis.yaml`. No vanity metrics.
+## 🎯 Problem Statement and Solution - All Sectors
+
+**Cross-Sector Problem Analysis and Solution Framework**
+
+</div>
 
 ---
 
-## A) Purpose
+### 📋 Table of Contents
+
+<div align="center">
+
+| 🎯 **[Purpose](#a-purpose)** | 🌪️ **[Cross-Sector Problem Themes](#b-cross-sector-problem-themes)** | 🎯 **[Cross-Sector Outcomes](#c-cross-sector-outcomes-1218-months)** | 🏗️ **[Solution Kernel](#d-solution-kernel)** |
+|:---:|:---:|:---:|:---:|
+| **Document Scope & Rules** | **Environmental & Integration Challenges** | **Measurable Success Targets** | **Common Solution Framework** |
+
+| 🏭 **[Sector Overlays](#e-sector-overlays)** | 📊 **[Success Metrics](#f-success-metrics)** | 📚 **[References](#g-references--related-docs)** |
+|:---:|:---:|:---:|
+| **Sector-Specific Solutions** | **KPIs & Measurement** | **Supporting Documentation** |
+
+</div>
+
+---
+
+> **📋 Scope:** This page is **Problem + Solution only** across **Defense, Mining, Logistics, Ride-hailing**. Personas, JTBD, OKRs, KPIs math, and architecture live in their own files (links at bottom).  
+> **📏 House rules:** Tables over prose. Every outcome has a target, time window, and **source-of-truth (SoT)** in `kpis.yaml`. No vanity metrics.
+
+---
+
+### 🎯 **A) Purpose**
 
 Explaining, **what problems we’re solving across sectors**, the **measurable outcomes** we commit to, the **solution kernel** that is common to all sectors, and the **sector overlays** that differ. This is the single source for **what success looks like** and **what ships / does not ship**.
 
 ---
 
-## B) Cross-Sector Problem Themes
+### B) Cross-Sector Problem Themes
 
 **Framing (3-part problem):** **Environmental brittleness** • **Integration drag** • **Compliance burden**.
 
@@ -27,7 +51,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## C) Cross-Sector Outcomes (12–18 months)
+### C) Cross-Sector Outcomes (12–18 months)
 
 | Outcome (SoT key)                                           |                                        Target |         Window | SoT                                   |
 | ----------------------------------------------------------- | --------------------------------------------: | -------------: | ------------------------------------- |
@@ -42,7 +66,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## D) Solution Kernel (what’s common to every sector)
+### D) Solution Kernel (what’s common to every sector)
 
 * **Policy engine (rules-as-code):** ODD limits, ROE/jurisdiction overlays, assist budgets, degraded modes.
 * **Venue/ODD overlays:** Machine-readable terrain, weather, lane/road classes, comms bands; gates trigger re-plan/safe-stop.
@@ -55,9 +79,9 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## E) Sector Overlays
+### E) Sector Overlays
 
-### E1) Defense
+#### E1) Defense
 
 **Problem themes (Defense)**
 
@@ -91,7 +115,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-### E2) Mining
+#### E2) Mining
 
 **Problem themes (Mining)**
 
@@ -124,7 +148,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-### E3) Logistics
+#### E3) Logistics
 
 **Problem themes (Logistics)**
 
@@ -157,7 +181,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-### E4) Ride-Hailing
+#### E4) Ride-Hailing
 
 **Problem themes (Ride-Hail)**
 
@@ -190,7 +214,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## F) Acceptance & Test Gates (cross-sector)
+### F) Acceptance & Test Gates (cross-sector)
 
 * **Twin-gated CI/CD:** Simulation (CARLA/Gazebo/OpenSCENARIO) **must pass** sector packs **and** regression diffs.
 * **Red/Amber rules:** Any **red** KPI → block release train; **amber** → release w/ mitigation & follow-up ticket.
@@ -199,7 +223,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## G) In-Scope / Out-of-Scope
+### G) In-Scope / Out-of-Scope
 
 **In-scope:** L4 geofenced autonomy; retrofit kits; Fleet OS; tele-assist **Q&A only**; safety case & evidence; WMS/TOS/ERP/V2X/map/weather adapters; accessibility; RTL/Arabic UI support.
 
@@ -207,7 +231,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## H) Use-Case Coverage Map (IDs → overlay → primary KPI)
+### H) Use-Case Coverage Map (IDs → overlay → primary KPI)
 
 > **Note:** Logistics feed contains duplicate IDs (L17, L18, L19). We will normalize to **L17a/L17b**, **L18a/L18b**, **L19a/L19b** in a follow-up PR (see Open Decisions).
 
@@ -253,7 +277,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## I) Failure Modes, Auto-Mitigations & Contingencies (fail-proofing)
+### I) Failure Modes, Auto-Mitigations & Contingencies (fail-proofing)
 
 | Failure mode               | Early indicators (telemetry)              | Auto-mitigation (no human)                                    | Contingency (time-boxed)                                | Exit criteria                                    |
 | -------------------------- | ----------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------ |
@@ -268,7 +292,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## J) Links to Sector Problem+Solution Deep Dives
+### J) Links to Sector Problem+Solution Deep Dives
 
 * **Defense** → `docs/00_Problem_Statement_and_Solution_DEFENSE.md`
 * **Mining** → `docs/00_Problem_Statement_and_Solution_MINING.md`
@@ -284,7 +308,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## 5) Open Decisions (tracked; owners TBD)
+### 5) Open Decisions (tracked; owners TBD)
 
 1. **Normalize duplicate Logistics IDs** (L17, L18, L19) → adopt **a/b suffix**; update filenames and references.
 2. **Terrain thresholds** by sector (grade, curvature, traction, articulation) → finalize per-sector policy values.
@@ -296,6 +320,7 @@ Explaining, **what problems we’re solving across sectors**, the **measurable o
 
 ---
 
-## Conclusion (why this wins)
+### Conclusion (why this wins)
 
 AtlasMesh Fleet OS closes the **operational reality gap** that has stalled AV deployments: it **hardens autonomy** for heat, dust, rugged terrain, and comms loss; **compresses integration** to weeks with certified adapters; and **turns compliance into code** with automated, audit-ready bundles. The kernel stays constant; sector overlays make it precise. Every promise here is **measured**, **gated**, and **enforced**: if it isn’t bound to a KPI and proven in sim, **it doesn’t ship**. This is how we become the **default platform** for autonomous fleets in harsh, regulated environments—**one codebase, many overlays, zero vendor lock-in**—and why we’ll scale across defense, mining, logistics, and ride-hail without breaking our standards or our speed. The problems we solve are **validated by extensive customer research**, the solution is **technically feasible with proven components**, and the market opportunity is **large and growing**. With proper execution, AtlasMesh Fleet OS can become the **default platform for autonomous fleet operations** in challenging environments globally. **The question is not whether these problems need solving—our customers tell us they do every day. The question is whether we can execute our solution fast enough to capture the market opportunity.**
+
