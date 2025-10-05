@@ -75,6 +75,12 @@ graph TB
     class Dashboard,VehicleGrid,LiveMap,EmergencyBtn,Alerts component
     class APIGateway,FleetManager,VehicleGW,Auth backend
     class WebSocketAPI,TelemetryStream,EventBus realtime
+
+    style Users fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph4 fill:transparent
 ```
 
 ### ⚡ **Critical User Flow** - Emergency Stop
@@ -140,7 +146,7 @@ flowchart TB
     FleetManager --> FleetDB
     
     %% Vehicle Control Flow
-    VehicleCard -->|POST /vehicles/{id}/commands| VehicleEndpoint
+    VehicleCard -->|POST /vehicles/id/commands| VehicleEndpoint
     VehicleEndpoint --> FleetManager
     FleetManager --> VehicleGateway
     VehicleGateway --> VehicleState
@@ -164,6 +170,11 @@ flowchart TB
     class AuthEndpoint,FleetEndpoint,VehicleEndpoint,EmergencyEndpoint,TelemetryWS api
     class AuthService,FleetManager,VehicleGateway,TelemetryIngest service
     class UserDB,FleetDB,VehicleState,TelemetryStream data
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
 ```
 
 ## 🔗 **Integration Contracts**
@@ -303,5 +314,6 @@ npm run test:a11y
 | Arabic text rendering | Verify font loading, check CSS direction properties |
 
 ---
+
 
 **🎯 Owner:** Frontend Platform Team | **📧 Contact:** frontend-team@atlasmesh.com
