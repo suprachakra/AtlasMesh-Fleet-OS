@@ -133,6 +133,7 @@ sequenceDiagram
     participant FF as Feature Flags
     
     Note over U,FF: Mission Planning & Dispatch
+    rect rgb(240, 248, 255)
     U->>CC: Login to Control Center
     CC->>AG: Authenticate user
     AG->>AS: Validate credentials
@@ -148,8 +149,10 @@ sequenceDiagram
     AG->>TS: Create trip request
     TS-->>AG: Trip created (ID: trip-123)
     AG-->>CC: Trip creation success
-    
+    end
+        rect rgb(240, 255, 240)
     Note over U,FF: Vehicle Assignment & Route Planning
+
     CC->>AG: Request vehicle assignment
     AG->>DS: Dispatch trip-123
     DS->>FM: Query available vehicles
@@ -160,8 +163,10 @@ sequenceDiagram
     RS-->>DS: Route options with ETAs
     DS-->>AG: Assignment: vehicle-001 → trip-123
     AG-->>CC: Assignment confirmed
+    end
     
     Note over U,FF: Mission Execution
+       rect rgb(255, 248, 240)
     DS->>VA: Send mission to vehicle-001
     VA->>VA: Load vehicle profile & policies
     VA->>RS: Get detailed route
@@ -189,20 +194,25 @@ sequenceDiagram
             AG-->>CC: Emergency stop executed
         end
     end
-    
+    end
+            rect rgb(255, 240, 255)
     Note over U,FF: Mission Completion
+
     VA->>TS: Mission completed
     TS->>TI: Log completion event
     TS-->>CC: Mission status update
     CC->>U: Mission completion notification
-    
+    end
+     rect rgb(240, 255, 255)
     Note over U,FF: Analytics & Reporting
+       
     U->>CC: View mission analytics
     CC->>AG: GET /api/v1/analytics/trips/trip-123
     AG->>TI: Query processed telemetry
     TI-->>AG: Mission metrics & KPIs
     AG-->>CC: Analytics data
     CC->>U: Display performance dashboard
+    end
 ```
 
 ## Data Flow Diagram - Complete Platform Data Movement
