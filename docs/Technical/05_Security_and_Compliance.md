@@ -1,19 +1,43 @@
-# AtlasMesh Fleet OS — Security and Compliance
+<div align="center">
 
-This document outlines the security architecture, compliance approach, and operational security procedures for AtlasMesh Fleet OS.
+# 🔒 AtlasMesh Fleet OS — Security and Compliance
 
-## 1) Security Architecture Overview
+**Comprehensive Security Architecture for Autonomous Fleet Operations**
 
-### 1.1) Security Principles
+</div>
 
-| Principle | Description | Implementation |
-| --- | --- | --- |
-| **Defense in Depth** | Multiple security layers protecting critical assets | Network segmentation, access controls, encryption, monitoring |
-| **Least Privilege** | Minimal access rights needed for function | Role-based access control, fine-grained permissions |
-| **Secure by Design** | Security built into architecture from start | Threat modeling, secure coding, architecture reviews |
-| **Zero Trust** | No implicit trust regardless of location | Authentication for all access, continuous verification |
-| **Resilience** | System continues functioning during attack | Redundancy, isolation, graceful degradation |
-| **Auditability** | All security events recorded and traceable | Comprehensive logging, tamper-evident records |
+---
+
+## 📋 Table of Contents
+
+<div align="center">
+
+| 🔒 **[Security Architecture](#1-security-architecture-overview)** | 🛡️ **[Security Domains](#12-security-domains)** | 🔐 **[Authentication & Authorization](#2-authentication--authorization)** | 📋 **[Compliance Framework](#3-compliance-framework)** |
+|:---:|:---:|:---:|:---:|
+| **Core Principles & Trust Boundaries** | **Security Components** | **Identity & Access Management** | **Regulatory Compliance** |
+
+| 🔍 **[Security Monitoring](#4-security-monitoring)** | 🚨 **[Incident Response](#5-incident-response)** | 📚 **[References](#6-references--related-docs)** |
+|:---:|:---:|:---:|
+| **Threat Detection & Response** | **Security Incident Management** | **Supporting Documentation** |
+
+</div>
+
+---
+
+## 🔒 **1) Security Architecture Overview**
+
+### 🛡️ **1.1) Security Principles**
+
+<div align="center">
+
+| 🛡️ **Defense in Depth** | 🔐 **Least Privilege** | 🏗️ **Secure by Design** | 🚫 **Zero Trust** | 🛡️ **Resilience** | 📋 **Auditability** |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Description** | **Description** | **Description** | **Description** | **Description** | **Description** |
+| Multiple security layers protecting critical assets | Minimal access rights needed for function | Security built into architecture from start | No implicit trust regardless of location | System continues functioning during attack | All security events recorded and traceable |
+| **Implementation** | **Implementation** | **Implementation** | **Implementation** | **Implementation** | **Implementation** |
+| Network segmentation, access controls, encryption, monitoring | Role-based access control, fine-grained permissions | Threat modeling, secure coding, architecture reviews | Authentication for all access, continuous verification | Redundancy, isolation, graceful degradation | Comprehensive logging, tamper-evident records |
+
+</div>
 
 ### 1.2) Security Domains
 
