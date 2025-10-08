@@ -1,6 +1,6 @@
 ## 02_Epics_and_Strategic_Alignment.md
 
-**Positioning:** *AtlasMesh is a Fleet OS — not an autonomy stack.* We orchestrate mixed fleets, decisions, evidence, and operations across vendors, vehicles, sensors, maps, and clouds.
+**Positioning:** *AtlasMesh is a Fleet OS - not an autonomy stack.* We orchestrate mixed fleets, decisions, evidence and operations across vendors, vehicles, sensors, maps, and clouds.
 
 ---
 
@@ -191,4 +191,5 @@
 * **E12:** FR-015/016/017/018; NFR-Port-02/03
 
 ---
+
 
