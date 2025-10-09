@@ -25,7 +25,7 @@
 ---
 
 > **📋 Scope:** This page is **Problem + Solution only** across **Defense, Mining, Logistics, Ride-hailing**. Personas, JTBD, OKRs, KPIs math, and architecture live in their own files (links at bottom).  
-> **📏 House rules:** Tables over prose. Every outcome has a target, time window, and **source-of-truth (SoT)** in `kpis.yaml`. No vanity metrics.
+> **📏 House rules:** Tables over prose. Every outcome has a target, time window and **source-of-truth (SoT)** in `kpis.yaml`. No vanity metrics.
 
 ---
 
