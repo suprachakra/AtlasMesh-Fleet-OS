@@ -342,30 +342,52 @@ graph TB
 
 ## 🔧 Implementation Framework
 
-### Deployment Phases by Sector
+### 18-Month Strategic Roadmap
+
+<div align="center">
+
+**Based on [Product Roadmap & Milestones](12_Product_Roadmap_and_Milestones.md)**
+
+</div>
+
+#### **Phase 1: MVP & Foundation (Months 1-6)**
+- **Core Platform**: Vehicle abstraction, policy engine, twin-gated CI/CD
+- **Safety Framework**: Evidence automation, compliance gates, audit trails
+- **Lighthouse Pilots**: 3 sectors (Mining/Defense/Logistics) with 90-day TTV
+- **Success Metrics**: 99.0% availability, ≤0.5 assists/1k km, CSAT ≥4.5
+
+#### **Phase 2: Pilots & Validation (Months 7-12)**
+- **Enterprise Integration**: WMS/TOS/ERP adapters, predictive maintenance
+- **Multi-Site Operations**: Weather-aware routing, cross-site management
+- **Scale Preparation**: 50+ vehicles, 100% observability, performance optimization
+- **Success Metrics**: 10 customers, 100+ vehicles, $10M ARR run-rate
+
+#### **Phase 3: Scale & Expansion (Months 13-18)**
+- **Market Leadership**: 50+ customers, $35M ARR, 12% market share
+- **Advanced AI/ML**: Next-gen models, real-time optimization, IP portfolio
+- **International Expansion**: Multi-region deployment, compliance packs
+- **Success Metrics**: #1 in harsh environments, ≥60% gross margin
+
+### Deployment Timeline by Sector
 
 <div align="center">
 
 ```mermaid
 gantt
-    title AtlasMesh Fleet OS Deployment Timeline
+    title AtlasMesh Fleet OS 18-Month Roadmap
     dateFormat  YYYY-MM-DD
-    section Defense
-    Site Assessment    :2024-01-01, 30d
-    Integration        :30d
-    Operations         :30d
-    section Mining
-    Site Assessment    :2024-01-15, 20d
-    Integration        :20d
-    Operations         :20d
-    section Logistics
-    Site Assessment    :2024-02-01, 15d
-    Integration        :15d
-    Operations         :15d
-    section Ride-Hail
-    Site Assessment    :2024-02-15, 10d
-    Integration        :10d
-    Operations         :10d
+    section Foundation
+    Core Platform        :2024-01-01, 90d
+    Safety Framework     :2024-01-15, 90d
+    Twin-Gated CI/CD    :2024-02-01, 60d
+    section Pilots
+    Mining Lighthouse   :2024-04-01, 120d
+    Defense Lighthouse  :2024-04-15, 120d
+    Logistics Lighthouse:2024-05-01, 120d
+    section Scale
+    Multi-Site Ops      :2024-08-01, 180d
+    Enterprise Integration:2024-09-01, 150d
+    Market Leadership   :2024-12-01, 180d
 ```
 
 </div>
@@ -468,6 +490,7 @@ gantt
 ---
 
 *Last Updated: October 2024 | Version 3.0 | © AtlasMesh Inc.*
+
 
 
 
