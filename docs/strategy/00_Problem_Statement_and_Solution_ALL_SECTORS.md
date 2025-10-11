@@ -9,7 +9,8 @@
 [![Logistics](https://img.shields.io/badge/Logistics-24%20Use%20Cases-green?style=for-the-badge)](#-logistics-sector)
 [![Ride-Hail](https://img.shields.io/badge/Ride--Hail-21%20Use%20Cases-purple?style=for-the-badge)](#-ride-hail-sector)
 
-**📊 98 Total Use Cases** | **🌍 4 Sectors** | **💰 $45B Market** | **🚀 99.3%+ Target Availability**
+**📊 98 Total Use Cases** | **🌍 4 Sectors** | **💰 [$12.5B Focused Enterprise TAM](02_Market_Insights_&_Jobs-To-Be-Done_JTBD.md#1-market-layers-provenance--sensitivity)** | **🚀 99.3%+ Target Availability**
+
 
 </div>
 
@@ -130,7 +131,7 @@ graph TB
 
 <div align="center">
 
-**27 Use Cases** | **$12B Market** | **Focus: Mission Success in Contested Environments**
+| **27 Use Cases** | **$17.5B Market** | **Focus: Mission Success in Contested Environments** | 
 
 </div>
 
@@ -187,7 +188,7 @@ graph TB
 
 <div align="center">
 
-**26 Use Cases** | **$8B Market** | **Focus: 24/7 Productivity in Harsh Environments**
+| **26 Use Cases** | **$17.2B Market** | **Focus: 24/7 Productivity in Harsh Environments** |
 
 </div>
 
@@ -243,7 +244,7 @@ graph TB
 
 <div align="center">
 
-**24 Use Cases** | **$18B Market** | **Focus: Seamless Flow Through Complex Networks**
+| **24 Use Cases** | **$31.5B Market** | **Focus: Seamless Flow Through Complex Networks** |
 
 </div>
 
@@ -294,7 +295,7 @@ graph TB
 
 <div align="center">
 
-**21 Use Cases** | **$7B Market** | **Focus: Safe, Accessible Urban Mobility at Scale**
+| **21 Use Cases** | **$189.9B Market** | **Focus: Safe, Accessible Urban Mobility at Scale** |
 
 </div>
 
@@ -467,6 +468,7 @@ gantt
 ---
 
 *Last Updated: October 2024 | Version 3.0 | © AtlasMesh Inc.*
+
 
 
 
