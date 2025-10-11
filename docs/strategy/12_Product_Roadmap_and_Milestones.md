@@ -1,6 +1,6 @@
-# 08_Product_Roadmap_ & Milestones
+## Product_Roadmap_&_Milestones
 
-## Executive Summary
+### Executive Summary
 
 **18-Month Strategic Roadmap (2-week sprints):** MVP → Pilots → Scale. AtlasMesh Fleet OS is delivered with **zero-compromise safety** and a **No-Loophole Assurance Layer (NLAL)** embedded into every sprint: twin-gated CI/CD, policy shadow-evals, contract tests, chaos & red-team drills, audit-evidence gates, and automatic rollbacks. Each milestone is wired to OKRs, FR/NFR IDs, and sector packs.
 
@@ -12,17 +12,17 @@
 * **Months 19–24: Qualified Agnosticism** — Vehicle HAL, sensor packs, variant budget enforcement, conformance testing, multi-dimensional validation (Phase 3 deliverables).
 
 
-# Capacity & Hiring Plan (Months 1–18)
+## Capacity & Hiring Plan (Months 1–18)
 
 **Assumptions:** 2-week sprints; blended velocity grows with ramp & learning; 20% engineering slack baked in for unplanned work and incidents.
 
-## 0. Velocity Model & Critical Path
+### 0. Velocity Model & Critical Path
 
 * **Velocity formula:** `Team SP/Sprint = #Devs × 7 SP × focus_factor`, where focus_factor starts 0.65 (M1–2), 0.8 (M3–6), 0.9 (M7–12), 0.95 (M13–18).
 * **System critical path (hard gates):** HAL & ODD (E-01/E-02) → Twin Gates (E-03/E-12/E-36) → Evidence/Compliance (E-04) → Dispatch/Routing (E-05) → Control Center/Assist (E-09/E-13) → Deployment Automation (E-14) → Enterprise Integration (E-15).
 * **Slack policy:** ≥15% sprint capacity reserved for defects/drift; cannot be traded without DAB approval.
 
-## 1. Capacity by Month (FTE & Velocity)
+### 1. Capacity by Month (FTE & Velocity)
 
 | Month | Total FTE | Eng (Core/Edge/BE/FE) | ML/Perception | SRE/Sec | PM/Design | QA | Est. Velocity (SP/sprint) |
 | ----- | --------: | --------------------: | ------------: | ------: | --------: | -: | ------------------------: |
@@ -43,11 +43,11 @@
 
 ---
 
-# FinOps Guardrails & Budgets
+## FinOps Guardrails & Budgets
 
 **Principles:** Transparent COGS, predictable OpEx/CapEx, ARR-linked spend. FinOps gates block expansions that violate guardrails.
 
-## 1. Budget Guardrails (Targets)
+### 1. Budget Guardrails (Targets)
 
 * **Cloud COGS ≤ 22% of ARR** (run-rate), trending ≤ 18% by Month 18.
 * **Gross Margin ≥ 60%** by Month 12; ≥ 65% by Month 18.
@@ -58,7 +58,7 @@
 * **SRE headcount ratio:** 1:12 services (M1–6) → 1:18 (M7–12) → 1:24 (M13–18).
 * **Contracts:** No provider concentration >40% of COGS category (cloud, maps, comms, sensors).
 
-## 2. Phase Budgets (CapEx/OpEx Bands)
+### 2. Phase Budgets (CapEx/OpEx Bands)
 
 | Phase                | CapEx (pilot kits, testbed) | OpEx/mo by Phase | Notes                                                           |
 | -------------------- | --------------------------: | ---------------: | --------------------------------------------------------------- |
@@ -79,9 +79,9 @@
 
 ---
 
-## PM Community of Practice (CoP) - Operating Cadence
+### PM Community of Practice (CoP) - Operating Cadence
 
-### Cadence & Rituals (Async-First)
+#### Cadence & Rituals (Async-First)
 
 **Weekly (45 minutes)**:
 - **Backlog Intake & Prioritization** - Single funnel review; RICE × Safety × Variant-cost scoring
@@ -113,7 +113,7 @@
 - **Participants**: Platform PM, Integration leads, Partner team
 - **Output**: Conformance reports, partner certification updates
 
-### Decision Model (DACI)
+#### Decision Model (DACI)
 
 **For all cross-team product decisions:**
 - **Driver** (D): Track Lead or Epic owner
@@ -125,7 +125,7 @@
 
 **Decision Log**: All decisions recorded in `docs/strategy/Decision_Log_DACI.md` with rationale, alternatives considered, and approval chain.
 
-### Governance Integration
+#### Governance Integration
 
 **PM CoP integrates with existing governance**:
 - **Change Control Board (CCB)**: Safety-critical and variant budget exceptions
@@ -134,7 +134,7 @@
 
 ---
 
-### Assurance Layer (AL) — Always-On Controls
+#### Assurance Layer (AL) — Always-On Controls
 
 1. **Twin-Gated CI/CD (E-03, FR-036/062):** PRs fail if sim KRs regress (assist rate, safe-stop, policy).
 2. **Evidence Gate (E-04, FR-029, NFR-Comp-01/02):** Releases blocked unless evidence bundles are 100% complete & signed.
@@ -155,7 +155,7 @@
 
 ---
 
-## 18-Month Deliverables & Milestones
+### 18-Month Deliverables & Milestones
 
 | Timeframe (Sprints / Month) | Phase & Objectives                                                       | Key Activities / Tasks                                                                                                                                                       | Integrated Epics                   | Teams Involved                                                  | Dependencies                                            | Sprint Goals & Success Metrics                                                                                                                          | Deliverables                                                                       | SAFe Milestones                                                                                             | Risks & Mitigations                                                            | Outcomes                                            |
 | --------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------- |
@@ -180,7 +180,7 @@
 
 ---
 
-## Success Validation Framework (18-Month Targets)
+### Success Validation Framework (18-Month Targets)
 
 | Category              | Target                                         | Validation                                                   | Confidence |
 | --------------------- | ---------------------------------------------- | ------------------------------------------------------------ | ---------- |
@@ -190,7 +190,7 @@
 | Financial Performance | **$35M ARR**, **≥60% gross margin**            | Finance systems, signed MSAs/SOWs                            | 92%        |
 | Market Position       | **12% share**, **#1 in harsh environments**    | Analyst reports, awards, customer councils                   | 88%        |
 
-### Embedded Gates & Dependencies (applies across all sprints)
+#### Embedded Gates & Dependencies (applies across all sprints)
 
 * **G-1 Policy Perf:** NFR-P-02 P99 ≤10ms before scaling E-02.
 * **G-3 Multi-OEM:** FR-001/002 ≥95% conformance before first multi-OEM site.
@@ -198,7 +198,7 @@
 * **G-5 Evidence:** FR-029/NFR-Comp-01 at 100% for 2 consecutive releases before regulated go-lives.
 * **Auto-Resolution:** FR-053 ⇢ FR-009 + FR-058; FR-054 ⇢ FR-038; FR-060 ⇢ FR-027 + FR-012; FR-062 ⇢ FR-036; FR-052 ⇢ FR-030; FR-012 ⇢ FR-015/016/017.
 
-### Tie-backs to Epics & OKRs
+#### Tie-backs to Epics & OKRs
 
 * **O-1 Safety:** G-S1, G-M1/M2 hard-block releases; ML fallback & degraded modes wired to **E-3/E-4/E-9**.
 * **O-2 Time-to-Value:** Capacity model + G-X keep dates realistic; vendor swap procedure protects schedule (**E-1/E-2/E-14/E-15**).
@@ -209,21 +209,21 @@
 
 ---
 
-# Vendor/OEM Dependency Plan
+## Vendor/OEM Dependency Plan
 
-## 1. Dual-Sourcing & SLAs
+### 1. Dual-Sourcing & SLAs
 
 * **Maps:** HERE/Mapbox/OSM-Lanelet; SLA ≥99.9%, notice ≥180 days for breaking changes; delta QA harness (FR-015/016).
 * **Comms:** Primary telco + satellite fallback; **failover ≤ 2s** (NFR-Port-03).
 * **Sensors:** Radar/LiDAR/Camera have at least two qualified vendors each; **lead times** documented (8–12 weeks typical); lab validation matrix per vendor.
 * **Edge compute:** Orin AGX + x86 fallback; A/B image parity, secure boot attestation.
 
-## 2. Change Control & Escrow
+### 2. Change Control & Escrow
 
 * **MSA:** 6-month change notice, versioned APIs, monthly reliability report, penalty credits.
 * **IP/Keys:** Escrow for SDKs/firmware; rolling key rotation; SBOM feed required (FR-028/NFR-Sec-03).
 
-## 3. Swap Procedure (72-hour objective)
+### 3. Swap Procedure (72-hour objective)
 
 1. Trigger: SLA breach >2× in 30 days or critical API change without notice.
 2. Activate adapter shim; run contract tests CI (FR-038).
@@ -232,9 +232,9 @@
 
 ---
 
-# International Compliance Pack & Rollout Sequencing
+## International Compliance Pack & Rollout Sequencing
 
-## 1. Regional Checklists (blocking)
+### 1. Regional Checklists (blocking)
 
 * **US:** FMVSS/NHTSA guidance, MSHA (mining), SOC2/ISO 27001, CCPA. Artifacts: safety case, cybersecurity plan, data maps.
 * **EU:** 26262/21448, **R155/R156**, GDPR DPIA, **Data residency** per member state.
@@ -242,7 +242,7 @@
 * **India:** CERT-In incident timelines, data localization where applicable, OEM integration rules.
 * **Australia:** Privacy Act, workplace H&S, mining regs.
 
-## 2. Rollout Gates 
+### 2. Rollout Gates 
 
 * **G-C1:** Residency policy tests green (FR-064/NFR-Priv-03).
 * **G-C2:** R155/R156 auditor attestation uploaded for OTA & CSMS.
@@ -251,7 +251,7 @@
 
 ---
 
-# GTM Scorecard by Phase (targets are blocking)
+## GTM Scorecard by Phase (targets are blocking)
 
 | Phase                | Pipeline ($) | Win-rate | CAC Payback |   NRR | References | Notes                                 |
 | -------------------- | -----------: | -------: | ----------: | ----: | ---------: | ------------------------------------- |
@@ -267,7 +267,7 @@
 
 ---
 
-# Security Calendar & Resilience Drills
+## Security Calendar & Resilience Drills
 
 | Cadence     | Activity                        | Owner      | SLO/Gate                                    |
 | ----------- | ------------------------------- | ---------- | ------------------------------------------- |
@@ -283,21 +283,21 @@
 
 ---
 
-# ML Risk Management Plan
+## ML Risk Management Plan
 
-## 1. Model Governance
+### 1. Model Governance
 
 * **Model Cards** for each ML asset; **risk class** (safety-critical vs advisory).
 * **Retrain cadence:** monthly (advisory), quarterly (safety-critical) or on **drift**.
 * **Data contracts:** schema + quality checks; PSI < **0.2** or KS p-value ≥ **0.05**; else **G-M1 Drift Gate** triggers.
 
-## 2. Safety & Fallbacks
+### 2. Safety & Fallbacks
 
 * **HIL window:** If model confidence < **0.85** or uncertainty > **2σ**, route to Tele-Assist (FR-020/041) within 10s.
 * **Degraded mode:** Cap speed by 30%, expand buffers; require policy approval for continued ops (FR-043).
 * **Explainability:** Log feature attributions for safety-critical decisions; stored in audit (FR-011/029).
 
-## 3. Monitoring SLIs
+### 3. Monitoring SLIs
 
 * **Precision/Recall ≥ 0.9/0.9** on safety suites; **latency ≤ 20ms**/frame on edge.
 * **Drift alerts** TTD < 24h; **false assist rate** contribution < 0.05/1000 km (ties NFR-S-01).
@@ -315,14 +315,14 @@
 
 ---
 
-# Decision Governance & Go/No-Go (DAB)
+## Decision Governance & Go/No-Go (DAB)
 
-## 1. Deployment Approval Board (DAB)
+### 1. Deployment Approval Board (DAB)
 
 * **Members:** SVP Eng (Chair), Safety Lead, Security Lead, SVP Product, Compliance Lead, SRE Lead, Finance (observer).
 * **Authority:** **Stop-the-line** power; only DAB can override hard gates.
 
-## 2. Go/No-Go Checklist (must be all green)
+### 2. Go/No-Go Checklist (must be all green)
 
 * **Product:** Epic acceptance met; SUS ≥ 80 (NFR-U-01).
 * **Safety:** Assists ≤ 0.5/1k km trend; 0 critical incidents.
@@ -333,10 +333,11 @@
 * **SRE:** Availability & MTTR within SLO; DR drill passed ≤ last 90 days.
 * **GTM:** Scorecard met; references on track.
 
-## 3. Escalation Paths
+### 3. Escalation Paths
 
 * **P0:** SVP Eng + Safety Lead immediate; DAB convenes ≤ 2h.
 * **P1:** Area owner fixes ≤ 48h; DAB weekly review.
 * **P2:** Backlog with risk acceptance by SVP Product.
+
 
 ---
