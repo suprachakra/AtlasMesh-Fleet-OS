@@ -1,4 +1,4 @@
-# AtlasMesh Fleet OS - Product Decision Log (DACI)
+## Product Decision Log (DACI)
 
 **Purpose**: Single source of truth for all cross-team product decisions  
 **Decision Model**: DACI (Driver-Approver-Contributors-Informed)  
@@ -6,7 +6,7 @@
 
 ---
 
-## Decision Log Format
+### Decision Log Format
 
 Each decision entry follows this structure:
 
@@ -39,14 +39,14 @@ traceability:
   epics: ["[E-##]"]
   adrs: ["[ADR-####]"]
 next_steps: ["[Action 1]", "[Action 2]"]
-review_date: "YYYY-MM-DD"  # When to revisit
+review_date: "YYYY-MM-DD"  ## When to revisit
 ```
 
 ---
 
-## Active Decisions (2025)
+### Active Decisions (2025)
 
-### DEC-2025-10-001: Qualified Agnosticism Framework Adoption
+#### DEC-2025-10-001: Qualified Agnosticism Framework Adoption
 **Date**: 2025-10-02  
 **Status**: ✅ Approved
 
@@ -90,7 +90,7 @@ Adopt qualified agnosticism with:
 
 ---
 
-### DEC-2025-10-002: PM Community of Practice Framework
+#### DEC-2025-10-002: PM Community of Practice Framework
 **Date**: 2025-10-04  
 **Status**: ✅ Approved
 
@@ -135,7 +135,7 @@ Establish PM Community of Practice with:
 
 ---
 
-## Decision Template (Copy for New Decisions)
+### Decision Template (Copy for New Decisions)
 
 ```yaml
 decision_id: DEC-YYYY-MM-###
@@ -168,39 +168,40 @@ review_date: ""
 
 ---
 
-## Decision Process
+### Decision Process
 
-### 1. Proposal
+#### 1. Proposal
 - Driver creates decision entry with status "proposed"
 - Circulates to Contributors for feedback (48h minimum)
 - Updates based on feedback
 
-### 2. Review
+#### 2. Review
 - Presents to Approver(s) in relevant meeting (Weekly/Monthly)
 - Approver may: Approve, Request Changes, Reject
 - Decision documented with rationale
 
-### 3. Communication
+#### 3. Communication
 - Decision log updated with final status
 - Informed stakeholders notified
 - Next steps assigned with owners
 
-### 4. Execution
+#### 4. Execution
 - Driver ensures next steps are tracked
 - Progress reviewed in subsequent meetings
 
-### 5. Review & Retrospective
+#### 5. Review & Retrospective
 - Decisions reviewed on scheduled review_date
 - Outcomes assessed against expectations
 - Learnings captured for future decisions
 
 ---
 
-## Decision History Archive
+### Decision History Archive
 
 [Older decisions moved here after review_date passes]
 
 ---
 
 **All product decisions are documented in this log to ensure transparency, traceability, and organizational learning.**
+
 
