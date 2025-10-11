@@ -23,7 +23,7 @@
 |:---:|:---:|:---:|
 | **30-Second Summary** | **Common Problems & Solutions** | **KPIs & Outcomes** |
 
-| [🛡️ Defense](##%EF%B8%8F-defense-sector) | [⛏️ Mining](#-mining-sector) | [🚛 Logistics](#-logistics-sector) | [🚗 Ride-Hail](#-ride-hail-sector) |
+| [🛡️ Defense](##%EF%B8%8F-defense-sector) | [⛏️ Mining](#%EF%B8%8F-mining-sector) | [🚛 Logistics](#-logistics-sector) | [🚗 Ride-Hail](#-ride-hail-sector) |
 |:---:|:---:|:---:|:---:|
 | **27 Use Cases** | **26 Use Cases** | **24 Use Cases** | **21 Use Cases** |
 
@@ -467,5 +467,6 @@ gantt
 ---
 
 *Last Updated: October 2024 | Version 3.0 | © AtlasMesh Inc.*
+
 
 
