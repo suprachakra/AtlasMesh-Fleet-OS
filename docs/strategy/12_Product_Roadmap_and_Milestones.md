@@ -2,7 +2,7 @@
 
 ### Executive Summary
 
-**18-Month Strategic Roadmap (2-week sprints):** MVP → Pilots → Scale. AtlasMesh Fleet OS is delivered with **zero-compromise safety** and a **No-Loophole Assurance Layer (NLAL)** embedded into every sprint: twin-gated CI/CD, policy shadow-evals, contract tests, chaos & red-team drills, audit-evidence gates, and automatic rollbacks. Each milestone is wired to OKRs, FR/NFR IDs, and sector packs.
+**18-Month Strategic Roadmap (2-week sprints):** MVP → Pilots → Scale. AtlasMesh Fleet OS is delivered with **zero-compromise safety** embedded into every sprint: twin-gated CI/CD, policy shadow-evals, contract tests, chaos & red-team drills, audit-evidence gates, and automatic rollbacks. Each milestone is wired to OKRs, FR/NFR IDs, and sector packs.
 
 **Phases**
 
@@ -12,7 +12,7 @@
 * **Months 19–24: Qualified Agnosticism** — Vehicle HAL, sensor packs, variant budget enforcement, conformance testing, multi-dimensional validation (Phase 3 deliverables).
 
 
-## Capacity & Hiring Plan (Months 1–18)
+### Capacity & Hiring Plan (Months 1–18)
 
 **Assumptions:** 2-week sprints; blended velocity grows with ramp & learning; 20% engineering slack baked in for unplanned work and incidents.
 
@@ -71,7 +71,7 @@
 * Target **CAC payback ≤ 12 months** by Month 12; **≤ 9 months** by Month 18.
 * **Unit economics:** Platform fee + per-vehicle + sector add-ons. Ensure **ARR/vehicle ≥ 4 × total monthly COGS/vehicle**.
 
-**FinOps Gates (new):**
+**FinOps Gates:**
 
 * **G-F1:** COGS >22% ARR for 2 consecutive months → freeze nonessential scale-outs.
 * **G-F2:** Cloud/storage cost/GB exceeds guardrail → enforce data retention downtiers; invoke compression/purging plan (ties to FR-050).
@@ -338,6 +338,4 @@
 * **P0:** SVP Eng + Safety Lead immediate; DAB convenes ≤ 2h.
 * **P1:** Area owner fixes ≤ 48h; DAB weekly review.
 * **P2:** Backlog with risk acceptance by SVP Product.
-
-
 ---
