@@ -250,6 +250,7 @@ graph TB
 ### Logistics Use Case Matrix
 
 <div align="center">
+    
 | ID | Use Case | Mission Type | Key Challenge | Primary KPI |
 |:---:|:---|:---:|:---:|:---:|
 | **L1** | [Yard Switcher](../use-cases/logistics/L1_yard_switcher_dock_yard.md) | `YARD_RUN` | Congestion | Moves/hour |
@@ -466,3 +467,4 @@ gantt
 ---
 
 *Last Updated: October 2024 | Version 3.0 | © AtlasMesh Inc.*
+
