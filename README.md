@@ -638,7 +638,7 @@ atlasmesh-fleet-os/
 
 </div>
 
-> 📖 **Detailed Roadmap**: [Product Roadmap](docs/strategy/12_Product_Roadmap_and_Milestones.md) with PM CoP cadence and release plan
+> 📖 **Detailed Roadmap**: [Product Roadmap](docs/strategy/12_Product_Roadmap_and_Milestones.md#18-month-deliverables--milestones) with PM CoP cadence and release plan
 
 ## 🛠️ Prerequisites
 
