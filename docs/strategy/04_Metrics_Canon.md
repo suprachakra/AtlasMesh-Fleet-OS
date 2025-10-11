@@ -1,8 +1,8 @@
-# 04_Metrics_Canon.md
+## Metrics_Canon
 
 This is the **single source of truth** for metric IDs, definitions, units, windows, SoT views, owners, alert bands, and default SLO guidance. OKR targets live in the OKR file.
 
-## 0) Taxonomy & conventions
+### 0) Taxonomy & conventions
 
 * **ID pattern:** `MET.<FAMILY>.<NAME>` (upper snake). Families: **SAFETY, RELIAB, OPS, PROD, COST, EXP, GOV, QUAL, SEC, DATA**.
 * **Window default:** rolling **30-day** unless otherwise specified.
@@ -14,7 +14,7 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 
 ---
 
-## 1) Source-of-Truth map
+### 1) Source-of-Truth map
 
 | Family | Primary SoT view (dbt)       | Notes                                        |
 | ------ | ---------------------------- | -------------------------------------------- |
@@ -31,12 +31,12 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 
 ---
 
-## 2) Canonical metrics (grouped)
+### 2) Canonical metrics (grouped)
 
 > **Default SLO bands** are guidance; period targets are set in OKRs.
 > Columns: **ID | Name | Definition | Formula (sketch) | Window | SoT | Owner | Default SLO | Alerts | Maturity**
 
-### 2.1 SAFETY
+#### 2.1 SAFETY
 
 | ID                                | Name                      | Definition                             | Formula                   | Window | SoT    | Owner            | Default SLO | Alerts    | M  |
 | --------------------------------- | ------------------------- | -------------------------------------- | ------------------------- | ------ | ------ | ---------------- | ----------- | --------- | -- |
@@ -47,7 +47,7 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 | **MET.SAFETY.GRADE_VIOLATIONS**   | Grade/traction violations | Count of grade > policy or slip events | `count(policy_violation)` | 30d    | SAFETY | Safety           | =0          | Red >0    | M2 |
 | **MET.SAFETY.HAZMAT_VIOL**        | Hazmat policy violations  | Violations per 10k km (hazmat trips)   | `viol/(haz_km/10k)`       | 30d    | SAFETY | Logistics Safety | =0          | Red >0    | M2 |
 
-### 2.2 RELIABILITY
+#### 2.2 RELIABILITY
 
 | ID                             | Name                       | Definition                                   | Formula                     | Window | SoT    | Owner           | Default SLO | Alerts           | M  |
 | ------------------------------ | -------------------------- | -------------------------------------------- | --------------------------- | ------ | ------ | --------------- | ----------- | ---------------- | -- |
@@ -56,7 +56,7 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 | **MET.RELIAB.MTBF**            | Mean time between failures | Median hours between service-stopping faults | `median(diff(fault_times))` | 90d    | RELIAB | Reliability Eng | ↑trend      | Red 10%↓ vs base | M2 |
 | **MET.RELIAB.POWER_UPTIME**    | Power uptime               | % time critical power is available           | `power_ok/total`            | 30d    | RELIAB | Ops             | ≥99.9%      | Red <99.7%       | M2 |
 
-### 2.3 OPERATIONS
+#### 2.3 OPERATIONS
 
 | ID                           | Name                     | Definition                 | Formula                     | Window | SoT | Owner       | Default SLO | Alerts           | M  |
 | ---------------------------- | ------------------------ | -------------------------- | --------------------------- | ------ | --- | ----------- | ----------- | ---------------- | -- |
@@ -67,7 +67,7 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 | **MET.OPS.MTTR**             | Mean time to recover     | Minutes to Sev-1 recovery  | `avg(t_recover - t_start)`  | 30d    | OPS | SRE         | ≤60m        | Red >90m         | M2 |
 | **MET.OPS.CLEARANCE_TIME**   | Border clearance time    | Minutes per crossing       | `avg(t_clear - t_arrive)`   | 30d    | OPS | Logistics   | ≤45m        | Red >60m         | M1 |
 
-### 2.4 PRODUCTION / THROUGHPUT
+#### 2.4 PRODUCTION / THROUGHPUT
 
 | ID                          | Name            | Definition                    | Formula                | Window | SoT  | Owner     | Default SLO | Alerts          | M  |
 | --------------------------- | --------------- | ----------------------------- | ---------------------- | ------ | ---- | --------- | ----------- | --------------- | -- |
@@ -75,7 +75,7 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 | **MET.PROD.MOVES_PER_HOUR** | Moves/hour      | Yard/container moves per hour | `moves/hours`          | 30d    | PROD | Ports     | Site plan   | Red 5%↓ vs plan | M2 |
 | **MET.PROD.SORT_TPH**       | Sort throughput | Parcels sorted per hour       | `sorted/hours`         | 30d    | PROD | Logistics | Site plan   | Red 5%↓ vs plan | M1 |
 
-### 2.5 COST
+#### 2.5 COST
 
 | ID                         | Name          | Definition                        | Formula                                 | Window | SoT  | Owner          | Default SLO | Alerts          | M  |
 | -------------------------- | ------------- | --------------------------------- | --------------------------------------- | ------ | ---- | -------------- | ----------- | --------------- | -- |
@@ -84,14 +84,14 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 | **MET.COST.EMPTY_MILES**   | Empty miles % | % km without payload              | `empty_km/total_km`                     | 30d    | COST | Logistics      | ≤3%         | Red >5%         | M2 |
 | **MET.COST.TRIPS_PER_TON** | Trips per ton | Trips / ton (lower better)        | `trips/tons`                            | 30d    | COST | Logistics      | ↓trend      | Red 5%↑ vs base | M1 |
 
-### 2.6 EXPERIENCE
+#### 2.6 EXPERIENCE
 
 | ID                  | Name                  | Definition          | Formula                     | Window | SoT | Owner  | Default SLO | Alerts   | M  |
 | ------------------- | --------------------- | ------------------- | --------------------------- | ------ | --- | ------ | ----------- | -------- | -- |
 | **MET.EXP.ETA_P95** | Wait time P95 (min)   | 95th pct rider wait | `P95(t_pickup - t_request)` | 30d    | EXP | RH Ops | ≤7m         | Red >9m  | M2 |
 | **MET.EXP.CSAT**    | Customer satisfaction | Avg rating (1–5)    | `avg(rating)`               | 30d    | EXP | RH Ops | ≥4.8        | Red <4.6 | M1 |
 
-### 2.7 GOVERNANCE / COMPLIANCE
+#### 2.7 GOVERNANCE / COMPLIANCE
 
 | ID                                | Name                       | Definition                    | Formula            | Window      | SoT | Owner      | Default SLO | Alerts     | M  |
 | --------------------------------- | -------------------------- | ----------------------------- | ------------------ | ----------- | --- | ---------- | ----------- | ---------- | -- |
@@ -99,23 +99,23 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 | **MET.GOV.AUDIT_FINDINGS_P1**     | P1 audit findings open     | Count of P1 audit issues open | `count(p1_open)`   | 30d         | GOV | Compliance | 0           | Red >0     | M3 |
 | **MET.GOV.CHAIN_OF_CUSTODY**      | Chain-of-custody integrity | % transfers with signed CoC   | `signed/transfers` | 30d         | GOV | Compliance | ≥99.9%      | Red <99.5% | M2 |
 
-### 2.8 QUALITY (sector-specific)
+#### 2.8 QUALITY (sector-specific)
 
 | ID                           | Name                       | Definition                 | Formula                   | Window | SoT  | Owner     | Default SLO | Alerts     | M  |
 | ---------------------------- | -------------------------- | -------------------------- | ------------------------- | ------ | ---- | --------- | ----------- | ---------- | -- |
-| **MET.QUAL.TEMP_EXCURSIONS** | Cold-chain temp excursions | # out-of-band per 1k hours | `excursions/(hours/1000)` | 30d    | QUAL | Logistics | =0          | Red >0     | M2 |
+| **MET.QUAL.TEMP_EXCURSIONS** | Cold-chain temp excursions | ## out-of-band per 1k hours | `excursions/(hours/1000)` | 30d    | QUAL | Logistics | =0          | Red >0     | M2 |
 | **MET.QUAL.COUNT_ACCURACY**  | Cycle count accuracy       | % accurate counts          | `accurate/total`          | 30d    | QUAL | Logistics | ≥99.5%      | Red <99.0% | M1 |
 | **MET.QUAL.GRADE_VAR**       | Ore grade variance         | Variance vs target spec    | `var(grade-target)`       | 30d    | QUAL | Mining    | ≤ spec      | Red > spec | M1 |
 
-### 2.9 SECURITY
+#### 2.9 SECURITY
 
 | ID                           | Name                    | Definition                          | Formula                | Window      | SoT | Owner    | Default SLO | Alerts    | M  |
 | ---------------------------- | ----------------------- | ----------------------------------- | ---------------------- | ----------- | --- | -------- | ----------- | --------- | -- |
-| **MET.SEC.P1_FINDINGS_OPEN** | Open P1 vulns           | # P1 security findings open         | `count(p1_open)`       | 30d         | SEC | Security | 0           | Red >0    | M3 |
+| **MET.SEC.P1_FINDINGS_OPEN** | Open P1 vulns           | ## P1 security findings open         | `count(p1_open)`       | 30d         | SEC | Security | 0           | Red >0    | M3 |
 | **MET.SEC.SBOM_SIGNED**      | SBOM completeness       | % releases with signed SBOM         | `signed_sbom/releases` | per release | SEC | Security | 100%        | Red <100% | M3 |
 | **MET.SEC.INCIDENTS_P1**     | Security incidents (P1) | Count of P1 prod security incidents | `count(incidents_p1)`  | 30d         | SEC | Security | 0           | Red >0    | M2 |
 
-### 2.10 DATA (new family)
+#### 2.10 DATA (new family)
 
 | ID                            | Name                  | Definition                                                | Formula                                       | Window | SoT  | Owner    | Default SLO | Alerts    | M  |
 | ----------------------------- | --------------------- | --------------------------------------------------------- | --------------------------------------------- | ------ | ---- | -------- | ----------- | --------- | -- |
@@ -124,7 +124,7 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 
 ---
 
-## 3) Validation & alerting
+### 3) Validation & alerting
 
 * **Unit tests:** dbt tests for non-nulls, ranges, referential integrity; CI blocks if fail.
 * **Recalc parity:** parity checks vs historical for breaking deltas; create `vN` view on incompat changes.
@@ -133,7 +133,7 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 
 ---
 
-## 4) Crosswalk to OKRs
+### 4) Crosswalk to OKRs
 
 (Kept minimal; the OKR file holds the KR list. This table lets reviewers verify coverage.)
 
@@ -150,9 +150,10 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 
 ---
 
-## 5) Versioning & deprecations
+### 5) Versioning & deprecations
 
 * **Change policy:** never change a metric’s meaning under the same ID. Create a new ID or versioned view.
 * **Changelog:** append deprecations/renames at the end of this file with migration notes.
+
 
 ---
