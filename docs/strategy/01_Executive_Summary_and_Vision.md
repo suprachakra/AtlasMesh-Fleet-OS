@@ -1,6 +1,6 @@
 <div align="center">
 
-## 🎯 AtlasMesh Fleet OS — Executive Summary & Vision
+## 🎯 Executive Summary & Vision
 
 **Strategic Foundation for Autonomous Fleet Operations**
 
@@ -28,8 +28,8 @@
 
 ---
 
-**📋 Document Owner:** CEO & SVP Product | **📅 Last Updated:** 2025-09-16 | **📄 Version:** 2.0 | **✅ Status:** Executive Baseline  
-**🔗 Linked artifacts:** [Problem Statement](00_Problem_Statement_and_Solution.md) • [Business Model](07_Business_Model_and_Financials.md) • [OKRs](03_Objectives_and_Key_Results_OKRs.md)
+**📋 Document Owner:** CEO & SVP Product | **📄 Version:** 2.0 | **✅ Status:** Executive Baseline  
+**🔗 Linked artifacts:** [Problem Statement](/strategy/00_Problem_Statement_and_Solution_ALL_SECTORS.md) • [Business Model](/strategy/11_Business_Model_and_Financials.md) • [OKRs](/strategy/03_Objectives_and_Key_Results_OKRs.md)
 
 ---
 
@@ -958,3 +958,4 @@ It is **deliberately engineered to leave no gaps**: every promise in this Vision
 **© 2024 AtlasMesh Inc. | Building the Future of Autonomous Operations**
 
 </div>
+
