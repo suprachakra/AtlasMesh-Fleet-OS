@@ -6,7 +6,7 @@
 
 ---
 
-### Decision Log Format
+### Decision Format
 
 Each decision entry follows this structure:
 
@@ -26,9 +26,6 @@ options_considered:
   - option: "[Option A]"
     pros: ["[Pro 1]", "[Pro 2]"]
     cons: ["[Con 1]", "[Con 2]"]
-  - option: "[Option B]"
-    pros: ["[Pro 1]"]
-    cons: ["[Con 1]"]
 decision: "[Chosen option and rationale]"
 implications:
   technical: ["[Implication 1]"]
@@ -39,99 +36,24 @@ traceability:
   epics: ["[E-##]"]
   adrs: ["[ADR-####]"]
 next_steps: ["[Action 1]", "[Action 2]"]
-review_date: "YYYY-MM-DD"  ## When to revisit
+review_date: "YYYY-MM-DD"
 ```
 
 ---
 
 ### Active Decisions (2025)
 
-#### DEC-2025-10-001: Qualified Agnosticism Framework Adoption
-**Date**: 2025-10-02  
-**Status**: ✅ Approved
+| Decision ID | Date | Status | Driver | Approver | Context | Decision | Review Date |
+|-------------|------|--------|--------|----------|---------|----------|-------------|
+| **DEC-2025-10-001** | 2025-10-02 | ✅ Approved | Platform Architecture Team | CTO, VP Engineering, Safety Lead | Original "universal agnosticism" vision faced five constraining realities. Need engineering-grounded approach. | Adopt qualified agnosticism with vehicle-agnostic (≤5% code delta), sector-agnostic (≥90% code reuse), platform-agnostic (100% conformance), automated variant budget enforcement | 2026-04-01 |
+| **DEC-2025-10-002** | 2025-10-04 | ✅ Approved | VP Product | CEO, CTO, VP Engineering | Qualified agnosticism requires cross-functional coordination, evidence-based decisions, and variant budget discipline. Need formalized PM framework. | Establish PM Community of Practice with weekly/bi-weekly/monthly/quarterly cadence, evidence-first decision making, DACI model, DoR/DoD enforcement via CI, variant budget governance | 2026-01-04 |
 
-**DACI**:
-- **Driver**: Platform Architecture Team
-- **Approver**: CTO, VP Engineering, Safety Lead
-- **Contributors**: All engineering teams, QA, Product
-- **Informed**: All departments
+#### Decision Details
 
-**Context**:
-Original "universal agnosticism" vision faced five constraining realities (physics, safety certification, ODD boundaries, sensors, regulations). Need engineering-grounded approach.
-
-**Options Considered**:
-1. **Universal Agnosticism** - Rejected (ignores fundamental constraints)
-2. **No Agnosticism (Per-Customer Forks)** - Rejected (doesn't scale)
-3. **Qualified Agnosticism** - ✅ Selected (bounded, contract-driven, measurable)
-
-**Decision**:
-Adopt qualified agnosticism with:
-- Vehicle-agnostic (≤5% code delta, class/model-bounded)
-- Sector-agnostic (≥90% code reuse via policy overlays)
-- Platform-agnostic (100% conformance via adapters)
-- Automated variant budget enforcement
-
-**Implications**:
-- Technical: 7 new services, 14 new docs, 3 ADRs
-- Organizational: PM CoP framework required for governance
-- Financial: +40% initial dev, -50% time-to-market for new classes
-
-**Traceability**:
-- OKRs: O-2 (Agnostic Architecture Leadership)
-- Epics: E-01 (Vehicle), E-02 (Policy), E-03 (Platform)
-- ADRs: ADR-0011, ADR-0012, ADR-0013
-
-**Next Steps**:
-- Implement Vehicle HAL, Variant Budget, Conformance Testing services
-- Execute 90-180 day programmatic proof points
-- Establish PM CoP operating cadence
-
-**Review Date**: 2026-04-01 (6-month retrospective)
-
----
-
-#### DEC-2025-10-002: PM Community of Practice Framework
-**Date**: 2025-10-04  
-**Status**: ✅ Approved
-
-**DACI**:
-- **Driver**: VP Product
-- **Approver**: CEO, CTO, VP Engineering
-- **Contributors**: Product team, Safety, Design, Engineering, QA, CS/GTM
-- **Informed**: All employees
-
-**Context**:
-Qualified agnosticism requires cross-functional coordination, evidence-based decisions, and variant budget discipline. Need formalized PM framework.
-
-**Options Considered**:
-1. **Informal coordination** - Rejected (doesn't scale, inconsistent)
-2. **Heavyweight PMO** - Rejected (process bloat, slows velocity)
-3. **Lightweight PM CoP** - ✅ Selected (structured but agile)
-
-**Decision**:
-Establish PM Community of Practice with:
-- Weekly/bi-weekly/monthly/quarterly cadence
-- Evidence-first decision making
-- DACI model for cross-team decisions
-- DoR/DoD enforcement via CI
-- Variant budget governance
-
-**Implications**:
-- Technical: CI guards for DoR/DoD, traceability, variant budget
-- Organizational: New cadences, role definitions, cross-functional reviews
-- Financial: ~8 hours/month per PM, tooling costs minimal
-
-**Traceability**:
-- OKRs: All (PM CoP supports all objectives)
-- Strategic Imperative: Agnostic Architecture Leadership
-
-**Next Steps**:
-- Augment existing docs (vision, requirements, roadmap)
-- Create 9 templates/playbooks
-- Establish cadences starting Week 1
-- Update README with PM framework overview
-
-**Review Date**: 2026-01-04 (Quarterly review)
+| Decision ID | DACI | Options Considered | Implications | Traceability | Next Steps |
+|-------------|------|-------------------|--------------|--------------|------------|
+| **DEC-2025-10-001** | **Driver**: Platform Architecture Team<br/>**Approver**: CTO, VP Engineering, Safety Lead<br/>**Contributors**: All engineering teams, QA, Product<br/>**Informed**: All departments | 1. **Universal Agnosticism** - Rejected (ignores fundamental constraints)<br/>2. **No Agnosticism (Per-Customer Forks)** - Rejected (doesn't scale)<br/>3. **Qualified Agnosticism** - ✅ Selected (bounded, contract-driven, measurable) | **Technical**: 7 new services, 14 new docs, 3 ADRs<br/>**Organizational**: PM CoP framework required for governance<br/>**Financial**: +40% initial dev, -50% time-to-market for new classes | **OKRs**: O-2 (Agnostic Architecture Leadership)<br/>**Epics**: E-01 (Vehicle), E-02 (Policy), E-03 (Platform)<br/>**ADRs**: ADR-0011, ADR-0012, ADR-0013 | - Implement Vehicle HAL, Variant Budget, Conformance Testing services<br/>- Execute 90-180 day programmatic proof points<br/>- Establish PM CoP operating cadence |
+| **DEC-2025-10-002** | **Driver**: VP Product<br/>**Approver**: CEO, CTO, VP Engineering<br/>**Contributors**: Product team, Safety, Design, Engineering, QA, CS/GTM<br/>**Informed**: All employees | 1. **Informal coordination** - Rejected (doesn't scale, inconsistent)<br/>2. **Heavyweight PMO** - Rejected (process bloat, slows velocity)<br/>3. **Lightweight PM CoP** - ✅ Selected (structured but agile) | **Technical**: CI guards for DoR/DoD, traceability, variant budget<br/>**Organizational**: New cadences, role definitions, cross-functional reviews<br/>**Financial**: ~8 hours/month per PM, tooling costs minimal | **OKRs**: All (PM CoP supports all objectives)<br/>**Strategic Imperative**: Agnostic Architecture Leadership | - Augment existing docs (vision, requirements, roadmap)<br/>- Create 9 templates/playbooks<br/>- Establish cadences starting Week 1<br/>- Update README with PM framework overview |
 
 ---
 
@@ -170,26 +92,26 @@ review_date: ""
 
 ### Decision Process
 
-#### 1. Proposal
+##### 1. Proposal
 - Driver creates decision entry with status "proposed"
 - Circulates to Contributors for feedback (48h minimum)
 - Updates based on feedback
 
-#### 2. Review
+##### 2. Review
 - Presents to Approver(s) in relevant meeting (Weekly/Monthly)
 - Approver may: Approve, Request Changes, Reject
 - Decision documented with rationale
 
-#### 3. Communication
+##### 3. Communication
 - Decision log updated with final status
 - Informed stakeholders notified
 - Next steps assigned with owners
 
-#### 4. Execution
+##### 4. Execution
 - Driver ensures next steps are tracked
 - Progress reviewed in subsequent meetings
 
-#### 5. Review & Retrospective
+##### 5. Review & Retrospective
 - Decisions reviewed on scheduled review_date
 - Outcomes assessed against expectations
 - Learnings captured for future decisions
@@ -203,5 +125,3 @@ review_date: ""
 ---
 
 **All product decisions are documented in this log to ensure transparency, traceability, and organizational learning.**
-
-
