@@ -36,7 +36,7 @@
 
 ### The Universal Challenge
 
-Every sector faces the same core problem: **Scaling autonomous operations beyond pilot programs is blocked by fragmentation, environmental brittleness, and compliance burden.**
+Every sector faces the same core problem: **Scaling autonomous operations beyond pilot programs is blocked by fragmentation, environmental brittleness and compliance burden.**
 
 <div align="center">
 
