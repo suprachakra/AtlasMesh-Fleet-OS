@@ -58,7 +58,7 @@ Set the **rules of the game** for risk: who decides, how we score, how changes s
 
 * **Design →** must pass **Register §2 (Design)**: hazards identified; architecture mitigations in place; test plans approved.
 * **Pre-Deploy →** must pass **Register §3 (Pre-Deploy)**: site readiness, permits, adapter contract tests, drills.
-* **Go-Live →** must pass **Register §4 (Go-Live)**: canary, OTA rollback, LE/first-responder coordination, public comms.
+* **Go-Live →** must pass **Register §4 (Go-Live)**: canary, OTA rollback, LE/first-responder coordination, public comms
 * **Operate →** monitored under **Register §5 (Operate)**: AVAIL ODD band, assist budget, privacy controls.
 * **Update →** must pass **Register §6 (Update)**: signed OTA, attestation, rollback <30m, policy deltas tested.
 
@@ -90,5 +90,6 @@ Set the **rules of the game** for risk: who decides, how we score, how changes s
 We track governance health with **metric IDs only** (SoT: Metrics Canon):
 
 * `MET.SAFETY.ASSIST_RATE`, `MET.RELIAB.AVAIL_ODD`, `MET.SEC.INCIDENTS_P1`, `MET.GOV.AUDIT_BUNDLE_COMPLETE`, `MET.OPS.TIME_TO_VALUE`, `MET.OPS.RELEASE_ROLLBACK_TTA`.
+
 
 ---
