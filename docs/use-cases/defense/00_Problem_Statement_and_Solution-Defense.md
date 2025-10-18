@@ -1,7 +1,7 @@
-# 00 — Defense Problem Statement & Solution
+## Defense Problem Statement & Solution
 ---
 
-## 1) Problem Statement (Defense)
+### 1) Problem Statement (Defense)
 
 Modern defense missions require **autonomous logistics and security operations** across **contested, rugged, and data-scarce environments**. Despite heavy R&D investment, most autonomy stacks degrade outside controlled roads/cities. In the Middle East and similar theaters, units face:
 
@@ -24,7 +24,7 @@ Modern defense missions require **autonomous logistics and security operations**
 
 ---
 
-## 2) What “Good” Looks Like
+### 2) What “Good” Looks Like
 
 - **Mission completion ≥ 98%** in defined ODDs (including off-road segments)  
 - **Assists ≤ 0.5 / 1,000 km** sustained across missions  
@@ -34,11 +34,11 @@ Modern defense missions require **autonomous logistics and security operations**
 
 ---
 
-## 3) Solution (AtlasMesh for Defense)
+### 3) Solution (AtlasMesh for Defense)
 
 AtlasMesh delivers an **agnostic, evidence-first Fleet OS** and retrofit kit designed for **rugged, contested environments**. One platform, multiple mission types—**without forks**.
 
-### 3.1 Core Solution Pillars
+#### 3.1 Core Solution Pillars
 
 1) **Terrain-Aware Mobility & Traversability**  
 - Fuses DEM/elevation tiles with on-vehicle perception to produce **traversability cost maps**, predicted speed, and **ride-severity**; enforces **vehicle-specific limits** (grade, step, side-slope, clearance).  
@@ -60,7 +60,7 @@ AtlasMesh delivers an **agnostic, evidence-first Fleet OS** and retrofit kit des
 6) **Adapter-First Integration**  
 - Certified connectors for C2, logistics, maintenance, V2X, and sensors; **contract tests** catch breaking changes; pins/versions managed centrally. Weeks, not months.
 
-### 3.2 How This Solves the Defense Pain
+#### 3.2 How This Solves the Defense Pain
 
 | Pain | AtlasMesh Approach | Measured Outcome |
 |---|---|---|
@@ -73,7 +73,7 @@ AtlasMesh delivers an **agnostic, evidence-first Fleet OS** and retrofit kit des
 
 ---
 
-## 4) Defense Success Metrics (Field-Proven Targets)
+### 4) Defense Success Metrics (Field-Proven Targets)
 
 - **Mission completion:** ≥ 98% in ODD  
 - **Assist rate:** ≤ 0.5 / 1,000 km (rolling 30 days)  
@@ -86,7 +86,7 @@ AtlasMesh delivers an **agnostic, evidence-first Fleet OS** and retrofit kit des
 
 ---
 
-## 5) Scope Notes (Clarifying Boundaries)
+### 5) Scope Notes (Clarifying Boundaries)
 
 - **In:** L4 geofenced missions with Q&A tele-assist; convoy, patrol, clearance, medevac, engineer support, logistics.  
 - **Out:** Tele-driving, lethal payload control, unconstrained L5.  
@@ -94,7 +94,7 @@ AtlasMesh delivers an **agnostic, evidence-first Fleet OS** and retrofit kit des
 
 ---
 
-## 6) Validation Approach (Defense)
+### 6) Validation Approach (Defense)
 
 - **Twin-gates**: scenario bank (off-road rock, sand, side-slope, GNSS-loss, dust) must pass before merge/release.  
 - **Field pilots**: 30-day KPI window per site; red metrics auto-block next train.  
@@ -102,7 +102,8 @@ AtlasMesh delivers an **agnostic, evidence-first Fleet OS** and retrofit kit des
 
 ---
 
-## 7) Why This Scales Across Missions
+### 7) Why This Scales Across Missions
 
 Same platform, different overlays: convoy spacing vs. patrol geofences vs. clearance lanes vs. medevac priorities. **Agnostic adapters** and **policy-as-code** let units reuse the stack across **D1–D26** (and beyond) without bespoke code.
+
 
