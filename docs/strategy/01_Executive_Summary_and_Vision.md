@@ -143,7 +143,7 @@
 
 **Build the world's first qualified agnostic Fleet OS for Level-4 autonomous operations**
 
-Achieving vehicle-agnostic, sector-agnostic, and platform-agnostic capabilities through engineering-grounded bounded abstraction, enabling safe deployment across **defense, mining, logistics, and ride-hailing** in **extreme Middle-East conditions**.
+Achieving vehicle-agnostic, sector-agnostic, and platform-agnostic capabilities through engineering-grounded bounded abstraction, enabling safe deployment across **defense, mining, logistics and ride-hailing** in **extreme Middle-East conditions**.
 
 <br>
 
