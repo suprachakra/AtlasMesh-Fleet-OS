@@ -24,7 +24,7 @@
 
 ---
 
-### ✅ **0) Definition of Ready (DoR) & Definition of Done (DoD)**
+### ✅ ** Definition of Ready (DoR) & Definition of Done (DoD)**
 
 #### 📊 **Definition of Ready (DoR) - For Epics/FRs/NFRs**
 
@@ -562,5 +562,6 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 * **LMS integration** for sector certifications across customers → **Owner:** UX/PM.
 
 ---
+
 
 
