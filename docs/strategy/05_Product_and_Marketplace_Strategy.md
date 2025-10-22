@@ -2,7 +2,7 @@
 
 ### 0) External positioning
 
-**AtlasMesh Fleet OS** is the **vehicle-, platform-, and sector-agnostic fleet operating system** for **harsh + regulated operations** (defense, mining, ports/logistics, ride-hail), delivering **audited safety, offline resilience, and adapter-first interoperability**—without vendor lock-in. *(Fleet management only; not an autonomy stack.)*
+**AtlasMesh Fleet OS** is the **vehicle-, platform-, and sector-agnostic fleet operating system** for **harsh + regulated operations** (defense, mining, ports/logistics, ride-hail), delivering **audited safety, offline resilience and adapter-first interoperability**—without vendor lock-in. *(Fleet management only; not an autonomy stack.)*
 
 ### 1) Internal positioning
 
