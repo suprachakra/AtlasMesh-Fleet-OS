@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides comprehensive instructions for deploying AtlasMesh Fleet OS across different environments (SIT, UAT, Production) with proper configuration management, monitoring, and security.
+This guide provides comprehensive instructions for deploying AtlasMesh Fleet OS across different environments (SIT, UAT, Production) with proper configuration management, monitoring and security.
 
 ## Prerequisites
 
