@@ -2,7 +2,7 @@
 
 ### 🎯 Overview
 
-This directory contains comprehensive use case documentation for the **AtlasMesh Fleet OS** across all supported sectors. Each use case represents a specific operational scenario that the platform must support, with detailed specifications for implementation, validation, and deployment.
+This directory contains comprehensive use case documentation for the **AtlasMesh Fleet OS** across all supported sectors. Each use case represents a specific operational scenario that the platform must support, with detailed specifications for implementation, validation and deployment.
 
 ### 📁 Directory Structure
 
