@@ -61,7 +61,7 @@ Autonomous and semi-autonomous operations are scaling across **multiple vehicle 
 
 </div>
 
-**🎯 Bottom line:** Operators need a **single, autonomy-grade Fleet OS** that runs mixed fleets safely, proves compliance automatically, and scales across sectors and platforms without forking core code.
+**🎯 Bottom line:** Operators need a **single, autonomy-grade Fleet OS** that runs mixed fleets safely, proves compliance automatically and scales across sectors and platforms without forking core code.
 
 ---
 
