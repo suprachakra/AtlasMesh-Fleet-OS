@@ -26,7 +26,7 @@
 
 ### 📊 **1) Data Strategy Overview**
 
-AtlasMesh Fleet OS implements a comprehensive data strategy that enables evidence-based operations, continuous improvement and regulatory compliance. This document outlines the data architecture, integration patterns, and analytics capabilities that power the platform.
+AtlasMesh Fleet OS implements a comprehensive data strategy that enables evidence-based operations, continuous improvement and regulatory compliance. This document outlines the data architecture, integration patterns and analytics capabilities that power the platform.
 
 #### 🎯 **1.1 Core Data Principles**
 
