@@ -111,7 +111,7 @@ graph TB
 
 ##### Responsibilities
 - Vehicle hardware abstraction through profile-driven interfaces
-- Profile loading and validation (Terminal Tractor, Mine Haul, UTV, etc.)
+- Profile loading and validation (Terminal Tractor, Mine Haul, UTV, etc)
 - Safety constraint enforcement per vehicle profile
 - Actuator control translation to vehicle-specific protocols
 - Standardized motion, sensor, and diagnostic interfaces
@@ -708,3 +708,4 @@ graph TB
 ---
 
 This service registry provides a comprehensive overview of the AtlasMesh Fleet OS microservices architecture, enabling effective development, deployment, and operations of the autonomous fleet management system.
+
