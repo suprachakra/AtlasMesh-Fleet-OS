@@ -487,9 +487,7 @@ gantt
 
 </div>
 
----
-
-*Last Updated: October 2024 | Version 3.0 | © AtlasMesh Inc.*
+---
 
 
 
