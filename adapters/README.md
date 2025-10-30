@@ -312,6 +312,6 @@ class ResilientVehicleAdapter extends BaseVehicleAdapter {
 
 All adapters implement:
 - mTLS for all communications
-- Message signing for safety-critical commands
+- Message signing for safety critical commands
 - Input validation and sanitization
 - Secure credential management
