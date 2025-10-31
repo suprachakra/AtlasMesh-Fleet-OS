@@ -1,30 +1,34 @@
 <div align="center">
 
-# 🚗 AtlasMesh Fleet OS
+# 🚙 AtlasMesh Fleet OS
 
-**Engineering-Grounded Qualified Agnosticism for Level-4 Autonomous Fleets**
+**The Universal Fleet Management System That Actually Works - One Codebase, Any Vehicle, Every Sector, Any Cloud** 🚀
 
 [![License](https://img.shields.io/badge/License-BUSL%201.1-blue.svg)](LICENSE)
 [![CI Status](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](https://github.com/atlasmesh/fleet-os/actions)
-[![Safety Case](https://img.shields.io/badge/Safety%20Case-Verified-orange.svg)](docs/safety/safety_case_structure.md)
+[![Safety Case](https://img.shields.io/badge/Safety%20Case-Verified-brightgreen.svg)](docs/safety/safety_case_structure.md)
 [![Documentation](https://img.shields.io/badge/Docs-Latest-blue.svg)](docs/README.md)
 [![Product Management](https://img.shields.io/badge/PM%20Framework-Evidence--First-purple.svg)](docs/strategy/PM_COP_MAPPING.md)
 
 </div>
 
 ---
-<div align="center">
-    
-*The Universal AV Fleet Management system That Actually Works - One Codebase, Any Vehicle, Every Sector, Any Cloud*  🚀
-<br>
 
-| 🎯 **[What Makes AtlasMesh Different](#-what-makes-atlasmesh-different)** | ✨ **[Key Features](#-key-features)** | 🚙 **[Roadmap](#-roadmap)** | 🚀 **[Quick Start](#-quick-start)** |
+## 📋 Table of Contents
+
+<div align="center">
+
+| 🎯 **[What Makes AtlasMesh Different](#-what-makes-atlasmesh-different)** | ✨ **[Key Features](#-key-features)** | 🗺️ **[Roadmap](#-roadmap)** | 🚀 **[Quick Start](#-quick-start)** |
 |:---:|:---:|:---:|:---:|
 | **Core Value Proposition** | **Technical Capabilities** | **Development Timeline** | **Get Started in Minutes** |
 
-| 🏃‍♂️ **[Running Locally](#-running-locally)** | 🧪 **[Testing](#-testing)** | 🛡️ **[PM Framework](#product-management-framework)** | 📚 **[Documentation](#documentation)**  |
+| 🏃‍♂️ **[Running Locally](#-running-locally)** | 🧪 **[Testing](#-testing)** | 🤝 **[Contributing](#-contributing)** | 🔒 **[Security & Compliance](#-security)** |
 |:---:|:---:|:---:|:---:|
-| **Local Development** | **Test Suite & Conformance** | **Product Management** | **Technical Documentation** |
+| **Local Development** | **Test Suite & Conformance** | **How to Contribute** | **Safety & Regulatory** |
+
+| 📚 **[Documentation](#documentation)** | 🛡️ **[PM Framework](#product-management-framework)** | 📄 **[License](#-license)** |
+|:---:|:---:|:---:|
+| **Technical Documentation** | **Product Management** | **Business Source License** |
 
 </div>
 
@@ -32,11 +36,53 @@
 
 ## 🎯 What Makes AtlasMesh Different?
 
-AtlasMesh Fleet OS implements **qualified agnosticism** - a pragmatic, engineering-grounded approach to autonomous fleet management. Rather than claiming universal compatibility, we achieve **bounded agnosticism** through:
+AtlasMesh Fleet Management System implements **qualified agnosticism** - a pragmatic, engineering-grounded approach to autonomous fleet management. Rather than claiming universal compatibility, we achieve **bounded agnosticism** through:
+
+### **🔄 Fleet Management Workflow**
+
+```mermaid
+graph TB
+    subgraph "Fleet Management Workflow"
+        A[Vehicle Fleet] --> B[Fleet Manager]
+        B --> C[Multi-Fleet Coordination]
+        B --> D[Fleet Optimization]
+        B --> E[Fleet Analytics]
+        
+        C --> F[Resource Sharing]
+        C --> G[Cross-Fleet Optimization]
+        
+        D --> H[AI-Powered Algorithms]
+        D --> I[Performance Tuning]
+        
+        E --> J[Real-Time Insights]
+        E --> K[Health Scoring]
+        E --> L[Predictive Maintenance]
+        
+        F --> M[Fleet Performance]
+        G --> M
+        H --> M
+        I --> M
+        J --> M
+        K --> M
+        L --> M
+        
+        M --> N[Continuous Improvement]
+        N --> B
+    end
+    
+    subgraph "Vehicle Retrofit Process"
+        O[Existing Fleet] --> P[Assessment]
+        P --> Q[Retrofit Planning]
+        Q --> R[AtlasMesh Integration]
+        R --> S[Testing & Validation]
+        S --> T[Deployment]
+        T --> U[Autonomous Operations]
+    end
+```
 
 <div align="center">
 
-| 🚛 **Vehicle-Agnostic** | 🏭 **Sector-Agnostic** | ☁️ **Platform-Agnostic** | 📊 **Variant Budget** |
+| 🚚 **Vehicle-Agnostic** | 🏭 **Sector-Agnostic** | ☁️ **Platform-Agnostic** | 📊 **Variant Budget** |
 |:---:|:---:|:---:|:---:|
 | ≤5% code delta | ≥90% code reuse | 100% conformance | Automated tracking |
 | Certified profiles | Policy overlays | Contract-driven | CI/CD gates |
@@ -48,6 +94,7 @@ AtlasMesh Fleet OS implements **qualified agnosticism** - a pragmatic, engineeri
 **Multi-Vehicle**: Terminal Tractors → Mine Hauls → UGVs → Passenger Vehicles 
 
 ---
+
 ## 🚨 **What's the Actual Need?**
 
 Autonomous and semi-autonomous operations are scaling across **multiple vehicle types, sectors, and infrastructures**—but ops today are stitched together with single-OEM tools, bespoke scripts, and manual evidence collection. That creates five systemic gaps:
@@ -61,13 +108,13 @@ Autonomous and semi-autonomous operations are scaling across **multiple vehicle 
 
 </div>
 
-**🎯 Bottom line:** Operators need a **single, autonomy-grade Fleet OS** that runs mixed fleets safely, proves compliance automatically and scales across sectors and platforms without forking core code.
+**🎯 Bottom line:** Operators need a **single, autonomy-grade Fleet Management System** that runs mixed fleets safely, proves compliance automatically, and scales across sectors and platforms without forking core code.
 
 ---
 
 ## 💎 **Value Proposition**
 
-**AtlasMesh Fleet OS** is the **autonomy-grade, agnostic Fleet Operating System** that lets you operate **mixed-OEM, multi-sector fleets** with **built-in safety, compliance evidence, and site-ready tooling**—without forking your core.
+**AtlasMesh Fleet Management System** is the **autonomy-grade, agnostic Fleet Management System** that lets you operate **mixed-OEM, multi-sector fleets** with **built-in safety, compliance evidence, and site-ready tooling**—without forking your core.
 
 ### 🏗️ **The 7 Value Pillars (with Measurable Outcomes)**
 
@@ -94,6 +141,7 @@ Autonomous and semi-autonomous operations are scaling across **multiple vehicle 
 | ≤ 90 days (then ≤ 45 days) | 15–25% via assists ↓, energy/predictive maintenance | ≥ 99.0% (path to 99.5%) | Evidence generation **days → hours** | +30–40% without quality regressions |
 
 </div>
+
 ---
 
 ## ✨ What Sets Us Apart
@@ -114,6 +162,42 @@ Autonomous and semi-autonomous operations are scaling across **multiple vehicle 
 - **🛡️ Safety-Certified**: Per-vehicle ISO 26262/SOTIF compliance with automated evidence
 - **🌍 Extreme Weather Ready**: 55°C desert operations with thermal derating and dust protocols
 - **🔄 Continuous Validation**: Multi-dimensional test matrix (3 vehicles × 4 sectors × 3 platforms = 36 critical paths)
+
+## Customer Journey & Success Process
+
+### **🎯 Customer Success Journey**
+
+```mermaid
+flowchart TD
+    A[Customer Inquiry] --> B[Discovery Call]
+    B --> C[Technical Assessment]
+    C --> D[Pilot Proposal]
+    D --> E[90-Day Pilot]
+    E --> F{Pilot Success?}
+    
+    F -->|Yes| G[Production Deployment]
+    F -->|No| H[Iteration & Improvement]
+    H --> E
+    
+    G --> I[Fleet Integration]
+    I --> J[WMS/Mining FMS/Military Integration]
+    J --> K[Go-Live]
+    K --> L[Continuous Optimization]
+    L --> M[ROI Achievement]
+    M --> N[Expansion & Scaling]
+    
+    subgraph "Success Metrics"
+        O[99.3% Uptime]
+        P[15% Efficiency Gain]
+        Q[40% Cost Reduction]
+        R[14-Month Payback]
+    end
+    
+    M --> O
+    M --> P
+    M --> Q
+    M --> R
+```
 
 ## Overall Project Flow
 
@@ -170,25 +254,24 @@ graph TB
     D3 -.-> A1
     D4 -.-> C1
     
-    classDef Phase1 stroke-width:1px, stroke-dasharray:none, stroke:#B39DBC, fill:#ECE3F5, color:#4E3A5E
-    classDef Phase2 stroke-width:1px, stroke-dasharray:none, stroke:#E3B448, fill:#FDF6C9, color:#7D5A17
-    classDef Phase3 stroke-width:1px, stroke-dasharray:none, stroke:#A7C796, fill:#E6F4E2, color:#3E6A42
+    classDef completed fill:#d4edda,stroke:#28a745,stroke-width:2px
+    classDef pending fill:#fff3cd,stroke:#ffc107,stroke-width:2px
     classDef operations fill:#e7f3ff,stroke:#007bff,stroke-width:2px
     
-    class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10 Phase1
-    class B1,B2,B3,B4,B5,B6 Phase2
-    class D1,D2,D3,D4,D5,D6 Phase3
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10 completed
+    class B1,B2,B3,B4,B5,B6 completed
+    class D1,D2,D3,D4,D5,D6 completed
     class C1,C2,C3,C4,C5,C6,C7,C8 operations
-
-    style subGraph1 fill:transparent
-    style subGraph3 fill:transparent
-    style subGraph2 fill:transparent
-    style subGraph0 fill:transparent
-
-    classDef client fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef gateway fill:#e1f5fe,stroke:#01579b,stroke-width:3px
-    classDef service fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    classDef observability fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    
+    %% SubGraph styling
+    subgraph "Phase 1: Core Platform (COMPLETED)" fill:transparent
+    end
+    subgraph "Phase 2: Advanced Features (COMPLETED)" fill:transparent
+    end
+    subgraph "Phase 3: Qualified Agnosticism (COMPLETED)" fill:transparent
+    end
+    subgraph "Core Operations Flow" fill:transparent
+    end
 ```
 
 ## User Journey - Complete System Interactions
@@ -201,15 +284,15 @@ sequenceDiagram
     participant AS as Auth Service
     participant PS as Policy Service
     participant DS as Dispatch Service
-    participant TS as Trip Service
+    participant TS as Mission Management
     participant RS as Routing Service
     participant FM as Fleet Manager
     participant VA as Vehicle Agent
     participant TI as Telemetry Ingestion
     participant FF as Feature Flags
     
+    rect rgb(255, 248, 240)
     Note over U,FF: Mission Planning & Dispatch
-    rect rgb(240, 248, 255)
     U->>CC: Login to Control Center
     CC->>AG: Authenticate user
     AG->>AS: Validate credentials
@@ -226,9 +309,9 @@ sequenceDiagram
     TS-->>AG: Trip created (ID: trip-123)
     AG-->>CC: Trip creation success
     end
-        rect rgb(240, 255, 240)
+    
+    rect rgb(255, 248, 240)
     Note over U,FF: Vehicle Assignment & Route Planning
-
     CC->>AG: Request vehicle assignment
     AG->>DS: Dispatch trip-123
     DS->>FM: Query available vehicles
@@ -240,7 +323,7 @@ sequenceDiagram
     DS-->>AG: Assignment: vehicle-001 → trip-123
     AG-->>CC: Assignment confirmed
     end
-
+    
     rect rgb(255, 248, 240)
     Note over U,FF: Mission Execution
     DS->>VA: Send mission to vehicle-001
@@ -271,17 +354,17 @@ sequenceDiagram
         end
     end
     end
-            rect rgb(255, 240, 255)
+    
+    rect rgb(255, 248, 240)
     Note over U,FF: Mission Completion
-
     VA->>TS: Mission completed
     TS->>TI: Log completion event
     TS-->>CC: Mission status update
     CC->>U: Mission completion notification
     end
-     rect rgb(240, 255, 255)
+    
+    rect rgb(255, 248, 240)
     Note over U,FF: Analytics & Reporting
-       
     U->>CC: View mission analytics
     CC->>AG: GET /api/v1/analytics/trips/trip-123
     AG->>TI: Query processed telemetry
@@ -324,7 +407,7 @@ graph TB
     
     subgraph "Core Services Data Flow"
         AG[API Gateway] <--> PS[Policy Service]
-        AG <--> TS[Trip Service]
+        AG <--> TS[Mission Management]
         AG <--> DS[Dispatch Service]
         AG <--> RS[Routing Service]
         AG <--> FM[Fleet Manager]
@@ -391,35 +474,43 @@ graph TB
     %% Styling
     classDef edge fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
     classDef ingestion fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef storage stroke-width:1px, stroke-dasharray:none, stroke:#CC0000, fill:#FFCCCC, color:#990000
+    classDef storage fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef services fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
     classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px
-    classDef monitoring stroke-width:1px, stroke-dasharray:none, stroke:#E3B448, fill:#FDF6C9, color:#7D5A17
-    classDef feature troke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
-    classDef external stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
-    classDef analytics stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+    classDef monitoring fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef external fill:#fafafa,stroke:#424242,stroke-width:2px
+    classDef analytics fill:#e0f2f1,stroke:#00695c,stroke-width:2px
     
     class V1,V2,VA,CB,MQ1 edge
     class KF,SR,TI,DV ingestion
-    class CH,RD,MO,DL,NG,CC,GF storage
+    class CH,RD,MO,DL,NG,PG storage
     class AG,PS,TS,DS,RS,FM,AS,FF services
-    class FF feature
-    class PG feature
-    class VT,OPA security
-    class PM,JG,LG monitoring
-    class ERP,MAP,WX,PKI external
-    class ML,FS,MR analytics
-
-    style subGraph1 fill:transparent
-    style subGraph3 fill:transparent
-    style subGraph2 fill:transparent
-    style subGraph0 fill:transparent
-    style subGraph4 fill:transparent
-    style subGraph5 fill:transparent
-    style subGraph6 fill:transparent
-    style subGraph7 fill:transparent
-    style subGraph8 fill:transparent
-    style subGraph9 fill:transparent
+    class VT,OPA,PKI security
+    class PM,JG,LG,GF monitoring
+    class ERP,MAP,WX external
+    class ML,FS,MR,PM analytics
+    
+    %% SubGraph styling
+    subgraph "Edge Layer" fill:transparent
+    end
+    subgraph "Ingestion Layer" fill:transparent
+    end
+    subgraph "Storage Layer - Hot Path" fill:transparent
+    end
+    subgraph "Storage Layer - Cold Path" fill:transparent
+    end
+    subgraph "Core Services Data Flow" fill:transparent
+    end
+    subgraph "Feature Management" fill:transparent
+    end
+    subgraph "Security & Compliance" fill:transparent
+    end
+    subgraph "Monitoring & Observability" fill:transparent
+    end
+    subgraph "External Integrations" fill:transparent
+    end
+    subgraph "Analytics & ML Pipeline" fill:transparent
+    end
 ```
 
 ## 🚀 Key Features
@@ -428,7 +519,7 @@ graph TB
 
 ### 🎯 **Qualified Agnosticism Services** *(Phase 3 - Completed)*
 
-| 🚛 **Vehicle HAL** | 📊 **Variant Budget** | 🧪 **Conformance Testing** | 📦 **Sensor Packs** | ☁️ **Platform Adapters** |
+| 🚚 **Vehicle HAL** | 📊 **Variant Budget** | 🧪 **Conformance Testing** | 📦 **Sensor Packs** | ☁️ **Platform Adapters** |
 |:---:|:---:|:---:|:---:|:---:|
 | Profile-driven hardware abstraction | Automated delta tracking | Multi-dimensional test matrix | Certified packs (Rugged/Urban/Highway) | Storage/messaging/security abstraction |
 | Terminal Tractor, Mine Haul, UTV | ≤5% code delta enforcement | 3×4×3 = 36 critical paths | Calibration automation | Azure/AWS/on-prem |
@@ -439,7 +530,7 @@ graph TB
 
 <div align="center">
 
-| ⚖️ **Policy Engine** | 🚌 **Trip Service** | 🎯 **Dispatch & Rebalancing** | 🗺️ **Routing & ETA** | ⚡ **Energy Manager** |
+| ⚖️ **Policy Engine** | 🚌 **Mission Management** | 🎯 **Dispatch & Rebalancing** | 🗺️ **Routing & ETA** | ⚡ **Energy Manager** |
 |:---:|:---:|:---:|:---:|:---:|
 | Rules-as-code for dispatch | Idempotent, sector-neutral lifecycle | Assignment/pooling with oscillation damping | Constraint-aware routing | SOC forecasts, charger queues |
 | ROE, degraded modes, ODD limits | FSM-based state management | Real-time optimization | GNSS-deny resilience | Tariff optimization |
@@ -461,7 +552,7 @@ graph TB
 
 <div align="center">
 
-| 🎮 **Control Center** | 🚛 **Vehicle Management** | 🔧 **Garage PC** | 🆘 **Tele-Assist** |
+| 🎮 **Control Center** | 🚚 **Vehicle Management** | 🔧 **Garage PC** | 🆘 **Tele-Assist** |
 |:---:|:---:|:---:|:---:|
 | Map-first operations console | Fleet-wide health monitoring | Bay/drive status, bulk OTA | Q&A interface (no direct driving) |
 | Trip timeline visualization | Real-time diagnostics | Pre-provisioning | Assist budgets |
@@ -485,16 +576,16 @@ graph TB
 
 ```mermaid
 C4Context
-    title AtlasMesh Fleet OS - System Context
+    title AtlasMesh Fleet Management System - System Context
 
     Person(operator, "Fleet Operator", "Manages fleet operations")
     Person(maintainer, "Maintenance Technician", "Services vehicles")
     Person(regulator, "Regulator/Auditor", "Verifies compliance")
     Person(rider, "Rider/End User", "Uses service (ride-hail)")
     
-    System_Boundary(atlasmesh, "AtlasMesh Fleet OS") {
+    System_Boundary(atlasmesh, "AtlasMesh Fleet Management System") {
         System(fms, "Fleet Management System", "Orchestrates fleet operations")
-        System(avkit, "CoreX AV Kit", "Vehicle retrofit hardware/software")
+        System(vehicle_agent, "Vehicle Agent", "On-vehicle edge software")
     }
     
     System_Ext(enterprise, "Enterprise Systems", "WMS/TOS/ERP")
@@ -503,15 +594,57 @@ C4Context
     System_Ext(cloud, "Cloud Infrastructure", "AWS/Azure/GCP/On-prem")
     
     Rel(operator, fms, "Uses")
-    Rel(maintainer, avkit, "Services")
+    Rel(maintainer, vehicle_agent, "Services")
     Rel(regulator, fms, "Audits")
     Rel(rider, fms, "Interacts with")
     
-    Rel(fms, avkit, "Controls")
+    Rel(fms, vehicle_agent, "Controls")
     Rel(fms, enterprise, "Integrates with")
     Rel(fms, maps, "Consumes data from")
     Rel(fms, weather, "Consumes data from")
     Rel(fms, cloud, "Deployed on")
+```
+
+### **🏗️ Complete System Architecture**
+
+```mermaid
+graph TB
+    subgraph "AtlasMesh Fleet Management System Architecture"
+        subgraph "Cloud Platform"
+            A[Fleet Manager] --> B[Dispatch Service]
+            A --> C[Mission Management]
+            A --> D[Policy Engine]
+            A --> E[Fleet Analytics]
+            
+            B --> F[WMS Adapter]
+            B --> G[Mining FMS Adapter]
+            B --> H[Military Adapter]
+            
+            C --> I[Control Center UI]
+            D --> J[Auth Service]
+            E --> K[Telemetry Ingestion]
+        end
+        
+        subgraph "Edge Layer (Vehicle Agent)"
+            L[Vehicle HAL] --> M[ROS2 Compute]
+            M --> N[Sensor Fusion]
+            N --> O[Local AI/ML]
+            O --> P[Autonomous Control]
+        end
+        
+        subgraph "Integration Layer"
+            F --> Q[SAP EWM]
+            F --> R[Manhattan SCALE]
+            G --> S[Wenco]
+            G --> T[MineStar]
+            H --> U[Military Systems]
+            H --> V[ISR Payloads]
+        end
+        
+        A -.->|Telemetry| L
+        L -.->|Commands| A
+        I -.->|Remote Ops| P
+    end
 ```
 
 ### Technology Stack
@@ -540,8 +673,8 @@ atlasmesh-fleet-os/
 ├─ PRODUCTION_RUNBOOK.md                 # Production operations guide
 ├─ .github/                              # GitHub workflows and templates
 ├─ docs/                                 # Documentation
-│  ├─ Strategy/                          # Vision, OKRs, Product strategy, Personas, Financials,  GTM, Roadmap
-│  ├─ Technical/                         # Architecture, Epics, requirements(FRs, NFRs), APIs
+│  ├─ strategy/                          # Vision, market, OKRs, product strategy
+│  ├─ Technical/                         # Architecture, requirements, APIs
 │  │  ├─ 01_Architecture.md              # System architecture
 │  │  ├─ 08_Qualified_Agnosticism.md     # Qualified agnosticism guide
 │  │  ├─ 09_Five_Constraining_Realities.md  # Technical constraints
@@ -554,9 +687,9 @@ atlasmesh-fleet-os/
 │  │  ├─ 0011-qualified-agnosticism.md   # ADR for qualified agnosticism
 │  │  ├─ 0012-variant-budget-enforcement.md  # ADR for variant budgets
 │  │  └─ 0013-conformance-testing.md     # ADR for conformance testing
-│  ├─ use-cases/                         # Use case specifications by sector
+│  ├─ prd/use-cases/                     # Use case specifications by sector
 │  ├─ architecture/                      # Diagrams and technical designs
-│  ├─ diagrams/                          # ERDs, DFDs, Business flows, Sequence diagrams
+│  ├─ diagrams/                          # Mermaid diagrams-as-code
 │  └─ troubleshooting/                   # Troubleshooting guides
 ├─ configs/                              # Configuration overlays
 │  ├─ base/                              # Base configurations
@@ -572,7 +705,7 @@ atlasmesh-fleet-os/
 │  ├─ cities/                            # City/region configurations
 │  ├─ odd/                               # ODD rules by sector
 │  └─ nfrs/                              # Non-functional requirements
-├─ services/                             # 50+ microservices
+├─ services/                             # 72 microservices
 │  ├─ vehicle-hal/                       # Vehicle Hardware Abstraction Layer (NEW)
 │  ├─ variant-budget/                    # Variant Budget Enforcement (NEW)
 │  ├─ conformance-testing/               # Conformance Testing Framework (NEW)
@@ -602,7 +735,7 @@ atlasmesh-fleet-os/
 └─ tools/                                # Development tools
 ```
 
-## 🚚 Roadmap 🚙
+## 🗺️ Roadmap
 
 <div align="center">
 
@@ -620,25 +753,57 @@ atlasmesh-fleet-os/
 
 <div align="center">
 
-| 🚛 **Vehicle HAL** | 📦 **Sensor Packs** | 📊 **Variant Budget** | 🧪 **Conformance Testing** | ☁️ **Platform Adapters** | 📚 **Documentation** |
+| 🚚 **Vehicle HAL** | 📦 **Sensor Packs** | 📊 **Variant Budget** | 🧪 **Conformance Testing** | ☁️ **Platform Adapters** | 📚 **Documentation** |
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | Certified profiles | 3 certified packs | Automated delta tracking | Multi-dimensional matrix | Storage/messaging abstraction | 7 new docs + 3 ADRs |
 | Terminal Tractor V2 | Rugged-A, Urban-B, Highway-C | CI/CD enforcement | 3×4×3 = 36 critical paths | Azure/AWS/on-prem | Complete technical docs |
 
 </div>
 
+### **📊 Implementation Timeline**
+
+```mermaid
+gantt
+    title AtlasMesh Fleet Management System Implementation Timeline
+    dateFormat  YYYY-MM-DD
+    section Phase 1: MVP Foundation (Months 1-6)
+    Core Platform (M1-M2)     :2024-01-01, 60d
+    Safety Framework (M2-M3)  :2024-03-01, 30d
+    Vehicle Abstraction (M3-M4) :2024-04-01, 30d
+    Policy Engine (M4-M5)     :2024-05-01, 30d
+    Control Center (M5-M6)    :2024-06-01, 30d
+    
+    section Phase 2: Pilots & Validation (Months 7-12)
+    Lighthouse Customers (M7-M9) :2024-07-01, 90d
+    Enterprise Integrations (M8-M10) :2024-08-01, 60d
+    Weather-Aware Routing (M9-M11) :2024-09-01, 60d
+    Multi-Site Operations (M10-M12) :2024-10-01, 60d
+    
+    section Phase 3: Scale & Expansion (Months 13-18)
+    100+ Vehicles Production (M13-M15) :2025-01-01, 90d
+    Advanced AI/ML (M14-M16) :2025-02-01, 60d
+    Internationalization (M15-M17) :2025-03-01, 60d
+    Market Leadership (M16-M18) :2025-04-01, 60d
+    
+    section Phase 4: Qualified Agnosticism (Months 19-24)
+    Vehicle HAL (M19-M21) :2025-07-01, 90d
+    Sensor Packs (M20-M22) :2025-08-01, 60d
+    Variant Budget Enforcement (M21-M23) :2025-09-01, 60d
+    Conformance Testing (M22-M24) :2025-10-01, 60d
+```
+
 ### 🚀 **Phase 4 Milestones** *(90-180 Days)*
 
 <div align="center">
 
-| 🚗 **3-Vehicle Demo** | 🏭 **2-Sector Pilot** | ☁️ **2-Cloud Deploy** | 🔄 **Pack Swap** | 📋 **Evidence Bundle** |
+| 🚙 **3-Vehicle Demo** | 🏭 **2-Sector Pilot** | ☁️ **2-Cloud Deploy** | 🔄 **Pack Swap** | 📋 **Evidence Bundle** |
 |:---:|:---:|:---:|:---:|:---:|
 | UTV + Terminal Tractor + Mine Haul | Defense + Mining overlays | Azure EKS + on-prem K3s | Rugged-A ↔ Urban-B | Automated regulatory compliance |
 | ≥95% code reuse | ≥90% code share | 100% conformance | ≤30min swap time | Compliance artifacts |
 
 </div>
 
-> 📖 **Detailed Roadmap**: [Product Roadmap](docs/strategy/12_Product_Roadmap_and_Milestones.md#18-month-deliverables--milestones) with PM CoP cadence and release plan
+> 📖 **Detailed Roadmap**: [Product Roadmap](docs/strategy/12_Product_Roadmap_and_Milestones.md) with PM CoP cadence and release plan
 
 ## 🛠️ Prerequisites
 
@@ -698,7 +863,7 @@ cp configs/env/.env.example configs/env/.env
 
 <div align="center">
 
-| 🛡️ **Defense** | ⛏️ **Mining** | 📦 **Logistics** | 🚗 **Ride-hail** |
+| 🛡️ **Defense** | ⛏️ **Mining** | 📦 **Logistics** | 🚕 **Ride-hail** |
 |:---:|:---:|:---:|:---:|
 | `--sector defense` | `--sector mining` | `--sector logistics` | `--sector ride-hail` |
 | Military protocols | Heavy-duty operations | Supply chain optimization | Passenger transport |
@@ -761,7 +926,7 @@ python testing/conformance/runner.py --priority high
 
 <div align="center">
 
-| 🚛 **3 Vehicles** | 🏭 **4 Sectors** | ☁️ **3 Platforms** | 🎯 **36 Critical Paths** |
+| 🚚 **3 Vehicles** | 🏭 **4 Sectors** | ☁️ **3 Platforms** | 🎯 **36 Critical Paths** |
 |:---:|:---:|:---:|:---:|
 | ClassA_LightIndustrial | Defense | Azure EKS | Full test coverage |
 | ClassB_HeavyDuty | Mining | AWS EKS | Priority execution |
@@ -811,7 +976,7 @@ We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for det
 
 AtlasMesh Fleet OS is designed to meet regulatory requirements across all supported sectors through **automated evidence generation**:
 
-### **🚗 Automotive Safety Standards**
+### **🚙 Automotive Safety Standards**
 
 <div align="center">
 
@@ -826,7 +991,7 @@ AtlasMesh Fleet OS is designed to meet regulatory requirements across all suppor
 
 <div align="center">
 
-| 🛡️ **Defense** | ⛏️ **Mining** | 📦 **Logistics** | 🚗 **Ride-hail** |
+| 🛡️ **Defense** | ⛏️ **Mining** | 📦 **Logistics** | 🚕 **Ride-hail** |
 |:---:|:---:|:---:|:---:|
 | NIST 800-53 | MSHA Part 56 | DOT regulations | Dubai RTA |
 | Common Criteria | ISO 19296 | FMCSA compliance | Abu Dhabi DOT |
@@ -943,7 +1108,7 @@ graph LR
 - **[Deprecation](docs/strategy/playbooks/Deprecation_Playbook.md)** - Feature sunset process
 
 **Requirements & Governance**:
-- **[Requirements (FRs/NFRs)](docs/Technical/03_Requirements_FRs_NFRs.md#2-functional-requirements-frs)** - With DoR/DoD checklists
+- **[Requirements (FRs/NFRs)](docs/Technical/03_Requirements_FRs_NFRs.md)** - With DoR/DoD checklists
 - **[Epics & Alignment](docs/Technical/02_Epics_And_Strategic_Alignment.md)** - Epic-to-OKR mapping
 - **[Cross-Department Checklist](docs/Technical/12_Cross_Department_Checklist.md)** - No-loopholes governance
 
@@ -952,25 +1117,229 @@ graph LR
 ## Documentation
 
 ### Quick Links
-- [**Architecture Overview**](docs/Technical/01_Architecture.md) - Complete system architecture
-- [**Qualified Agnosticism Guide**](docs/Technical/08_Qualified_Agnosticism.md) - Implementation approach
-- [**Feasibility Scorecard**](docs/Technical/10_Feasibility_Scorecard.md) - Detailed feasibility analysis
-- [**Programmatic Proof Points**](docs/Technical/13_Programmatic_Proof_Points.md) - 90-180 day validation plan
-- [**Service Registry**](docs/Technical/07_Service_Registry.md) - All 50+ microservices documented
-- [**API Reference**](docs/api/API_REFERENCE.md) - Complete API documentation
-- [**Deployment Guide**](docs/deployment/DEPLOYMENT_GUIDE.md) - Production deployment procedures
+- **[Architecture Overview](docs/Technical/01_Architecture.md)** - Complete system architecture
+- **[Qualified Agnosticism Guide](docs/Technical/08_Qualified_Agnosticism.md)** - Implementation approach
+- **[Feasibility Scorecard](docs/Technical/10_Feasibility_Scorecard.md)** - Detailed feasibility analysis
+- **[Programmatic Proof Points](docs/Technical/13_Programmatic_Proof_Points.md)** - 90-180 day validation plan
+- **[Service Registry](docs/Technical/20_Service_Registry.md)** - All 72 microservices documented
+- **[API Reference](docs/api/API_REFERENCE.md)** - Complete API documentation
+- **[Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md)** - Production deployment procedures
 
 ### Qualified Agnosticism Documentation
-- [**Five Constraining Realities**](docs/Technical/09_Five_Constraining_Realities.md) - Physics, safety, ODD, sensors, regulations
-- [**Agnostic By Contract**](docs/Technical/11_Agnostic_By_Contract.md) - Contract-driven boundaries
-- [**Cross-Department Checklist**](docs/Technical/12_Cross_Department_Checklist.md) - Organizational alignment
-- [**Architecture Reality Check**](docs/Technical/14_Architecture_Reality_Check.md) - Concrete implementation
+- **[Five Constraining Realities](docs/Technical/09_Five_Constraining_Realities.md)** - Physics, safety, ODD, sensors, regulations
+- **[Agnostic By Contract](docs/Technical/11_Agnostic_By_Contract.md)** - Contract-driven boundaries
+- **[Cross-Department Checklist](docs/Technical/12_Cross_Department_Checklist.md)** - Organizational alignment
+- **[Architecture Reality Check](docs/Technical/14_Architecture_Reality_Check.md)** - Concrete implementation
 
 ### Architecture Decision Records
-- [**ADR-0011: Qualified Agnosticism**](docs/ADR/0011-qualified-agnosticism.md) - Framework decision
-- [**ADR-0012: Variant Budget Enforcement**](docs/ADR/0012-variant-budget-enforcement.md) - Automated enforcement
-- [**ADR-0013: Conformance Testing**](docs/ADR/0013-conformance-testing.md) - Multi-dimensional validation
+- **[ADR-0011: Qualified Agnosticism](docs/ADR/0011-qualified-agnosticism.md)** - Framework decision
+- **[ADR-0012: Variant Budget Enforcement](docs/ADR/0012-variant-budget-enforcement.md)** - Automated enforcement
+- **[ADR-0013: Conformance Testing](docs/ADR/0013-conformance-testing.md)** - Multi-dimensional validation
 
 ---
 
-**AtlasMesh Fleet OS - Engineering-Grounded Qualified Agnosticism for Autonomous Fleets** 🚗🚚🚕🚌🚙🚘🚐🚛💨
+**AtlasMesh Fleet OS - Engineering-Grounded Qualified Agnosticism for Autonomous Fleets** 🚙💨
+**📋 Evidence Output**: `testing/conformance/output/conformance_results_*.json`
+
+## 🤝 Contributing
+
+We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, branch naming conventions, commit message format, and pull request process.
+
+### **🚀 Quick Start for Contributors**
+
+<div align="center">
+
+| 🔀 **Fork & Branch** | 📝 **Code Standards** | 🧪 **Testing** | 📚 **Documentation** | 🔄 **Pull Request** |
+|:---:|:---:|:---:|:---:|:---:|
+| Fork repo → feature branch | Follow style guides | Write tests for new code | Update docs as needed | Clear description + tests |
+
+</div>
+
+### **📋 Key Requirements**
+
+- ✅ Fork the repository and create a feature branch
+- ✅ Follow the coding style and documentation standards  
+- ✅ Add tests for new functionality
+- ✅ Update documentation as needed
+- ✅ Submit a pull request with a clear description
+
+## 🔒 Security
+
+<div align="center">
+
+| 🛡️ **Vulnerability Disclosure** | ⏱️ **Security SLAs** | 📧 **Reporting Process** | 🔐 **PGP Encryption** |
+|:---:|:---:|:---:|:---:|
+| Coordinated disclosure | 24h response time | security@atlasmesh.io | Public key available |
+| Responsible reporting | 7d patch timeline | Encrypted communication | Signed releases |
+
+</div>
+
+**📋 Full Details**: [SECURITY.md](SECURITY.md)
+
+## 🛡️ Compliance & Safety Certification
+
+AtlasMesh Fleet OS is designed to meet regulatory requirements across all supported sectors through **automated evidence generation**:
+
+### **🚙 Automotive Safety Standards**
+
+<div align="center">
+
+| 📋 **ISO 26262** | 🎯 **ISO 21448 (SOTIF)** | 🔐 **UNECE R155** | 🔄 **UNECE R156** | 🛡️ **ISO 21434** |
+|:---:|:---:|:---:|:---:|:---:|
+| Functional safety | Safety of intended functionality | Cybersecurity requirements | Software update security | Automotive cybersecurity |
+| Per-vehicle certification | Scenario-based validation | mTLS, PKI, threat modeling | Signed OTA, rollback | Engineering lifecycle |
+
+</div>
+
+### **🏭 Sector-Specific Compliance**
+
+<div align="center">
+
+| 🛡️ **Defense** | ⛏️ **Mining** | 📦 **Logistics** | 🚕 **Ride-hail** |
+|:---:|:---:|:---:|:---:|
+| NIST 800-53 | MSHA Part 56 | DOT regulations | Dubai RTA |
+| Common Criteria | ISO 19296 | FMCSA compliance | Abu Dhabi DOT |
+| STIG compliance | Mining machinery safety | | Local transport authority |
+
+</div>
+
+### **🔒 Data Privacy & Residency**
+
+<div align="center">
+
+| 🇪🇺 **GDPR** | 🇦🇪 **UAE PDPL** | 🎯 **Purpose Binding** | 🌍 **Data Residency** |
+|:---:|:---:|:---:|:---:|
+| European data protection | UAE Personal Data Protection | Data pipeline controls | Regional deployment |
+| | | DPIA workflows | Compliance carve-outs |
+
+</div>
+
+### **🤖 Automated Evidence Generation**
+
+**Compliance artifacts are generated automatically as part of the release process:**
+
+<div align="center">
+
+| 🛡️ **Safety Case Deltas** | 🎯 **SOTIF Validation** | 🔐 **Cybersecurity Evidence** | 📋 **Audit Trail** |
+|:---:|:---:|:---:|:---:|
+| Per-vehicle profile evidence | Scenario coverage & validation | UN R155/R156 compliance | Cryptographically signed logs |
+| | | | |
+
+</div>
+
+**📦 Evidence Bundle Export**: One-click regulatory package export in `testing/conformance/output/`
+
+## 📄 License
+
+<div align="center">
+
+**This project is licensed under the Business Source License 1.1**
+
+📋 **Full License Details**: [LICENSE](LICENSE) file
+
+</div>
+
+## Product Management Framework
+
+**AtlasMesh follows an evidence-first, outcome-driven product management framework** that ensures all features are strategically aligned, safely implemented, and measurably successful.
+
+### **Framework Flow**
+
+```mermaid
+graph LR
+    Intake[📥 Intake Form] --> Discovery[🔍 Discovery<br/>Evidence Pack]
+    Discovery --> Canvas{Opportunity<br/>Canvas}
+    Canvas -->|Go| PRD[📋 PRD<br/>Evidence-First]
+    Canvas -->|No-Go| Archive[📁 Archive<br/>w/ Learnings]
+    PRD --> DoR{Definition<br/>of Ready?}
+    DoR -->|Yes| Delivery[🚀 Delivery<br/>Flags + Canary]
+    DoR -->|No| PRD
+    Delivery --> Evidence[📊 Evidence<br/>30-Day OQ]
+    Evidence --> Decision{Continue?}
+    Decision -->|Yes| Scale[📈 Scale to GA]
+    Decision -->|Iterate| PRD
+    Decision -->|Kill| Deprecate[🗑️ Deprecation<br/>Playbook]
+    
+    classDef intake fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef discovery fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef delivery fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef evidence fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    
+    class Intake,Archive intake
+    class Discovery,Canvas discovery
+    class PRD,DoR,Delivery,Scale delivery
+    class Evidence,Decision,Deprecate evidence
+```
+
+### **10 Ground Rules**
+1. **Evidence before opinion** - No PRD without evidence pack (5-7 interviews + telemetry + sim)
+2. **Traceability is mandatory** - Every FR/NFR → OKRs → Tests → SLIs → Evidence
+3. **Agnostic by contract** - Profiles, packs, policies—not forks
+4. **Variant budget is a constraint** - ≤5% code delta, ≤25% test delta per dimension
+5. **Rollout ≠ release** - Flags, canaries, kill-switches required
+6. **Safety & compliance are features** - They have owners, SLIs, gates
+7. **Design is operational** - UI must perform under stress (WCAG 2.2 AA)
+8. **Post-launch learning required** - 30-day OQ review closes loop
+9. **Async excellence** - Comment in docs, decide in meetings
+10. **Respect the clock** - Timeboxed reviews, documented decisions
+
+### **PM Community of Practice (CoP)**
+
+**Charter**: Standardize product craft, enforce traceability, govern variant budgets  
+**Cadence**: Weekly intake, bi-weekly discovery, monthly roadmap/craft reviews, quarterly strategy alignment  
+**Decision Model**: DACI (Driver-Approver-Contributors-Informed) for all cross-team decisions
+
+**Full Charter**: [PM CoP in Executive Summary](docs/strategy/01_Executive_Summary_and_Vision.md#product-management-community-of-practice-pm-cop)
+
+### **Key Documents & Templates**
+
+**Strategy & Planning**:
+- **[OKRs](docs/strategy/03_Objectives_and_Key_Results_OKRs.md)** - Company objectives and key results
+- **[Metrics Canon](docs/strategy/04_Metrics_Canon.md)** - Single source of truth for all metrics
+- **[Product Roadmap](docs/strategy/12_Product_Roadmap_and_Milestones.md)** - 18-month roadmap with PM CoP cadence
+- **[Decision Log (DACI)](docs/strategy/Decision_Log_DACI.md)** - All product decisions recorded
+
+**Templates & Playbooks**:
+- **[Intake Form](docs/strategy/templates/Intake_Form.yaml)** - Single funnel for all requests
+- **[Opportunity Canvas](docs/strategy/templates/Opportunity_Canvas.md)** - Evidence-based discovery
+- **[Evidence-First PRD](docs/strategy/templates/PRD_Evidence_First.md)** - Comprehensive PRD template
+- **[30-Day OQ Review](docs/strategy/templates/OQ_Review.md)** - Outcome quality assessment
+
+**Playbooks**:
+- **[Discovery](docs/strategy/playbooks/Discovery_Playbook.md)** - Evidence pack requirements
+- **[Prioritization](docs/strategy/playbooks/Prioritization_Playbook.md)** - RICE × Safety × Variant-cost
+- **[Beta Program](docs/strategy/playbooks/Beta_Program_Playbook.md)** - Safe rollout procedures
+- **[Deprecation](docs/strategy/playbooks/Deprecation_Playbook.md)** - Feature sunset process
+
+**Requirements & Governance**:
+- **[Requirements (FRs/NFRs)](docs/Technical/03_Requirements_FRs_NFRs.md)** - With DoR/DoD checklists
+- **[Epics & Alignment](docs/Technical/02_Epics_And_Strategic_Alignment.md)** - Epic-to-OKR mapping
+- **[Cross-Department Checklist](docs/Technical/12_Cross_Department_Checklist.md)** - No-loopholes governance
+
+---
+
+## Documentation
+
+### Quick Links
+- **[Architecture Overview](docs/Technical/01_Architecture.md)** - Complete system architecture
+- **[Qualified Agnosticism Guide](docs/Technical/08_Qualified_Agnosticism.md)** - Implementation approach
+- **[Feasibility Scorecard](docs/Technical/10_Feasibility_Scorecard.md)** - Detailed feasibility analysis
+- **[Programmatic Proof Points](docs/Technical/13_Programmatic_Proof_Points.md)** - 90-180 day validation plan
+- **[Service Registry](docs/Technical/20_Service_Registry.md)** - All 72 microservices documented
+- **[API Reference](docs/api/API_REFERENCE.md)** - Complete API documentation
+- **[Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md)** - Production deployment procedures
+
+### Qualified Agnosticism Documentation
+- **[Five Constraining Realities](docs/Technical/09_Five_Constraining_Realities.md)** - Physics, safety, ODD, sensors, regulations
+- **[Agnostic By Contract](docs/Technical/11_Agnostic_By_Contract.md)** - Contract-driven boundaries
+- **[Cross-Department Checklist](docs/Technical/12_Cross_Department_Checklist.md)** - Organizational alignment
+- **[Architecture Reality Check](docs/Technical/14_Architecture_Reality_Check.md)** - Concrete implementation
+
+### Architecture Decision Records
+- **[ADR-0011: Qualified Agnosticism](docs/ADR/0011-qualified-agnosticism.md)** - Framework decision
+- **[ADR-0012: Variant Budget Enforcement](docs/ADR/0012-variant-budget-enforcement.md)** - Automated enforcement
+- **[ADR-0013: Conformance Testing](docs/ADR/0013-conformance-testing.md)** - Multi-dimensional validation
+
+---
+
+**AtlasMesh Fleet OS - Engineering-Grounded Qualified Agnosticism for Autonomous Fleets** 🚙💨
