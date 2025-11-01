@@ -1,0 +1,87 @@
+sector: defense
+policies:
+  dispatch:
+    rules:
+      - name: "mission_authorization"
+        description: "Require proper mission authorization"
+        rego: |
+          package atlasmesh.dispatch
+          
+          default allow_mission = false
+          
+          allow_mission if {
+            input.mission.authorization_level >= input.vehicle.clearance_level
+            input.mission.classification <= input.vehicle.max_classification
+            input.operator.security_clearance >= input.mission.required_clearance
+          }
+      
+      - name: "formation_coordination"
+        description: "Ensure proper formation coordination"
+        rego: |
+          package atlasmesh.dispatch
+          
+          allow_formation if {
+            input.formation.vehicles <= input.formation.max_size
+            input.formation.spacing >= 2.0
+            input.formation.communication_encrypted
+          }
+      
+      - name: "threat_assessment"
+        description: "Assess threat level before mission assignment"
+        rego: |
+          package atlasmesh.dispatch
+          
+          allow_high_threat_mission if {
+            input.threat_level == "high"
+            input.vehicle.armor_level >= 3
+            input.operator.experience_level >= 5
+          }
+  
+  safety:
+    rules:
+      - name: "rules_of_engagement"
+        description: "Enforce rules of engagement"
+        rego: |
+          package atlasmesh.safety
+          
+          allow_engagement if {
+            input.target.classification == "hostile"
+            input.engagement.authorized
+            input.weapon_system.ready
+            input.safety_checks.passed
+          }
+      
+      - name: "mission_abort_conditions"
+        description: "Define conditions for mission abort"
+        rego: |
+          package atlasmesh.safety
+          
+          abort_mission if {
+            input.casualty_risk > 0.8
+            input.communication_lost > 300
+            input.fuel_remaining < 0.1
+          }
+  
+  security:
+    rules:
+      - name: "data_classification"
+        description: "Enforce data classification handling"
+        rego: |
+          package atlasmesh.security
+          
+          allow_data_access if {
+            input.data.classification <= input.user.clearance_level
+            input.data.need_to_know
+            input.encryption.enabled
+          }
+      
+      - name: "communication_security"
+        description: "Ensure secure communications"
+        rego: |
+          package atlasmesh.security
+          
+          allow_communication if {
+            input.communication.encrypted
+            input.communication.authenticated
+            input.communication.integrity_verified
+          }

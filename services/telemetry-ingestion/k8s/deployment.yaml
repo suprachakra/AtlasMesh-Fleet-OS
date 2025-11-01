@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry-ingestion
+  namespace: atlasmesh
+  labels:
+    app: telemetry-ingestion
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: telemetry-ingestion
+  template:
+    metadata:
+      labels:
+        app: telemetry-ingestion
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: telemetry-ingestion
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+      - name: telemetry-ingestion
+        image: registry.atlasmesh.ae/telemetry-ingestion:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 9090
+          name: metrics
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "8080"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: telemetry-ingestion-secrets
+              key: redis-url
+        - name: KAFKA_BROKERS
+          valueFrom:
+            secretKeyRef:
+              name: telemetry-ingestion-secrets
+              key: kafka-brokers
+        - name: CLICKHOUSE_URL
+          valueFrom:
+            secretKeyRef:
+              name: telemetry-ingestion-secrets
+              key: clickhouse-url
+        - name: MINIO_URL
+          valueFrom:
+            secretKeyRef:
+              name: telemetry-ingestion-secrets
+              key: minio-url
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: telemetry-ingestion-secrets
+              key: minio-access-key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: telemetry-ingestion-secrets
+              key: minio-secret-key
+        - name: OTEL_EXPORTER_JAEGER_ENDPOINT
+          value: "http://jaeger-collector:14268/api/traces"
+        - name: OTEL_SERVICE_NAME
+          value: "telemetry-ingestion"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "service.name=telemetry-ingestion,service.version=1.0.0"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: cache
+          mountPath: /cache
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: cache
+        emptyDir: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - telemetry-ingestion
+              topologyKey: kubernetes.io/hostname

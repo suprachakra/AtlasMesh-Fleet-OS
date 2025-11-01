@@ -1,0 +1,75 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: atlasmesh
+
+resources:
+- deployment.yaml
+- service.yaml
+- rbac.yaml
+- configmap.yaml
+- hpa.yaml
+- network-policy.yaml
+- pdb.yaml
+
+commonLabels:
+  app: telemetry-ingestion
+  version: v1
+  component: telemetry
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: telemetry-ingestion
+  spec:
+    template:
+      metadata:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8080"
+          prometheus.io/path: "/metrics"
+      spec:
+        containers:
+        - name: telemetry-ingestion
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+          - name: OTEL_EXPORTER_JAEGER_ENDPOINT
+            value: "http://jaeger-collector:14268/api/traces"
+          - name: OTEL_SERVICE_NAME
+            value: "telemetry-ingestion"
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: "service.name=telemetry-ingestion,service.version=1.0.0"
+
+configMapGenerator:
+- name: telemetry-ingestion-config
+  literals:
+  - LOG_LEVEL=info
+  - PORT=8080
+  - REDIS_TTL_SECONDS=300
+  - BUFFER_SIZE=1000
+
+secretGenerator:
+- name: telemetry-ingestion-secrets
+  literals:
+  - redis-url=redis://redis:6379/0
+  - kafka-brokers=kafka:9092
+  - clickhouse-url=http://clickhouse:8123
+  - minio-url=http://minio:9000
+  - minio-access-key=minioadmin
+  - minio-secret-key=minioadmin
+
+images:
+- name: registry.atlasmesh.ae/telemetry-ingestion
+  newTag: 1.0.0
+
+replicas:
+- name: telemetry-ingestion
+  count: 3

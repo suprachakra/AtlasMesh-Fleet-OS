@@ -1,0 +1,88 @@
+sector: mining
+policies:
+  dispatch:
+    rules:
+      - name: "blast_zone_restrictions"
+        description: "Prevent dispatch during blast operations"
+        rego: |
+          package atlasmesh.dispatch
+          
+          default allow_dispatch = false
+          
+          allow_dispatch if {
+            not input.blast_schedule.active
+            input.vehicle.distance_to_blast_zone > 100.0
+            input.blast_schedule.next_blast_hours > 2
+          }
+      
+      - name: "haul_cycle_optimization"
+        description: "Optimize haul cycle assignments"
+        rego: |
+          package atlasmesh.dispatch
+          
+          allow_haul_assignment if {
+            input.truck.load_capacity >= input.load.weight
+            input.truck.fuel_level >= 0.3
+            input.route.condition == "passable"
+            input.shovel.available
+          }
+      
+      - name: "weather_restrictions"
+        description: "Enforce weather-based restrictions"
+        rego: |
+          package atlasmesh.dispatch
+          
+          allow_operation if {
+            input.weather.visibility > 50.0
+            input.weather.wind_speed < 15.0
+            input.weather.temperature > -20.0
+            input.weather.temperature < 45.0
+          }
+  
+  safety:
+    rules:
+      - name: "mining_safety_protocols"
+        description: "Enforce mining safety protocols"
+        rego: |
+          package atlasmesh.safety
+          
+          require_safety_equipment if {
+            input.vehicle.in_pit
+            input.operator.ppe_complete
+            input.vehicle.emergency_systems_operational
+          }
+      
+      - name: "proximity_safety"
+        description: "Maintain safe distances between vehicles"
+        rego: |
+          package atlasmesh.safety
+          
+          safe_distance := 50.0  # meters
+          
+          maintain_safety if {
+            input.nearest_vehicle_distance >= safe_distance
+            input.vehicle.speed <= 10.0
+          }
+  
+  production:
+    rules:
+      - name: "production_targets"
+        description: "Ensure production targets are met"
+        rego: |
+          package atlasmesh.production
+          
+          prioritize_high_value if {
+            input.ore.grade >= input.targets.minimum_grade
+            input.ore.tonnage >= input.targets.daily_minimum
+          }
+      
+      - name: "equipment_utilization"
+        description: "Optimize equipment utilization"
+        rego: |
+          package atlasmesh.production
+          
+          optimize_utilization if {
+            input.equipment.utilization < 0.8
+            input.equipment.maintenance_due_hours > 24
+            input.equipment.fuel_efficiency > 0.7
+          }

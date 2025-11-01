@@ -1,0 +1,95 @@
+sector: ride_hail
+policies:
+  dispatch:
+    rules:
+      - name: "passenger_safety_requirements"
+        description: "Ensure passenger safety requirements are met"
+        rego: |
+          package atlasmesh.dispatch
+          
+          default allow_passenger_pickup = false
+          
+          allow_passenger_pickup if {
+            input.vehicle.passenger_capacity >= input.ride.passenger_count
+            input.vehicle.cleanliness_score >= 4.0
+            input.vehicle.safety_inspection_valid
+            input.driver.license_valid
+          }
+      
+      - name: "surge_pricing"
+        description: "Apply surge pricing based on demand"
+        rego: |
+          package atlasmesh.dispatch
+          
+          surge_multiplier := 1.0
+          
+          surge_multiplier := 1.5 if {
+            input.demand.level == "high"
+            input.time_of_day in ["7:00-9:00", "17:00-19:00"]
+          }
+          
+          surge_multiplier := 2.0 if {
+            input.demand.level == "very_high"
+            input.weather.condition == "severe"
+          }
+      
+      - name: "accessibility_requirements"
+        description: "Ensure accessibility requirements are met"
+        rego: |
+          package atlasmesh.dispatch
+          
+          allow_accessibility_ride if {
+            input.ride.accessibility_required
+            input.vehicle.wheelchair_accessible
+            input.vehicle.ramp_operational
+          }
+  
+  safety:
+    rules:
+      - name: "passenger_comfort"
+        description: "Ensure passenger comfort standards"
+        rego: |
+          package atlasmesh.safety
+          
+          maintain_comfort if {
+            input.vehicle.acceleration <= 2.0
+            input.vehicle.deceleration <= 3.0
+            input.vehicle.temperature >= 18.0
+            input.vehicle.temperature <= 24.0
+          }
+      
+      - name: "traffic_compliance"
+        description: "Ensure traffic law compliance"
+        rego: |
+          package atlasmesh.safety
+          
+          comply_with_traffic_laws if {
+            input.vehicle.speed <= input.speed_limit
+            input.vehicle.following_distance >= 2.0
+            input.vehicle.lane_change_safe
+          }
+  
+  service:
+    rules:
+      - name: "service_quality_standards"
+        description: "Maintain service quality standards"
+        rego: |
+          package atlasmesh.service
+          
+          maintain_quality if {
+            input.eta_accuracy >= 0.8
+            input.vehicle.cleanliness_score >= 4.0
+            input.driver.rating >= 4.5
+          }
+      
+      - name: "wait_time_limits"
+        description: "Enforce maximum wait times"
+        rego: |
+          package atlasmesh.service
+          
+          max_wait_time := 300  # seconds
+          
+          acceptable_wait if {
+            input.estimated_wait_time <= max_wait_time
+            input.passenger.priority_level >= 1
+          }

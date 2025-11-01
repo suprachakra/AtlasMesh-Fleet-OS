@@ -1,0 +1,86 @@
+sector: logistics
+policies:
+  dispatch:
+    rules:
+      - name: "warehouse_operational_hours"
+        description: "Allow dispatch only during warehouse operational hours"
+        rego: |
+          package atlasmesh.dispatch
+          
+          default allow_dispatch = false
+          
+          allow_dispatch if {
+            current_hour := time.clock(time.now_ns())[0]
+            current_hour >= 6
+            current_hour < 22
+          }
+      
+      - name: "vehicle_capacity_check"
+        description: "Ensure vehicle has sufficient capacity for task"
+        rego: |
+          package atlasmesh.dispatch
+          
+          default allow_assignment = false
+          
+          allow_assignment if {
+            input.vehicle.payload_capacity_kg >= input.task.cargo_weight_kg
+            input.vehicle.battery_soc >= 20
+          }
+      
+      - name: "warehouse_zone_restrictions"
+        description: "Enforce warehouse zone access restrictions"
+        rego: |
+          package atlasmesh.dispatch
+          
+          default allow_zone_access = false
+          
+          allow_zone_access if {
+            input.vehicle.zone_permissions[input.task.target_zone]
+            input.task.priority >= input.vehicle.min_priority_level
+          }
+  
+  safety:
+    rules:
+      - name: "warehouse_speed_limits"
+        description: "Enforce speed limits in warehouse zones"
+        rego: |
+          package atlasmesh.safety
+          
+          max_speed := 3.0  # m/s
+          
+          allow_speed if {
+            input.speed <= max_speed
+          }
+      
+      - name: "emergency_stop_conditions"
+        description: "Define conditions for emergency stop"
+        rego: |
+          package atlasmesh.safety
+          
+          emergency_stop_required if {
+            input.obstacle_distance < 1.0
+            input.obstacle_confidence > 0.8
+          }
+  
+  energy:
+    rules:
+      - name: "battery_management"
+        description: "Manage battery charging and usage"
+        rego: |
+          package atlasmesh.energy
+          
+          require_charging if {
+            input.battery_soc < 20
+            input.task.estimated_duration_minutes > 30
+          }
+      
+      - name: "charging_station_access"
+        description: "Control access to charging stations"
+        rego: |
+          package atlasmesh.energy
+          
+          allow_charging if {
+            input.battery_soc < 80
+            input.charging_station.available
+            input.vehicle.charging_compatible
+          }
