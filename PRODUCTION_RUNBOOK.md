@@ -34,7 +34,7 @@ This playbook provides comprehensive operational procedures for running, debuggi
 
 # Integration Services
 - uae-government-integration  # ADTA, emergency services APIs
-- erp-wms-adapters           # SAP, Oracle WMS integration
+- business-systems-connector           # SAP, Oracle WMS integration
 - arabic-localization        # RTL UI and cultural adaptations
 ```
 

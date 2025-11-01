@@ -722,7 +722,7 @@ atlasmesh-fleet-os/
 │  ├─ cloud-bridge/                      # Cloud communication bridge
 │  └─ ota-manager/                       # Over-the-air update manager
 ├─ ui/                                   # User interfaces
-│  └─ control-center/                    # React-based control center
+│  └─ control-center/                    # React-based control center (EN + AR/RTL)
 ├─ testing/                              # Test suites
 │  ├─ conformance/                       # Conformance test runner (NEW)
 │  │  └─ runner.py                       # Multi-dimensional test matrix
@@ -730,7 +730,8 @@ atlasmesh-fleet-os/
 │  ├─ integration/                       # Integration tests
 │  ├─ performance/                       # Performance tests
 │  └─ chaos/                             # Chaos engineering tests
-├─ database/                             # Database schemas and migrations
+`├─ data/                                 # Data contracts, schemas, and KPI definitions
+├─ database/                             # Database optimization configs and stored procedures
 ├─ infrastructure/                       # Infrastructure as code
 └─ tools/                                # Development tools
 ```
@@ -1238,6 +1239,107 @@ AtlasMesh Fleet OS is designed to meet regulatory requirements across all suppor
 📋 **Full License Details**: [LICENSE](LICENSE) file
 
 </div>
+
+## Product Management Framework
+
+**AtlasMesh follows an evidence-first, outcome-driven product management framework** that ensures all features are strategically aligned, safely implemented, and measurably successful.
+
+### **Framework Flow**
+
+```mermaid
+graph LR
+    Intake[📥 Intake Form] --> Discovery[🔍 Discovery<br/>Evidence Pack]
+    Discovery --> Canvas{Opportunity<br/>Canvas}
+    Canvas -->|Go| PRD[📋 PRD<br/>Evidence-First]
+    Canvas -->|No-Go| Archive[📁 Archive<br/>w/ Learnings]
+    PRD --> DoR{Definition<br/>of Ready?}
+    DoR -->|Yes| Delivery[🚀 Delivery<br/>Flags + Canary]
+    DoR -->|No| PRD
+    Delivery --> Evidence[📊 Evidence<br/>30-Day OQ]
+    Evidence --> Decision{Continue?}
+    Decision -->|Yes| Scale[📈 Scale to GA]
+    Decision -->|Iterate| PRD
+    Decision -->|Kill| Deprecate[🗑️ Deprecation<br/>Playbook]
+    
+    classDef intake fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef discovery fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef delivery fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef evidence fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    
+    class Intake,Archive intake
+    class Discovery,Canvas discovery
+    class PRD,DoR,Delivery,Scale delivery
+    class Evidence,Decision,Deprecate evidence
+```
+
+### **10 Ground Rules**
+1. **Evidence before opinion** - No PRD without evidence pack (5-7 interviews + telemetry + sim)
+2. **Traceability is mandatory** - Every FR/NFR → OKRs → Tests → SLIs → Evidence
+3. **Agnostic by contract** - Profiles, packs, policies—not forks
+4. **Variant budget is a constraint** - ≤5% code delta, ≤25% test delta per dimension
+5. **Rollout ≠ release** - Flags, canaries, kill-switches required
+6. **Safety & compliance are features** - They have owners, SLIs, gates
+7. **Design is operational** - UI must perform under stress (WCAG 2.2 AA)
+8. **Post-launch learning required** - 30-day OQ review closes loop
+9. **Async excellence** - Comment in docs, decide in meetings
+10. **Respect the clock** - Timeboxed reviews, documented decisions
+
+### **PM Community of Practice (CoP)**
+
+**Charter**: Standardize product craft, enforce traceability, govern variant budgets  
+**Cadence**: Weekly intake, bi-weekly discovery, monthly roadmap/craft reviews, quarterly strategy alignment  
+**Decision Model**: DACI (Driver-Approver-Contributors-Informed) for all cross-team decisions
+
+**Full Charter**: [PM CoP in Executive Summary](docs/strategy/01_Executive_Summary_and_Vision.md#product-management-community-of-practice-pm-cop)
+
+### **Key Documents & Templates**
+
+**Strategy & Planning**:
+- **[OKRs](docs/strategy/03_Objectives_and_Key_Results_OKRs.md)** - Company objectives and key results
+- **[Metrics Canon](docs/strategy/04_Metrics_Canon.md)** - Single source of truth for all metrics
+- **[Product Roadmap](docs/strategy/12_Product_Roadmap_and_Milestones.md)** - 18-month roadmap with PM CoP cadence
+- **[Decision Log (DACI)](docs/strategy/Decision_Log_DACI.md)** - All product decisions recorded
+
+**Templates & Playbooks**:
+- **[Intake Form](docs/strategy/templates/Intake_Form.yaml)** - Single funnel for all requests
+- **[Opportunity Canvas](docs/strategy/templates/Opportunity_Canvas.md)** - Evidence-based discovery
+- **[Evidence-First PRD](docs/strategy/templates/PRD_Evidence_First.md)** - Comprehensive PRD template
+- **[30-Day OQ Review](docs/strategy/templates/OQ_Review.md)** - Outcome quality assessment
+
+**Playbooks**:
+- **[Discovery](docs/strategy/playbooks/Discovery_Playbook.md)** - Evidence pack requirements
+- **[Prioritization](docs/strategy/playbooks/Prioritization_Playbook.md)** - RICE × Safety × Variant-cost
+- **[Beta Program](docs/strategy/playbooks/Beta_Program_Playbook.md)** - Safe rollout procedures
+- **[Deprecation](docs/strategy/playbooks/Deprecation_Playbook.md)** - Feature sunset process
+
+**Requirements & Governance**:
+- **[Requirements (FRs/NFRs)](docs/Technical/03_Requirements_FRs_NFRs.md)** - With DoR/DoD checklists
+- **[Epics & Alignment](docs/Technical/02_Epics_And_Strategic_Alignment.md)** - Epic-to-OKR mapping
+- **[Cross-Department Checklist](docs/Technical/12_Cross_Department_Checklist.md)** - No-loopholes governance
+
+---
+
+## Documentation
+
+### Quick Links
+- **[Architecture Overview](docs/Technical/01_Architecture.md)** - Complete system architecture
+- **[Qualified Agnosticism Guide](docs/Technical/08_Qualified_Agnosticism.md)** - Implementation approach
+- **[Feasibility Scorecard](docs/Technical/10_Feasibility_Scorecard.md)** - Detailed feasibility analysis
+- **[Programmatic Proof Points](docs/Technical/13_Programmatic_Proof_Points.md)** - 90-180 day validation plan
+- **[Service Registry](docs/Technical/20_Service_Registry.md)** - All 72 microservices documented
+- **[API Reference](docs/api/API_REFERENCE.md)** - Complete API documentation
+- **[Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md)** - Production deployment procedures
+
+### Qualified Agnosticism Documentation
+- **[Five Constraining Realities](docs/Technical/09_Five_Constraining_Realities.md)** - Physics, safety, ODD, sensors, regulations
+- **[Agnostic By Contract](docs/Technical/11_Agnostic_By_Contract.md)** - Contract-driven boundaries
+- **[Cross-Department Checklist](docs/Technical/12_Cross_Department_Checklist.md)** - Organizational alignment
+- **[Architecture Reality Check](docs/Technical/14_Architecture_Reality_Check.md)** - Concrete implementation
+
+### Architecture Decision Records
+- **[ADR-0011: Qualified Agnosticism](docs/ADR/0011-qualified-agnosticism.md)** - Framework decision
+- **[ADR-0012: Variant Budget Enforcement](docs/ADR/0012-variant-budget-enforcement.md)** - Automated enforcement
+- **[ADR-0013: Conformance Testing](docs/ADR/0013-conformance-testing.md)** - Multi-dimensional validation
 
 ---
 
