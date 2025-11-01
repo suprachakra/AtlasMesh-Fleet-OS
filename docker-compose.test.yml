@@ -1,0 +1,310 @@
+# AtlasMesh Fleet OS - Test Environment Docker Compose
+# Integration testing environment for Abu Dhabi autonomous vehicle fleet operations
+
+version: '3.8'
+
+services:
+  # Database Services
+  postgres-test:
+    image: postgres:15
+    container_name: atlasmesh-postgres-test
+    environment:
+      POSTGRES_DB: atlasmesh_test
+      POSTGRES_USER: atlasmesh_test
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+      - ./services/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlasmesh_test -d atlasmesh_test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - atlasmesh-test
+
+  redis-test:
+    image: redis:7-alpine
+    container_name: atlasmesh-redis-test
+    ports:
+      - "6380:6379"
+    command: redis-server --requirepass test_password
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - atlasmesh-test
+
+  # Message Queue
+  zookeeper-test:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: atlasmesh-zookeeper-test
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - atlasmesh-test
+
+  kafka-test:
+    image: confluentinc/cp-kafka:latest
+    container_name: atlasmesh-kafka-test
+    depends_on:
+      - zookeeper-test
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-test:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9093", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - atlasmesh-test
+
+  # AtlasMesh Services for Testing
+  api-gateway-test:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    container_name: atlasmesh-api-gateway-test
+    ports:
+      - "8081:8080"
+    environment:
+      - ENV=test
+      - DATABASE_URL=postgres://atlasmesh_test:test_password@postgres-test:5432/atlasmesh_test?sslmode=disable
+      - REDIS_URL=redis://:test_password@redis-test:6379/0
+      - KAFKA_BROKERS=kafka-test:9093
+      - LOG_LEVEL=debug
+      - ABU_DHABI_MODE=true
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+      kafka-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - atlasmesh-test
+
+  fleet-manager-test:
+    build:
+      context: .
+      dockerfile: services/fleet-manager/Dockerfile
+    container_name: atlasmesh-fleet-manager-test
+    ports:
+      - "8082:8081"
+    environment:
+      - ENV=test
+      - DATABASE_URL=postgres://atlasmesh_test:test_password@postgres-test:5432/atlasmesh_test?sslmode=disable
+      - REDIS_URL=redis://:test_password@redis-test:6379/0
+      - KAFKA_BROKERS=kafka-test:9093
+      - LOG_LEVEL=debug
+      - ABU_DHABI_MODE=true
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+      kafka-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - atlasmesh-test
+
+  policy-engine-test:
+    build:
+      context: .
+      dockerfile: services/policy-engine/Dockerfile
+    container_name: atlasmesh-policy-engine-test
+    ports:
+      - "8083:8082"
+    environment:
+      - ENV=test
+      - DATABASE_URL=postgres://atlasmesh_test:test_password@postgres-test:5432/atlasmesh_test?sslmode=disable
+      - REDIS_URL=redis://:test_password@redis-test:6379/0
+      - LOG_LEVEL=debug
+      - ABU_DHABI_MODE=true
+      - UAE_REGULATIONS_ENABLED=true
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - atlasmesh-test
+
+  vehicle-gateway-test:
+    build:
+      context: .
+      dockerfile: services/vehicle-gateway/Dockerfile
+    container_name: atlasmesh-vehicle-gateway-test
+    ports:
+      - "8084:8083"
+    environment:
+      - ENV=test
+      - KAFKA_BROKERS=kafka-test:9093
+      - REDIS_URL=redis://:test_password@redis-test:6379/0
+      - LOG_LEVEL=debug
+      - ABU_DHABI_MODE=true
+      - VEHICLE_SIMULATION_MODE=true
+    depends_on:
+      redis-test:
+        condition: service_healthy
+      kafka-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - atlasmesh-test
+
+  telemetry-ingestion-test:
+    build:
+      context: .
+      dockerfile: services/telemetry-ingestion/Dockerfile
+    container_name: atlasmesh-telemetry-ingestion-test
+    ports:
+      - "8085:8084"
+    environment:
+      - ENV=test
+      - KAFKA_BROKERS=kafka-test:9093
+      - CLICKHOUSE_URL=http://clickhouse-test:8123
+      - LOG_LEVEL=debug
+      - ABU_DHABI_MODE=true
+    depends_on:
+      kafka-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - atlasmesh-test
+
+  # Analytics Services for Testing
+  clickhouse-test:
+    image: clickhouse/clickhouse-server:latest
+    container_name: atlasmesh-clickhouse-test
+    ports:
+      - "8124:8123"
+      - "9001:9000"
+    environment:
+      CLICKHOUSE_DB: atlasmesh_test
+      CLICKHOUSE_USER: atlasmesh_test
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+      CLICKHOUSE_PASSWORD: test_password
+    volumes:
+      - clickhouse_test_data:/var/lib/clickhouse
+    networks:
+      - atlasmesh-test
+
+  # Mock External Services
+  mock-weather-service:
+    image: wiremock/wiremock:latest
+    container_name: atlasmesh-mock-weather
+    ports:
+      - "8086:8080"
+    volumes:
+      - ./testing/mocks/weather:/home/wiremock
+    command: ["--global-response-templating", "--verbose"]
+    networks:
+      - atlasmesh-test
+
+  mock-traffic-service:
+    image: wiremock/wiremock:latest
+    container_name: atlasmesh-mock-traffic
+    ports:
+      - "8087:8080"
+    volumes:
+      - ./testing/mocks/traffic:/home/wiremock
+    command: ["--global-response-templating", "--verbose"]
+    networks:
+      - atlasmesh-test
+
+  mock-uae-government-apis:
+    image: wiremock/wiremock:latest
+    container_name: atlasmesh-mock-uae-gov
+    ports:
+      - "8088:8080"
+    volumes:
+      - ./testing/mocks/uae-government:/home/wiremock
+    command: ["--global-response-templating", "--verbose"]
+    networks:
+      - atlasmesh-test
+
+  # Test Runner Service
+  test-runner:
+    build:
+      context: .
+      dockerfile: testing/Dockerfile
+    container_name: atlasmesh-test-runner
+    environment:
+      - TEST_ENV=integration
+      - API_GATEWAY_URL=http://api-gateway-test:8080
+      - FLEET_MANAGER_URL=http://fleet-manager-test:8081
+      - POLICY_ENGINE_URL=http://policy-engine-test:8082
+      - VEHICLE_GATEWAY_URL=http://vehicle-gateway-test:8083
+      - TELEMETRY_INGESTION_URL=http://telemetry-ingestion-test:8084
+      - DATABASE_URL=postgres://atlasmesh_test:test_password@postgres-test:5432/atlasmesh_test?sslmode=disable
+      - REDIS_URL=redis://:test_password@redis-test:6379/0
+      - KAFKA_BROKERS=kafka-test:9093
+      - ABU_DHABI_MODE=true
+    depends_on:
+      api-gateway-test:
+        condition: service_healthy
+      fleet-manager-test:
+        condition: service_healthy
+      policy-engine-test:
+        condition: service_healthy
+      vehicle-gateway-test:
+        condition: service_healthy
+      telemetry-ingestion-test:
+        condition: service_healthy
+    volumes:
+      - ./tests:/app/tests
+      - ./tools:/app/tools
+    command: ["sleep", "infinity"]  # Keep container running for manual test execution
+    networks:
+      - atlasmesh-test
+
+volumes:
+  postgres_test_data:
+    driver: local
+  clickhouse_test_data:
+    driver: local
+
+networks:
+  atlasmesh-test:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
