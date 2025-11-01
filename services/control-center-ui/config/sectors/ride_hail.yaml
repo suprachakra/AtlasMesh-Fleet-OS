@@ -1,0 +1,137 @@
+sector: ride_hail
+services:
+  control-center-ui:
+    dashboard:
+      layout:
+        grid_size: 12
+        max_columns: 4
+        max_rows: 6
+        responsive: true
+        mobile_optimized: true
+        parameters:
+          passenger_focused: true
+          real_time_operations: true
+      widgets:
+        fleet_overview:
+          enabled: true
+          size: "large"
+          position:
+            x: 0
+            y: 0
+            width: 4
+            height: 2
+          refresh_interval_seconds: 10
+          parameters:
+            show_passenger_capacity: true
+            show_cleanliness_status: true
+            show_availability: true
+        vehicle_status:
+          enabled: true
+          size: "medium"
+          position:
+            x: 4
+            y: 0
+            width: 4
+            height: 2
+          refresh_interval_seconds: 5
+          parameters:
+            show_location: true
+            show_passenger_count: true
+            show_eta: true
+        task_queue:
+          enabled: true
+          size: "large"
+          position:
+            x: 0
+            y: 2
+            width: 4
+            height: 2
+          refresh_interval_seconds: 5
+          parameters:
+            show_ride_requests: true
+            show_passenger_priority: true
+        performance:
+          enabled: true
+          size: "medium"
+          position:
+            x: 4
+            y: 2
+            width: 4
+            height: 2
+          refresh_interval_seconds: 60
+          parameters:
+            show_passenger_satisfaction: true
+            show_on_time_performance: true
+            show_revenue: true
+        alerts:
+          enabled: true
+          size: "small"
+          position:
+            x: 8
+            y: 0
+            width: 4
+            height: 1
+          refresh_interval_seconds: 2
+          parameters:
+            show_passenger_alerts: true
+            show_safety_incidents: true
+        maps:
+          enabled: true
+          size: "large"
+          position:
+            x: 0
+            y: 4
+            width: 6
+            height: 2
+          refresh_interval_seconds: 2
+          parameters:
+            show_urban_areas: true
+            show_traffic_conditions: true
+            show_pickup_dropoff: true
+        analytics:
+          enabled: true
+          size: "medium"
+          position:
+            x: 6
+            y: 4
+            width: 6
+            height: 2
+          refresh_interval_seconds: 300
+          parameters:
+            show_ridership_analytics: true
+            show_revenue_analytics: true
+        parameters:
+          passenger_specific: true
+          urban_operations: true
+          real_time_matching: true
+      real_time_updates:
+        enabled: true
+        update_interval_seconds: 2
+        websocket_url: "wss://localhost:8080/ws"
+        auto_reconnect: true
+        parameters:
+          passenger_events: true
+          ride_events: true
+          traffic_events: true
+      themes:
+        default_theme: "ride_hail"
+        available_themes: ["ride_hail", "dark", "light"]
+        dark_mode: false
+        parameters:
+          color_scheme: "blue_purple"
+      parameters:
+        sector: "ride_hail"
+        passenger_operations: true
+        urban_operations: true
+        real_time_services: true
+    websocket:
+      enabled: true
+      port: 8080
+      path: "/ws"
+      max_connections: 1000
+      ping_interval_seconds: 15
+      pong_timeout_seconds: 10
+      parameters:
+        passenger_events: true
+        ride_matching: true
+        real_time_tracking: true
