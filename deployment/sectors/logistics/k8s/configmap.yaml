@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logistics-config
+  namespace: atlasmesh-logistics
+  labels:
+    sector: logistics
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: logistics-config
+data:
+  # Sector configuration
+  sector: "logistics"
+  environment: "production"
+  
+  # Warehouse zones
+  warehouse_zones: |
+    - "A"
+    - "B" 
+    - "C"
+    - "D"
+  
+  # Vehicle types
+  vehicle_types: |
+    - "forklift"
+    - "tugger"
+    - "pallet_truck"
+    - "reach_truck"
+  
+  # Operational parameters
+  indoor_operations: "true"
+  precision_required: "high"
+  max_vehicle_speed: "3"
+  real_time_tracking: "true"
+  battery_management: "true"
+  shift_based_operations: "true"
+  
+  # Service configurations
+  vehicle_agent_config: |
+    perception:
+      indoor_navigation: true
+      pallet_detection: true
+      update_frequency_hz: 10
+    control:
+      low_speed_control: true
+      precision_control: true
+    localization:
+      gps_denied_navigation: true
+      indoor_positioning: true
+    safety:
+      obstacle_avoidance: true
+      emergency_stop: true
+  
+  fleet_manager_config: |
+    max_fleet_size: 50
+    vehicle_types:
+      - "forklift"
+      - "tugger"
+      - "pallet_truck"
+      - "reach_truck"
+    battery_management:
+      enabled: true
+      charging_stations: 10
+    shift_scheduling:
+      enabled: true
+      shift_duration_hours: 8
+  
+  dispatch_service_config: |
+    max_concurrent_tasks: 100
+    task_prioritization:
+      priority_based: true
+      urgent_tasks: true
+    routing:
+      multi_stop_routing: true
+      load_balancing: true
+    optimization:
+      route_optimization: true
+      task_optimization: true
+  
+  control_center_ui_config: |
+    dashboard:
+      layout: "warehouse_operations"
+      real_time_updates: true
+    features:
+      vehicle_monitoring: true
+      task_management: true
+      battery_status: true
+      shift_management: true
+

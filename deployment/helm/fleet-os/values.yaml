@@ -1,0 +1,366 @@
+# AtlasMesh Fleet OS - Default Values
+# This is a YAML-formatted file.
+
+# Global configuration
+global:
+  imageRegistry: "registry.atlasmesh.ae"
+  imagePullSecrets:
+    - name: atlasmesh-registry
+  storageClass: "fast-ssd"
+  
+# Environment configuration
+environment: "production"
+region: "uae-central"
+timezone: "Asia/Dubai"
+
+# Image configuration
+image:
+  registry: "registry.atlasmesh.ae"
+  tag: "v1.0.0"
+  pullPolicy: IfNotPresent
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: api.atlasmesh.ae
+      paths:
+        - path: /
+          pathType: Prefix
+          service: api-gateway
+    - host: fleet.atlasmesh.ae
+      paths:
+        - path: /
+          pathType: Prefix
+          service: control-center
+  tls:
+    - secretName: atlasmesh-tls
+      hosts:
+        - api.atlasmesh.ae
+        - fleet.atlasmesh.ae
+
+# Core Services Configuration
+services:
+  # API Gateway
+  apiGateway:
+    enabled: true
+    name: api-gateway
+    image: api-gateway
+    port: 8080
+    replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    env:
+      - name: LOG_LEVEL
+        value: "INFO"
+      - name: CORS_ORIGINS
+        value: "https://fleet.atlasmesh.ae"
+    
+  # Fleet Manager
+  fleetManager:
+    enabled: true
+    name: fleet-manager
+    image: fleet-manager
+    port: 8081
+    replicas: 3
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 4000m
+        memory: 8Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 3
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+    
+  # Vehicle Gateway
+  vehicleGateway:
+    enabled: true
+    name: vehicle-gateway
+    image: vehicle-gateway
+    port: 8082
+    replicas: 5
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 4000m
+        memory: 8Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 5
+      maxReplicas: 20
+      targetCPUUtilizationPercentage: 70
+    
+  # Policy Engine
+  policyEngine:
+    enabled: true
+    name: policy-engine
+    image: policy-engine
+    port: 8083
+    replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    
+  # Weather Fusion
+  weatherFusion:
+    enabled: true
+    name: weather-fusion
+    image: weather-fusion
+    port: 8084
+    replicas: 2
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    
+  # Telemetry Ingest
+  telemetryIngest:
+    enabled: true
+    name: telemetry-ingestion
+    image: telemetry-ingestion
+    port: 8086
+    replicas: 5
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 4000m
+        memory: 8Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 5
+      maxReplicas: 15
+      targetCPUUtilizationPercentage: 70
+
+# UI Configuration
+ui:
+  controlCenter:
+    enabled: true
+    name: control-center
+    image: control-center
+    port: 3000
+    replicas: 3
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  
+  mobileApp:
+    enabled: true
+    name: mobile-app
+    image: mobile-app
+    port: 3001
+    replicas: 2
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+
+# Database Configuration
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "changeme"
+    database: "atlasmesh_fleet"
+  primary:
+    persistence:
+      enabled: true
+      size: 100Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 2000m
+        memory: 4Gi
+      limits:
+        cpu: 8000m
+        memory: 16Gi
+  readReplicas:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 100Gi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+# Redis Configuration
+redis:
+  enabled: true
+  architecture: replication
+  auth:
+    enabled: true
+    password: "changeme"
+  master:
+    persistence:
+      enabled: true
+      size: 20Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+  replica:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 20Gi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+# Kafka Configuration
+kafka:
+  enabled: true
+  replicaCount: 3
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: "fast-ssd"
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 4000m
+      memory: 8Gi
+  zookeeper:
+    enabled: true
+    replicaCount: 3
+    persistence:
+      enabled: true
+      size: 10Gi
+  schemaRegistry:
+    enabled: true
+  metrics:
+    kafka:
+      enabled: true
+    jmx:
+      enabled: true
+
+# Monitoring Configuration
+monitoring:
+  prometheus:
+    enabled: true
+    server:
+      persistentVolume:
+        enabled: true
+        size: 50Gi
+        storageClass: "fast-ssd"
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 2Gi
+        limits:
+          cpu: 4000m
+          memory: 8Gi
+    alertmanager:
+      enabled: true
+      persistentVolume:
+        enabled: true
+        size: 10Gi
+  
+  grafana:
+    enabled: true
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: "fast-ssd"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    adminPassword: "changeme"
+    
+  jaeger:
+    enabled: true
+    storage:
+      type: elasticsearch
+    elasticsearch:
+      enabled: true
+      replicas: 3
+
+# Security Configuration
+security:
+  rbac:
+    enabled: true
+  networkPolicies:
+    enabled: true
+  podSecurityPolicy:
+    enabled: true
+  serviceAccount:
+    create: true
+    name: "fleet-os"
+
+# Backup Configuration
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  retention: "30d"
+  storage:
+    type: "s3"
+    bucket: "atlasmesh-backups"
+    region: "me-south-1"
+
+# Feature Flags
+featureFlags:
+  autonomousDispatch: true
+  predictiveMaintenance: true
+  weatherIntegration: true
+  arabicLocalization: true
+  uaeGovernmentIntegration: true
+
+# Resource Quotas
+resourceQuotas:
+  enabled: true
+  hard:
+    requests.cpu: "50"
+    requests.memory: "100Gi"
+    limits.cpu: "100"
+    limits.memory: "200Gi"
+    persistentvolumeclaims: "50"
+
+# Network Policies
+networkPolicies:
+  enabled: true
+  ingress:
+    enabled: true
+  egress:
+    enabled: true
