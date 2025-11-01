@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  manhattan-scale-adapter:
+    build: .
+    container_name: manhattan-scale-adapter
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIG_PATH=config/manhattan-scale.yaml
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=atlasmesh
+      - DB_PASSWORD=atlasmesh123
+      - DB_NAME=atlasmesh_manhattan
+      - MANHATTAN_HOST=localhost
+      - MANHATTAN_PORT=8080
+      - MANHATTAN_USER=admin
+      - MANHATTAN_PASSWORD=admin123
+      - MANHATTAN_AUTH_TYPE=basic
+      - MANHATTAN_SSL_ENABLED=false
+      - MANHATTAN_SSL_VERIFY=false
+      - MANHATTAN_API_VERSION=v1
+      - MANHATTAN_TIMEOUT=30s
+      - MANHATTAN_RETRY_ATTEMPTS=3
+      - MANHATTAN_RETRY_DELAY=5s
+      - MANHATTAN_POLL_INTERVAL=5s
+      - MANHATTAN_BATCH_SIZE=100
+      - MANHATTAN_QUEUE_SIZE=1000
+      - MANHATTAN_WAREHOUSE_ID=WH001
+    depends_on:
+      - postgres
+    networks:
+      - atlasmesh-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: manhattan-scale-postgres
+    environment:
+      - POSTGRES_DB=atlasmesh_manhattan
+      - POSTGRES_USER=atlasmesh
+      - POSTGRES_PASSWORD=atlasmesh123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    networks:
+      - atlasmesh-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlasmesh -d atlasmesh_manhattan"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: manhattan-scale-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - atlasmesh-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  atlasmesh-network:
+    driver: bridge
