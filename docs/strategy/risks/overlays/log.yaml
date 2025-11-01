@@ -1,0 +1,14 @@
+# risk/overlays/log.yaml
+version: 1
+sector: log
+overrides:
+  MET.INT.CONTRACT_TEST_PASS%:
+    target: "100%"
+    tripwire_red: "<100%"
+  MET.QUAL.TEMP_EXCURSIONS:
+    target: "0"
+requirements_add:
+  - NFR-LOG-COLD-001
+controls_add:
+  - "Adapter canary lanes"
+  - "Cold-chain sensor self-test pre-dispatch"
