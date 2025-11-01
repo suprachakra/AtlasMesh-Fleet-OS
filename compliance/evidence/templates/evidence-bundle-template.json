@@ -1,0 +1,248 @@
+{
+  "$schema": "https://schemas.atlasmesh.io/evidence-bundle/v1.0.0",
+  "bundle_metadata": {
+    "bundle_id": "{{BUNDLE_ID}}",
+    "bundle_version": "1.0.0",
+    "generation_timestamp": "{{TIMESTAMP}}",
+    "commit_hash": "{{COMMIT_HASH}}",
+    "branch": "{{BRANCH}}",
+    "release_tag": "{{RELEASE_TAG}}",
+    "generated_by": "ci-system",
+    "bundle_type": "release"
+  },
+  
+  "evidence_completeness": {
+    "requirements_traceability": {
+      "status": "{{REQ_TRACE_STATUS}}",
+      "coverage_percentage": "{{REQ_COVERAGE_PCT}}",
+      "artifacts": [
+        "requirements/traceability-matrix.xlsx",
+        "requirements/functional-requirements.md",
+        "requirements/non-functional-requirements.md"
+      ],
+      "verification_method": "automated_analysis"
+    },
+    
+    "test_coverage": {
+      "status": "{{TEST_COVERAGE_STATUS}}",
+      "unit_test_coverage": "{{UNIT_TEST_PCT}}",
+      "integration_test_coverage": "{{INTEGRATION_TEST_PCT}}",
+      "e2e_test_coverage": "{{E2E_TEST_PCT}}",
+      "artifacts": [
+        "test-results/unit-test-report.xml",
+        "test-results/integration-test-report.xml",
+        "test-results/e2e-test-report.xml",
+        "test-results/coverage-report.html"
+      ],
+      "verification_method": "automated_testing"
+    },
+    
+    "security_validation": {
+      "status": "{{SECURITY_STATUS}}",
+      "sast_scan_results": "{{SAST_STATUS}}",
+      "dast_scan_results": "{{DAST_STATUS}}",
+      "dependency_scan_results": "{{DEPENDENCY_STATUS}}",
+      "container_scan_results": "{{CONTAINER_STATUS}}",
+      "artifacts": [
+        "security/sast-report.sarif",
+        "security/dast-report.json",
+        "security/dependency-report.json",
+        "security/container-scan-report.json",
+        "security/sbom/fleet-os-sbom.json"
+      ],
+      "verification_method": "automated_scanning"
+    },
+    
+    "performance_validation": {
+      "status": "{{PERFORMANCE_STATUS}}",
+      "load_test_results": "{{LOAD_TEST_STATUS}}",
+      "performance_budgets": "{{PERF_BUDGET_STATUS}}",
+      "benchmarks": {
+        "control_loop_p95_ms": "{{CONTROL_LOOP_P95}}",
+        "policy_eval_p99_ms": "{{POLICY_EVAL_P99}}",
+        "route_calc_p95_s": "{{ROUTE_CALC_P95}}",
+        "api_response_p95_ms": "{{API_RESPONSE_P95}}"
+      },
+      "artifacts": [
+        "performance/load-test-report.html",
+        "performance/benchmark-results.json",
+        "performance/performance-budget-validation.json"
+      ],
+      "verification_method": "automated_testing"
+    },
+    
+    "accessibility_validation": {
+      "status": "{{ACCESSIBILITY_STATUS}}",
+      "wcag_compliance_level": "AA",
+      "wcag_version": "2.2",
+      "automated_scan_results": "{{A11Y_SCAN_STATUS}}",
+      "manual_audit_results": "{{A11Y_MANUAL_STATUS}}",
+      "artifacts": [
+        "accessibility/axe-core-report.json",
+        "accessibility/manual-audit-checklist.pdf",
+        "accessibility/color-contrast-report.json"
+      ],
+      "verification_method": "automated_and_manual"
+    }
+  },
+  
+  "compliance_artifacts": {
+    "iso_26262": {
+      "status": "{{ISO_26262_STATUS}}",
+      "asil_level": "{{ASIL_LEVEL}}",
+      "safety_case_status": "{{SAFETY_CASE_STATUS}}",
+      "artifacts": [
+        "compliance/iso26262/safety-case.pdf",
+        "compliance/iso26262/hazard-analysis.xlsx",
+        "compliance/iso26262/fmea-report.pdf",
+        "compliance/iso26262/verification-report.pdf"
+      ],
+      "verification_method": "safety_engineering_review"
+    },
+    
+    "iso_21448_sotif": {
+      "status": "{{SOTIF_STATUS}}",
+      "scenario_coverage": "{{SCENARIO_COVERAGE_PCT}}",
+      "validation_status": "{{SOTIF_VALIDATION_STATUS}}",
+      "artifacts": [
+        "compliance/sotif/scenario-catalog.json",
+        "compliance/sotif/validation-report.pdf",
+        "compliance/sotif/performance-monitoring.json"
+      ],
+      "verification_method": "scenario_based_validation"
+    },
+    
+    "unece_r155": {
+      "status": "{{R155_STATUS}}",
+      "cybersecurity_management_system": "{{CSMS_STATUS}}",
+      "risk_assessment": "{{RISK_ASSESSMENT_STATUS}}",
+      "artifacts": [
+        "compliance/r155/csms-documentation.pdf",
+        "compliance/r155/risk-assessment.xlsx",
+        "compliance/r155/cybersecurity-plan.pdf"
+      ],
+      "verification_method": "cybersecurity_audit"
+    },
+    
+    "unece_r156": {
+      "status": "{{R156_STATUS}}",
+      "software_update_management": "{{SWUM_STATUS}}",
+      "ota_security_validation": "{{OTA_SECURITY_STATUS}}",
+      "artifacts": [
+        "compliance/r156/software-update-plan.pdf",
+        "compliance/r156/ota-security-validation.pdf",
+        "compliance/r156/update-rollback-procedures.pdf"
+      ],
+      "verification_method": "software_update_audit"
+    },
+    
+    "gdpr_compliance": {
+      "status": "{{GDPR_STATUS}}",
+      "dpia_completed": "{{DPIA_STATUS}}",
+      "data_residency_validated": "{{RESIDENCY_STATUS}}",
+      "consent_management_validated": "{{CONSENT_STATUS}}",
+      "artifacts": [
+        "compliance/gdpr/dpia-report.pdf",
+        "compliance/gdpr/data-flow-diagram.pdf",
+        "compliance/gdpr/consent-management-validation.pdf",
+        "compliance/gdpr/data-retention-policy.pdf"
+      ],
+      "verification_method": "privacy_audit"
+    },
+    
+    "sector_specific_compliance": {
+      "defense": {
+        "status": "{{DEFENSE_COMPLIANCE_STATUS}}",
+        "itar_ear_compliance": "{{EXPORT_CONTROL_STATUS}}",
+        "security_clearance_requirements": "{{CLEARANCE_STATUS}}",
+        "artifacts": [
+          "compliance/defense/export-control-matrix.xlsx",
+          "compliance/defense/security-classification-guide.pdf"
+        ]
+      },
+      "mining": {
+        "status": "{{MINING_COMPLIANCE_STATUS}}",
+        "msha_compliance": "{{MSHA_STATUS}}",
+        "environmental_compliance": "{{ENV_STATUS}}",
+        "artifacts": [
+          "compliance/mining/msha-certification.pdf",
+          "compliance/mining/environmental-impact-assessment.pdf"
+        ]
+      },
+      "logistics": {
+        "status": "{{LOGISTICS_COMPLIANCE_STATUS}}",
+        "dot_compliance": "{{DOT_STATUS}}",
+        "customs_compliance": "{{CUSTOMS_STATUS}}",
+        "artifacts": [
+          "compliance/logistics/dot-certification.pdf",
+          "compliance/logistics/customs-documentation.pdf"
+        ]
+      },
+      "ride_hail": {
+        "status": "{{RIDEHAIL_COMPLIANCE_STATUS}}",
+        "ada_compliance": "{{ADA_STATUS}}",
+        "municipal_permits": "{{PERMITS_STATUS}}",
+        "artifacts": [
+          "compliance/ridehail/ada-compliance-report.pdf",
+          "compliance/ridehail/municipal-permits.pdf"
+        ]
+      }
+    }
+  },
+  
+  "audit_trail": {
+    "decision_logs": {
+      "status": "{{DECISION_LOGS_STATUS}}",
+      "cryptographic_integrity": "{{CRYPTO_INTEGRITY_STATUS}}",
+      "completeness_percentage": "{{AUDIT_COMPLETENESS_PCT}}",
+      "artifacts": [
+        "audit/decision-logs.jsonl",
+        "audit/integrity-verification.json",
+        "audit/audit-trail-report.pdf"
+      ],
+      "verification_method": "cryptographic_verification"
+    },
+    
+    "change_management": {
+      "status": "{{CHANGE_MGMT_STATUS}}",
+      "all_changes_tracked": "{{CHANGES_TRACKED_STATUS}}",
+      "approval_workflows_followed": "{{APPROVALS_STATUS}}",
+      "artifacts": [
+        "audit/change-log.json",
+        "audit/approval-records.json",
+        "audit/change-impact-analysis.pdf"
+      ],
+      "verification_method": "workflow_audit"
+    }
+  },
+  
+  "signatures": {
+    "bundle_hash": "{{BUNDLE_HASH}}",
+    "signature_algorithm": "ECDSA-SHA256",
+    "signed_by": {
+      "system": "AtlasMesh-CI",
+      "timestamp": "{{SIGNATURE_TIMESTAMP}}",
+      "certificate_fingerprint": "{{CERT_FINGERPRINT}}"
+    },
+    "verification": {
+      "signature": "{{CRYPTOGRAPHIC_SIGNATURE}}",
+      "certificate_chain": [
+        "{{ROOT_CERT}}",
+        "{{INTERMEDIATE_CERT}}",
+        "{{SIGNING_CERT}}"
+      ]
+    }
+  },
+  
+  "metadata": {
+    "schema_version": "1.0.0",
+    "bundle_format": "AtlasMesh Evidence Bundle",
+    "generation_tool": "AtlasMesh Evidence Generator v1.0.0",
+    "validation_status": "{{VALIDATION_STATUS}}",
+    "expiration_date": "{{EXPIRATION_DATE}}",
+    "related_bundles": [
+      "{{PREVIOUS_BUNDLE_ID}}",
+      "{{BASELINE_BUNDLE_ID}}"
+    ]
+  }
+}

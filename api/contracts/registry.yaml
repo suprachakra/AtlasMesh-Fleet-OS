@@ -1,0 +1,313 @@
+# AtlasMesh Fleet OS - API Contract Registry
+# Central registry of all API contracts, versions, and compatibility matrix
+
+metadata:
+  version: "1.0.0"
+  last_updated: "2024-01-01T00:00:00Z"
+  maintainer: "AtlasMesh API Team"
+  description: "Central registry for all AtlasMesh Fleet OS API contracts"
+
+# API Versioning Strategy
+versioning:
+  strategy: "semantic"  # major.minor.patch
+  header_name: "API-Version"
+  default_version: "1.0.0"
+  supported_versions: ["1.0.0"]
+  
+  # Version Lifecycle
+  lifecycle:
+    development: "0.x.x"    # Pre-release, breaking changes allowed
+    stable: "1.x.x"         # Production ready, backward compatible
+    deprecated: "0.x.x"     # Marked for removal, migration required
+    retired: []             # No longer supported
+
+  # Deprecation Policy
+  deprecation:
+    notice_period_days: 90  # 90 days notice before deprecation
+    support_period_days: 180 # 180 days support after deprecation
+    breaking_change_policy: "major_version_only"
+
+# Service Contracts
+services:
+  # Core Services
+  api-gateway:
+    name: "API Gateway"
+    description: "Central API gateway and routing service"
+    base_url: "http://api-gateway:8080"
+    contract_path: "/api/contracts/v1/api-gateway.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "platform"
+    status: "stable"
+    
+  auth-service:
+    name: "Authentication Service"
+    description: "Identity and access management service"
+    base_url: "http://auth-service:8080"
+    contract_path: "/api/contracts/v1/auth-service.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "security"
+    status: "stable"
+    
+  policy-engine:
+    name: "Policy Engine"
+    description: "Authorization and policy evaluation service"
+    base_url: "http://policy-engine:8080"
+    contract_path: "/api/contracts/v1/policy-engine.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "security"
+    status: "stable"
+    
+  mission-management:
+    name: "Trip Service"
+    description: "Trip lifecycle management service"
+    base_url: "http://mission-management:8080"
+    contract_path: "/api/contracts/v1/mission-management.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "operations"
+    status: "stable"
+    
+  dispatch-service:
+    name: "Dispatch Service"
+    description: "Vehicle dispatch and assignment service"
+    base_url: "http://dispatch-service:8080"
+    contract_path: "/api/contracts/v1/dispatch-service.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "operations"
+    status: "stable"
+    
+  routing-service:
+    name: "Routing Service"
+    description: "Route planning and optimization service"
+    base_url: "http://routing-service:8080"
+    contract_path: "/api/contracts/v1/routing-service.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "operations"
+    status: "stable"
+    
+  fleet-manager:
+    name: "Fleet Manager"
+    description: "Vehicle fleet management service"
+    base_url: "http://fleet-manager:8080"
+    contract_path: "/api/contracts/v1/fleet-manager.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "operations"
+    status: "stable"
+    
+  telemetry-ingestion:
+    name: "Telemetry Ingestion"
+    description: "Vehicle telemetry data ingestion service"
+    base_url: "http://telemetry-ingestion:8080"
+    contract_path: "/api/contracts/v1/telemetry-ingestion.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "data"
+    status: "stable"
+    
+  data-lineage:
+    name: "Data Lineage"
+    description: "Data lineage tracking and governance service"
+    base_url: "http://data-lineage:8080"
+    contract_path: "/api/contracts/v1/data-lineage.yaml"
+    current_version: "1.0.0"
+    supported_versions: ["1.0.0"]
+    owner_team: "data"
+    status: "stable"
+
+# Client SDKs
+sdks:
+  go:
+    name: "AtlasMesh Go SDK"
+    description: "Go client SDK for AtlasMesh Fleet OS APIs"
+    version: "1.0.0"
+    repository: "https://github.com/atlasmesh/fleet-os-sdk-go"
+    package_name: "github.com/atlasmesh/fleet-os-sdk-go"
+    documentation: "https://pkg.go.dev/github.com/atlasmesh/fleet-os-sdk-go"
+    supported_go_versions: ["1.21", "1.22"]
+    
+  typescript:
+    name: "AtlasMesh TypeScript SDK"
+    description: "TypeScript/JavaScript client SDK for AtlasMesh Fleet OS APIs"
+    version: "1.0.0"
+    repository: "https://github.com/atlasmesh/fleet-os-sdk-ts"
+    package_name: "@atlasmesh/fleet-os-sdk"
+    npm_package: "https://www.npmjs.com/package/@atlasmesh/fleet-os-sdk"
+    documentation: "https://docs.atlasmesh.com/sdk/typescript"
+    supported_node_versions: ["18", "20", "21"]
+    
+  python:
+    name: "AtlasMesh Python SDK"
+    description: "Python client SDK for AtlasMesh Fleet OS APIs"
+    version: "1.0.0"
+    repository: "https://github.com/atlasmesh/fleet-os-sdk-python"
+    package_name: "atlasmesh-fleet-os"
+    pypi_package: "https://pypi.org/project/atlasmesh-fleet-os/"
+    documentation: "https://docs.atlasmesh.com/sdk/python"
+    supported_python_versions: ["3.10", "3.11", "3.12"]
+
+# Contract Testing
+contract_testing:
+  framework: "pact"  # Consumer-driven contract testing
+  broker_url: "http://pact-broker:9292"
+  
+  # Test Environments
+  environments:
+    development:
+      name: "Development"
+      base_url: "http://localhost:8080"
+      auto_deploy: true
+      
+    staging:
+      name: "Staging"
+      base_url: "https://api-staging.atlasmesh.com"
+      auto_deploy: false
+      
+    production:
+      name: "Production"
+      base_url: "https://api.atlasmesh.com"
+      auto_deploy: false
+      
+  # Consumer-Provider Relationships
+  contracts:
+    - consumer: "control-center-ui"
+      provider: "api-gateway"
+      contract_file: "/contracts/control-center-ui_api-gateway.json"
+      
+    - consumer: "api-gateway"
+      provider: "auth-service"
+      contract_file: "/contracts/api-gateway_auth-service.json"
+      
+    - consumer: "api-gateway"
+      provider: "mission-management"
+      contract_file: "/contracts/api-gateway_mission-management.json"
+      
+    - consumer: "api-gateway"
+      provider: "dispatch-service"
+      contract_file: "/contracts/api-gateway_dispatch-service.json"
+      
+    - consumer: "api-gateway"
+      provider: "routing-service"
+      contract_file: "/contracts/api-gateway_routing-service.json"
+      
+    - consumer: "api-gateway"
+      provider: "fleet-manager"
+      contract_file: "/contracts/api-gateway_fleet-manager.json"
+      
+    - consumer: "dispatch-service"
+      provider: "mission-management"
+      contract_file: "/contracts/dispatch-service_mission-management.json"
+      
+    - consumer: "dispatch-service"
+      provider: "fleet-manager"
+      contract_file: "/contracts/dispatch-service_fleet-manager.json"
+      
+    - consumer: "routing-service"
+      provider: "fleet-manager"
+      contract_file: "/contracts/routing-service_fleet-manager.json"
+      
+    - consumer: "vehicle-agent"
+      provider: "telemetry-ingestion"
+      contract_file: "/contracts/vehicle-agent_telemetry-ingestion.json"
+
+# API Documentation
+documentation:
+  generator: "redoc"  # ReDoc for beautiful API documentation
+  output_path: "/docs/api/"
+  
+  # Documentation Configuration
+  config:
+    theme: "atlasmesh"
+    logo_url: "https://assets.atlasmesh.com/logo.svg"
+    favicon_url: "https://assets.atlasmesh.com/favicon.ico"
+    
+  # Auto-generated Documentation Sites
+  sites:
+    - name: "API Reference"
+      url: "https://docs.atlasmesh.com/api/"
+      source: "all_services"
+      
+    - name: "SDK Documentation"
+      url: "https://docs.atlasmesh.com/sdk/"
+      source: "sdk_examples"
+
+# Compatibility Matrix
+compatibility:
+  # Service-to-Service Compatibility
+  service_matrix:
+    api-gateway:
+      auth-service: ["1.0.0"]
+      mission-management: ["1.0.0"]
+      dispatch-service: ["1.0.0"]
+      routing-service: ["1.0.0"]
+      fleet-manager: ["1.0.0"]
+      telemetry-ingestion: ["1.0.0"]
+      data-lineage: ["1.0.0"]
+      
+  # SDK-to-API Compatibility
+  sdk_matrix:
+    go_sdk:
+      "1.0.0": ["1.0.0"]  # SDK version: [compatible API versions]
+      
+    typescript_sdk:
+      "1.0.0": ["1.0.0"]
+      
+    python_sdk:
+      "1.0.0": ["1.0.0"]
+
+# Change Management
+change_management:
+  # Breaking Change Process
+  breaking_changes:
+    approval_required: true
+    approvers: ["api-team-lead", "architecture-team"]
+    impact_assessment_required: true
+    migration_guide_required: true
+    
+  # Non-Breaking Change Process
+  non_breaking_changes:
+    approval_required: false
+    auto_deploy_allowed: true
+    
+  # Deprecation Process
+  deprecation:
+    notice_channels: ["api-changelog", "developer-newsletter", "slack-api-updates"]
+    documentation_update_required: true
+    migration_timeline_required: true
+
+# Monitoring and Analytics
+monitoring:
+  # API Usage Metrics
+  metrics:
+    - name: "api_requests_total"
+      description: "Total number of API requests"
+      labels: ["service", "version", "method", "status"]
+      
+    - name: "api_request_duration_seconds"
+      description: "API request duration in seconds"
+      labels: ["service", "version", "method"]
+      
+    - name: "api_version_usage"
+      description: "API version usage distribution"
+      labels: ["service", "version"]
+      
+  # SLOs for API Contracts
+  slos:
+    contract_compliance: 99.9  # 99.9% of requests should match contract
+    response_time_p95: 500     # 95th percentile response time < 500ms
+    availability: 99.95        # 99.95% availability
+    
+  # Alerting
+  alerts:
+    - name: "contract_violation"
+      condition: "contract_compliance < 99.9"
+      severity: "critical"
+      
+    - name: "deprecated_version_usage"
+      condition: "deprecated_version_requests > 1000/hour"
+      severity: "warning"
