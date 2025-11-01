@@ -1,0 +1,110 @@
+graph TB
+    %% AtlasMesh Fleet OS - Vehicle Command Validation Data Flow
+    %% SAFETY CRITICAL: Command validation and dispatch data flow
+    %% Version 1.0 | Generated from: API specs + Kafka schemas | Safety Level: CRITICAL
+    
+    %% External Entities
+    Operator[👤 Fleet Operator<br/>EXTERNAL ENTITY]
+    SafetyOp[🚨 Safety Operator<br/>EXTERNAL ENTITY]
+    Vehicle[🚗 Autonomous Vehicle<br/>EXTERNAL ENTITY]
+    
+    %% Processes (Circles)
+    P1((1.0<br/>Authenticate<br/>User))
+    P2((2.0<br/>Validate<br/>Command))
+    P3((3.0<br/>Evaluate<br/>Policy))
+    P4((4.0<br/>Enrich<br/>Command))
+    P5((5.0<br/>Dispatch<br/>Command))
+    P6((6.0<br/>Monitor<br/>Execution))
+    P7((7.0<br/>Log Audit<br/>Trail))
+    
+    %% Data Stores (Open rectangles)
+    DS1[(D1: User Accounts<br/>& Permissions)]
+    DS2[(D2: Vehicle State<br/>& Health)]
+    DS3[(D3: Policy Rules<br/>& Constraints)]
+    DS4[(D4: Command Queue<br/>& History)]
+    DS5[(D5: Audit Logs<br/>& Events)]
+    DS6[(D6: Vehicle<br/>Telemetry)]
+    
+    %% Data Flows
+    Operator -->|"1.1: Login Request<br/>{username, password}"| P1
+    SafetyOp -->|"1.2: Emergency Auth<br/>{operator_id, emergency_token}"| P1
+    
+    P1 -->|"1.3: Validate Credentials"| DS1
+    DS1 -->|"1.4: User Profile<br/>{roles, permissions}"| P1
+    P1 -->|"1.5: JWT Token<br/>{user_id, roles, exp}"| P2
+    
+    Operator -->|"2.1: Command Request<br/>{vehicle_id, command_type, payload}"| P2
+    SafetyOp -->|"2.2: Emergency Command<br/>{vehicle_id, EMERGENCY_STOP}"| P2
+    
+    P2 -->|"2.3: Check Vehicle Status"| DS2
+    DS2 -->|"2.4: Vehicle Health<br/>{health_score, operational_status}"| P2
+    P2 -->|"2.5: Command + Context<br/>{command, user, vehicle_state}"| P3
+    
+    P3 -->|"3.1: Query Policies"| DS3
+    DS3 -->|"3.2: Applicable Rules<br/>{allow_conditions, constraints}"| P3
+    P3 -->|"3.3: Policy Decision<br/>{allow/deny, constraints}"| P4
+    
+    P4 -->|"4.1: Enrich Command<br/>{correlation_id, timeout, priority}"| DS4
+    DS4 -->|"4.2: Queued Command<br/>{command_id, status: QUEUED}"| P5
+    
+    P5 -->|"5.1: Command Message<br/>{command_id, payload, metadata}"| Vehicle
+    Vehicle -->|"5.2: Execution Status<br/>{command_id, status, progress}"| P6
+    
+    P6 -->|"6.1: Update Status"| DS4
+    P6 -->|"6.2: Status Update<br/>{command_id, status, telemetry}"| Operator
+    P6 -->|"6.3: Safety Alert<br/>{vehicle_id, alert_type}"| SafetyOp
+    
+    Vehicle -->|"6.4: Vehicle Telemetry<br/>{location, speed, health}"| DS6
+    DS6 -->|"6.5: Telemetry Data"| P6
+    
+    P1 -->|"7.1: Auth Event<br/>{user_id, action, timestamp}"| P7
+    P2 -->|"7.2: Command Event<br/>{command_id, user_id, vehicle_id}"| P7
+    P3 -->|"7.3: Policy Event<br/>{decision, policy_id, context}"| P7
+    P5 -->|"7.4: Dispatch Event<br/>{command_id, vehicle_id, status}"| P7
+    P6 -->|"7.5: Execution Event<br/>{command_id, result, duration}"| P7
+    
+    P7 -->|"7.6: Audit Records<br/>{event_type, details, timestamp}"| DS5
+    
+    %% Trust Boundaries (for threat modeling)
+    subgraph TB1["🔒 TRUST BOUNDARY: External Users"]
+        Operator
+        SafetyOp
+    end
+    
+    subgraph TB2["🛡️ TRUST BOUNDARY: Fleet Management System"]
+        P1
+        P2
+        P3
+        P4
+        P5
+        P6
+        P7
+        DS1
+        DS2
+        DS3
+        DS4
+        DS5
+        DS6
+    end
+    
+    subgraph TB3["🚗 TRUST BOUNDARY: Vehicle Systems"]
+        Vehicle
+    end
+    
+    %% Styling
+    classDef externalEntity fill:#ff6b6b,stroke:#d63031,stroke-width:3px,color:#fff
+    classDef process fill:#74b9ff,stroke:#0984e3,stroke-width:2px,color:#fff
+    classDef dataStore fill:#55a3ff,stroke:#2d3436,stroke-width:2px,color:#fff
+    classDef trustBoundary fill:#ffeaa7,stroke:#fdcb6e,stroke-width:3px,stroke-dasharray: 5 5
+    classDef safetyProcess fill:#fd79a8,stroke:#e84393,stroke-width:3px,color:#fff
+    
+    class Operator,SafetyOp,Vehicle externalEntity
+    class P1,P2,P3,P4,P5,P6,P7 process
+    class DS1,DS2,DS3,DS4,DS5,DS6 dataStore
+    class P2,P3,P5 safetyProcess
+    
+    %% Data Flow Labels with Security/Safety Annotations
+    %% SECURITY: All flows between trust boundaries are encrypted
+    %% SAFETY: Emergency commands bypass normal validation queues
+    %% AUDIT: All command flows are logged for compliance
+    %% PERF: Command dispatch <100ms for safety-critical commands

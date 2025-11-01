@@ -1,0 +1,126 @@
+---
+title: Autonomy Fallback Sequence - AtlasMesh Fleet OS
+---
+sequenceDiagram
+    %% SAFETY CRITICAL: Autonomous system degradation and fallback procedures
+    %% Version 1.0 | Generated from: Vehicle Agent traces | Safety Level: CRITICAL
+    %% SAFETY: This diagram shows autonomous system fallback to safe state
+    %% INTEGRATION CONTRACT: ROS2 + WebSocket + Policy Engine coordination
+    %% LATENCY BUDGET: <50ms for fallback initiation, <500ms for safe stop
+    %% COMPLIANCE: SAE J3016 Level 4 fallback requirements
+
+    participant AUTO as 🧠 Autonomy System
+    participant AGENT as 🤖 Vehicle Agent (ROS2)
+    participant SAFETY as 🚨 Safety Monitor
+    participant VGW as 🌐 Vehicle Gateway
+    participant POL as 📋 Policy Engine
+    participant FM as 🚛 Fleet Manager
+    participant UI as 🖥️ Control Center UI
+    participant SO as 👤 Safety Operator
+
+    %% NORMAL AUTONOMOUS OPERATION
+    Note over AUTO,SO: NORMAL AUTONOMOUS OPERATION
+    AUTO->>AGENT: ROS2: /autonomy_status<br/>{level: L4, confidence: 0.95, status: ACTIVE}
+    AGENT->>VGW: WebSocket: Autonomy telemetry<br/>{confidence: 95%, status: ACTIVE}
+    Note right of AGENT: NORMAL: High confidence<br/>autonomous operation
+
+    %% DEGRADATION DETECTION
+    Note over AUTO,SO: DEGRADATION DETECTION
+    AUTO->>AUTO: **CONFIDENCE DROP**<br/>ML model confidence: 0.95 → 0.65
+    Note right of AUTO: TRIGGER: Sensor degradation,<br/>weather, or edge case detected
+
+    AUTO->>AGENT: ROS2: /autonomy_status<br/>{level: L4, confidence: 0.65, status: DEGRADED}
+    Note right of AUTO: SAFETY: Confidence below<br/>70% threshold triggers fallback
+
+    AGENT->>SAFETY: ROS2: /safety_alert<br/>{type: CONFIDENCE_LOW, severity: WARNING}
+    Note right of AGENT: SAFETY MONITOR: Immediate<br/>alert to safety subsystem
+
+    %% FALLBACK DECISION
+    Note over AUTO,SO: FALLBACK DECISION
+    SAFETY->>SAFETY: **EVALUATE FALLBACK OPTIONS**<br/>- Minimal Risk Condition (MRC)<br/>- Request human takeover<br/>- Continue with constraints
+    Note right of SAFETY: SAFETY: SAE J3016 requires<br/>fallback to safe state
+
+    SAFETY->>AGENT: ROS2: /fallback_command<br/>{action: REQUEST_TAKEOVER, timeout: 10s}
+    Note right of SAFETY: SAFETY: Request human<br/>intervention within 10 seconds
+
+    %% OPERATOR NOTIFICATION
+    Note over AUTO,SO: OPERATOR NOTIFICATION
+    AGENT->>VGW: WebSocket: Fallback initiated<br/>{vehicle_id, reason: LOW_CONFIDENCE, action: REQUEST_TAKEOVER}
+    VGW->>FM: gRPC: VehicleFallback<br/>{vehicle_id, fallback_type, urgency: HIGH}
+
+    FM->>POL: Evaluate fallback policy<br/>{vehicle, location, traffic, weather}
+    POL->>POL: **POLICY EVALUATION**<br/>- Safe stopping locations<br/>- Traffic conditions<br/>- Emergency protocols
+    POL-->>FM: ✓ Fallback approved<br/>{safe_stop_location, max_time: 30s}
+
+    FM->>VGW: gRPC: Fallback authorized<br/>{safe_stop_coords, time_limit}
+    VGW->>UI: WebSocket: **URGENT ALERT**<br/>Vehicle requesting takeover
+
+    UI->>SO: **VISUAL/AUDIO ALERT**<br/>🚨 TAKEOVER REQUEST<br/>Vehicle ID: AV-001
+    Note right of UI: UX: Prominent alert with<br/>vehicle location and status
+
+    %% HUMAN RESPONSE SCENARIOS
+    Note over AUTO,SO: HUMAN RESPONSE SCENARIOS
+    alt Operator responds within timeout
+        SO->>UI: Click "ACKNOWLEDGE TAKEOVER"
+        UI->>VGW: POST /api/v1/takeover/acknowledge<br/>{vehicle_id, operator_id}
+        
+        VGW->>AGENT: WebSocket: Takeover acknowledged<br/>{operator_id, instructions}
+        AGENT->>SAFETY: ROS2: /takeover_status<br/>{status: ACKNOWLEDGED, operator}
+        
+        SAFETY->>AUTO: ROS2: /autonomy_command<br/>{action: TRANSFER_CONTROL, mode: MANUAL}
+        AUTO->>AUTO: **TRANSFER TO MANUAL**<br/>Disable autonomous systems
+        
+        AUTO->>AGENT: ROS2: /autonomy_status<br/>{level: L0, status: MANUAL_OVERRIDE}
+        AGENT->>VGW: WebSocket: Manual control active<br/>{operator_id, timestamp}
+        
+        Note right of AUTO: SUCCESS: Human operator<br/>has control of vehicle
+
+    else Operator does not respond (timeout)
+        SAFETY->>SAFETY: **TIMEOUT EXCEEDED**<br/>No operator response in 10s
+        Note right of SAFETY: SAFETY: Automatic fallback<br/>to Minimal Risk Condition
+        
+        SAFETY->>AGENT: ROS2: /fallback_command<br/>{action: MINIMAL_RISK_CONDITION, immediate: true}
+        
+        AGENT->>AUTO: ROS2: /autonomy_command<br/>{action: SAFE_STOP, location: nearest_safe_spot}
+        AUTO->>AUTO: **EXECUTE SAFE STOP**<br/>- Navigate to safe location<br/>- Gradual deceleration<br/>- Hazard lights ON
+        
+        AUTO->>AGENT: ROS2: /autonomy_status<br/>{level: L4, status: SAFE_STOP_ACTIVE}
+        
+        Note right of AUTO: SAFETY: Vehicle executing<br/>autonomous safe stop
+    end
+
+    %% SAFE STOP EXECUTION
+    Note over AUTO,SO: SAFE STOP EXECUTION
+    AUTO->>AUTO: **SAFE STOP PROCEDURE**<br/>1. Signal intentions<br/>2. Move to safe location<br/>3. Gradual stop<br/>4. Park safely
+    Note right of AUTO: SAFETY: Predefined safe stop<br/>procedure per SAE J3016
+
+    loop Every 100ms during safe stop
+        AUTO->>AGENT: ROS2: /vehicle_status<br/>{speed, location, stop_progress}
+        AGENT->>VGW: WebSocket: Safe stop progress<br/>{progress: 45%, eta: 15s}
+        VGW->>UI: Real-time update<br/>Safe stop in progress
+    end
+
+    AUTO->>AGENT: ROS2: /autonomy_status<br/>{level: L4, status: MINIMAL_RISK_CONDITION}
+    Note right of AUTO: FINAL STATE: Vehicle safely<br/>stopped in MRC
+
+    %% POST-FALLBACK PROCEDURES
+    Note over AUTO,SO: POST-FALLBACK PROCEDURES
+    AGENT->>VGW: WebSocket: MRC achieved<br/>{vehicle_id, final_location, timestamp}
+    VGW->>FM: gRPC: VehicleInMRC<br/>{vehicle_id, location, reason}
+
+    FM->>FM: **UPDATE VEHICLE STATUS**<br/>- Mark as out of service<br/>- Schedule inspection<br/>- Update fleet capacity
+    Note right of FM: BUSINESS: Vehicle removed<br/>from active fleet until resolved
+
+    FM->>UI: Vehicle status update<br/>{status: OUT_OF_SERVICE, reason: FALLBACK}
+    UI->>SO: **NOTIFICATION**<br/>Vehicle AV-001 in MRC<br/>Inspection required
+
+    %% AUDIT & COMPLIANCE
+    Note over AUTO,SO: AUDIT & COMPLIANCE
+    VGW->>VGW: Publish fallback event<br/>topic: vehicle.events.autonomy_fallback
+    Note right of VGW: AUDIT: Complete fallback<br/>event for safety analysis
+
+    VGW->>VGW: **SAFETY AUDIT TRAIL**<br/>- Fallback trigger<br/>- Decision timeline<br/>- Operator response<br/>- Final outcome
+    Note right of VGW: COMPLIANCE: Required for<br/>SAE J3016 and UAE regulations
+
+    %% Styling
+    %%{init: {'theme':'base', 'themeVariables': {'primaryColor': '#e74c3c', 'primaryTextColor': '#fff', 'primaryBorderColor': '#c0392b', 'lineColor': '#2d3436', 'sectionBkgColor': '#fadbd8', 'altSectionBkgColor': '#f5b7b1', 'gridColor': '#636e72', 'secondaryColor': '#f39c12', 'tertiaryColor': '#9b59b6'}}}%%

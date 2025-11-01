@@ -1,0 +1,56 @@
+---
+title: Multi-Tenant Sector Overlay Activation - AtlasMesh Fleet OS
+---
+sequenceDiagram
+    participant UI as Sector-Specific UI
+    participant SO as Sector Overlays
+    participant TE as Tenant Entitlements
+    participant PE as Policy Engine
+    participant FS as Feature Flags
+    participant AL as Audit Log
+    
+    Note over UI,AL: Dynamic Sector Overlay Activation
+    
+    %% Tenant Authentication & Entitlement Check
+    UI->>+SO: RequestSectorAccess(tenantId, sector, userCredentials)
+    SO->>+TE: ValidateTenantEntitlements(tenantId, sector, requestedFeatures)
+    TE->>TE: Check subscription tier and feature entitlements
+    TE->>AL: Log entitlement check
+    TE->>-SO: EntitlementResult(allowed, availableFeatures, constraints)
+    
+    alt Access Granted
+        SO->>+PE: LoadSectorPolicies(sector, tenantId, entitlements)
+        PE->>PE: Retrieve sector-specific policy overlays
+        PE->>AL: Log policy overlay activation
+        PE->>-SO: SectorPolicies(policies, constraints, customizations)
+        
+        SO->>+FS: ActivateFeatureFlags(tenantId, sector, entitlements)
+        FS->>FS: Enable sector-specific features
+        FS->>AL: Log feature flag activation
+        FS->>-SO: FeaturesActivated(activeFeatures, configuration)
+        
+        SO->>SO: Apply UI customizations and branding
+        SO->>AL: Log sector overlay activation
+        SO->>-UI: SectorAccessGranted(configuration, policies, features)
+        
+        %% Dynamic Policy Application
+        loop During Session
+            UI->>+SO: RequestOperation(operation, context, parameters)
+            SO->>+PE: EvaluatePolicy(operation, sectorPolicies, tenantConstraints)
+            PE->>PE: Apply sector-specific rules
+            PE->>AL: Log policy evaluation with sector context
+            PE->>-SO: PolicyResult(allowed, modifications, constraints)
+            
+            alt Operation Allowed
+                SO->>SO: Apply sector-specific business logic
+                SO->>-UI: OperationResult(success, data, sectorCustomizations)
+            else Operation Denied
+                SO->>AL: Log operation denial with sector context
+                SO->>-UI: OperationDenied(reason, sectorPolicy, alternatives)
+            end
+        end
+        
+    else Access Denied
+        TE->>AL: Log access denial
+        SO->>-UI: AccessDenied(reason, requiredEntitlements, upgradeOptions)
+    end
