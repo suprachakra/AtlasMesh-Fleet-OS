@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vehicle-agent-config
+  namespace: atlasmesh
+  labels:
+    app: vehicle-agent
+    component: vehicle-agent
+data:
+  config.yaml: |
+    server:
+      port: 8080
+    
+    database:
+      host: postgres.atlasmesh.svc.cluster.local
+      port: 5432
+      database: atlasmesh
+      username: atlasmesh
+      ssl_mode: require
+    
+    metrics:
+      enabled: true
+      port: 9090
+      path: /metrics
+    
+    log_level: info
+    vehicle_id: "vehicle-001"
+    
+    ros2:
+      node_name: "vehicle_agent"
+      domain_id: 0
+      qos_profile: "reliable"
+      executor_type: "single_threaded"
+      spin_rate_hz: 100
+      log_level: "info"
+      enable_intra_process: false
+    
+    perception:
+      lidar_topic: "/sensors/lidar/points"
+      camera_topic: "/sensors/camera/image"
+      radar_topic: "/sensors/radar/scan"
+      object_topic: "/perception/objects"
+      obstacle_topic: "/perception/obstacles"
+      lanes_topic: "/perception/lanes"
+      traffic_light_topic: "/perception/traffic_lights"
+      processing_rate_hz: 30
+      max_detection_range_m: 100.0
+      min_object_size_m: 0.5
+      confidence_threshold: 0.7
+      enable_tracking: true
+      tracking_timeout_s: 2.0
+    
+    localization:
+      gps_topic: "/sensors/gps/fix"
+      imu_topic: "/sensors/imu/data"
+      odometry_topic: "/odometry/wheel"
+      map_topic: "/map"
+      pose_topic: "/localization/pose"
+      odometry_out_topic: "/localization/odometry"
+      path_topic: "/localization/path"
+      processing_rate_hz: 100
+      min_gps_accuracy_m: 2.0
+      min_satellites: 6
+      enable_slam: true
+      enable_map_matching: true
+      map_matching_radius_m: 5.0
+      slam_keyframe_distance_m: 1.0
+      slam_keyframe_angle_deg: 15.0
+    
+    control:
+      path_topic: "/planning/path"
+      pose_topic: "/localization/pose"
+      odometry_topic: "/localization/odometry"
+      twist_topic: "/control/twist"
+      path_out_topic: "/control/path"
+      cmd_vel_topic: "/cmd_vel"
+      processing_rate_hz: 100
+      max_speed_mps: 5.0
+      max_acceleration_mps2: 2.0
+      max_deceleration_mps2: 4.0
+      max_angular_velocity_rad_per_s: 1.0
+      lookahead_distance_m: 3.0
+      control_gain: 1.0
+      emergency_stop_time_s: 5.0
+    
+    safety:
+      pose_topic: "/localization/pose"
+      odometry_topic: "/localization/odometry"
+      perception_topic: "/perception/objects"
+      alert_topic: "/safety/alerts"
+      emergency_topic: "/safety/emergency"
+      processing_rate_hz: 50
+      max_speed_mps: 5.0
+      min_obstacle_distance_m: 1.0
+      max_acceleration_mps2: 2.0
+      max_deceleration_mps2: 4.0
+      safety_timeout_s: 10.0
+      alert_threshold: 3
+      critical_threshold: 1
+    
+    cloud:
+      cloud_url: "https://api.atlasmesh.com"
+      vehicle_id: "vehicle-001"
+      heartbeat_interval_s: 30
+      telemetry_interval_s: 1
+      command_timeout_s: 10
+      retry_attempts: 3
+      retry_delay_s: 5

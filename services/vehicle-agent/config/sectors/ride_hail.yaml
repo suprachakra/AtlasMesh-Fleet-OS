@@ -1,0 +1,40 @@
+sector: ride_hail
+services:
+  vehicle-agent:
+    localization:
+      strategy: "gps_imu_hd_maps"
+      accuracy: "30cm"
+      parameters:
+        hd_map_resolution: 0.1
+        lane_accuracy: 0.2
+        urban_navigation: true
+        traffic_integration: true
+      fallback:
+        strategy: "gps_fallback"
+        timeout: 5000
+    perception:
+      pedestrian_detection: true
+      traffic_sign_recognition: true
+      parameters:
+        pedestrian_confidence: 0.98
+        traffic_sign_confidence: 0.95
+        urban_environment: true
+        passenger_safety: true
+    control:
+      max_speed: "15m/s"
+      precision: "30cm"
+      smooth_ride: true
+      traffic_compliance: true
+      parameters:
+        max_acceleration: 2.0
+        comfort_factor: 0.8
+        passenger_experience: true
+    safety:
+      emergency_stop: true
+      collision_avoidance: true
+      passenger_safety: true
+      traffic_safety: true
+      parameters:
+        emergency_stop_time: 100
+        passenger_comfort_threshold: 0.5
+        urban_safety_zones: true

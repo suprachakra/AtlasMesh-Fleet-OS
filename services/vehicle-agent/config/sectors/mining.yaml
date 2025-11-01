@@ -1,0 +1,40 @@
+sector: mining
+services:
+  vehicle-agent:
+    localization:
+      strategy: "gps_imu_wheel_odometry"
+      accuracy: "50cm"
+      parameters:
+        gps_timeout: 10000
+        wheel_odometry_rate: 50
+        outdoor_mining: true
+        haul_road_navigation: true
+      fallback:
+        strategy: "wheel_odometry"
+        timeout: 15000
+    perception:
+      blast_zone_detection: true
+      equipment_recognition: true
+      parameters:
+        blast_zone_confidence: 1.0
+        equipment_recognition_timeout: 5000
+        dust_tolerance: "high"
+        weather_adaptation: true
+    control:
+      max_speed: "15m/s"
+      precision: "1m"
+      heavy_vehicle_dynamics: true
+      slope_handling: true
+      parameters:
+        max_grade: 15.0
+        load_factor: 1.2
+        haul_cycle_optimization: true
+    safety:
+      emergency_stop: true
+      collision_avoidance: true
+      mining_safety: true
+      blast_zone_safety: true
+      parameters:
+        emergency_stop_time: 200
+        blast_zone_distance: 100.0
+        mining_regulations: true

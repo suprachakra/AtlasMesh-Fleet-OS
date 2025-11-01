@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehicle-agent
+  namespace: atlasmesh
+  labels:
+    app: vehicle-agent
+    component: vehicle-agent
+    version: v1.0.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vehicle-agent
+  template:
+    metadata:
+      labels:
+        app: vehicle-agent
+        component: vehicle-agent
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: vehicle-agent
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+      - name: vehicle-agent
+        image: atlasmesh/vehicle-agent:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 9090
+          name: metrics
+          protocol: TCP
+        env:
+        - name: VEHICLE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: LOG_LEVEL
+          value: "info"
+        - name: SERVER_PORT
+          value: "8080"
+        - name: METRICS_ENABLED
+          value: "true"
+        - name: METRICS_PORT
+          value: "9090"
+        - name: ROS2_NODE_NAME
+          value: "vehicle_agent"
+        - name: ROS2_DOMAIN_ID
+          value: "0"
+        - name: ROS2_SPIN_RATE
+          value: "100"
+        - name: PERCEPTION_PROCESSING_RATE
+          value: "30"
+        - name: LOCALIZATION_PROCESSING_RATE
+          value: "100"
+        - name: CONTROL_PROCESSING_RATE
+          value: "100"
+        - name: SAFETY_PROCESSING_RATE
+          value: "50"
+        - name: CLOUD_HEARTBEAT_INTERVAL
+          value: "30"
+        - name: CLOUD_TELEMETRY_INTERVAL
+          value: "1"
+        - name: DATABASE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: vehicle-agent-secrets
+              key: database-host
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vehicle-agent-secrets
+              key: database-password
+        - name: CLOUD_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: vehicle-agent-secrets
+              key: cloud-api-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: vehicle-agent-config
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+      - key: "node-role.kubernetes.io/master"
+        operator: "Exists"
+        effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: In
+                values:
+                - "true"

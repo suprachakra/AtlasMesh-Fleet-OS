@@ -1,0 +1,40 @@
+sector: defense
+services:
+  vehicle-agent:
+    localization:
+      strategy: "lidar_slam_imu"
+      accuracy: "1m"
+      parameters:
+        slam_iterations: 100
+        loop_closure_threshold: 0.1
+        gps_denied_operations: true
+        encrypted_communications: true
+      fallback:
+        strategy: "dead_reckoning"
+        timeout: 10000
+    perception:
+      threat_detection: true
+      formation_awareness: true
+      parameters:
+        threat_confidence: 0.99
+        formation_tolerance: 0.5
+        encrypted_data: true
+        mission_critical: true
+    control:
+      max_speed: "5m/s"
+      precision: "1m"
+      formation_control: true
+      convoy_coordination: true
+      parameters:
+        formation_spacing: 2.0
+        convoy_gap: 5.0
+        mission_priority: true
+    safety:
+      emergency_stop: true
+      collision_avoidance: true
+      formation_safety: true
+      mission_safety: true
+      parameters:
+        emergency_stop_time: 50
+        formation_safety_distance: 1.5
+        mission_abort_capability: true

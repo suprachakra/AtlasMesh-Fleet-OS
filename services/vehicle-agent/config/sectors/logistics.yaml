@@ -1,0 +1,35 @@
+sector: logistics
+services:
+  vehicle-agent:
+    localization:
+      strategy: "gps_imu_fusion"
+      accuracy: "10cm"
+      parameters:
+        gps_timeout: 5000
+        imu_rate: 100
+        warehouse_navigation: true
+        indoor_positioning: true
+      fallback:
+        strategy: "dead_reckoning"
+        timeout: 10000
+    perception:
+      pallet_detection: true
+      dock_recognition: true
+      parameters:
+        detection_confidence: 0.95
+        recognition_timeout: 2000
+        warehouse_lighting: "adaptive"
+    control:
+      max_speed: "3m/s"
+      precision: "5cm"
+      parameters:
+        acceleration_limit: 2.0
+        deceleration_limit: 3.0
+        warehouse_maneuvering: true
+    safety:
+      emergency_stop: true
+      collision_avoidance: true
+      parameters:
+        emergency_stop_time: 100
+        collision_distance: 1.0
+        warehouse_safety_zones: true
