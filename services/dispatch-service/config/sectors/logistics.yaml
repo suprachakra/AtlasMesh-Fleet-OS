@@ -1,0 +1,74 @@
+sector: logistics
+services:
+  dispatch:
+    dispatch:
+      max_concurrent_tasks: 100
+      task_prioritization:
+        enabled: true
+        priority_levels: 5
+        emergency_override: true
+        dynamic_pricing: false
+        parameters:
+          urgent_threshold: 0.9
+          standard_threshold: 0.5
+      load_balancing:
+        enabled: true
+        strategy: "round_robin"
+        max_load_per_vehicle: 5
+        capacity_management: true
+        parameters:
+          load_threshold: 0.8
+          capacity_buffer: 0.2
+      queue_management:
+        enabled: true
+        max_queue_size: 1000
+        queue_timeout_minutes: 30
+        fair_scheduling: true
+        parameters:
+          priority_boost: 0.1
+      parameters:
+        task_timeout_minutes: 30
+        retry_attempts: 3
+        warehouse_zones: ["A", "B", "C", "D"]
+  routing:
+    routing:
+      algorithm: "dijkstra"
+      consider_traffic: false
+      consider_weather: false
+      real_time_updates: true
+      multi_stop_routing:
+        enabled: true
+        max_stops_per_route: 10
+        optimization_level: "medium"
+        parameters:
+          stop_time_minutes: 5
+      dynamic_routing:
+        enabled: true
+        update_frequency_seconds: 60
+        reroute_threshold: 0.2
+        parameters:
+          traffic_weight: 0.3
+      parameters:
+        indoor_navigation: true
+        precision_required: "high"
+        max_speed_mps: 3.0
+  optimization:
+    optimization:
+      algorithm: "genetic"
+      optimization_goals: ["minimize_distance", "maximize_utilization", "minimize_time"]
+      constraints:
+        time_windows: true
+        capacity_limits: true
+        vehicle_compatibility: true
+        parameters:
+          time_window_buffer_minutes: 10
+      performance_tuning:
+        max_optimization_time_seconds: 30
+        parallel_processing: true
+        cache_results: true
+        parameters:
+          population_size: 100
+          generations: 50
+      parameters:
+        optimization_interval_seconds: 300
+        convergence_threshold: 0.01

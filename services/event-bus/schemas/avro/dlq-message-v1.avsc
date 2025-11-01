@@ -1,0 +1,228 @@
+{
+  "type": "record",
+  "name": "DLQMessage",
+  "namespace": "com.atlasmesh.events.dlq",
+  "doc": "Dead Letter Queue message format for failed event processing",
+  "fields": [
+    {
+      "name": "error_id",
+      "type": "string",
+      "doc": "Unique identifier for this error occurrence"
+    },
+    {
+      "name": "original_topic",
+      "type": "string",
+      "doc": "Original Kafka topic where the message failed"
+    },
+    {
+      "name": "original_partition",
+      "type": "int",
+      "doc": "Original partition number"
+    },
+    {
+      "name": "original_offset",
+      "type": "long",
+      "doc": "Original message offset"
+    },
+    {
+      "name": "original_key",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Original message key (if available)"
+    },
+    {
+      "name": "original_value",
+      "type": "bytes",
+      "doc": "Original message value as bytes"
+    },
+    {
+      "name": "original_headers",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Original message headers"
+    },
+    {
+      "name": "error_timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Timestamp when the error occurred"
+    },
+    {
+      "name": "error_type",
+      "type": {
+        "type": "enum",
+        "name": "ErrorType",
+        "symbols": [
+          "SCHEMA_VALIDATION_ERROR",
+          "DESERIALIZATION_ERROR",
+          "PROCESSING_ERROR",
+          "TIMEOUT_ERROR",
+          "NETWORK_ERROR",
+          "POLICY_VIOLATION",
+          "RESOURCE_EXHAUSTION",
+          "UNKNOWN_ERROR"
+        ]
+      },
+      "doc": "Classification of the error type"
+    },
+    {
+      "name": "error_message",
+      "type": "string",
+      "doc": "Human-readable error message"
+    },
+    {
+      "name": "error_details",
+      "type": {
+        "type": "record",
+        "name": "ErrorDetails",
+        "fields": [
+          {
+            "name": "exception_class",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Java exception class name (if applicable)"
+          },
+          {
+            "name": "stack_trace",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Exception stack trace"
+          },
+          {
+            "name": "service_name",
+            "type": "string",
+            "doc": "Name of the service that encountered the error"
+          },
+          {
+            "name": "service_version",
+            "type": "string",
+            "doc": "Version of the service"
+          },
+          {
+            "name": "consumer_group",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Kafka consumer group (if applicable)"
+          },
+          {
+            "name": "processing_attempt",
+            "type": "int",
+            "default": 1,
+            "doc": "Number of processing attempts before failure"
+          }
+        ]
+      },
+      "doc": "Detailed error information for debugging"
+    },
+    {
+      "name": "retry_policy",
+      "type": {
+        "type": "record",
+        "name": "RetryPolicy",
+        "fields": [
+          {
+            "name": "max_retries",
+            "type": "int",
+            "default": 3,
+            "doc": "Maximum number of retry attempts"
+          },
+          {
+            "name": "retry_delay_ms",
+            "type": "long",
+            "default": 5000,
+            "doc": "Delay between retry attempts in milliseconds"
+          },
+          {
+            "name": "exponential_backoff",
+            "type": "boolean",
+            "default": true,
+            "doc": "Whether to use exponential backoff for retries"
+          },
+          {
+            "name": "max_retry_delay_ms",
+            "type": "long",
+            "default": 300000,
+            "doc": "Maximum retry delay in milliseconds (5 minutes)"
+          }
+        ]
+      },
+      "doc": "Retry policy configuration"
+    },
+    {
+      "name": "resolution_status",
+      "type": {
+        "type": "enum",
+        "name": "ResolutionStatus",
+        "symbols": [
+          "PENDING",
+          "INVESTIGATING",
+          "RETRYING",
+          "RESOLVED",
+          "DISCARDED",
+          "ESCALATED"
+        ]
+      },
+      "default": "PENDING",
+      "doc": "Current status of error resolution"
+    },
+    {
+      "name": "resolution_notes",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Notes about resolution attempts or decisions"
+    },
+    {
+      "name": "priority",
+      "type": {
+        "type": "enum",
+        "name": "Priority",
+        "symbols": [
+          "LOW",
+          "MEDIUM",
+          "HIGH",
+          "CRITICAL"
+        ]
+      },
+      "default": "MEDIUM",
+      "doc": "Priority level for error resolution"
+    },
+    {
+      "name": "tags",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [],
+      "doc": "Tags for categorization and filtering"
+    },
+    {
+      "name": "correlation_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Correlation ID for tracing related events"
+    },
+    {
+      "name": "tenant_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Tenant identifier for multi-tenant deployments"
+    },
+    {
+      "name": "vehicle_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Vehicle identifier (if error is vehicle-related)"
+    },
+    {
+      "name": "trip_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Trip identifier (if error is trip-related)"
+    }
+  ]
+}

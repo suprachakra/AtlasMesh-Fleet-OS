@@ -1,0 +1,78 @@
+sector: mining
+services:
+  dispatch:
+    dispatch:
+      max_concurrent_tasks: 200
+      task_prioritization:
+        enabled: true
+        priority_levels: 3
+        emergency_override: true
+        dynamic_pricing: false
+        parameters:
+          production_priority: true
+          ore_vs_waste: true
+      load_balancing:
+        enabled: true
+        strategy: "production_optimized"
+        max_load_per_vehicle: 10
+        capacity_management: true
+        parameters:
+          truck_shovel_matching: true
+          ore_waste_balancing: true
+      queue_management:
+        enabled: true
+        max_queue_size: 2000
+        queue_timeout_minutes: 120
+        fair_scheduling: false
+        parameters:
+          production_targets: true
+          shift_management: true
+      parameters:
+        task_timeout_minutes: 120
+        retry_attempts: 2
+        operational_zones: ["pit", "haul_road", "dump_site", "maintenance"]
+  routing:
+    routing:
+      algorithm: "genetic"
+      consider_traffic: true
+      consider_weather: true
+      real_time_updates: true
+      multi_stop_routing:
+        enabled: true
+        max_stops_per_route: 20
+        optimization_level: "high"
+        parameters:
+          haul_cycle_optimization: true
+          dump_point_sequencing: true
+      dynamic_routing:
+        enabled: true
+        update_frequency_seconds: 120
+        reroute_threshold: 0.3
+        parameters:
+          weather_adaptation: true
+          road_conditions: true
+      parameters:
+        outdoor_navigation: true
+        heavy_vehicle_dynamics: true
+        grade_consideration: true
+        max_speed_mps: 10.0
+  optimization:
+    optimization:
+      algorithm: "simulated_annealing"
+      optimization_goals: ["maximize_production", "minimize_cycle_time", "minimize_fuel_consumption"]
+      constraints:
+        time_windows: true
+        capacity_limits: true
+        vehicle_compatibility: true
+        parameters:
+          blast_schedules: true
+          maintenance_windows: true
+      performance_tuning:
+        max_optimization_time_seconds: 120
+        parallel_processing: true
+        cache_results: true
+        parameters:
+          production_metrics: true
+      parameters:
+        optimization_interval_seconds: 600
+        production_planning: true

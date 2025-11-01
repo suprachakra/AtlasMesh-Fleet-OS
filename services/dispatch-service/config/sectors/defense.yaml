@@ -1,0 +1,78 @@
+sector: defense
+services:
+  dispatch:
+    dispatch:
+      max_concurrent_tasks: 50
+      task_prioritization:
+        enabled: true
+        priority_levels: 5
+        emergency_override: true
+        dynamic_pricing: false
+        parameters:
+          threat_level_priority: true
+          mission_critical_override: true
+      load_balancing:
+        enabled: true
+        strategy: "mission_optimized"
+        max_load_per_vehicle: 3
+        capacity_management: true
+        parameters:
+          formation_coordination: true
+          convoy_management: true
+      queue_management:
+        enabled: true
+        max_queue_size: 100
+        queue_timeout_minutes: 30
+        fair_scheduling: false
+        parameters:
+          mission_urgency: true
+          command_hierarchy: true
+      parameters:
+        task_timeout_minutes: 60
+        retry_attempts: 1
+        operational_zones: ["base", "patrol", "mission", "maintenance"]
+  routing:
+    routing:
+      algorithm: "a_star"
+      consider_traffic: false
+      consider_weather: true
+      real_time_updates: true
+      multi_stop_routing:
+        enabled: true
+        max_stops_per_route: 10
+        optimization_level: "critical"
+        parameters:
+          formation_routing: true
+          waypoint_verification: true
+      dynamic_routing:
+        enabled: true
+        update_frequency_seconds: 30
+        reroute_threshold: 0.2
+        parameters:
+          threat_avoidance: true
+          terrain_adaptation: true
+      parameters:
+        gps_denied_navigation: true
+        terrain_awareness: true
+        threat_assessment: true
+        max_speed_mps: 15.0
+  optimization:
+    optimization:
+      algorithm: "genetic"
+      optimization_goals: ["maximize_mission_success", "minimize_exposure", "maximize_stealth"]
+      constraints:
+        time_windows: true
+        capacity_limits: true
+        vehicle_compatibility: true
+        parameters:
+          mission_requirements: true
+          security_clearance: true
+      performance_tuning:
+        max_optimization_time_seconds: 60
+        parallel_processing: true
+        cache_results: false
+        parameters:
+          mission_metrics: true
+      parameters:
+        optimization_interval_seconds: 300
+        mission_planning: true

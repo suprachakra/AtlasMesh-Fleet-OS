@@ -1,0 +1,135 @@
+sector: mining
+services:
+  control-center-ui:
+    dashboard:
+      layout:
+        grid_size: 12
+        max_columns: 4
+        max_rows: 6
+        responsive: true
+        mobile_optimized: false
+        parameters:
+          mining_layout: true
+          shift_management: true
+      widgets:
+        fleet_overview:
+          enabled: true
+          size: "large"
+          position:
+            x: 0
+            y: 0
+            width: 4
+            height: 2
+          refresh_interval_seconds: 60
+          parameters:
+            show_production_status: true
+            show_fuel_status: true
+            show_shift_status: true
+        vehicle_status:
+          enabled: true
+          size: "medium"
+          position:
+            x: 4
+            y: 0
+            width: 4
+            height: 2
+          refresh_interval_seconds: 30
+          parameters:
+            show_location: true
+            show_payload: true
+            show_cycle_time: true
+        task_queue:
+          enabled: true
+          size: "large"
+          position:
+            x: 0
+            y: 2
+            width: 4
+            height: 2
+          refresh_interval_seconds: 60
+          parameters:
+            show_production_priority: true
+            show_haul_cycles: true
+        performance:
+          enabled: true
+          size: "medium"
+          position:
+            x: 4
+            y: 2
+            width: 4
+            height: 2
+          refresh_interval_seconds: 300
+          parameters:
+            show_production_rates: true
+            show_efficiency: true
+            show_fuel_consumption: true
+        alerts:
+          enabled: true
+          size: "small"
+          position:
+            x: 8
+            y: 0
+            width: 4
+            height: 1
+          refresh_interval_seconds: 10
+          parameters:
+            show_safety_alerts: true
+            show_equipment_alerts: true
+        maps:
+          enabled: true
+          size: "large"
+          position:
+            x: 0
+            y: 4
+            width: 6
+            height: 2
+          refresh_interval_seconds: 30
+          parameters:
+            show_pit_areas: true
+            show_haul_roads: true
+            show_dump_sites: true
+        analytics:
+          enabled: true
+          size: "medium"
+          position:
+            x: 6
+            y: 4
+            width: 6
+            height: 2
+          refresh_interval_seconds: 600
+          parameters:
+            show_production_analytics: true
+            show_equipment_health: true
+        parameters:
+          mining_specific: true
+          production_focused: true
+          shift_based: true
+      real_time_updates:
+        enabled: true
+        update_interval_seconds: 30
+        websocket_url: "ws://localhost:8080/ws"
+        auto_reconnect: true
+        parameters:
+          production_events: true
+          equipment_events: true
+      themes:
+        default_theme: "mining"
+        available_themes: ["mining", "dark", "light"]
+        dark_mode: false
+        parameters:
+          color_scheme: "orange_yellow"
+      parameters:
+        sector: "mining"
+        production_operations: true
+        outdoor_operations: true
+        heavy_equipment: true
+    websocket:
+      enabled: true
+      port: 8080
+      path: "/ws"
+      max_connections: 200
+      ping_interval_seconds: 60
+      pong_timeout_seconds: 30
+      parameters:
+        production_events: true
+        equipment_monitoring: true
