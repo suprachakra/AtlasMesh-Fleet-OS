@@ -1,0 +1,451 @@
+# AtlasMesh Vehicle Profile: UGV Themis
+# Unmanned Ground Vehicle for Defense/Mining/Logistics sectors
+# Profile Version: 1.0.0
+
+profile_metadata:
+  profile_id: "ugv_themis_v1"
+  profile_version: "1.0.0"
+  vehicle_type: "ugv_themis"
+  created_date: "2024-01-15T00:00:00Z"
+  updated_date: "2024-01-15T00:00:00Z"
+  author: "AtlasMesh Engineering"
+  description: "Heavy-duty UGV for autonomous operations in extreme environments"
+  sector_compatibility: ["defense", "mining", "logistics"]
+
+# Physical specifications
+physical_specs:
+  dimensions:
+    length: 4.5          # meters
+    width: 2.1           # meters
+    height: 2.3          # meters
+    wheelbase: 3.2       # meters
+    track_width: 1.8     # meters
+    ground_clearance: 0.4 # meters
+  
+  weight:
+    curb_weight: 3500    # kg
+    max_payload: 2000    # kg
+    max_gross_weight: 5500 # kg
+  
+  # Performance characteristics
+  performance:
+    max_speed: 25.0      # m/s (90 km/h)
+    max_acceleration: 2.5 # m/s²
+    max_deceleration: 6.0 # m/s²
+    max_lateral_acceleration: 4.0 # m/s²
+    min_turning_radius: 6.0 # meters
+    max_grade_capability: 35 # percentage
+    max_side_slope: 25   # degrees
+    wading_depth: 1.2    # meters
+
+# Powertrain specifications
+powertrain:
+  type: "hybrid"         # hybrid, electric, ice, fuel_cell
+  primary_fuel: "diesel"
+  secondary_fuel: "electric"
+  
+  fuel_system:
+    diesel_capacity: 200  # liters
+    battery_capacity: 150 # kWh
+    fuel_consumption: 25  # l/100km
+    electric_consumption: 45 # kWh/100km
+    range_diesel: 800     # km
+    range_electric: 300   # km
+    range_combined: 1100  # km
+  
+  charging:
+    max_charging_power: 50 # kW
+    charging_connector: "CCS2"
+    fast_charge_time: 2.5  # hours (10-80%)
+
+# Brake system
+brake_system:
+  type: "hydraulic_with_regen"
+  max_brake_force: 25000  # Newtons
+  brake_response_time: 0.15 # seconds
+  emergency_brake_distance: 45 # meters at max speed
+  abs_available: true
+  ebs_available: true
+  regenerative_braking: true
+  parking_brake_type: "electric"
+
+# Steering system
+steering_system:
+  type: "electric_power_assisted"
+  steering_ratio: 16.0    # degrees wheel / degrees road wheel
+  response_time: 0.1      # seconds
+  max_steering_angle: 35  # degrees
+  power_steering: true
+  steer_by_wire: false
+  four_wheel_steering: false
+
+# Sensor configuration
+sensors:
+  lidar:
+    - name: "primary_lidar"
+      type: "velodyne_vlp32c"
+      position: [2.0, 0.0, 2.1]  # x, y, z relative to vehicle center
+      orientation: [0.0, 0.0, 0.0] # roll, pitch, yaw
+      range_max: 200.0      # meters
+      accuracy: 0.03        # meters
+      field_of_view: 360    # degrees
+      scan_rate: 20         # Hz
+      critical: true
+    
+    - name: "front_lidar"
+      type: "sick_lms511"
+      position: [2.2, 0.0, 1.5]
+      orientation: [0.0, 0.0, 0.0]
+      range_max: 80.0
+      accuracy: 0.02
+      field_of_view: 190
+      scan_rate: 25
+      critical: false
+
+  cameras:
+    - name: "front_camera"
+      type: "flir_blackfly_s"
+      position: [2.1, 0.0, 1.8]
+      orientation: [0.0, 0.0, 0.0]
+      resolution: [1920, 1080]
+      frame_rate: 30
+      field_of_view: 90     # degrees
+      night_vision: true
+      critical: true
+    
+    - name: "rear_camera"
+      type: "flir_blackfly_s"
+      position: [-2.1, 0.0, 1.8]
+      orientation: [0.0, 0.0, 180.0]
+      resolution: [1920, 1080]
+      frame_rate: 30
+      field_of_view: 90
+      night_vision: true
+      critical: false
+    
+    - name: "left_camera"
+      type: "flir_blackfly_s"
+      position: [0.0, 1.0, 1.8]
+      orientation: [0.0, 0.0, 90.0]
+      resolution: [1920, 1080]
+      frame_rate: 30
+      field_of_view: 90
+      night_vision: true
+      critical: false
+    
+    - name: "right_camera"
+      type: "flir_blackfly_s"
+      position: [0.0, -1.0, 1.8]
+      orientation: [0.0, 0.0, -90.0]
+      resolution: [1920, 1080]
+      frame_rate: 30
+      field_of_view: 90
+      night_vision: true
+      critical: false
+
+  radar:
+    - name: "front_radar"
+      type: "continental_ars408"
+      position: [2.0, 0.0, 1.0]
+      orientation: [0.0, 0.0, 0.0]
+      range_max: 250.0      # meters
+      range_resolution: 0.1 # meters
+      angular_resolution: 1.0 # degrees
+      field_of_view: 60     # degrees
+      critical: true
+    
+    - name: "rear_radar"
+      type: "continental_ars408"
+      position: [-2.0, 0.0, 1.0]
+      orientation: [0.0, 0.0, 180.0]
+      range_max: 150.0
+      range_resolution: 0.1
+      angular_resolution: 1.0
+      field_of_view: 60
+      critical: false
+
+  imu:
+    name: "primary_imu"
+    type: "xsens_mti680g"
+    position: [0.0, 0.0, 1.0]
+    orientation: [0.0, 0.0, 0.0]
+    gyro_range: 2000      # degrees/second
+    accel_range: 16       # g
+    update_rate: 400      # Hz
+    critical: true
+
+  gnss:
+    name: "primary_gnss"
+    type: "novatel_pwrpak7"
+    position: [0.0, 0.0, 2.2]
+    orientation: [0.0, 0.0, 0.0]
+    accuracy_horizontal: 0.01 # meters (RTK)
+    accuracy_vertical: 0.02   # meters (RTK)
+    update_rate: 20       # Hz
+    rtk_capable: true
+    critical: true
+
+# Environmental operating limits
+environmental_limits:
+  temperature:
+    min: -40              # celsius
+    max: 60               # celsius
+    operating_min: -30    # celsius
+    operating_max: 50     # celsius
+  
+  humidity:
+    max: 95               # percentage
+  
+  weather:
+    max_wind_speed: 25    # m/s
+    max_precipitation: 50 # mm/h
+    min_visibility: 50    # meters
+  
+  terrain:
+    max_slope: 35         # degrees
+    max_side_slope: 25    # degrees
+    max_obstacle_height: 0.3 # meters
+    min_path_width: 2.5   # meters
+
+# Operational Design Domain (ODD)
+odd_constraints:
+  supported_road_types:
+    - "paved_road"
+    - "gravel_road"
+    - "dirt_road"
+    - "off_road"
+    - "industrial_site"
+    - "mining_site"
+    - "military_base"
+  
+  supported_weather_conditions:
+    - "clear"
+    - "light_rain"
+    - "heavy_rain"
+    - "light_snow"
+    - "fog"
+    - "dust_storm"
+    - "sandstorm"
+  
+  supported_traffic_scenarios:
+    - "no_traffic"
+    - "light_traffic"
+    - "convoy_operation"
+    - "industrial_vehicles"
+  
+  operational_speeds:
+    max_speed_highway: 25.0    # m/s
+    max_speed_urban: 15.0      # m/s
+    max_speed_off_road: 10.0   # m/s
+    max_speed_industrial: 8.0  # m/s
+  
+  capabilities:
+    highway_capable: true
+    urban_capable: true
+    off_road_capable: true
+    night_operation: true
+    adverse_weather: true
+
+# Safety systems
+safety_systems:
+  emergency_stop:
+    available: true
+    response_time: 0.2    # seconds
+    stopping_distance: 25 # meters at max speed
+  
+  collision_avoidance:
+    available: true
+    detection_range: 100  # meters
+    reaction_time: 0.1    # seconds
+  
+  lane_keeping:
+    available: true
+    lateral_accuracy: 0.1 # meters
+  
+  adaptive_cruise:
+    available: true
+    following_distance: 3.0 # seconds
+    speed_range: [1.0, 25.0] # m/s
+  
+  blind_spot_monitoring:
+    available: true
+    detection_range: 50   # meters
+  
+  rollover_prevention:
+    available: true
+    lateral_g_limit: 0.8  # g-force
+
+# Autonomy capabilities
+autonomy:
+  level: 4                # SAE Level 4
+  
+  supported_maneuvers:
+    - "straight_line_driving"
+    - "lane_change"
+    - "turning"
+    - "reversing"
+    - "parking"
+    - "obstacle_avoidance"
+    - "convoy_following"
+    - "precision_positioning"
+  
+  supported_scenarios:
+    - "highway_driving"
+    - "urban_navigation"
+    - "off_road_navigation"
+    - "industrial_site_operation"
+    - "convoy_operation"
+    - "autonomous_parking"
+    - "loading_dock_approach"
+  
+  reaction_time: 0.05     # seconds for autonomous systems
+  decision_frequency: 50  # Hz
+  
+  degraded_modes:
+    - name: "sensor_limited"
+      description: "Operation with reduced sensor suite"
+      max_speed: 5.0      # m/s
+      capabilities: ["basic_navigation", "obstacle_avoidance"]
+    
+    - name: "communication_limited"
+      description: "Operation without cloud connectivity"
+      max_speed: 15.0     # m/s
+      capabilities: ["autonomous_navigation", "local_decision_making"]
+    
+    - name: "weather_limited"
+      description: "Operation in adverse weather"
+      max_speed: 8.0      # m/s
+      capabilities: ["reduced_speed_navigation", "enhanced_safety"]
+
+# Communication capabilities
+communication:
+  protocols:
+    - "mqtt"
+    - "grpc"
+    - "websocket"
+    - "can_bus"
+    - "ethernet"
+  
+  network_types:
+    - "4g_lte"
+    - "5g"
+    - "wifi"
+    - "satellite"
+    - "mesh_radio"
+  
+  v2x_capabilities:
+    v2v_capable: true
+    v2i_capable: true
+    v2x_capable: true
+    communication_range: 1000 # meters
+  
+  antennas:
+    - name: "primary_cellular"
+      type: "4g_5g_mimo"
+      position: [0.0, 0.0, 2.3]
+      gain: 5.0           # dBi
+    
+    - name: "wifi_antenna"
+      type: "wifi_6_mimo"
+      position: [1.0, 0.0, 2.2]
+      gain: 8.0           # dBi
+    
+    - name: "satellite_antenna"
+      type: "iridium_next"
+      position: [-1.0, 0.0, 2.3]
+      gain: 12.0          # dBi
+
+# Maintenance and diagnostics
+maintenance:
+  service_intervals:
+    distance_km: 10000    # kilometers
+    time_hours: 500       # operating hours
+    calendar_months: 6    # months
+  
+  diagnostic_protocols:
+    - "obd_ii"
+    - "j1939"
+    - "uds"
+    - "atlasmesh_proprietary"
+  
+  predictive_maintenance:
+    enabled: true
+    sensors:
+      - "engine_oil_quality"
+      - "brake_pad_wear"
+      - "tire_pressure"
+      - "battery_health"
+      - "hydraulic_pressure"
+      - "cooling_system"
+  
+  remote_diagnostics:
+    enabled: true
+    data_upload: true
+    real_time_monitoring: true
+
+# Regulatory compliance
+compliance:
+  certifications:
+    - "iso_26262_asil_d"
+    - "iso_21448_sotif"
+    - "un_r155_cybersecurity"
+    - "un_r156_ota"
+    - "fmvss_applicable"
+    - "ce_marking"
+  
+  regulatory_approvals:
+    - "dot_usa"
+    - "transport_canada"
+    - "eu_type_approval"
+  
+  homologation_regions:
+    - "north_america"
+    - "european_union"
+    - "middle_east"
+    - "australia"
+  
+  certification_expiry: "2027-01-15T00:00:00Z"
+
+# Sector-specific configurations
+sector_profiles:
+  defense:
+    armor_level: "stanag_4569_level_2"
+    ballistic_protection: true
+    emp_hardening: true
+    nbc_protection: true
+    stealth_mode: true
+    weapon_mount_points: 4
+    secure_communications: true
+    
+  mining:
+    dust_protection: "ip67"
+    explosion_proof_rating: "atex_zone_1"
+    heavy_duty_suspension: true
+    reinforced_undercarriage: true
+    mining_specific_sensors: true
+    haul_road_optimization: true
+    
+  logistics:
+    cargo_capacity: 2000  # kg
+    loading_mechanisms: ["hydraulic_lift", "conveyor"]
+    dock_approach_precision: 0.05 # meters
+    fleet_coordination: true
+    route_optimization: true
+    delivery_confirmation: true
+
+# Update and versioning
+version_info:
+  profile_created: "2024-01-15T00:00:00Z"
+  profile_updated: "2024-01-15T00:00:00Z"
+  profile_checksum: "sha256:a1b2c3d4e5f6..."
+  profile_revision: 1
+  compatible_software_versions:
+    - "atlasmesh_os_1.0.x"
+    - "atlasmesh_os_1.1.x"
+  
+  validation:
+    validated: true
+    validation_authority: "AtlasMesh Safety Board"
+    validation_date: "2024-01-15T00:00:00Z"
+    validation_certificate: "ASB-2024-001"
+    test_report_id: "TR-UGV-THEMIS-001"

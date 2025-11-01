@@ -1,0 +1,93 @@
+# Sector-Specific Test Configuration
+test_config:
+  # Test environment settings
+  environment: "test"
+  log_level: "debug"
+  
+  # Test database settings
+  database:
+    host: "localhost"
+    port: 5432
+    name: "atlasmesh_test"
+    user: "test_user"
+    password: "test_password"
+    ssl_mode: "disable"
+  
+  # Test services configuration
+  services:
+    vehicle_agent:
+      enabled: true
+      test_timeout: "30s"
+      mock_sensors: true
+    fleet_manager:
+      enabled: true
+      test_timeout: "30s"
+      mock_vehicles: true
+    dispatch_service:
+      enabled: true
+      test_timeout: "30s"
+      mock_tasks: true
+    control_center_ui:
+      enabled: true
+      test_timeout: "30s"
+      mock_dashboard: true
+  
+  # Sector-specific test settings
+  sectors:
+    logistics:
+      enabled: true
+      test_scenarios:
+        - "warehouse_operations"
+        - "indoor_navigation"
+        - "pallet_handling"
+        - "battery_management"
+    defense:
+      enabled: true
+      test_scenarios:
+        - "tactical_operations"
+        - "gps_denied_navigation"
+        - "threat_detection"
+        - "encrypted_communications"
+    mining:
+      enabled: true
+      test_scenarios:
+        - "haul_cycle_optimization"
+        - "blast_zone_safety"
+        - "heavy_vehicle_control"
+        - "production_targets"
+    ride_hail:
+      enabled: true
+      test_scenarios:
+        - "passenger_pickup"
+        - "urban_navigation"
+        - "traffic_compliance"
+        - "dynamic_pricing"
+  
+  # Test data settings
+  test_data:
+    vehicles_per_sector:
+      logistics: 10
+      defense: 5
+      mining: 20
+      ride_hail: 50
+    tasks_per_sector:
+      logistics: 100
+      defense: 25
+      mining: 200
+      ride_hail: 500
+    test_duration: "5m"
+  
+  # Performance test settings
+  performance:
+    enabled: true
+    load_test:
+      concurrent_users: 100
+      duration: "10m"
+      ramp_up: "2m"
+    stress_test:
+      max_concurrent_users: 500
+      duration: "15m"
+    endurance_test:
+      duration: "1h"
+      check_interval: "5m"
+

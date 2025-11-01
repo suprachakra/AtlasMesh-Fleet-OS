@@ -1,0 +1,483 @@
+# AtlasMesh Fleet OS - Role-Based Access Control (RBAC) Configuration
+# Comprehensive role definitions for Abu Dhabi autonomous vehicle fleet operations
+# Implements principle of least privilege and zero-trust security model
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: atlasmesh-fleet-admin
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+    rbac.atlasmesh.com/role-type: administrative
+rules:
+# Full access to AtlasMesh resources
+- apiGroups: [""]
+  resources: ["*"]
+  verbs: ["*"]
+  resourceNames: []
+- apiGroups: ["apps", "extensions"]
+  resources: ["*"]
+  verbs: ["*"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["*"]
+  verbs: ["*"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["*"]
+  verbs: ["*"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: atlasmesh-fleet-operator
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+    rbac.atlasmesh.com/role-type: operational
+rules:
+# Fleet management operations
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods/log", "pods/status"]
+  verbs: ["get", "list"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch", "patch", "update"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch", "create"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: atlasmesh-safety-manager
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+    rbac.atlasmesh.com/role-type: safety
+rules:
+# Safety and compliance operations
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch", "create"]
+# Emergency stop capabilities
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "patch"]
+  resourceNames: ["vehicle-gateway", "policy-engine"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: atlasmesh-vehicle-operator
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+    rbac.atlasmesh.com/role-type: vehicle-operations
+rules:
+# Vehicle-specific operations
+- apiGroups: [""]
+  resources: ["pods", "services"]
+  verbs: ["get", "list", "watch"]
+  resourceNames: ["vehicle-gateway*", "telemetry-ingestion*"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]
+  resourceNames: ["vehicle-config*", "route-config*"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: atlasmesh-policy-manager
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+    rbac.atlasmesh.com/role-type: policy-management
+rules:
+# Policy engine operations
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["create", "update", "patch", "delete"]
+  resourceNames: ["policy-*", "compliance-*"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list"]
+  resourceNames: ["policy-secrets"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: atlasmesh-monitoring-operator
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+    rbac.atlasmesh.com/role-type: monitoring
+rules:
+# Monitoring and observability
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints", "nodes"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods/log", "pods/status"]
+  verbs: ["get", "list"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets", "daemonsets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["*"]
+  verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: atlasmesh-read-only
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+    rbac.atlasmesh.com/role-type: read-only
+rules:
+# Read-only access for viewers
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps", "endpoints"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch"]
+
+---
+# Application-level RBAC for AtlasMesh Fleet OS
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlasmesh-app-rbac
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+data:
+  roles.yaml: |
+    # AtlasMesh Fleet OS Application-Level RBAC
+    # Defines permissions for fleet management operations
+    
+    roles:
+      # Executive/Management Roles
+      ceo:
+        name: "Chief Executive Officer"
+        permissions:
+          - "fleet:overview:read"
+          - "analytics:executive:read"
+          - "compliance:reports:read"
+          - "financial:reports:read"
+        abu_dhabi_specific:
+          - "uae:regulatory:read"
+          - "adm:compliance:read"
+      
+      cto:
+        name: "Chief Technology Officer"
+        permissions:
+          - "system:architecture:read"
+          - "system:performance:read"
+          - "system:security:read"
+          - "development:roadmap:read"
+          - "infrastructure:monitoring:read"
+        abu_dhabi_specific:
+          - "technology:standards:read"
+      
+      # Operational Roles
+      fleet_manager:
+        name: "Fleet Manager"
+        permissions:
+          - "fleet:vehicles:read"
+          - "fleet:vehicles:manage"
+          - "fleet:routes:read"
+          - "fleet:routes:manage"
+          - "fleet:scheduling:read"
+          - "fleet:scheduling:manage"
+          - "fleet:analytics:read"
+          - "incidents:read"
+          - "incidents:manage"
+        abu_dhabi_specific:
+          - "abu_dhabi:districts:manage"
+          - "abu_dhabi:landmarks:read"
+          - "traffic:integration:read"
+      
+      safety_manager:
+        name: "Safety Manager"
+        permissions:
+          - "safety:policies:read"
+          - "safety:policies:manage"
+          - "safety:incidents:read"
+          - "safety:incidents:manage"
+          - "safety:compliance:read"
+          - "safety:compliance:manage"
+          - "emergency:response:manage"
+          - "vehicles:emergency_stop"
+        abu_dhabi_specific:
+          - "uae:safety_standards:manage"
+          - "emergency:services:coordinate"
+      
+      vehicle_operator:
+        name: "Vehicle Operator"
+        permissions:
+          - "vehicles:read"
+          - "vehicles:command"
+          - "vehicles:telemetry:read"
+          - "routes:read"
+          - "trips:read"
+          - "trips:manage"
+          - "teleoperation:access"
+        abu_dhabi_specific:
+          - "abu_dhabi:roads:navigate"
+          - "local:traffic:read"
+      
+      # Technical Roles
+      system_admin:
+        name: "System Administrator"
+        permissions:
+          - "system:configuration:read"
+          - "system:configuration:manage"
+          - "system:monitoring:read"
+          - "system:logs:read"
+          - "users:read"
+          - "users:manage"
+          - "infrastructure:manage"
+        abu_dhabi_specific:
+          - "datacenter:abu_dhabi:manage"
+      
+      security_admin:
+        name: "Security Administrator"
+        permissions:
+          - "security:policies:read"
+          - "security:policies:manage"
+          - "security:audit:read"
+          - "security:incidents:read"
+          - "security:incidents:manage"
+          - "access:control:manage"
+          - "certificates:manage"
+        abu_dhabi_specific:
+          - "uae:cybersecurity:compliance"
+      
+      # Support Roles
+      support_engineer:
+        name: "Support Engineer"
+        permissions:
+          - "system:monitoring:read"
+          - "system:logs:read"
+          - "incidents:read"
+          - "incidents:create"
+          - "diagnostics:run"
+          - "maintenance:schedule"
+        abu_dhabi_specific:
+          - "local:support:coordinate"
+      
+      data_analyst:
+        name: "Data Analyst"
+        permissions:
+          - "analytics:read"
+          - "reports:generate"
+          - "data:export"
+          - "dashboards:create"
+          - "metrics:read"
+        abu_dhabi_specific:
+          - "abu_dhabi:analytics:read"
+          - "regional:insights:generate"
+      
+      # External Roles
+      auditor:
+        name: "External Auditor"
+        permissions:
+          - "audit:read"
+          - "compliance:read"
+          - "logs:audit:read"
+          - "policies:read"
+        abu_dhabi_specific:
+          - "uae:compliance:audit"
+          - "adm:requirements:verify"
+      
+      regulator:
+        name: "UAE Regulator"
+        permissions:
+          - "compliance:read"
+          - "safety:reports:read"
+          - "incidents:read"
+          - "audit:trails:read"
+        abu_dhabi_specific:
+          - "uae:regulatory:oversight"
+          - "adm:reporting:access"
+    
+    # Permission Definitions
+    permissions:
+      # Fleet Operations
+      "fleet:overview:read":
+        description: "View fleet overview and statistics"
+        resources: ["fleet_status", "vehicle_counts", "utilization_metrics"]
+      
+      "fleet:vehicles:read":
+        description: "View vehicle information and status"
+        resources: ["vehicles", "vehicle_status", "vehicle_location"]
+      
+      "fleet:vehicles:manage":
+        description: "Manage vehicle assignments and configuration"
+        resources: ["vehicles", "vehicle_assignments", "vehicle_config"]
+      
+      "vehicles:command":
+        description: "Send commands to vehicles"
+        resources: ["vehicle_commands", "route_assignments"]
+        constraints:
+          - "safety_approval_required"
+          - "geofence_compliance"
+      
+      "vehicles:emergency_stop":
+        description: "Emergency stop capability for vehicles"
+        resources: ["emergency_commands"]
+        constraints:
+          - "immediate_execution"
+          - "audit_trail_required"
+      
+      # Safety and Compliance
+      "safety:policies:manage":
+        description: "Manage safety policies and rules"
+        resources: ["safety_policies", "compliance_rules"]
+        constraints:
+          - "approval_workflow"
+          - "version_control"
+      
+      "emergency:response:manage":
+        description: "Coordinate emergency response procedures"
+        resources: ["emergency_procedures", "incident_response"]
+        constraints:
+          - "real_time_access"
+          - "multi_agency_coordination"
+      
+      # System Administration
+      "system:configuration:manage":
+        description: "Manage system configuration and settings"
+        resources: ["system_config", "service_config"]
+        constraints:
+          - "change_approval"
+          - "rollback_capability"
+      
+      "access:control:manage":
+        description: "Manage user access and permissions"
+        resources: ["users", "roles", "permissions"]
+        constraints:
+          - "segregation_of_duties"
+          - "approval_required"
+    
+    # Abu Dhabi Specific Constraints
+    abu_dhabi_constraints:
+      geographic:
+        - "operations_within_uae_borders"
+        - "abu_dhabi_emirate_focus"
+        - "respect_cultural_considerations"
+      
+      regulatory:
+        - "uae_av_law_compliance"
+        - "adm_requirements_adherence"
+        - "data_residency_uae"
+      
+      operational:
+        - "arabic_language_support"
+        - "islamic_calendar_awareness"
+        - "local_emergency_services_integration"
+      
+      cultural:
+        - "friday_saturday_weekend"
+        - "ramadan_operational_adjustments"
+        - "local_customs_respect"
+
+---
+# Service Account for AtlasMesh services
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: atlasmesh-service-account
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+automountServiceAccountToken: true
+
+---
+# Role Bindings for different environments
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: atlasmesh-fleet-admin-binding
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+subjects:
+- kind: User
+  name: admin@atlasmesh.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: ServiceAccount
+  name: atlasmesh-service-account
+  namespace: atlasmesh-fleet-os
+roleRef:
+  kind: ClusterRole
+  name: atlasmesh-fleet-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: atlasmesh-fleet-operator-binding
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+subjects:
+- kind: User
+  name: fleet-ops@atlasmesh.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: fleet-operators
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: atlasmesh-fleet-operator
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: atlasmesh-safety-manager-binding
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: rbac
+subjects:
+- kind: User
+  name: safety@atlasmesh.com
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: safety-managers
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: atlasmesh-safety-manager
+  apiGroup: rbac.authorization.k8s.io

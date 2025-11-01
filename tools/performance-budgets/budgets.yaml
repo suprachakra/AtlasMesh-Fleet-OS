@@ -1,0 +1,314 @@
+# AtlasMesh Fleet OS - Performance Budgets Configuration
+# Critical performance thresholds for autonomous vehicle operations
+
+metadata:
+  version: "1.0.0"
+  last_updated: "2024-01-01T00:00:00Z"
+  description: "Performance budgets for AtlasMesh Fleet OS services"
+  
+# Global configuration
+global:
+  enforcement_policy: "hard_fail"  # hard_fail, soft_warn, monitor_only
+  baseline_retention_days: 90
+  trend_analysis_enabled: true
+  auto_scaling_triggers: true
+
+# Performance budget categories
+categories:
+  # Critical: Vehicle control loop latency
+  # Must be <50ms P95 for safety-critical operations
+  control_loop:
+    description: "End-to-end control loop: sensor data → policy evaluation → vehicle command"
+    criticality: "safety_critical"
+    thresholds:
+      p95: 50    # milliseconds - HARD LIMIT for safety
+      p99: 75    # milliseconds - absolute maximum
+      avg: 25    # milliseconds - target average
+      max: 100   # milliseconds - circuit breaker threshold
+    max_error_rate: 0.1  # 0.1% - extremely low tolerance
+    test_iterations: 100
+    environments:
+      development: 
+        p95: 60    # slightly relaxed for dev
+        p99: 90
+      staging:
+        p95: 50    # production-like
+        p99: 75
+      production:
+        p95: 45    # stricter in production
+        p99: 65
+    alerts:
+      - threshold: "p95 > 40ms"
+        severity: "warning"
+        channels: ["slack", "email"]
+      - threshold: "p95 > 50ms"
+        severity: "critical"
+        channels: ["slack", "email", "pagerduty"]
+    
+  # Critical: Policy evaluation latency
+  # Must be <10ms P99 for real-time decision making
+  policy_evaluation:
+    description: "Policy engine evaluation time for autonomous decisions"
+    criticality: "safety_critical"
+    thresholds:
+      p50: 3     # milliseconds - median target
+      p95: 8     # milliseconds - 95th percentile
+      p99: 10    # milliseconds - HARD LIMIT
+      avg: 4     # milliseconds - average target
+      max: 15    # milliseconds - absolute maximum
+    max_error_rate: 0.5  # 0.5% - low tolerance
+    test_iterations: 200
+    scenarios:
+      - name: "simple_continue"
+        complexity: "low"
+        target_p99: 5
+      - name: "lane_change"
+        complexity: "medium"
+        target_p99: 8
+      - name: "emergency_decision"
+        complexity: "high"
+        target_p99: 10
+    alerts:
+      - threshold: "p99 > 8ms"
+        severity: "warning"
+      - threshold: "p99 > 10ms"
+        severity: "critical"
+    
+  # Important: Route calculation performance
+  # Must be <5s P95 for trip planning
+  route_calculation:
+    description: "Route planning and optimization performance"
+    criticality: "operational"
+    thresholds:
+      p50: 1000   # milliseconds - 1 second median
+      p95: 5000   # milliseconds - 5 seconds P95
+      p99: 8000   # milliseconds - 8 seconds P99
+      avg: 2000   # milliseconds - 2 second average
+      max: 15000  # milliseconds - 15 second maximum
+    max_error_rate: 2.0  # 2% - moderate tolerance
+    test_iterations: 50
+    route_types:
+      - name: "short_urban"
+        distance_km: "< 5"
+        target_p95: 2000
+      - name: "medium_city"
+        distance_km: "5-20"
+        target_p95: 5000
+      - name: "long_highway"
+        distance_km: "> 20"
+        target_p95: 8000
+    alerts:
+      - threshold: "p95 > 4000ms"
+        severity: "warning"
+      - threshold: "p95 > 6000ms"
+        severity: "critical"
+    
+  # Important: API response times
+  # Must be <500ms P95 for user experience
+  api_response_times:
+    description: "General API endpoint response times"
+    criticality: "user_experience"
+    thresholds:
+      p50: 100    # milliseconds - snappy response
+      p95: 500    # milliseconds - acceptable UX
+      p99: 1000   # milliseconds - slow but tolerable
+      avg: 200    # milliseconds - good average
+      max: 2000   # milliseconds - timeout threshold
+    max_error_rate: 5.0  # 5% - higher tolerance for non-critical APIs
+    test_iterations: 100
+    endpoints:
+      - path: "/fleet/v1/vehicles"
+        method: "GET"
+        name: "list_vehicles"
+        target_p95: 300
+      - path: "/trip/v1/trips"
+        method: "GET"
+        name: "list_trips"
+        target_p95: 400
+      - path: "/fleet/v1/vehicles/{id}"
+        method: "GET"
+        name: "get_vehicle"
+        target_p95: 200
+      - path: "/trip/v1/trips"
+        method: "POST"
+        name: "create_trip"
+        target_p95: 600
+    alerts:
+      - threshold: "p95 > 400ms"
+        severity: "warning"
+      - threshold: "p95 > 600ms"
+        severity: "critical"
+    
+  # Critical: Edge heartbeat latency
+  # Must be <1s for connectivity monitoring
+  edge_heartbeat:
+    description: "Vehicle edge agent heartbeat and connectivity"
+    criticality: "connectivity"
+    thresholds:
+      p50: 200    # milliseconds - fast heartbeat
+      p95: 1000   # milliseconds - 1 second P95
+      p99: 1500   # milliseconds - 1.5 second P99
+      avg: 400    # milliseconds - average heartbeat
+      max: 3000   # milliseconds - connection timeout
+    max_error_rate: 1.0  # 1% - low tolerance for connectivity
+    test_iterations: 60   # 1 minute of heartbeats
+    intervals:
+      normal: 1000        # 1 second normal interval
+      degraded: 5000      # 5 seconds in degraded mode
+      emergency: 500      # 500ms in emergency mode
+    alerts:
+      - threshold: "p95 > 800ms"
+        severity: "warning"
+      - threshold: "p95 > 1200ms"
+        severity: "critical"
+
+# Environment-specific overrides
+environments:
+  development:
+    global:
+      enforcement_policy: "soft_warn"
+    multipliers:
+      # Relax thresholds by 50% in development
+      all_categories: 1.5
+      
+  staging:
+    global:
+      enforcement_policy: "hard_fail"
+    # Use production thresholds in staging
+    
+  production:
+    global:
+      enforcement_policy: "hard_fail"
+    multipliers:
+      # Tighten thresholds by 10% in production
+      safety_critical: 0.9
+      operational: 0.95
+
+# CI/CD Integration
+ci_integration:
+  # Block deployment if performance budgets fail
+  block_on_failure: true
+  
+  # Performance regression detection
+  regression_detection:
+    enabled: true
+    threshold_increase: 20  # % increase to trigger regression alert
+    baseline_comparison_days: 7
+    
+  # Automatic baseline updates
+  baseline_updates:
+    enabled: true
+    update_frequency: "weekly"
+    min_samples: 100
+    confidence_interval: 95
+    
+  # Performance trending
+  trending:
+    enabled: true
+    trend_window_days: 30
+    alert_on_degradation: true
+    degradation_threshold: 15  # % degradation over trend window
+
+# Monitoring and Alerting
+monitoring:
+  # Prometheus metrics
+  prometheus:
+    enabled: true
+    metrics_prefix: "atlasmesh_performance_budget"
+    labels:
+      - environment
+      - service
+      - category
+      - percentile
+      
+  # Grafana dashboards
+  grafana:
+    enabled: true
+    dashboard_uid: "atlasmesh-performance-budgets"
+    
+  # Alert routing
+  alerting:
+    channels:
+      slack:
+        webhook_url: "${SLACK_WEBHOOK_URL}"
+        channel: "#performance-alerts"
+      email:
+        smtp_server: "${SMTP_SERVER}"
+        recipients: ["sre-team@atlasmesh.com"]
+      pagerduty:
+        integration_key: "${PAGERDUTY_INTEGRATION_KEY}"
+        
+    escalation:
+      warning:
+        initial_delay: 5    # minutes
+        repeat_interval: 30 # minutes
+      critical:
+        initial_delay: 0    # immediate
+        repeat_interval: 15 # minutes
+
+# Load Testing Configuration
+load_testing:
+  # Concurrent users/requests
+  concurrency_levels: [1, 5, 10, 25, 50]
+  
+  # Test duration
+  duration_seconds: 300  # 5 minutes
+  warmup_seconds: 60     # 1 minute warmup
+  
+  # Ramp-up strategy
+  ramp_up:
+    strategy: "linear"
+    duration_seconds: 120  # 2 minutes to reach max concurrency
+    
+  # Resource monitoring during tests
+  resource_monitoring:
+    enabled: true
+    metrics:
+      - cpu_usage
+      - memory_usage
+      - disk_io
+      - network_io
+      - database_connections
+      - cache_hit_ratio
+
+# Performance Budget Governance
+governance:
+  # Budget change approval process
+  change_approval:
+    required_approvers: 2
+    approver_roles: ["sre-lead", "engineering-manager"]
+    approval_timeout_hours: 24
+    
+  # Budget review schedule
+  review_schedule:
+    frequency: "monthly"
+    participants: ["sre-team", "engineering-leads", "product-managers"]
+    
+  # Performance SLOs alignment
+  slo_alignment:
+    # Map performance budgets to service SLOs
+    control_loop: "vehicle_safety_slo"
+    policy_evaluation: "decision_latency_slo"
+    route_calculation: "trip_planning_slo"
+    api_response_times: "user_experience_slo"
+    edge_heartbeat: "connectivity_slo"
+
+# Reporting and Analytics
+reporting:
+  # Daily performance reports
+  daily_reports:
+    enabled: true
+    recipients: ["sre-team@atlasmesh.com"]
+    include_trends: true
+    
+  # Weekly executive summary
+  weekly_summary:
+    enabled: true
+    recipients: ["executives@atlasmesh.com"]
+    focus_on_violations: true
+    
+  # Monthly deep dive analysis
+  monthly_analysis:
+    enabled: true
+    include_recommendations: true
+    performance_optimization_suggestions: true

@@ -1,0 +1,764 @@
+# AtlasMesh Fleet OS - Zero-Trust Network Policies
+# Comprehensive network segmentation for Abu Dhabi autonomous vehicle fleet operations
+# Implements microsegmentation and least-privilege network access
+
+# Default Deny All Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/type: zero-trust
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+# API Gateway Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-gateway-network-policy
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/service: api-gateway
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: api-gateway
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from load balancer
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090  # Metrics
+  egress:
+  # Allow egress to backend services
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: fleet-manager
+    ports:
+    - protocol: TCP
+      port: 8081
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: policy-engine
+    ports:
+    - protocol: TCP
+      port: 8082
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: vehicle-gateway
+    ports:
+    - protocol: TCP
+      port: 8083
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Fleet Manager Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fleet-manager-network-policy
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/service: fleet-manager
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: fleet-manager
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from API Gateway
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8081
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090  # Metrics
+  egress:
+  # Allow egress to database
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: database
+    ports:
+    - protocol: TCP
+      port: 5432  # PostgreSQL
+  # Allow egress to Redis
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: cache
+    ports:
+    - protocol: TCP
+      port: 6379  # Redis
+  # Allow egress to Policy Engine
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: policy-engine
+    ports:
+    - protocol: TCP
+      port: 8082
+  # Allow egress to Vehicle Gateway
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: vehicle-gateway
+    ports:
+    - protocol: TCP
+      port: 8083
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Policy Engine Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: policy-engine-network-policy
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/service: policy-engine
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: policy-engine
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from API Gateway
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8082
+  # Allow ingress from Fleet Manager
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: fleet-manager
+    ports:
+    - protocol: TCP
+      port: 8082
+  # Allow ingress from Vehicle Gateway
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: vehicle-gateway
+    ports:
+    - protocol: TCP
+      port: 8082
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090  # Metrics
+  egress:
+  # Allow egress to database
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: database
+    ports:
+    - protocol: TCP
+      port: 5432  # PostgreSQL
+  # Allow egress to Redis
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: cache
+    ports:
+    - protocol: TCP
+      port: 6379  # Redis
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Vehicle Gateway Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: vehicle-gateway-network-policy
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/service: vehicle-gateway
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: vehicle-gateway
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from API Gateway
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8083
+  # Allow ingress from Fleet Manager
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: fleet-manager
+    ports:
+    - protocol: TCP
+      port: 8083
+  # Allow ingress from edge devices (vehicles)
+  - from: []  # External traffic from vehicles
+    ports:
+    - protocol: TCP
+      port: 8083
+    - protocol: TCP
+      port: 8443  # HTTPS/mTLS
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090  # Metrics
+  egress:
+  # Allow egress to Policy Engine
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: policy-engine
+    ports:
+    - protocol: TCP
+      port: 8082
+  # Allow egress to Telemetry Ingestion
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: telemetry-ingestion
+    ports:
+    - protocol: TCP
+      port: 8084
+  # Allow egress to Kafka
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: messaging
+    ports:
+    - protocol: TCP
+      port: 9092  # Kafka
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Telemetry Ingestion Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: telemetry-ingestion-network-policy
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/service: telemetry-ingestion
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: telemetry-ingestion
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from Vehicle Gateway
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: vehicle-gateway
+    ports:
+    - protocol: TCP
+      port: 8084
+  # Allow ingress from edge devices (vehicles)
+  - from: []  # External traffic from vehicles
+    ports:
+    - protocol: TCP
+      port: 8084
+    - protocol: TCP
+      port: 8443  # HTTPS/mTLS
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090  # Metrics
+  egress:
+  # Allow egress to Kafka
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: messaging
+    ports:
+    - protocol: TCP
+      port: 9092  # Kafka
+  # Allow egress to ClickHouse (hot path)
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: analytics
+    ports:
+    - protocol: TCP
+      port: 8123  # ClickHouse HTTP
+    - protocol: TCP
+      port: 9000  # ClickHouse Native
+  # Allow egress to MinIO (cold path)
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: storage
+    ports:
+    - protocol: TCP
+      port: 9000  # MinIO
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Control Center UI Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: control-center-ui-network-policy
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/service: control-center-ui
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: control-center-ui
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from load balancer
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 3000
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9090  # Metrics
+  egress:
+  # Allow egress to API Gateway
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Database Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: database-network-policy
+  namespace: database
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/type: database
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: postgresql
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from AtlasMesh services
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: atlasmesh-fleet-os
+    ports:
+    - protocol: TCP
+      port: 5432
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9187  # PostgreSQL Exporter
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Redis Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-network-policy
+  namespace: cache
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/type: cache
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from AtlasMesh services
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: atlasmesh-fleet-os
+    ports:
+    - protocol: TCP
+      port: 6379
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9121  # Redis Exporter
+  egress:
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Kafka Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kafka-network-policy
+  namespace: messaging
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/type: messaging
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from AtlasMesh services
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: atlasmesh-fleet-os
+    ports:
+    - protocol: TCP
+      port: 9092  # Kafka
+    - protocol: TCP
+      port: 9093  # Kafka SSL
+  # Allow ingress from monitoring
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+    ports:
+    - protocol: TCP
+      port: 9308  # Kafka Exporter
+  # Allow Kafka inter-broker communication
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: kafka
+    ports:
+    - protocol: TCP
+      port: 9092
+    - protocol: TCP
+      port: 9093
+  egress:
+  # Allow Kafka inter-broker communication
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: kafka
+    ports:
+    - protocol: TCP
+      port: 9092
+    - protocol: TCP
+      port: 9093
+  # Allow connection to Zookeeper
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: zookeeper
+    ports:
+    - protocol: TCP
+      port: 2181
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Monitoring Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: monitoring-network-policy
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+    security.atlasmesh.com/type: monitoring
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow ingress from load balancer for Grafana
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 3000  # Grafana
+  # Allow Prometheus to scrape itself
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: prometheus
+    ports:
+    - protocol: TCP
+      port: 9090
+  egress:
+  # Allow egress to scrape all namespaces
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 9090  # Metrics endpoints
+    - protocol: TCP
+      port: 9187  # PostgreSQL Exporter
+    - protocol: TCP
+      port: 9121  # Redis Exporter
+    - protocol: TCP
+      port: 9308  # Kafka Exporter
+  # Allow DNS resolution
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+
+---
+# Abu Dhabi Specific Network Policies
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: abu-dhabi-network-policies
+  namespace: atlasmesh-fleet-os
+  labels:
+    app.kubernetes.io/name: atlasmesh-fleet-os
+    app.kubernetes.io/component: security
+data:
+  abu-dhabi-policies.yaml: |
+    # Abu Dhabi Specific Network Security Policies
+    # Implements UAE cybersecurity requirements and local compliance
+    
+    uae_compliance:
+      # Data residency requirements
+      data_residency:
+        - policy: "All data must remain within UAE borders"
+          implementation: "Network policies prevent egress to non-UAE IPs"
+          monitoring: "DLP and network monitoring"
+        
+        - policy: "Cross-border data transfer requires approval"
+          implementation: "Explicit allow-list for international traffic"
+          monitoring: "Audit logging for all external connections"
+      
+      # Cybersecurity framework compliance
+      cybersecurity_framework:
+        - standard: "UAE Cybersecurity Council Guidelines"
+          requirements:
+            - "Network segmentation"
+            - "Zero-trust architecture"
+            - "Continuous monitoring"
+            - "Incident response"
+        
+        - standard: "NESA (National Electronic Security Authority)"
+          requirements:
+            - "Encryption in transit"
+            - "Access control"
+            - "Audit trails"
+            - "Vulnerability management"
+    
+    # Abu Dhabi emergency services integration
+    emergency_services:
+      allowed_connections:
+        - destination: "999.emergency.ae"
+          port: 443
+          protocol: "HTTPS"
+          purpose: "Emergency response coordination"
+        
+        - destination: "police.abudhabi.ae"
+          port: 443
+          protocol: "HTTPS"
+          purpose: "Police coordination"
+        
+        - destination: "ambulance.abudhabi.ae"
+          port: 443
+          protocol: "HTTPS"
+          purpose: "Medical emergency response"
+    
+    # Traffic management system integration
+    traffic_management:
+      allowed_connections:
+        - destination: "tms.abudhabi.gov.ae"
+          port: 443
+          protocol: "HTTPS"
+          purpose: "Traffic management coordination"
+        
+        - destination: "smartcity.abudhabi.ae"
+          port: 443
+          protocol: "HTTPS"
+          purpose: "Smart city integration"
+    
+    # Weather services integration
+    weather_services:
+      allowed_connections:
+        - destination: "weather.ncm.ae"
+          port: 443
+          protocol: "HTTPS"
+          purpose: "National weather data"
+        
+        - destination: "api.openweathermap.org"
+          port: 443
+          protocol: "HTTPS"
+          purpose: "International weather data"
+    
+    # Monitoring and compliance
+    monitoring:
+      network_monitoring:
+        - "Real-time traffic analysis"
+        - "Anomaly detection"
+        - "Compliance reporting"
+        - "Incident response"
+      
+      audit_requirements:
+        - "All network connections logged"
+        - "Policy violations tracked"
+        - "Regular compliance reports"
+        - "Quarterly security assessments"

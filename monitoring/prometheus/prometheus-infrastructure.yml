@@ -1,0 +1,194 @@
+# AtlasMesh Fleet OS - Prometheus Configuration
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'atlasmesh-dev'
+    environment: 'development'
+
+rule_files:
+  - "rules/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Infrastructure Services
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgresql:5432']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['kafka:9092']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # Core Services (Tier 1)
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'fleet-manager'
+    static_configs:
+      - targets: ['host.docker.internal:8081']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'vehicle-gateway'
+    static_configs:
+      - targets: ['host.docker.internal:8082']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'trip-service'
+    static_configs:
+      - targets: ['host.docker.internal:8083']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'dispatch-service'
+    static_configs:
+      - targets: ['host.docker.internal:8084']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'routing-service'
+    static_configs:
+      - targets: ['host.docker.internal:8085']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'policy-engine'
+    static_configs:
+      - targets: ['host.docker.internal:8086']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['host.docker.internal:8087']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  # Data Services (Tier 2)
+  - job_name: 'telemetry-ingestion'
+    static_configs:
+      - targets: ['host.docker.internal:8090']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'telemetry-ingestion'
+    static_configs:
+      - targets: ['host.docker.internal:8091']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'analytics-service'
+    static_configs:
+      - targets: ['host.docker.internal:8092']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'data-lineage'
+    static_configs:
+      - targets: ['host.docker.internal:8093']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  # Integration Services (Tier 3)
+  - job_name: 'uae-government-integration'
+    static_configs:
+      - targets: ['host.docker.internal:8100']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'weather-fusion'
+    static_configs:
+      - targets: ['host.docker.internal:8105']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # Security Services (Tier 4)
+  - job_name: 'zero-trust-iam'
+    static_configs:
+      - targets: ['host.docker.internal:8110']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'evidence-engine'
+    static_configs:
+      - targets: ['host.docker.internal:8115']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # ML Services (Tier 5)
+  - job_name: 'ml-pipeline'
+    static_configs:
+      - targets: ['host.docker.internal:8120']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'digital-twin'
+    static_configs:
+      - targets: ['host.docker.internal:8121']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # Operations Services (Tier 6)
+  - job_name: 'monitoring-alerting'
+    static_configs:
+      - targets: ['host.docker.internal:8130']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'observability'
+    static_configs:
+      - targets: ['host.docker.internal:8131']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # Service Discovery for Dynamic Services
+  - job_name: 'kubernetes-pods'
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: kubernetes_namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: kubernetes_pod_name
