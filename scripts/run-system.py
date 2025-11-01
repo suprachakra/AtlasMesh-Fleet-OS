@@ -43,8 +43,8 @@ class SystemRunner:
             # Tier 3: Integration Services (ports 8100-8106)
             "tier3": [
                 {"name": "uae-government-integration", "port": 8100, "path": "services/uae-government-integration"},
-                {"name": "erp-wms-adapters", "port": 8101, "path": "services/erp-wms-adapters"},
-                {"name": "erp-integration", "port": 8102, "path": "services/erp-integration"},
+                {"name": "business-systems-connector", "port": 8101, "path": "services/business-systems-connector"},
+                {"name": "erp-financial-connector", "port": 8102, "path": "services/erp-financial-connector"},
                 {"name": "arabic-localization", "port": 8103, "path": "services/arabic-localization"},
                 {"name": "comms-orchestration", "port": 8104, "path": "services/comms-orchestration"},
                 {"name": "weather-fusion", "port": 8105, "path": "services/weather-fusion"},
