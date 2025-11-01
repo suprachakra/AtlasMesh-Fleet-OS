@@ -1,0 +1,324 @@
+---
+# Mining Haul Road ODD Configuration
+# Operational Design Domain for mining haul truck operations
+
+odd_id: "mining_haul_road_v1"
+sector: "mining"
+description: "Operational parameters for autonomous haul truck operations in open-pit mining environments"
+version: "1.0.0"
+last_updated: "2025-09-13"
+owner: "Mining Sector Lead"
+
+# Geographic constraints
+geographic:
+  terrain_types:
+    - "mine_haul_road"
+    - "mine_ramp"
+    - "crusher_approach"
+    - "dump_area"
+    - "loading_area"
+    - "stockpile_area"
+  elevation_range:
+    min_meters: -500  # Below sea level for some mines
+    max_meters: 4500  # High altitude mines
+  slope_limits:
+    max_uphill_degrees: 10  # ~17.6% grade
+    max_downhill_degrees: 8  # ~14% grade
+    max_cross_slope_degrees: 4
+    special_cases:
+      - condition: "loaded"
+        max_downhill_degrees: 6  # More conservative when loaded
+      - condition: "wet_surface"
+        max_uphill_degrees: 8
+        max_downhill_degrees: 6
+
+# Road and path constraints
+road:
+  types:
+    - "primary_haul_road"
+    - "secondary_haul_road"
+    - "ramp"
+    - "bench_access"
+    - "dump_edge"
+    - "crusher_pad"
+  width_requirements:
+    min_width_meters: 20  # For ultra-class haul trucks
+    preferred_width_meters: 30
+    passing_zone_width_meters: 35
+  surface_conditions:
+    allowed:
+      - "compacted_gravel"
+      - "hard_packed_dirt"
+      - "crushed_rock"
+      - "stabilized_surface"
+    restricted:
+      - "loose_material"
+      - "saturated_surface"
+      - "unstable_edge"
+      - "excessive_rutting"
+    condition_assessment:
+      rutting_max_depth_cm: 15
+      pothole_max_diameter_cm: 50
+      edge_crumbling_max_cm: 30
+  berm_requirements:
+    min_height_ratio: 0.5  # Half the wheel diameter
+    preferred_height_ratio: 0.75
+    required_locations:
+      - "outer_edge"
+      - "high_wall_side"
+      - "water_adjacent"
+      - "drop_off_greater_than_3m"
+
+# Weather constraints
+weather:
+  temperature:
+    min_celsius: -40
+    max_celsius: 55
+    derating_curve:
+      - threshold_celsius: 45
+        speed_factor: 0.9
+        brake_temp_monitoring: "enhanced"
+      - threshold_celsius: 50
+        speed_factor: 0.7
+        brake_temp_monitoring: "critical"
+      - threshold_celsius: 55
+        speed_factor: 0.5
+        brake_temp_monitoring: "maximum"
+  visibility:
+    min_meters: 30
+    preferred_meters: 100
+    degraded_operations:
+      threshold_meters: 50
+      speed_factor: 0.5
+    dust_detection:
+      threshold_pm10: 150  # μg/m³
+      response:
+        - "activate_air_filters"
+        - "reduce_speed"
+        - "increase_following_distance"
+  precipitation:
+    max_rate_mm_per_hour: 50
+    accumulated_thresholds:
+      - amount_mm: 10
+        duration_hours: 1
+        response: "wet_surface_protocols"
+      - amount_mm: 25
+        duration_hours: 3
+        response: "drainage_inspection_required"
+      - amount_mm: 50
+        duration_hours: 12
+        response: "geotechnical_assessment_required"
+
+# Time constraints
+time:
+  operations:
+    - "day"
+    - "night"
+    - "twilight"
+  shift_change_protocols:
+    buffer_minutes: 30
+    locations:
+      - "designated_parking_area"
+      - "maintenance_facility"
+
+# Communications constraints
+communications:
+  required_modes:
+    primary: "mine_lte"
+    secondary: "wifi_mesh"
+    fallback: "radio"
+  gnss_requirements:
+    required: true
+    augmentation_required: true
+    precision_requirements:
+      horizontal_meters: 0.2
+      vertical_meters: 0.5
+  connectivity_requirements:
+    min_uptime_percent: 99
+    max_outage_minutes: 5
+    critical_areas:
+      - area: "crusher_approach"
+        max_outage_seconds: 30
+      - area: "dump_edge"
+        max_outage_seconds: 30
+      - area: "loading_area"
+        max_outage_seconds: 30
+
+# Vehicle constraints
+vehicle:
+  types:
+    - "rigid_dump_truck"
+    - "articulated_dump_truck"
+  size_classes:
+    - class: "ultra_class"
+      payload_tonnes: ">300"
+      width_meters: ">7"
+    - class: "large"
+      payload_tonnes: "150-300"
+      width_meters: "6-7"
+    - class: "medium"
+      payload_tonnes: "90-150"
+      width_meters: "5-6"
+    - class: "small"
+      payload_tonnes: "<90"
+      width_meters: "<5"
+  capabilities:
+    required_sensors:
+      - "lidar"
+      - "radar"
+      - "camera_visual"
+      - "camera_thermal"
+      - "gnss_rtk"
+      - "imu"
+  speed_limits:
+    max_speed_loaded_kmh: 30
+    max_speed_empty_kmh: 40
+    max_speed_ramp_down_loaded_kmh: 15
+    max_speed_ramp_up_loaded_kmh: 20
+    max_speed_crusher_approach_kmh: 10
+    max_speed_dump_approach_kmh: 10
+    max_speed_near_equipment_kmh: 15
+  following_distance:
+    min_time_gap_seconds: 6
+    min_distance_meters: 50
+    adjustment_factors:
+      dust_conditions: 1.5
+      wet_surface: 1.3
+      night_operations: 1.2
+      ramp_down: 1.5
+
+# Interaction constraints
+interactions:
+  equipment_interactions:
+    - equipment: "excavator"
+      approach_protocol: "loader_spot_cycle"
+      minimum_distance_meters: 15
+      communication_required: true
+    - equipment: "wheel_loader"
+      approach_protocol: "loader_spot_cycle"
+      minimum_distance_meters: 12
+      communication_required: true
+    - equipment: "dozer"
+      minimum_distance_meters: 20
+      right_of_way: "dozer"
+    - equipment: "grader"
+      minimum_distance_meters: 30
+      right_of_way: "grader"
+    - equipment: "water_truck"
+      minimum_distance_meters: 50
+      right_of_way: "water_truck"
+  light_vehicle_interactions:
+    minimum_distance_meters: 50
+    overtaking_prohibited: true
+    dedicated_lanes_required: true
+  personnel_interactions:
+    minimum_distance_meters: 30
+    detection_range_meters: 100
+    designated_crossing_points: true
+
+# Safety constraints
+safety:
+  geotechnical:
+    highwall_minimum_distance_meters: 10
+    crest_minimum_distance_meters: 5
+    assessment_frequency_hours: 24
+  dump_point:
+    approach_angle_degrees: 90
+    minimum_berm_height_cm: 150
+    spotter_required: false
+    dump_edge_monitoring: true
+  ramp_safety:
+    runaway_provisions_required: true
+    maximum_speed_enforcement: true
+    brake_temperature_monitoring: true
+  emergency_protocols:
+    safe_stop_locations:
+      max_distance_between_km: 1
+      required_attributes:
+        - "level_ground"
+        - "stable_surface"
+        - "communications_coverage"
+    fire_response:
+      detection_required: true
+      suppression_systems: true
+      evacuation_routes_defined: true
+
+# Operational constraints
+operational:
+  production_requirements:
+    shift_targets_defined: true
+    priority_management: true
+    dynamic_reallocation: true
+  maintenance_integration:
+    health_monitoring_required: true
+    predictive_maintenance_enabled: true
+    service_scheduling_integration: true
+  fuel_management:
+    minimum_reserve_percent: 15
+    refueling_scheduling: true
+  tele_assist:
+    allowed: true
+    max_assists_per_100km: 2
+    max_duration_minutes_per_assist: 10
+
+# Degradation modes
+degradation_modes:
+  comms_degraded:
+    triggers:
+      - "signal_quality_below_threshold"
+      - "bandwidth_below_minimum"
+      - "latency_above_threshold"
+    actions:
+      - "reduce_speed_by_25_percent"
+      - "increase_following_distance"
+      - "prepare_for_comms_loss"
+  comms_loss:
+    triggers:
+      - "signal_loss_exceeds_threshold"
+      - "heartbeat_failure"
+    actions:
+      - "execute_safe_stop_protocol"
+      - "activate_visual_indicators"
+      - "attempt_comms_restoration"
+  gnss_degraded:
+    triggers:
+      - "position_uncertainty_exceeds_threshold"
+      - "rtk_fix_lost"
+    actions:
+      - "reduce_speed_by_50_percent"
+      - "activate_visual_inertial_navigation"
+      - "prepare_for_controlled_stop"
+  visibility_degraded:
+    triggers:
+      - "visibility_below_threshold"
+      - "dust_detection_level_high"
+    actions:
+      - "reduce_speed_according_to_conditions"
+      - "increase_following_distance"
+      - "activate_enhanced_sensing_mode"
+  vehicle_health_degraded:
+    triggers:
+      - "critical_system_warning"
+      - "temperature_exceeds_threshold"
+      - "brake_performance_degraded"
+    actions:
+      - "reduce_speed_to_minimum"
+      - "proceed_to_maintenance_area"
+      - "notify_fleet_management"
+
+# Testing and validation
+validation:
+  required_scenarios:
+    - "loader_approach_cycle"
+    - "dump_point_operations"
+    - "ramp_ascent_descent"
+    - "interaction_with_other_equipment"
+    - "degraded_communications_handling"
+    - "dust_conditions_navigation"
+  performance_metrics:
+    - "cycle_time_consistency"
+    - "spotting_accuracy"
+    - "fuel_efficiency"
+    - "tire_wear_rate"
+    - "brake_temperature_management"
+    - "assist_frequency"

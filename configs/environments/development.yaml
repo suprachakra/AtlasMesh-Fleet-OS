@@ -1,0 +1,297 @@
+# AtlasMesh Fleet OS - Development Environment Configuration
+# Abu Dhabi autonomous vehicle fleet management platform
+# Development environment with enhanced debugging and mock data
+
+environment: development
+region: abu_dhabi
+timezone: Asia/Dubai
+
+# API Configuration
+api:
+  base_url: http://localhost:8080
+  ws_url: ws://localhost:8080
+  timeout: 30000
+  rate_limit:
+    requests_per_minute: 1000
+    burst_size: 100
+  cors:
+    enabled: true
+    origins:
+      - http://localhost:3000
+      - http://localhost:3001
+      - http://127.0.0.1:3000
+
+# Database Configuration
+database:
+  postgresql:
+    host: localhost
+    port: 5432
+    database: atlasmesh_fleet_dev
+    username: atlasmesh_dev
+    password_env: POSTGRES_PASSWORD_DEV
+    ssl_mode: disable
+    max_connections: 20
+    connection_timeout: 30s
+    idle_timeout: 300s
+    log_queries: true
+  
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password_env: REDIS_PASSWORD_DEV
+    max_connections: 10
+    connection_timeout: 5s
+    idle_timeout: 300s
+
+# Message Queue Configuration
+messaging:
+  kafka:
+    brokers:
+      - localhost:9092
+    topic_prefix: atlasmesh_dev
+    consumer_group: atlasmesh_dev_group
+    security:
+      protocol: PLAINTEXT
+    performance:
+      batch_size: 100
+      linger_ms: 5
+      buffer_memory: 33554432
+
+# Map Configuration (Abu Dhabi centered)
+maps:
+  default_provider: openstreetmap
+  default_center:
+    lat: 24.4539
+    lng: 54.3773
+  default_zoom: 12
+  providers:
+    openstreetmap:
+      enabled: true
+      tile_server: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+      attribution: "© OpenStreetMap contributors"
+    google:
+      enabled: true
+      api_key_env: GOOGLE_MAPS_API_KEY_DEV
+      map_type: roadmap
+    mapbox:
+      enabled: false
+      api_key_env: MAPBOX_API_KEY_DEV
+  
+  # Abu Dhabi specific settings
+  abu_dhabi:
+    bounds:
+      north: 24.6
+      south: 24.2
+      east: 55.0
+      west: 54.0
+    districts:
+      - abu_dhabi_city
+      - al_ain
+      - al_dhafra
+    landmarks:
+      - sheikh_zayed_mosque
+      - emirates_palace
+      - corniche
+      - yas_island
+
+# Feature Flags
+features:
+  enable_clustering: true
+  enable_real_time_updates: true
+  enable_vehicle_trails: true
+  enable_geofence_monitoring: true
+  enable_heatmaps: true
+  enable_offline_mode: true
+  enable_debug_mode: true
+  enable_mock_data: true
+  enable_performance_monitoring: false
+  enable_chaos_engineering: false
+
+# Performance Settings
+performance:
+  map_update_interval: 2000
+  telemetry_batch_size: 50
+  max_vehicles_on_map: 100
+  max_route_points: 500
+  cluster_radius: 30
+  max_cluster_zoom: 12
+  
+  # Relaxed budgets for development
+  budgets:
+    policy_evaluation_ms: 100
+    vehicle_command_ms: 200
+    route_calculation_ms: 1000
+    ui_render_ms: 100
+
+# Security Configuration
+security:
+  enable_https: false
+  csrf_token_header: X-CSRF-Token
+  jwt:
+    secret_env: JWT_SECRET_DEV
+    expiration: 24h
+    refresh_expiration: 7d
+  
+  # Relaxed CORS for development
+  cors:
+    allow_credentials: true
+    max_age: 86400
+  
+  # Development authentication
+  auth:
+    bypass_enabled: true
+    default_user: dev_user
+    default_roles:
+      - fleet_operator
+      - developer
+      - admin
+
+# Logging Configuration
+logging:
+  level: debug
+  format: json
+  output:
+    - stdout
+    - file
+  file:
+    path: /var/log/atlasmesh/app.log
+    max_size: 100MB
+    max_files: 5
+    rotate: true
+  
+  # Enhanced logging for development
+  components:
+    policy_engine: debug
+    vehicle_gateway: debug
+    fleet_manager: debug
+    telemetry_ingestion: debug
+    map_data_contract: debug
+    weather_fusion: debug
+
+# Monitoring Configuration
+monitoring:
+  prometheus:
+    enabled: false
+    port: 9090
+    metrics_path: /metrics
+  
+  grafana:
+    enabled: false
+    port: 3000
+  
+  jaeger:
+    enabled: true
+    agent_host: localhost
+    agent_port: 6831
+    sampling_rate: 1.0
+  
+  health_checks:
+    enabled: true
+    interval: 30s
+    timeout: 5s
+
+# Development Tools
+development:
+  hot_reload: true
+  auto_migrate: true
+  seed_data: true
+  mock_services: true
+  debug_endpoints: true
+  profiling: true
+  
+  # Mock data configuration
+  mock_data:
+    vehicles: 10
+    routes: 5
+    geofences: 3
+    weather_stations: 2
+    incidents: 1
+  
+  # Testing configuration
+  testing:
+    unit_tests: true
+    integration_tests: true
+    e2e_tests: false
+    load_tests: false
+
+# External Services (Development/Mock)
+external_services:
+  weather_api:
+    enabled: true
+    mock: true
+    url: http://localhost:8081/mock/weather
+    api_key_env: WEATHER_API_KEY_DEV
+    timeout: 10s
+  
+  traffic_api:
+    enabled: true
+    mock: true
+    url: http://localhost:8082/mock/traffic
+    api_key_env: TRAFFIC_API_KEY_DEV
+    timeout: 10s
+  
+  uae_government_apis:
+    enabled: false
+    mock: true
+    base_url: http://localhost:8083/mock/uae
+    timeout: 30s
+
+# Backup Configuration
+backup:
+  enabled: false
+  schedule: "0 2 * * *"
+  retention: 7d
+  storage:
+    type: local
+    path: /var/backups/atlasmesh
+
+# Secrets Management
+secrets:
+  provider: env_vars
+  rotation: false
+  
+  # Environment variables mapping
+  env_vars:
+    POSTGRES_PASSWORD_DEV: database.postgresql.password
+    REDIS_PASSWORD_DEV: database.redis.password
+    JWT_SECRET_DEV: security.jwt.secret
+    GOOGLE_MAPS_API_KEY_DEV: maps.providers.google.api_key
+    MAPBOX_API_KEY_DEV: maps.providers.mapbox.api_key
+    WEATHER_API_KEY_DEV: external_services.weather_api.api_key
+    TRAFFIC_API_KEY_DEV: external_services.traffic_api.api_key
+
+# Resource Limits (Development)
+resources:
+  cpu_limit: 2000m
+  memory_limit: 2Gi
+  storage_limit: 10Gi
+  
+  # Per-service limits
+  services:
+    api_gateway:
+      cpu: 200m
+      memory: 256Mi
+    fleet_manager:
+      cpu: 200m
+      memory: 256Mi
+    policy_engine:
+      cpu: 200m
+      memory: 256Mi
+    vehicle_gateway:
+      cpu: 300m
+      memory: 512Mi
+    telemetry_ingestion:
+      cpu: 300m
+      memory: 512Mi
+    control_center_ui:
+      cpu: 100m
+      memory: 128Mi
+
+# Compliance (Relaxed for development)
+compliance:
+  uae_regulations: false
+  iso_standards: false
+  gdpr: false
+  audit_logging: false
+  data_retention: 7d

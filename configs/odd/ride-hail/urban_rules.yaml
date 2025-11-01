@@ -1,0 +1,397 @@
+---
+# Ride-hail Urban ODD Configuration
+# Operational Design Domain for autonomous ride-hail operations in urban environments
+
+odd_id: "ride_hail_urban_rules_v1"
+sector: "ride_hail"
+description: "Operational parameters for autonomous ride-hail vehicles in urban and suburban environments"
+version: "1.0.0"
+last_updated: "2025-09-13"
+owner: "Ride-hail Sector Lead"
+
+# Geographic constraints
+geographic:
+  region_types:
+    - "urban_core"
+    - "urban_residential"
+    - "suburban_commercial"
+    - "suburban_residential"
+  geofence:
+    required: true
+    update_frequency_hours: 24
+    buffer_zone_meters: 100
+    exit_behavior: "safe_stop"
+  road_network:
+    allowed_road_classes:
+      - "arterial"
+      - "collector"
+      - "local"
+      - "private_access"
+    restricted_road_classes:
+      - "highway"
+      - "expressway"
+      - "construction_zone"
+      - "unpaved"
+    exceptions:
+      - road_class: "construction_zone"
+        conditions:
+          - "tele_assist_available"
+          - "reduced_speed"
+          - "enhanced_perception"
+      - road_class: "highway"
+        conditions:
+          - "geofenced_segment"
+          - "limited_access"
+          - "enhanced_monitoring"
+  elevation_range:
+    min_meters: -50
+    max_meters: 2000
+  slope_limits:
+    max_grade_percent: 15
+    max_cross_slope_percent: 8
+
+# Road and path constraints
+road:
+  lane_types:
+    - "standard_lane"
+    - "bus_lane"
+    - "bike_lane"
+    - "turn_lane"
+    - "parking_lane"
+  lane_markings:
+    required_recognition:
+      - "solid_line"
+      - "dashed_line"
+      - "double_line"
+      - "yellow_line"
+      - "white_line"
+      - "crosswalk"
+      - "stop_line"
+    optional_recognition:
+      - "sharrow"
+      - "bike_box"
+      - "bus_lane_marking"
+  traffic_control_devices:
+    required_recognition:
+      - "traffic_light"
+      - "stop_sign"
+      - "yield_sign"
+      - "speed_limit_sign"
+      - "no_turn_sign"
+      - "one_way_sign"
+    optional_recognition:
+      - "variable_message_sign"
+      - "school_zone_sign"
+      - "pedestrian_crossing_sign"
+  curb_operations:
+    pickup_dropoff_requirements:
+      min_curb_length_meters: 6.0
+      max_distance_from_curb_cm: 30
+      min_clearance_from_intersection_meters: 15
+      min_clearance_from_crosswalk_meters: 6
+      min_clearance_from_driveway_meters: 1.5
+    prohibited_stopping_locations:
+      - "bus_stop"
+      - "fire_hydrant"
+      - "loading_zone"
+      - "no_stopping_zone"
+      - "bike_lane"
+    exceptions:
+      - location: "loading_zone"
+        conditions:
+          - "off_peak_hours"
+          - "short_duration"
+          - "accessibility_need"
+
+# Weather constraints
+weather:
+  temperature:
+    min_celsius: -10
+    max_celsius: 50
+    derating_curve:
+      - threshold_celsius: 45
+        speed_factor: 0.9
+        range_impact_percent: 15
+      - threshold_celsius: 48
+        speed_factor: 0.8
+        range_impact_percent: 25
+  visibility:
+    min_meters: 50
+    preferred_meters: 100
+    degraded_operations:
+      threshold_meters: 75
+      speed_factor: 0.6
+  precipitation:
+    rain:
+      light_operation: true
+      moderate_operation: true
+      heavy_operation:
+        allowed: true
+        speed_factor: 0.7
+        wipers_required: "high"
+    snow:
+      light_operation: true
+      moderate_operation:
+        allowed: true
+        speed_factor: 0.6
+      heavy_operation:
+        allowed: false
+    flooding:
+      detection_required: true
+      max_depth_cm: 10
+      rerouting_required: true
+
+# Time constraints
+time:
+  operations:
+    - "day"
+    - "night"
+    - "twilight"
+  time_specific_rules:
+    - period: "rush_hour"
+      definition: "weekdays 07:00-09:00, 16:00-19:00"
+      special_rules:
+        - "avoid_school_zones"
+        - "prioritize_reliable_routes"
+    - period: "late_night"
+      definition: "daily 23:00-05:00"
+      special_rules:
+        - "safety_route_bias"
+        - "well_lit_areas_preferred"
+        - "enhanced_rider_verification"
+    - period: "school_hours"
+      definition: "weekdays 07:30-16:00"
+      special_rules:
+        - "reduced_speed_school_zones"
+        - "enhanced_pedestrian_detection"
+
+# Communications constraints
+communications:
+  required_modes:
+    primary: "cellular_5g"
+    secondary: "cellular_4g"
+    fallback: "cellular_3g"
+  gnss_requirements:
+    required: true
+    augmentation_required: true
+    precision_requirements:
+      horizontal_meters: 1.0
+      vertical_meters: 2.0
+  connectivity_requirements:
+    min_uptime_percent: 99
+    max_outage_minutes: 5
+    critical_operations:
+      - operation: "rider_pickup"
+        max_outage_seconds: 30
+      - operation: "rider_dropoff"
+        max_outage_seconds: 30
+      - operation: "intersection_navigation"
+        max_outage_seconds: 15
+
+# Vehicle constraints
+vehicle:
+  types:
+    - "sedan"
+    - "suv"
+    - "minivan"
+    - "wav_van"
+  capabilities:
+    required_sensors:
+      - "lidar"
+      - "camera_visual"
+      - "radar"
+      - "ultrasonic"
+      - "gnss"
+      - "imu"
+    specialized_equipment:
+      - "rider_verification_system"
+      - "accessibility_features"
+      - "climate_control"
+      - "rider_communication_system"
+  speed_limits:
+    max_speed_kmh: 60
+    school_zone_kmh: 25
+    residential_area_kmh: 40
+    shared_space_kmh: 20
+    pickup_dropoff_kmh: 5
+  rider_operations:
+    door_operation_verification: true
+    seatbelt_monitoring: true
+    capacity_enforcement: true
+    accessibility_features_verification: true
+
+# Interaction constraints
+interactions:
+  pedestrian_interactions:
+    detection_range_meters: 50
+    prediction_horizon_seconds: 5
+    crosswalk_behavior: "yield_always"
+    jaywalking_behavior: "cautious_yield"
+    school_zone_behavior: "enhanced_caution"
+  cyclist_interactions:
+    detection_range_meters: 50
+    prediction_horizon_seconds: 5
+    passing_minimum_distance_meters: 1.5
+    bike_lane_behavior: "no_encroachment"
+  vehicle_interactions:
+    detection_range_meters: 100
+    prediction_horizon_seconds: 5
+    following_distance_seconds: 2.0
+    merge_behavior: "defensive"
+    double_parked_vehicle_behavior: "cautious_pass"
+  special_vehicle_interactions:
+    - vehicle_type: "emergency_vehicle"
+      behavior: "yield_pull_over"
+      detection_requirements:
+        - "lights"
+        - "sirens"
+        - "vehicle_type"
+    - vehicle_type: "school_bus"
+      behavior: "stop_when_signals_active"
+      detection_requirements:
+        - "stop_sign"
+        - "flashing_lights"
+    - vehicle_type: "garbage_truck"
+      behavior: "cautious_pass"
+      detection_requirements:
+        - "vehicle_type"
+        - "operation_pattern"
+  law_enforcement_interactions:
+    detection_required: true
+    pull_over_protocol_defined: true
+    officer_gesture_recognition: true
+    documentation_system_activated: true
+
+# Safety constraints
+safety:
+  minimum_risk_condition:
+    activation_triggers:
+      - "system_fault_critical"
+      - "environmental_conditions_beyond_odd"
+      - "prolonged_comms_loss"
+    execution_requirements:
+      - "safe_location_selection"
+      - "hazard_lights_activation"
+      - "rider_notification"
+      - "operations_center_notification"
+  rider_safety:
+    door_opening_safety_check: true
+    seatbelt_reminder_system: true
+    interior_monitoring: true
+    emergency_call_system: true
+  operational_safety:
+    defensive_driving_parameters:
+      following_distance_multiplier: 1.2
+      speed_limit_adherence_kph: -5
+      intersection_approach_caution: true
+    enhanced_perception_scenarios:
+      - "school_zones"
+      - "pedestrian_dense_areas"
+      - "construction_zones"
+      - "low_visibility_conditions"
+  emergency_protocols:
+    emergency_stop_distance:
+      pedestrian_meters: 2
+      vehicle_meters: 4
+    system_fault_response:
+      - "controlled_stop"
+      - "hazard_indicators"
+      - "rider_notification"
+    rider_emergency_response:
+      - "operations_center_alert"
+      - "location_sharing"
+      - "emergency_services_option"
+
+# Operational constraints
+operational:
+  ride_management:
+    pickup_window_minutes: 5
+    dropoff_precision_meters: 10
+    route_deviation_notification_required: true
+    eta_update_frequency_seconds: 60
+  rider_interaction:
+    verification_required: true
+    accessibility_accommodations: true
+    special_instructions_support: true
+    language_options_required:
+      - "english"
+      - "arabic"
+      - "hindi"
+      - "urdu"
+  fleet_management:
+    rebalancing_integration: true
+    energy_management_integration: true
+    maintenance_scheduling_integration: true
+  tele_assist:
+    allowed: true
+    max_assists_per_100km: 5
+    max_duration_minutes_per_assist: 3
+    scenarios_requiring_assist:
+      - "construction_zone_navigation"
+      - "unusual_traffic_control"
+      - "pickup_dropoff_obstruction"
+      - "rider_special_request"
+
+# Degradation modes
+degradation_modes:
+  comms_degraded:
+    triggers:
+      - "signal_quality_below_threshold"
+      - "bandwidth_below_minimum"
+      - "latency_above_threshold"
+    actions:
+      - "reduce_speed_by_20_percent"
+      - "increase_following_distance"
+      - "prioritize_critical_communications"
+  comms_loss:
+    triggers:
+      - "signal_loss_exceeds_threshold"
+      - "heartbeat_failure"
+    actions:
+      - "complete_current_trip_if_safe"
+      - "no_new_trip_acceptance"
+      - "proceed_to_connectivity_zone"
+  gnss_degraded:
+    triggers:
+      - "position_uncertainty_exceeds_threshold"
+      - "satellite_count_below_minimum"
+    actions:
+      - "activate_visual_localization"
+      - "reduce_speed_by_30_percent"
+      - "avoid_complex_maneuvers"
+  visibility_degraded:
+    triggers:
+      - "visibility_below_threshold"
+      - "camera_obstruction_detected"
+    actions:
+      - "reduce_speed_according_to_conditions"
+      - "increase_following_distance"
+      - "activate_enhanced_sensing_mode"
+  rider_emergency:
+    triggers:
+      - "emergency_button_pressed"
+      - "unusual_activity_detected"
+      - "medical_emergency_reported"
+    actions:
+      - "contact_operations_center"
+      - "offer_emergency_services_contact"
+      - "proceed_to_safe_location_if_needed"
+
+# Testing and validation
+validation:
+  required_scenarios:
+    - "standard_pickup_dropoff"
+    - "pedestrian_interaction"
+    - "cyclist_interaction"
+    - "traffic_signal_navigation"
+    - "construction_zone_handling"
+    - "law_enforcement_interaction"
+    - "accessibility_rider_support"
+  performance_metrics:
+    - "on_time_pickup_rate"
+    - "route_efficiency"
+    - "rider_comfort_score"
+    - "traffic_rule_compliance"
+    - "pickup_dropoff_precision"
+    - "assist_frequency"
+    - "rider_satisfaction"

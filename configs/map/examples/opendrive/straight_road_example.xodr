@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenDRIVE>
+    <header revMajor="1" revMinor="5" name="AtlasMesh Straight Road Example" version="1.0" date="2025-09-15" north="0" south="0" east="0" west="0" vendor="AtlasMesh" >
+        <userData>
+            <vectorScene program="AtlasMesh Map Converter" version="1.0"/>
+        </userData>
+    </header>
+    <road name="Road 1" length="500.0" id="1" junction="-1">
+        <link>
+        </link>
+        <type s="0" type="rural"/>
+        <planView>
+            <geometry s="0.0" x="0.0" y="0.0" hdg="0.0" length="500.0">
+                <line/>
+            </geometry>
+        </planView>
+        <elevationProfile>
+            <elevation s="0.0" a="0.0" b="0.0" c="0.0" d="0.0"/>
+        </elevationProfile>
+        <lateralProfile>
+        </lateralProfile>
+        <lanes>
+            <laneSection s="0.0">
+                <left>
+                    <lane id="2" type="driving" level="false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0" a="3.5" b="0.0" c="0.0" d="0.0"/>
+                        <roadMark sOffset="0.0" type="solid" weight="standard" color="standard" width="0.13" laneChange="none" height="0.02">
+                            <type name="solid" width="0.13">
+                                <line length="1.0" space="0.0" tOffset="0.0" sOffset="0.0" rule="none" width="0.13"/>
+                            </type>
+                        </roadMark>
+                        <userData>
+                            <vectorLane travelDir="backward"/>
+                        </userData>
+                    </lane>
+                    <lane id="1" type="shoulder" level="false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0" a="0.5" b="0.0" c="0.0" d="0.0"/>
+                        <userData>
+                            <vectorLane travelDir="undirected"/>
+                        </userData>
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <link>
+                        </link>
+                        <roadMark sOffset="0.0" type="broken" weight="standard" color="standard" width="0.13" laneChange="both" height="0.02">
+                            <type name="broken" width="0.13">
+                                <line length="3.0" space="6.0" tOffset="0.0" sOffset="0.0" rule="none" width="0.13"/>
+                            </type>
+                        </roadMark>
+                        <userData>
+                            <vectorLane travelDir="undirected"/>
+                        </userData>
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="shoulder" level="false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0" a="0.5" b="0.0" c="0.0" d="0.0"/>
+                        <userData>
+                            <vectorLane travelDir="undirected"/>
+                        </userData>
+                    </lane>
+                    <lane id="-2" type="driving" level="false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0" a="3.5" b="0.0" c="0.0" d="0.0"/>
+                        <roadMark sOffset="0.0" type="solid" weight="standard" color="standard" width="0.13" laneChange="none" height="0.02">
+                            <type name="solid" width="0.13">
+                                <line length="1.0" space="0.0" tOffset="0.0" sOffset="0.0" rule="none" width="0.13"/>
+                            </type>
+                        </roadMark>
+                        <userData>
+                            <vectorLane travelDir="forward"/>
+                        </userData>
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+        <objects>
+        </objects>
+        <signals>
+            <signal s="250.0" t="-4.0" id="1" name="Speed Limit 50" dynamic="no" orientation="+" zOffset="2.0" country="UAE" type="274" subtype="1" value="50" unit="km/h" hOffset="0.0" pitch="0.0" roll="0.0">
+                <validity fromLane="-2" toLane="-2"/>
+                <userData>
+                    <vectorSignal type="REGULATORY" subtype="SPEED_LIMIT"/>
+                </userData>
+            </signal>
+            <signal s="250.0" t="4.0" id="2" name="Speed Limit 50" dynamic="no" orientation="-" zOffset="2.0" country="UAE" type="274" subtype="1" value="50" unit="km/h" hOffset="0.0" pitch="0.0" roll="0.0">
+                <validity fromLane="2" toLane="2"/>
+                <userData>
+                    <vectorSignal type="REGULATORY" subtype="SPEED_LIMIT"/>
+                </userData>
+            </signal>
+        </signals>
+        <surface>
+        </surface>
+    </road>
+    <road name="Road 2" length="500.0" id="2" junction="-1">
+        <link>
+        </link>
+        <type s="0" type="rural"/>
+        <planView>
+            <geometry s="0.0" x="500.0" y="0.0" hdg="0.0" length="500.0">
+                <line/>
+            </geometry>
+        </planView>
+        <elevationProfile>
+            <elevation s="0.0" a="0.0" b="0.01" c="0.0" d="0.0"/>
+        </elevationProfile>
+        <lateralProfile>
+        </lateralProfile>
+        <lanes>
+            <laneSection s="0.0">
+                <left>
+                    <lane id="2" type="driving" level="false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0" a="3.5" b="0.0" c="0.0" d="0.0"/>
+                        <roadMark sOffset="0.0" type="solid" weight="standard" color="standard" width="0.13" laneChange="none" height="0.02">
+                            <type name="solid" width="0.13">
+                                <line length="1.0" space="0.0" tOffset="0.0" sOffset="0.0" rule="none" width="0.13"/>
+                            </type>
+                        </roadMark>
+                        <userData>
+                            <vectorLane travelDir="backward"/>
+                        </userData>
+                    </lane>
+                    <lane id="1" type="shoulder" level="false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0" a="0.5" b="0.0" c="0.0" d="0.0"/>
+                        <userData>
+                            <vectorLane travelDir="undirected"/>
+                        </userData>
+                    </lane>
+                </left>
+                <center>
+                    <lane id="0" type="none" level="false">
+                        <link>
+                        </link>
+                        <roadMark sOffset="0.0" type="broken" weight="standard" color="standard" width="0.13" laneChange="both" height="0.02">
+                            <type name="broken" width="0.13">
+                                <line length="3.0" space="6.0" tOffset="0.0" sOffset="0.0" rule="none" width="0.13"/>
+                            </type>
+                        </roadMark>
+                        <userData>
+                            <vectorLane travelDir="undirected"/>
+                        </userData>
+                    </lane>
+                </center>
+                <right>
+                    <lane id="-1" type="shoulder" level="false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0" a="0.5" b="0.0" c="0.0" d="0.0"/>
+                        <userData>
+                            <vectorLane travelDir="undirected"/>
+                        </userData>
+                    </lane>
+                    <lane id="-2" type="driving" level="false">
+                        <link>
+                        </link>
+                        <width sOffset="0.0" a="3.5" b="0.0" c="0.0" d="0.0"/>
+                        <roadMark sOffset="0.0" type="solid" weight="standard" color="standard" width="0.13" laneChange="none" height="0.02">
+                            <type name="solid" width="0.13">
+                                <line length="1.0" space="0.0" tOffset="0.0" sOffset="0.0" rule="none" width="0.13"/>
+                            </type>
+                        </roadMark>
+                        <userData>
+                            <vectorLane travelDir="forward"/>
+                        </userData>
+                    </lane>
+                </right>
+            </laneSection>
+        </lanes>
+        <objects>
+        </objects>
+        <signals>
+        </signals>
+        <surface>
+        </surface>
+    </road>
+    <controller id="1" name="TrafficLightController1">
+        <control signalId="1"/>
+        <control signalId="2"/>
+        <userData>
+            <vectorController type="trafficLight" id="1"/>
+        </userData>
+    </controller>
+    <junction id="1" name="junction1">
+    </junction>
+</OpenDRIVE>

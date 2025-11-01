@@ -1,0 +1,176 @@
+# Light Industrial UTV Vehicle Profile
+# Class A: Light Industrial Utility Task Vehicle
+# Used in warehouses, ports, airports, and industrial facilities
+
+vehicle:
+  identification:
+    vin_pattern: "UTV*"
+    make: "Polaris Industries"
+    model: "Ranger XP 1000 AV"
+    class: "ClassA_LightIndustrial"
+    year: 2024
+    certification:
+      iso26262: "ASIL-A"              # Lower safety level for light duty
+      sotif: "validated"
+      un_r155: "compliant"
+      un_r156: "compliant"
+    
+  physics:
+    # Lightweight vehicle dimensions
+    mass_kg: 850                       # Light weight for agility
+    max_payload_kg: 450                # Moderate payload capacity
+    wheelbase_m: 2.0                   # Short wheelbase for maneuverability
+    track_width_m: 1.5                 # Narrow track
+    overall_length_m: 3.2              # Compact vehicle
+    overall_width_m: 1.6               # Narrow for indoor use
+    overall_height_m: 1.9              # Low profile
+    
+    # Center of gravity (low for stability)
+    center_of_gravity:
+      x_m: 1.0      # From front axle (balanced)
+      y_m: 0.0      # Centerline (symmetric)
+      z_m: 0.7      # Low CG for stability
+    
+    # Moment of inertia (light vehicle)
+    inertia:
+      roll_kg_m2: 450                  # Low roll inertia
+      pitch_kg_m2: 800                 # Low pitch inertia
+      yaw_kg_m2: 900                   # Low yaw inertia
+      
+  actuation:
+    # Agile steering system
+    steering:
+      max_angle_deg: 50                # High steering angle for tight turns
+      max_rate_deg_per_s: 60           # Fast steering for agility
+      deadband_deg: 0.3                # Small deadband
+      response_time_ms: 80             # Quick response
+      backlash_deg: 0.1                # Minimal backlash
+      
+    # Responsive braking system
+    braking:
+      max_decel_m_s2: 5.5              # Strong braking for light vehicle
+      response_time_ms: 100            # Fast brake response
+      fade_factor: 0.98                # Minimal brake fade
+      abs_enabled: true                # Anti-lock braking
+      ebs_enabled: false               # Mechanical braking sufficient
+      
+    # Electric propulsion
+    throttle:
+      max_accel_m_s2: 3.5              # Quick acceleration
+      response_time_ms: 150            # Electric motor response
+      torque_curve:                    # Electric motor torque
+        - rpm: 0
+          torque_nm: 180
+        - rpm: 1500
+          torque_nm: 180
+        - rpm: 3000
+          torque_nm: 160
+        - rpm: 4500
+          torque_nm: 120
+          
+  performance:
+    # Speed and acceleration for industrial use
+    max_speed_m_s: 11.0                # 40 km/h maximum for safety
+    cruise_speed_m_s: 8.0              # Optimal cruise speed
+    max_lateral_accel_m_s2: 4.0        # Good cornering capability
+    max_jerk_m_s3: 3.0                 # Moderate jerk limits
+    
+    # Operational capabilities
+    min_turning_radius_m: 3.5          # Tight turning for indoor use
+    approach_angle_deg: 30             # Good approach angle
+    departure_angle_deg: 28            # Good departure angle
+    ground_clearance_m: 0.28           # Moderate clearance
+    
+  safety:
+    # Safety systems for industrial environments
+    emergency_brake_decel_m_s2: 7.0    # Strong emergency braking
+    stability_control: true            # Electronic stability
+    rollover_threshold_deg: 30         # Rollover warning threshold
+    
+    # Operating limits
+    max_slope_deg: 20                  # Good slope capability
+    max_crosswind_m_s: 25              # Wind resistance
+    min_visibility_m: 30               # Minimum visibility
+    
+    # Fail-safe behaviors
+    failsafe:
+      communication_loss: "safe_stop"       # Stop on comm loss
+      sensor_failure: "degraded_mode"       # Continue with reduced capability
+      actuator_failure: "emergency_stop"    # Immediate stop
+      
+  sensors:
+    # Compact sensor configuration
+    lidar_count: 4                     # 360-degree coverage
+    camera_count: 6                    # Full perimeter coverage
+    radar_count: 4                     # Close-range detection
+    ultrasonic_count: 8                # Proximity sensors
+    imu_required: true                 # Navigation and stability
+    gps_required: true                 # Positioning
+    wheel_encoders: true               # Odometry
+    
+    # Sensor specifications
+    lidar_specs:
+      range_m: 50                      # Short range for indoor/outdoor
+      resolution_deg: 0.2              # Standard resolution
+      frequency_hz: 20                 # Standard frequency
+      
+    camera_specs:
+      resolution: "1920x1080"          # HD resolution
+      frame_rate_fps: 30               # Standard frame rate
+      field_of_view_deg: 120           # Wide field of view
+      
+    radar_specs:
+      range_m: 80                      # Short to medium range
+      resolution_m: 0.15               # Fine resolution
+      frequency_hz: 20                 # Standard frequency
+      
+  connectivity:
+    # Industrial connectivity
+    cellular: "4G/5G"                  # Cellular backup
+    wifi: "802.11ac"                   # Primary connectivity
+    can_bus: "CAN-FD"                 # Vehicle CAN bus
+    ethernet: "100BASE-T"              # Industrial ethernet
+    
+    # Data rates
+    telemetry_rate_hz: 10              # Moderate telemetry rate
+    command_latency_ms: 30             # Low latency requirement
+    
+  compliance:
+    # Industrial vehicle compliance
+    emissions: "Zero (Electric)"       # Electric vehicle
+    noise_db: 65                       # Low noise operation
+    safety_standards:
+      - "ISO 26262 ASIL-A"
+      - "SOTIF"
+      - "UN R155"
+      - "UN R156"
+      - "ANSI/ITSDF B56.5"            # Industrial trucks
+      
+  maintenance:
+    # Light maintenance schedule
+    service_interval_hours: 500        # Standard service interval
+    oil_change_hours: 0               # Electric vehicle (no oil)
+    brake_inspection_hours: 1000      # Brake inspection
+    battery_inspection_hours: 250     # Battery health check
+    
+    # Diagnostic capabilities
+    obd_compliant: false              # Industrial exemption
+    remote_diagnostics: true          # Essential for fleet ops
+    predictive_maintenance: true      # Battery and component monitoring
+    
+  variant_budget:
+    # Variant budget for light industrial class
+    code_delta_percent: 1.8           # Low delta from base
+    test_delta_percent: 12.5          # Moderate test delta
+    certification_scope: "model"      # Model-level certification
+    
+  validation:
+    # Validation for industrial use
+    hil_testing: true                 # Required
+    track_testing: true               # Required
+    simulation_hours: 5000            # Moderate simulation
+    real_world_km: 10000             # Real-world testing
+    
+  last_updated: "2025-10-04T10:00:00Z"
+  schema_version: "1.0.0"
+

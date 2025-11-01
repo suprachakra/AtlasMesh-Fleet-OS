@@ -1,0 +1,171 @@
+# Mining Sector Configuration
+# This file contains sector-specific configurations for mining operations
+# including haul truck automation, production optimization, and safety management
+
+sector: mining
+description: "Mining sector configuration for autonomous haul trucks and mining equipment"
+
+# Core service configurations
+services:
+  vehicle_agent:
+    perception:
+      outdoor_navigation: true
+      heavy_vehicle_dynamics: true
+      blast_zone_detection: true
+      precision_required: "low"
+      max_speed_mps: 10.0
+      sensor_config:
+        lidar:
+          enabled: true
+          range_meters: 100
+          resolution_degrees: 1.0
+        camera:
+          enabled: true
+          resolution: "1920x1080"
+          fps: 30
+          dust_protection: true
+        radar:
+          enabled: true
+          range_meters: 200
+          large_vehicle_detection: true
+    localization:
+      gps_enabled: true
+      outdoor_mapping: true
+      precision_meters: 2.0
+      update_frequency_hz: 2
+      grade_consideration: true
+    control:
+      heavy_vehicle_control: true
+      grade_adaptation: true
+      emergency_stop_distance_meters: 5.0
+      dump_point_precision: true
+    safety:
+      mining_safety: true
+      blast_zone_safety: true
+      collision_avoidance: true
+      safety_margin_meters: 2.0
+      large_vehicle_detection: true
+
+  fleet_manager:
+    max_fleet_size: 100
+    vehicle_types: ["haul_truck", "bulldozer", "excavator", "loader", "drill_rig"]
+    battery_management:
+      enabled: false
+      fuel_based: true
+    shift_scheduling:
+      enabled: true
+      shift_duration_hours: 12
+      break_time_minutes: 60
+      shift_handover_minutes: 30
+    environmental:
+      max_temp_c: 50
+      min_visibility_m: 15
+      sandstorm_detection: true
+      dust_monitoring: true
+      blast_zone_detection: true
+
+  dispatch_service:
+    max_concurrent_tasks: 200
+    task_prioritization:
+      priority_levels: 3
+      emergency_override: true
+      production_priority: true
+    load_balancing:
+      strategy: "production_optimized"
+      max_load_per_vehicle: 10
+      truck_shovel_matching: true
+      ore_waste_balancing: true
+    queue_management:
+      max_queue_size: 2000
+      queue_timeout_minutes: 120
+      production_targets: true
+    routing:
+      algorithm: "genetic"
+      consider_traffic: true
+      consider_weather: true
+      haul_cycle_optimization: true
+      dump_point_sequencing: true
+    optimization:
+      algorithm: "simulated_annealing"
+      optimization_goals: ["maximize_production", "minimize_cycle_time", "minimize_fuel_consumption"]
+
+  control_center_ui:
+    dashboard:
+      layout:
+        grid_size: 12
+        max_columns: 4
+        max_rows: 6
+        responsive: true
+        mobile_optimized: false
+        mining_layout: true
+        shift_management: true
+      widgets:
+        fleet_overview:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 60
+          show_production_status: true
+          show_fuel_status: true
+          show_shift_status: true
+        vehicle_status:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 30
+          show_location: true
+          show_payload: true
+          show_cycle_time: true
+        task_queue:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 60
+          show_production_priority: true
+          show_haul_cycles: true
+        performance:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 300
+          show_production_rates: true
+          show_efficiency: true
+          show_fuel_consumption: true
+        alerts:
+          enabled: true
+          size: "small"
+          refresh_interval_seconds: 10
+          show_safety_alerts: true
+          show_equipment_alerts: true
+        maps:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 30
+          show_pit_areas: true
+          show_haul_roads: true
+          show_dump_sites: true
+        analytics:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 600
+          show_production_analytics: true
+          show_equipment_health: true
+      real_time_updates:
+        enabled: true
+        update_interval_seconds: 30
+        websocket_url: "ws://localhost:8080/ws"
+        production_events: true
+      themes:
+        default_theme: "mining"
+        available_themes: ["mining", "dark", "light"]
+        dark_mode: false
+
+# Sector-specific parameters
+parameters:
+  operational_zones: ["pit", "haul_road", "dump_site", "maintenance"]
+  outdoor_operations: true
+  precision_required: "low"
+  max_vehicle_speed: 10.0
+  safety_margin_meters: 2.0
+  fuel_based_operations: true
+  shift_based_operations: true
+  production_focused: true
+  heavy_equipment: true
+  blast_zone_safety: true
+  production_targets: true
