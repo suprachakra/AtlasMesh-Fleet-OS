@@ -154,7 +154,7 @@ Domain-specific and advanced services:
 | [`time-sync-calibration`](./time-sync-calibration/) | Precision timing | PTP/GNSS, sensor calibration, drift compensation |
 | [`feature-store-registry`](./feature-store-registry/) | ML feature management | Feature serving, model registry, drift detection |
 | [`sector-overlays`](./sector-overlays/) | Sector customization | Policy tokens, UI themes, workflow adaptations |
-| [`digital-twin-simulation`](./digital-twin-simulation/) | Advanced simulation | Scenario banking, fault injection, golden replays |
+| [`scenario-testing`](./scenario-testing/) | Testing & validation simulation | Scenario banking, fault injection, golden replays, safety validation |
 | [`arabic-localization`](./arabic-localization/) | UAE-specific localization | RTL support, cultural adaptations, Emirati dialect |
 
 ## 🏗️ **Architecture Principles**
