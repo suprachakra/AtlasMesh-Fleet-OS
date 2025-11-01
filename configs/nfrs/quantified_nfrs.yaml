@@ -1,0 +1,244 @@
+# AtlasMesh Fleet OS - Quantified Non-Functional Requirements
+# This file defines the specific, measurable non-functional requirements for various components
+# of the AtlasMesh Fleet OS. These requirements are referenced in the documentation and used
+# for validation and monitoring.
+
+# Performance Requirements
+performance:
+  # Control Loop Performance
+  control_loop:
+    latency_p50: 20ms  # 50th percentile control loop latency
+    latency_p95: 50ms  # 95th percentile control loop latency
+    latency_p99: 80ms  # 99th percentile control loop latency
+    jitter_max: 15ms   # Maximum allowed jitter in control loop timing
+    frequency_min: 20Hz  # Minimum control loop frequency
+  
+  # Decision Framework Performance
+  decision_framework:
+    latency_p50: 15ms  # 50th percentile decision latency
+    latency_p95: 40ms  # 95th percentile decision latency
+    latency_p99: 60ms  # 99th percentile decision latency
+    behavior_tree_depth_max: 8  # Maximum depth of behavior tree during execution
+    safety_arbitration_latency_max: 5ms  # Maximum latency for safety arbitration
+  
+  # Localization Performance
+  localization:
+    position_accuracy_urban: 0.1m  # Position accuracy in urban environments
+    position_accuracy_highway: 0.3m  # Position accuracy on highways
+    position_accuracy_offroad: 0.5m  # Position accuracy in off-road environments
+    heading_accuracy: 0.5deg  # Heading accuracy
+    update_frequency_min: 50Hz  # Minimum localization update frequency
+    initialization_time_max: 5s  # Maximum time for localization initialization
+  
+  # Telemetry Performance
+  telemetry:
+    throughput_vehicle_min: 500KB/s  # Minimum telemetry throughput per vehicle
+    throughput_vehicle_typical: 2MB/s  # Typical telemetry throughput per vehicle
+    throughput_vehicle_max: 10MB/s  # Maximum telemetry throughput per vehicle
+    latency_p95: 100ms  # 95th percentile telemetry delivery latency
+    compression_ratio_min: 5:1  # Minimum compression ratio for telemetry data
+    batch_size_optimal: 100KB  # Optimal batch size for telemetry messages
+  
+  # API Performance
+  api:
+    latency_p50: 50ms  # 50th percentile API response latency
+    latency_p95: 200ms  # 95th percentile API response latency
+    latency_p99: 500ms  # 99th percentile API response latency
+    throughput_min: 1000rps  # Minimum API throughput (requests per second)
+    error_rate_max: 0.1%  # Maximum API error rate
+  
+  # Map Service Performance
+  map_service:
+    query_latency_p95: 50ms  # 95th percentile map query latency
+    update_propagation_time_max: 60s  # Maximum time for map updates to propagate
+    spatial_query_throughput_min: 1000qps  # Minimum spatial query throughput
+    conversion_time_lanelet2_to_opendrive_max: 30s  # Maximum time for Lanelet2 to OpenDRIVE conversion
+    conversion_time_opendrive_to_lanelet2_max: 30s  # Maximum time for OpenDRIVE to Lanelet2 conversion
+  
+  # Routing Performance
+  routing:
+    route_calculation_time_p95: 5s  # 95th percentile route calculation time
+    route_calculation_time_max: 10s  # Maximum route calculation time
+    rerouting_time_p95: 2s  # 95th percentile rerouting time
+    route_optimization_time_max: 30s  # Maximum time for route optimization
+
+# Reliability Requirements
+reliability:
+  # System Availability
+  availability:
+    system_availability_y1: 99.0%  # System availability target for year 1
+    system_availability_y2: 99.3%  # System availability target for year 2
+    system_availability_y3: 99.5%  # System availability target for year 3
+    vehicle_availability: 99.0%  # Per-vehicle availability target
+    cloud_service_availability: 99.95%  # Cloud service availability target
+  
+  # Mean Time To Recovery
+  mttr:
+    critical_services: 1h  # MTTR for critical services
+    vehicle_agent: 30min  # MTTR for vehicle agent
+    edge_components: 15min  # MTTR for edge components
+    cloud_components: 45min  # MTTR for cloud components
+  
+  # Data Loss Tolerance
+  data_loss:
+    telemetry_loss_max: 0.1%  # Maximum acceptable telemetry data loss
+    event_loss_max: 0.01%  # Maximum acceptable event data loss
+    critical_command_loss_max: 0%  # Maximum acceptable critical command loss
+    map_data_loss_max: 0%  # Maximum acceptable map data loss
+  
+  # Offline Operation
+  offline_operation:
+    duration_min: 45min  # Minimum offline operation duration
+    degraded_functionality: 4h  # Duration of degraded functionality during extended offline operation
+    data_storage_capacity: 8h  # Local data storage capacity during offline operation
+  
+  # Fault Tolerance
+  fault_tolerance:
+    sensor_failures: "n-1"  # System continues with n-1 sensor failures
+    compute_node_failures: "n-1"  # System continues with n-1 compute node failures
+    communication_path_failures: "n-1"  # System continues with n-1 communication path failures
+    graceful_degradation_levels: 5  # Number of graceful degradation levels
+
+# Safety Requirements
+safety:
+  # Assist Rate
+  assist_rate:
+    assists_per_1000km_y1: 2.0  # Maximum assists per 1000km in year 1
+    assists_per_1000km_y2: 1.5  # Maximum assists per 1000km in year 2
+    assists_per_1000km_y3: 1.0  # Maximum assists per 1000km in year 3
+  
+  # Incident Rate
+  incident_rate:
+    critical_incidents_per_quarter: 0  # Maximum critical incidents per quarter
+    safety_violations_per_million_km: 0  # Maximum safety violations per million km
+  
+  # Fault Detection
+  fault_detection:
+    critical_fault_detection_time_max: 100ms  # Maximum time to detect critical faults
+    sensor_fault_detection_accuracy: 99.9%  # Sensor fault detection accuracy
+    actuator_fault_detection_accuracy: 99.99%  # Actuator fault detection accuracy
+  
+  # Safety Case
+  safety_case:
+    completeness: 100%  # Safety case completeness requirement
+    evidence_automation: 90%  # Safety case evidence automation target
+    scenario_coverage: 95%  # Safety scenario coverage target
+
+# Security Requirements
+security:
+  # Encryption
+  encryption:
+    data_at_rest: 100%  # Percentage of data encrypted at rest
+    data_in_transit: 100%  # Percentage of data encrypted in transit
+    key_rotation_frequency: 90days  # Key rotation frequency
+  
+  # Authentication
+  authentication:
+    multi_factor: true  # Multi-factor authentication requirement
+    certificate_validity_period: 90days  # Certificate validity period
+    token_expiry: 8h  # Authentication token expiry
+  
+  # Vulnerability Management
+  vulnerability_management:
+    critical_vulnerability_response_time: 14days  # Response time for critical vulnerabilities
+    vulnerability_scan_frequency: 7days  # Vulnerability scan frequency
+    penetration_testing_frequency: 90days  # Penetration testing frequency
+  
+  # Access Control
+  access_control:
+    principle: "least_privilege"  # Access control principle
+    permission_review_frequency: 90days  # Permission review frequency
+    inactive_account_disable_period: 30days  # Period after which inactive accounts are disabled
+
+# Operational Requirements
+operational:
+  # Deployment
+  deployment:
+    time_to_first_site: 90days  # Time to deploy to first site
+    time_to_subsequent_sites: 60days  # Time to deploy to subsequent sites
+    rollback_time_max: 30min  # Maximum rollback time
+  
+  # Monitoring
+  monitoring:
+    critical_component_coverage: 100%  # Monitoring coverage for critical components
+    alert_response_time_p95: 5min  # 95th percentile alert response time
+    false_positive_rate_max: 5%  # Maximum false positive rate for alerts
+  
+  # Scaling
+  scaling:
+    automated_scaling_events: 90%  # Percentage of scaling events that should be automated
+    scale_out_time_max: 5min  # Maximum time for scale-out operations
+    scale_in_time_max: 10min  # Maximum time for scale-in operations
+  
+  # Backup and Recovery
+  backup_recovery:
+    backup_frequency: 24h  # Backup frequency
+    recovery_time_objective: 4h  # Recovery time objective
+    recovery_point_objective: 1h  # Recovery point objective
+
+# Sector-Specific Requirements
+sector_specific:
+  # Mining
+  mining:
+    dust_perception_accuracy: 90%  # Perception accuracy in dusty conditions
+    grade_handling_max: 15%  # Maximum grade handling capability
+    haul_road_navigation_accuracy: 0.5m  # Haul road navigation accuracy
+  
+  # Defense
+  defense:
+    gnss_denied_operation_duration: 8h  # GNSS-denied operation duration
+    comms_denied_operation_duration: 4h  # Communications-denied operation duration
+    convoy_gap_accuracy: 0.5m  # Convoy gap accuracy
+  
+  # Logistics
+  logistics:
+    dock_approach_accuracy: 0.1m  # Dock approach accuracy
+    yard_maneuver_precision: 0.2m  # Yard maneuver precision
+    container_placement_accuracy: 0.05m  # Container placement accuracy
+  
+  # Ride-hail
+  ride_hail:
+    passenger_pickup_accuracy: 0.5m  # Passenger pickup accuracy
+    passenger_wait_time_p95: 7min  # 95th percentile passenger wait time
+    ride_comfort_score_min: 4.5  # Minimum ride comfort score (out of 5)
+
+# Environmental Requirements
+environmental:
+  # Temperature
+  temperature:
+    operating_range: "-40°C to +65°C"  # Operating temperature range
+    thermal_throttling_threshold: 55°C  # Thermal throttling threshold
+    thermal_shutdown_threshold: 65°C  # Thermal shutdown threshold
+  
+  # Weather
+  weather:
+    rain_operation_intensity_max: "heavy"  # Maximum rain intensity for operation
+    snow_operation_depth_max: 10cm  # Maximum snow depth for operation
+    dust_operation_visibility_min: 50m  # Minimum visibility in dust for operation
+  
+  # Lighting
+  lighting:
+    operation_illuminance_min: 5lux  # Minimum illuminance for operation
+    direct_sunlight_handling: true  # Direct sunlight handling capability
+
+# Compliance Requirements
+compliance:
+  # Safety Standards
+  safety_standards:
+    iso_26262: "ASIL B"  # ISO 26262 compliance level
+    sotif_coverage: 95%  # SOTIF coverage requirement
+  
+  # Cybersecurity Standards
+  cybersecurity_standards:
+    unece_r155: true  # UNECE R155 compliance requirement
+    iso_21434: true  # ISO 21434 compliance requirement
+  
+  # OTA Standards
+  ota_standards:
+    unece_r156: true  # UNECE R156 compliance requirement
+  
+  # Data Protection
+  data_protection:
+    gdpr_compliance: true  # GDPR compliance requirement
+    data_minimization: true  # Data minimization principle
+    retention_policy_enforcement: 100%  # Retention policy enforcement

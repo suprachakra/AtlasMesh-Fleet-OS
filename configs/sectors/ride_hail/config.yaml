@@ -1,0 +1,175 @@
+# Ride-Hail Sector Configuration
+# This file contains sector-specific configurations for ride-hail operations
+# including robotaxi services, passenger management, and urban navigation
+
+sector: ride_hail
+description: "Ride-hail sector configuration for robotaxi and passenger transportation services"
+
+# Core service configurations
+services:
+  vehicle_agent:
+    perception:
+      urban_navigation: true
+      mixed_traffic: true
+      pedestrian_detection: true
+      precision_required: "high"
+      max_speed_mps: 20.0
+      sensor_config:
+        lidar:
+          enabled: true
+          range_meters: 50
+          resolution_degrees: 0.5
+        camera:
+          enabled: true
+          resolution: "1920x1080"
+          fps: 30
+          pedestrian_detection: true
+        radar:
+          enabled: true
+          range_meters: 100
+          traffic_detection: true
+    localization:
+      gps_enabled: true
+      urban_mapping: true
+      precision_meters: 0.5
+      update_frequency_hz: 10
+      traffic_aware: true
+    control:
+      passenger_comfort: true
+      smooth_acceleration: true
+      emergency_stop_distance_meters: 0.5
+      traffic_law_compliance: true
+    safety:
+      passenger_safety: true
+      pedestrian_protection: true
+      collision_avoidance: true
+      safety_margin_meters: 0.3
+      passenger_override: true
+
+  fleet_manager:
+    max_fleet_size: 200
+    vehicle_types: ["robotaxi", "shuttle", "passenger_vehicle", "autonomous_car"]
+    battery_management:
+      enabled: true
+      min_soc_for_task: 15
+      charging_strategy: "opportunistic"
+    shift_scheduling:
+      enabled: false
+      continuous_operation: true
+    environmental:
+      max_temp_c: 40
+      min_visibility_m: 20
+      sandstorm_detection: false
+      weather_adaptation: true
+      urban_environment: true
+
+  dispatch_service:
+    max_concurrent_tasks: 500
+    task_prioritization:
+      priority_levels: 3
+      emergency_override: true
+      passenger_priority: true
+      surge_pricing: true
+    load_balancing:
+      strategy: "demand_based"
+      max_load_per_vehicle: 4
+      passenger_capacity: true
+      vehicle_availability: true
+    queue_management:
+      max_queue_size: 5000
+      queue_timeout_minutes: 15
+      passenger_matching: true
+      eta_accuracy: true
+    routing:
+      algorithm: "real_time"
+      consider_traffic: true
+      consider_weather: true
+      passenger_comfort: true
+      traffic_conditions: true
+    optimization:
+      algorithm: "reinforcement_learning"
+      optimization_goals: ["minimize_wait_time", "maximize_passenger_satisfaction", "minimize_fuel_consumption"]
+
+  control_center_ui:
+    dashboard:
+      layout:
+        grid_size: 12
+        max_columns: 4
+        max_rows: 6
+        responsive: true
+        mobile_optimized: true
+        passenger_focused: true
+        real_time_operations: true
+      widgets:
+        fleet_overview:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 10
+          show_passenger_capacity: true
+          show_cleanliness_status: true
+          show_availability: true
+        vehicle_status:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 5
+          show_location: true
+          show_passenger_count: true
+          show_eta: true
+        task_queue:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 5
+          show_ride_requests: true
+          show_passenger_priority: true
+        performance:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 60
+          show_passenger_satisfaction: true
+          show_on_time_performance: true
+          show_revenue: true
+        alerts:
+          enabled: true
+          size: "small"
+          refresh_interval_seconds: 2
+          show_passenger_alerts: true
+          show_safety_incidents: true
+        maps:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 2
+          show_urban_areas: true
+          show_traffic_conditions: true
+          show_pickup_dropoff: true
+        analytics:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 300
+          show_ridership_analytics: true
+          show_revenue_analytics: true
+      real_time_updates:
+        enabled: true
+        update_interval_seconds: 2
+        websocket_url: "wss://localhost:8080/ws"
+        passenger_events: true
+        ride_events: true
+        traffic_events: true
+      themes:
+        default_theme: "ride_hail"
+        available_themes: ["ride_hail", "dark", "light"]
+        dark_mode: false
+
+# Sector-specific parameters
+parameters:
+  operational_zones: ["urban", "suburban", "highway"]
+  passenger_operations: true
+  precision_required: "high"
+  max_vehicle_speed: 20.0
+  safety_margin_meters: 0.3
+  real_time_services: true
+  urban_operations: true
+  passenger_safety: true
+  mixed_traffic: true
+  passenger_comfort: true
+  surge_pricing: true
+  accessibility: true

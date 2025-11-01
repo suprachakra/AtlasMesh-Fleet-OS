@@ -1,0 +1,267 @@
+# AtlasMesh Fleet OS - Gate Definitions
+# Defines all hard-blocking gates that must pass before merge/release
+
+gates:
+  # Core Infrastructure Gates
+  variant_budget:
+    name: "Variant Budget Gate"
+    description: "Enforces agnostic architecture by limiting code variance per dimension"
+    type: "blocking"
+    owner: "architecture"
+    thresholds:
+      core_delta_max_pct: 5
+      test_time_delta_max_pct: 25
+    failure_action: "block_merge"
+    escalation: "CCB"  # Change Control Board
+
+  security_scan:
+    name: "Security Scan Gate"
+    description: "Comprehensive security vulnerability scanning"
+    type: "blocking"
+    owner: "security"
+    requirements:
+      - "SAST scan pass"
+      - "DAST scan pass (if applicable)"
+      - "Dependency vulnerability scan"
+      - "Secret detection scan"
+      - "Container image scan"
+    thresholds:
+      critical_vulnerabilities: 0
+      high_vulnerabilities: 0
+      medium_vulnerabilities: 5
+    failure_action: "block_merge"
+    escalation: "CISO"
+
+  sbom_attestation:
+    name: "SBOM Attestation Gate"
+    description: "Software Bill of Materials generation and attestation"
+    type: "blocking"
+    owner: "security"
+    requirements:
+      - "Complete SBOM generated"
+      - "SBOM cryptographically signed"
+      - "License compliance verified"
+      - "Supply chain attestation"
+    failure_action: "block_merge"
+    escalation: "security_team"
+
+  evidence_completeness:
+    name: "Evidence Completeness Gate"
+    description: "Automated evidence bundle generation for compliance"
+    type: "blocking"
+    owner: "compliance"
+    requirements:
+      - "Requirements traceability matrix"
+      - "Test coverage evidence"
+      - "Security scan results"
+      - "Performance test results"
+      - "Accessibility audit results"
+    completeness_threshold: 100  # Must be 100% complete
+    failure_action: "block_release"
+    escalation: "CAB"  # Compliance Advisory Board
+
+  # Performance Gates
+  performance_budget:
+    name: "Performance Budget Gate"
+    description: "Enforces performance SLAs across all services"
+    type: "blocking"
+    owner: "sre"
+    budgets:
+      control_loop_p95_ms: 50
+      policy_eval_p99_ms: 10
+      route_calc_p95_s: 5
+      command_ack_p95_ms: 3000
+      api_response_p95_ms: 200
+      ui_viewport_update_p95_ms: 2000
+    failure_action: "block_merge"
+    escalation: "performance_team"
+
+  load_test:
+    name: "Load Test Gate"
+    description: "Validates system performance under expected load"
+    type: "blocking"
+    owner: "sre"
+    scenarios:
+      - name: "Normal Load"
+        vehicles: 100
+        requests_per_second: 1000
+        duration_minutes: 10
+      - name: "Peak Load"
+        vehicles: 500
+        requests_per_second: 5000
+        duration_minutes: 5
+    success_criteria:
+      error_rate_max_pct: 0.1
+      response_time_p95_ms: 500
+    failure_action: "block_release"
+    escalation: "sre_team"
+
+  # Quality Gates
+  test_coverage:
+    name: "Test Coverage Gate"
+    description: "Enforces minimum test coverage across all components"
+    type: "blocking"
+    owner: "qa"
+    thresholds:
+      unit_test_coverage_min_pct: 80
+      integration_test_coverage_min_pct: 70
+      e2e_test_coverage_min_pct: 60
+      critical_path_coverage_min_pct: 100
+    failure_action: "block_merge"
+    escalation: "qa_team"
+
+  contract_tests:
+    name: "Contract Tests Gate"
+    description: "Validates all API and adapter contracts"
+    type: "blocking"
+    owner: "qa"
+    requirements:
+      - "Service-to-service contract tests"
+      - "Adapter contract tests"
+      - "OpenAPI specification validation"
+      - "SDK compatibility tests"
+    success_rate_min_pct: 100
+    failure_action: "block_merge"
+    escalation: "integration_team"
+
+  accessibility:
+    name: "Accessibility Gate"
+    description: "WCAG 2.2 AA compliance validation"
+    type: "blocking"
+    owner: "ux"
+    requirements:
+      - "Automated axe-core scan"
+      - "Color contrast validation"
+      - "Keyboard navigation test"
+      - "Screen reader compatibility"
+      - "Focus management validation"
+    compliance_level: "AA"
+    wcag_version: "2.2"
+    failure_action: "block_merge"
+    escalation: "ux_team"
+
+  # Safety Gates
+  safety_validation:
+    name: "Safety Validation Gate"
+    description: "Safety-critical system validation"
+    type: "blocking"
+    owner: "safety"
+    requirements:
+      - "Safe-stop validation"
+      - "Degraded mode testing"
+      - "Fault injection testing"
+      - "Safety arbitrator validation"
+    scenarios:
+      - "Emergency stop under all conditions"
+      - "Sensor failure graceful degradation"
+      - "Communication loss handling"
+      - "Policy violation prevention"
+    failure_action: "block_release"
+    escalation: "SAB"  # Safety Advisory Board
+
+  simulation_gates:
+    name: "Simulation Gates"
+    description: "Digital twin and scenario-based validation"
+    type: "blocking"
+    owner: "simulation"
+    requirements:
+      - "Scenario bank execution"
+      - "Golden replay validation"
+      - "Fault injection scenarios"
+      - "Multi-vehicle coordination"
+    coverage_min_pct: 95
+    pass_rate_min_pct: 100
+    failure_action: "block_release"
+    escalation: "simulation_team"
+
+  # Compliance Gates
+  audit_integrity:
+    name: "Audit Integrity Gate"
+    description: "Cryptographic integrity of audit trails"
+    type: "blocking"
+    owner: "compliance"
+    requirements:
+      - "Decision logs cryptographically signed"
+      - "Audit trail completeness"
+      - "Immutable evidence store"
+      - "Retention policy compliance"
+    integrity_check: "cryptographic"
+    failure_action: "block_release"
+    escalation: "audit_team"
+
+  privacy_compliance:
+    name: "Privacy Compliance Gate"
+    description: "Data privacy and residency compliance"
+    type: "blocking"
+    owner: "privacy"
+    requirements:
+      - "PII detection and classification"
+      - "Purpose binding validation"
+      - "Data residency enforcement"
+      - "Consent management validation"
+    compliance_frameworks:
+      - "GDPR"
+      - "CCPA"
+      - "LGPD"
+    failure_action: "block_release"
+    escalation: "DPO"  # Data Protection Officer
+
+# Gate Execution Order
+execution_order:
+  pre_merge:
+    - variant_budget
+    - security_scan
+    - test_coverage
+    - contract_tests
+    - accessibility
+    - performance_budget
+  
+  pre_release:
+    - sbom_attestation
+    - evidence_completeness
+    - load_test
+    - safety_validation
+    - simulation_gates
+    - audit_integrity
+    - privacy_compliance
+
+# Escalation Matrix
+escalation_matrix:
+  CCB:
+    members: ["CTO", "VP_Engineering", "Principal_Architect"]
+    meeting_cadence: "weekly"
+    decision_authority: "architecture_changes"
+  
+  SAB:
+    members: ["Safety_Lead", "VP_Engineering", "Chief_Safety_Officer"]
+    meeting_cadence: "bi_weekly"
+    decision_authority: "safety_exceptions"
+  
+  CAB:
+    members: ["Compliance_Lead", "Legal", "Chief_Compliance_Officer"]
+    meeting_cadence: "monthly"
+    decision_authority: "compliance_exceptions"
+  
+  CISO:
+    members: ["CISO", "Security_Lead", "VP_Engineering"]
+    meeting_cadence: "as_needed"
+    decision_authority: "security_exceptions"
+
+# Monitoring and Alerting
+monitoring:
+  gate_failure_alerts:
+    channels: ["#engineering-alerts", "#compliance-alerts"]
+    severity: "high"
+    escalation_timeout_hours: 2
+  
+  gate_performance_metrics:
+    - "gate_execution_time"
+    - "gate_failure_rate"
+    - "escalation_frequency"
+    - "time_to_resolution"
+  
+  dashboards:
+    - name: "Gate Health Dashboard"
+      url: "https://grafana.atlasmesh.io/d/gates"
+    - name: "Compliance Status Dashboard"
+      url: "https://grafana.atlasmesh.io/d/compliance"

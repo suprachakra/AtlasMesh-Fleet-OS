@@ -1,0 +1,99 @@
+{
+  "id": "highway-c",
+  "name": "Highway Pack C",
+  "class": "Highway",
+  "description": "Long-range highway optimized pack for high-speed logistics and passenger operations",
+  "vehicle_classes": ["ClassB_HeavyDuty", "ClassE_Passenger"],
+  "sensors": {
+    "lidar": [
+      {
+        "model": "Luminar Iris",
+        "count": 4,
+        "fov": 120,
+        "range_m": 250,
+        "refresh_rate_hz": 20,
+        "mount": "front_rear_bumper",
+        "ingress_protection": "IP68"
+      }
+    ],
+    "camera": [
+      {
+        "model": "OmniVision OV2312",
+        "count": 8,
+        "resolution": "2048x1280",
+        "fov": 120,
+        "refresh_rate_hz": 60,
+        "night_vision": true
+      }
+    ],
+    "radar": [
+      {
+        "model": "Bosch LRR4",
+        "count": 6,
+        "range_m": 250,
+        "refresh_rate_hz": 30
+      }
+    ],
+    "imu": {
+      "model": "Honeywell HG4930",
+      "drift_deg_per_hr": 1.0
+    },
+    "gps": {
+      "model": "Septentrio AsteRx-i3",
+      "frequency_hz": 20,
+      "rtk": true
+    },
+    "supplemental": [
+      {
+        "type": "lane_marker",
+        "model": "Mobileye EyeQ4",
+        "count": 2
+      },
+      {
+        "type": "microphone",
+        "model": "AcousticSensor",
+        "count": 4
+      }
+    ]
+  },
+  "calibration": {
+    "schedules": ["monthly", "semi-annual"],
+    "procedures": [
+      "lidar_range_verification",
+      "camera_color_balance",
+      "radar_speed_verification"
+    ],
+    "tools": ["range_calibrator", "lane_marker_test"]
+  },
+  "fusion": {
+    "latency_budget_ms": 35,
+    "algorithms": [
+      "sensor_time_alignment",
+      "object_level_fusion",
+      "adaptive_cruise_control"
+    ],
+    "confidence_thresholds": {
+      "vehicle_detection": 0.93,
+      "lane_keep": 0.9
+    }
+  },
+  "telemetry": {
+    "sampling_hz": 10,
+    "compression": "gzip",
+    "data_contract": "contracts/telemetry/highway_c.avsc"
+  },
+  "validation": {
+    "hil_tests": [
+      "hil_highspeed_crosswind",
+      "hil_lane_departure"
+    ],
+    "track_tests": [
+      "highway_closed_loop",
+      "emergency_brake_test"
+    ],
+    "field_tests": [
+      "abu_dhabi_highway",
+      "dubai_abu_dhabi_corridor"
+    ]
+  }
+}

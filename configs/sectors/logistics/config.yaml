@@ -1,0 +1,141 @@
+# Logistics Sector Configuration
+# This file contains sector-specific configurations for logistics operations
+# including warehouse automation, port operations, and supply chain management
+
+sector: logistics
+description: "Logistics sector configuration for warehouse and port automation"
+
+# Core service configurations
+services:
+  vehicle_agent:
+    perception:
+      indoor_navigation: true
+      pallet_detection: true
+      obstacle_avoidance: true
+      precision_required: "high"
+      max_speed_mps: 3.0
+      sensor_config:
+        lidar:
+          enabled: true
+          range_meters: 10
+          resolution_degrees: 0.5
+        camera:
+          enabled: true
+          resolution: "1920x1080"
+          fps: 30
+        radar:
+          enabled: false
+    localization:
+      gps_denied: true
+      indoor_mapping: true
+      precision_meters: 0.1
+      update_frequency_hz: 10
+    control:
+      low_speed_control: true
+      precision_steering: true
+      emergency_stop_distance_meters: 1.0
+    safety:
+      indoor_safety: true
+      pedestrian_detection: true
+      collision_avoidance: true
+      safety_margin_meters: 0.5
+
+  fleet_manager:
+    max_fleet_size: 50
+    vehicle_types: ["forklift", "tugger", "pallet_truck", "reach_truck"]
+    battery_management:
+      enabled: true
+      min_soc_for_task: 20
+      charging_strategy: "opportunistic"
+    shift_scheduling:
+      enabled: true
+      shift_duration_hours: 8
+      break_time_minutes: 30
+    charging_stations:
+      enabled: true
+      station_count: 10
+      charging_power_kw: 22
+    environmental:
+      max_temp_c: 45
+      min_visibility_m: 5
+      sandstorm_detection: false
+
+  dispatch_service:
+    max_concurrent_tasks: 100
+    task_prioritization:
+      priority_levels: 5
+      emergency_override: true
+    load_balancing:
+      strategy: "round_robin"
+      max_load_per_vehicle: 5
+    queue_management:
+      max_queue_size: 1000
+      queue_timeout_minutes: 30
+    routing:
+      algorithm: "dijkstra"
+      consider_traffic: false
+      consider_weather: false
+      multi_stop_routing:
+        enabled: true
+        max_stops_per_route: 10
+    optimization:
+      algorithm: "genetic"
+      optimization_goals: ["minimize_distance", "maximize_utilization", "minimize_time"]
+
+  control_center_ui:
+    dashboard:
+      layout:
+        grid_size: 12
+        max_columns: 4
+        max_rows: 6
+        responsive: true
+        mobile_optimized: true
+      widgets:
+        fleet_overview:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 30
+        vehicle_status:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 10
+        task_queue:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 15
+        performance:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 60
+        alerts:
+          enabled: true
+          size: "small"
+          refresh_interval_seconds: 5
+        maps:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 5
+        analytics:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 300
+      real_time_updates:
+        enabled: true
+        update_interval_seconds: 5
+        websocket_url: "ws://localhost:8080/ws"
+      themes:
+        default_theme: "logistics"
+        available_themes: ["logistics", "dark", "light"]
+        dark_mode: false
+
+# Sector-specific parameters
+parameters:
+  warehouse_zones: ["A", "B", "C", "D"]
+  indoor_operations: true
+  precision_required: "high"
+  max_vehicle_speed: 3.0
+  safety_margin_meters: 0.5
+  battery_management: true
+  shift_based_operations: true
+  real_time_tracking: true
+  warehouse_automation: true

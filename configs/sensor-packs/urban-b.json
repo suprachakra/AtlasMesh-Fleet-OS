@@ -1,0 +1,107 @@
+{
+  "id": "urban-b",
+  "name": "Urban Pack B",
+  "class": "Urban",
+  "description": "High-resolution perception for dense urban ride-hail operations",
+  "vehicle_classes": ["ClassE_Passenger", "ClassF_Transit"],
+  "sensors": {
+    "lidar": [
+      {
+        "model": "Ouster OS2-128",
+        "count": 4,
+        "fov": 360,
+        "range_m": 120,
+        "refresh_rate_hz": 20,
+        "mount": "roof_corners",
+        "ingress_protection": "IP68"
+      }
+    ],
+    "camera": [
+      {
+        "model": "Sony IMX490",
+        "count": 10,
+        "resolution": "2880x1860",
+        "fov": 120,
+        "refresh_rate_hz": 60,
+        "night_vision": true
+      },
+      {
+        "model": "AR0231",
+        "count": 6,
+        "resolution": "1920x1080",
+        "fov": 90,
+        "refresh_rate_hz": 120,
+        "night_vision": false
+      }
+    ],
+    "radar": [
+      {
+        "model": "Arbe Phoenix",
+        "count": 6,
+        "range_m": 200,
+        "refresh_rate_hz": 30
+      }
+    ],
+    "imu": {
+      "model": "Bosch BMI088",
+      "drift_deg_per_hr": 2.5
+    },
+    "gps": {
+      "model": "NovAtel PwrPak7",
+      "frequency_hz": 10,
+      "rtk": true
+    },
+    "supplemental": [
+      {
+        "type": "ultrasonic",
+        "model": "MaxSonar HRLV",
+        "count": 12
+      },
+      {
+        "type": "perimeter_radar",
+        "model": "Aptiv SRR",
+        "count": 4
+      }
+    ]
+  },
+  "calibration": {
+    "schedules": ["weekly", "quarterly"],
+    "procedures": [
+      "camera_grid_alignment",
+      "lidar_reflector_check",
+      "radar_static_calibration"
+    ],
+    "tools": ["calibration_board", "gps_simulator"]
+  },
+  "fusion": {
+    "latency_budget_ms": 30,
+    "algorithms": [
+      "kalman_filter",
+      "multi_object_tracking",
+      "semantic_segmentation_fusion"
+    ],
+    "confidence_thresholds": {
+      "pedestrian_detection": 0.95,
+      "lane_marking": 0.92
+    }
+  },
+  "telemetry": {
+    "sampling_hz": 15,
+    "compression": "zstd",
+    "data_contract": "contracts/telemetry/urban_b.avsc"
+  },
+  "validation": {
+    "hil_tests": [
+      "hil_urban_rain",
+      "hil_sensor_blind_spots"
+    ],
+    "track_tests": [
+      "urban_closed_course",
+      "pedestrian_crosswalk"
+    ],
+    "field_tests": [
+      "downtown_manila_pilot",
+      "abu_dhabi_midday"
+    ]
+  }
+}

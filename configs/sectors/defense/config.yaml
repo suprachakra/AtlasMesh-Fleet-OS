@@ -1,0 +1,165 @@
+# Defense Sector Configuration
+# This file contains sector-specific configurations for military and defense operations
+# including tactical UGV operations, mission planning, and security requirements
+
+sector: defense
+description: "Defense sector configuration for military UGV operations and tactical missions"
+
+# Core service configurations
+services:
+  vehicle_agent:
+    perception:
+      outdoor_navigation: true
+      gps_denied_navigation: true
+      threat_detection: true
+      precision_required: "medium"
+      max_speed_mps: 5.0
+      sensor_config:
+        lidar:
+          enabled: true
+          range_meters: 50
+          resolution_degrees: 0.25
+        camera:
+          enabled: true
+          resolution: "3840x2160"
+          fps: 60
+          night_vision: true
+        radar:
+          enabled: true
+          range_meters: 100
+          threat_detection: true
+    localization:
+      gps_denied: true
+      outdoor_mapping: true
+      precision_meters: 1.0
+      update_frequency_hz: 5
+      encrypted_communications: true
+    control:
+      high_speed_control: true
+      tactical_maneuvering: true
+      emergency_stop_distance_meters: 2.0
+      formation_control: true
+    safety:
+      tactical_safety: true
+      threat_assessment: true
+      collision_avoidance: true
+      safety_margin_meters: 1.0
+      encrypted_safety: true
+
+  fleet_manager:
+    max_fleet_size: 20
+    vehicle_types: ["ugv", "unmanned_ground_vehicle", "tactical_vehicle", "reconnaissance_vehicle"]
+    battery_management:
+      enabled: true
+      min_soc_for_task: 30
+      charging_strategy: "mission_critical"
+    mission_readiness:
+      enabled: true
+      readiness_checks: ["fuel", "ammunition", "sensors", "communications"]
+      min_fuel_for_mission: 50
+      ammunition_tracking: true
+    environmental:
+      max_temp_c: 55
+      min_visibility_m: 10
+      sandstorm_detection: true
+      dust_protection: true
+
+  dispatch_service:
+    max_concurrent_tasks: 50
+    task_prioritization:
+      priority_levels: 10
+      emergency_override: true
+      threat_level_mapping: true
+    load_balancing:
+      strategy: "mission_critical"
+      max_load_per_vehicle: 3
+      formation_coordination: true
+    queue_management:
+      max_queue_size: 500
+      queue_timeout_minutes: 60
+      encrypted_commands: true
+    routing:
+      algorithm: "a_star"
+      consider_traffic: false
+      consider_weather: true
+      threat_avoidance: true
+      stealth_mode: true
+    optimization:
+      algorithm: "mixed_integer"
+      optimization_goals: ["minimize_exposure", "maximize_mission_success", "minimize_fuel_consumption"]
+
+  control_center_ui:
+    dashboard:
+      layout:
+        grid_size: 12
+        max_columns: 4
+        max_rows: 6
+        responsive: true
+        mobile_optimized: false
+        security_clearance: "classified"
+      widgets:
+        fleet_overview:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 10
+          show_mission_status: true
+          show_ammunition_status: true
+        vehicle_status:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 5
+          show_formation: true
+          show_threat_level: true
+        task_queue:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 5
+          show_mission_priority: true
+          show_threat_assessment: true
+        performance:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 30
+          show_mission_success_rate: true
+          show_threat_detection_rate: true
+        alerts:
+          enabled: true
+          size: "small"
+          refresh_interval_seconds: 1
+          show_critical_only: true
+          show_threat_alerts: true
+        maps:
+          enabled: true
+          size: "large"
+          refresh_interval_seconds: 2
+          show_tactical_zones: true
+          show_threat_areas: true
+        analytics:
+          enabled: true
+          size: "medium"
+          refresh_interval_seconds: 60
+          show_mission_analytics: true
+          show_threat_analysis: true
+      real_time_updates:
+        enabled: true
+        update_interval_seconds: 1
+        websocket_url: "wss://localhost:8080/ws"
+        encrypted_communications: true
+      themes:
+        default_theme: "tactical"
+        available_themes: ["tactical", "night_vision", "classified"]
+        dark_mode: true
+
+# Sector-specific parameters
+parameters:
+  operational_zones: ["tactical", "support", "maintenance"]
+  outdoor_operations: true
+  precision_required: "medium"
+  max_vehicle_speed: 5.0
+  safety_margin_meters: 1.0
+  encrypted_communications: true
+  mission_based_operations: true
+  real_time_tracking: true
+  tactical_operations: true
+  security_clearance: "classified"
+  threat_assessment: true
