@@ -97,7 +97,7 @@ graph TB
 
 ## 🚨 **What's the Actual Need?**
 
-Autonomous and semi-autonomous operations are scaling across **multiple vehicle types, sectors, and infrastructures**—but ops today are stitched together with single-OEM tools, bespoke scripts, and manual evidence collection. That creates five systemic gaps:
+Autonomous and semi-autonomous operations are scaling across **multiple vehicle types, sectors, and infrastructures** - but ops today are stitched together with single-OEM tools, bespoke scripts, and manual evidence collection. That creates five systemic gaps:
 
 <div align="center">
 
