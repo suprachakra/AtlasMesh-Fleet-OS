@@ -1024,18 +1024,6 @@ AtlasMesh Fleet OS is designed to meet regulatory requirements across all suppor
 
 </div>
 
-**📦 Evidence Bundle Export**: One-click regulatory package export in `testing/conformance/output/`
-
-## 📄 License
-
-<div align="center">
-
-**This project is licensed under the Business Source License 1.1**
-
-📋 **Full License Details**: [LICENSE](LICENSE) file
-
-</div>
-
 ## Product Management Framework
 
 **AtlasMesh follows an evidence-first, outcome-driven product management framework** that ensures all features are strategically aligned, safely implemented, and measurably successful.
