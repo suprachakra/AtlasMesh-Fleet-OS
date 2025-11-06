@@ -81,7 +81,7 @@ Intelligence requirements, pre-mission planning, or tactical situation developme
 **Risks & Mitigations:**
 - **Compromise of vehicle or mission:**
   - Impact: Critical
-  - Mitigation: Low-signature operations, evasion protocols, data encryption, remote wipe capability
+  - Mitigation: Low-signature operations, evasion protocols, data encryption and remote wipe capability
 - **Communications interception:**
   - Impact: High
   - Mitigation: LPD/LPI waveforms, burst transmission, TRANSEC protocols, traffic analysis protection
