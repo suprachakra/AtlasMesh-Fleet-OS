@@ -2,7 +2,7 @@
 
 # 🎯 Epics and Strategic Alignment
 
-**AtlasMesh is a Fleet Management System — not an autonomy stack.** We orchestrate mixed fleets, decisions, evidence, and operations across vendors, vehicles, sensors, maps, and clouds.
+**AtlasMesh is a Fleet Management System — not an autonomy stack.** We orchestrate mixed fleets, decisions, evidence, and operations across vendors, vehicles, sensors, maps and clouds.
 
 </div>
 
