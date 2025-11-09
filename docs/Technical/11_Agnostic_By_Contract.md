@@ -539,4 +539,5 @@ contract_versioning:
 
 ---
 
-**Agnostic by Contract ensures that all abstraction boundaries are explicit, testable, and enforceable, providing the foundation for reliable qualified agnosticism.**
+**Agnostic by Contract ensures that all abstraction boundaries are explicit, testable and enforceable, providing the foundation for reliable qualified agnosticism.**
+
