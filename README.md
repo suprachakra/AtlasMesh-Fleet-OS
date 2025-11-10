@@ -41,43 +41,7 @@ AtlasMesh Fleet Management System implements **qualified agnosticism** - a pragm
 ### **🔄 Fleet Management Workflow**
 
 ```mermaid
-graph TB
-    subgraph "Fleet Management Workflow"
-        A[Vehicle Fleet] --> B[Fleet Manager]
-        B --> C[Multi-Fleet Coordination]
-        B --> D[Fleet Optimization]
-        B --> E[Fleet Analytics]
-        
-        C --> F[Resource Sharing]
-        C --> G[Cross-Fleet Optimization]
-        
-        D --> H[AI-Powered Algorithms]
-        D --> I[Performance Tuning]
-        
-        E --> J[Real-Time Insights]
-        E --> K[Health Scoring]
-        E --> L[Predictive Maintenance]
-        
-        F --> M[Fleet Performance]
-        G --> M
-        H --> M
-        I --> M
-        J --> M
-        K --> M
-        L --> M
-        
-        M --> N[Continuous Improvement]
-        N --> B
-    end
-    
-    subgraph "Vehicle Retrofit Process"
-        O[Existing Fleet] --> P[Assessment]
-        P --> Q[Retrofit Planning]
-        Q --> R[AtlasMesh Integration]
-        R --> S[Testing & Validation]
-        S --> T[Deployment]
-        T --> U[Autonomous Operations]
-    end
+64a028
 ```
 
 <div align="center">
