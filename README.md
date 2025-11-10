@@ -41,7 +41,78 @@ AtlasMesh Fleet Management System implements **qualified agnosticism** - a pragm
 ### **🔄 Fleet Management Workflow**
 
 ```mermaid
-64a028
+flowchart TB
+ subgraph subGraph0["Fleet Management Workflow"]
+        B["Fleet Manager"]
+        A["Vehicle Fleet"]
+        C["Multi-Fleet Coordination"]
+        D["Fleet Optimization"]
+        E["Fleet Analytics"]
+        F["Resource Sharing"]
+        G["Cross-Fleet Optimization"]
+        H["AI-Powered Algorithms"]
+        I["Performance Tuning"]
+        J["Real-Time Insights"]
+        K["Health Scoring"]
+        L["Predictive Maintenance"]
+        M["Fleet Performance"]
+        N["Continuous Improvement"]
+  end
+ subgraph subGraph1["Vehicle Retrofit Process"]
+        P["Assessment"]
+        O["Existing Fleet"]
+        Q["Retrofit Planning"]
+        R["AtlasMesh Integration"]
+        S["Testing & Validation"]
+        T["Deployment"]
+        U["Autonomous Operations"]
+  end
+    A --> B
+    B --> C & D & E
+    C --> F & G
+    D --> H & I
+    E --> J & K & L
+    F --> M
+    G --> M
+    H --> M
+    I --> M
+    J --> M
+    K --> M
+    L --> M
+    M --> N
+    N --> B
+    O --> P
+    P --> Q
+    Q --> R
+    R --> S
+    S --> T
+    T --> U
+
+     B:::Class_01
+     A:::Class_01
+     C:::Class_01
+     D:::Class_01
+     E:::Class_01
+     F:::Class_01
+     G:::Class_01
+     H:::Class_01
+     I:::Class_01
+     J:::Class_01
+     K:::Class_01
+     L:::Class_01
+     M:::Class_01
+     N:::Class_01
+     P:::Sky
+     O:::Sky
+     Q:::Sky
+     R:::Sky
+     S:::Sky
+     T:::Sky
+     U:::Sky
+    classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+    classDef Class_01 stroke:#d0ecb4, fill:#d0ecb4, color:#64a028
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
 ```
 
 <div align="center">
