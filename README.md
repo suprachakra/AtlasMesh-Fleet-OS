@@ -597,9 +597,9 @@ flowchart TB
      RD:::storage
      GF:::monitoring
      CC:::Pine
-     MO:::storage
-     DL:::storage
-     NG:::storage
+     MO:::Aqua
+     DL:::Aqua
+     NG:::Aqua
      PS:::services
      AG:::services
      TS:::services
@@ -608,23 +608,21 @@ flowchart TB
      FM:::services
      AS:::services
      PG:::Class_02
-     FF:::services
+     FF:::ingestion
      VT:::security
      OPA:::security
      PM:::monitoring
      PM:::analytics
      JG:::monitoring
      LG:::monitoring
-     ERP:::external
-     MAP:::external
-     WX:::external
-     PKI:::security
+     ERP:::Ash
+     MAP:::Ash
+     WX:::Ash
+     PKI:::Ash
      ML:::analytics
      FS:::analytics
      MR:::analytics
-    classDef ingestion fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef storage fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
-    classDef services fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
     classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px
     classDef monitoring fill:#f1f8e9,stroke:#33691e,stroke-width:2px
     classDef external fill:#fafafa,stroke:#424242,stroke-width:2px
@@ -632,6 +630,10 @@ flowchart TB
     classDef Pine stroke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
     classDef edge fill:#e1f5fe, stroke:#0277bd, stroke-width:2px
     classDef Class_02 fill:#3676e8, color:#FFFFFF, stroke:#F0f0f0
+    classDef Ash stroke-width:1px, stroke-dasharray:none, stroke:#999999, fill:#EEEEEE, color:#000000
+    classDef ingestion fill:#f3e5f5, stroke:#7b1fa2, stroke-width:2px
+    classDef services fill:#fff3e0, stroke:#ef6c00, stroke-width:2px
+    classDef Aqua stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
     style subGraph4 fill:transparent
     style subGraph2 fill:transparent
     style subGraph9 fill:transparent
