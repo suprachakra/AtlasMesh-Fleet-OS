@@ -237,76 +237,127 @@ flowchart TD
 ## Overall Project Flow
 
 ```mermaid
-graph TB
-    subgraph "Phase 1: Core Platform (COMPLETED)"
-        A1[CI/CD + Evidence Spine] --> A2[Core Services]
-        A2 --> A3[Vehicle-Agnostic Edge]
-        A3 --> A4[Control Center UI]
-        A4 --> A5[Telemetry & Analytics]
-        A5 --> A6[Security Foundations]
-        A6 --> A7[API Contracts & SDKs]
-        A7 --> A8[Performance Budgets]
-        A8 --> A9[Feature Flags & Cohorting]
-        A9 --> A10[Accessibility & UX Gates]
-    end
-    
-    subgraph "Phase 2: Advanced Features (COMPLETED)"
-        B1[Weather Fusion] --> B2[Predictive Maintenance]
-        B2 --> B3[Evidence Engine]
-        B3 --> B4[Sector Overlays]
-        B4 --> B5[Digital Twin & Simulation]
-        B5 --> B6[Scale & Resilience]
-    end
-    
-    subgraph "Phase 3: Qualified Agnosticism (COMPLETED)"
-        D1[Vehicle HAL] --> D2[Sensor Pack Registry]
-        D2 --> D3[Variant Budget Enforcement]
-        D3 --> D4[Conformance Testing]
-        D4 --> D5[Platform Adapters]
-        D5 --> D6[Evidence Automation]
-    end
-    
-    subgraph "Core Operations Flow"
-        C1[Mission Planning] --> C2[Policy Evaluation]
-        C2 --> C3[Dispatch & Assignment]
-        C3 --> C4[Vehicle Execution]
-        C4 --> C5[Real-time Monitoring]
-        C5 --> C6[Mission Completion]
-        C5 -.-> C7[Tele-Assist Q&A]
-        C7 -.-> C4
-        C5 --> C8[Analytics & Learning]
-        C8 --> C1
-    end
-    
+flowchart TB
+ subgraph subGraph0["Phase 1: Core Platform"]
+        A2["Core Services"]
+        A1["CI/CD + Evidence Spine"]
+        A3["Vehicle-Agnostic Edge"]
+        A4["Control Center UI"]
+        A5["Telemetry & Analytics"]
+        A6["Security Foundations"]
+        A7["API Contracts & SDKs"]
+        A8["Performance Budgets"]
+        A9["Feature Flags & Cohorting"]
+        A10["Accessibility & UX Gates"]
+  end
+ subgraph subGraph1["Phase 2: Advanced Features"]
+        B2["Predictive Maintenance"]
+        B1["Weather Fusion"]
+        B3["Evidence Engine"]
+        B4["Sector Overlays"]
+        B5["Digital Twin & Simulation"]
+        B6["Scale & Resilience"]
+  end
+ subgraph subGraph2["Phase 3: Qualified Agnosticism"]
+        D2["Sensor Pack Registry"]
+        D1["Vehicle HAL"]
+        D3["Variant Budget Enforcement"]
+        D4["Conformance Testing"]
+        D5["Platform Adapters"]
+        D6["Evidence Automation"]
+  end
+ subgraph subGraph3["Core Operations Flow"]
+        C2["Policy Evaluation"]
+        C1["Mission Planning"]
+        C3["Dispatch & Assignment"]
+        C4["Vehicle Execution"]
+        C5["Real-time Monitoring"]
+        C6["Mission Completion"]
+        C7["Tele-Assist Q&A"]
+        C8["Analytics & Learning"]
+  end
+ subgraph subGraph4["Phase 1: Core Platform  fill:transparent"]
+  end
+ subgraph subGraph5["Phase 2: Advanced Features  fill:transparent"]
+  end
+ subgraph subGraph6["Phase 3: Qualified Agnosticism  fill:transparent"]
+  end
+ subgraph subGraph7["Core Operations Flow fill:transparent"]
+  end
+    A1 --> A2
+    A2 --> A3
+    A3 --> A4
+    A4 --> A5
+    A5 --> A6
+    A6 --> A7
+    A7 --> A8
+    A8 --> A9
+    A9 --> A10
+    B1 --> B2
+    B2 --> B3
+    B3 --> B4
+    B4 --> B5
+    B5 --> B6
+    D1 --> D2
+    D2 --> D3
+    D3 --> D4
+    D4 --> D5
+    D5 --> D6
+    C1 --> C2
+    C2 --> C3
+    C3 --> C4
+    C4 --> C5
+    C5 --> C6 & C8
+    C5 -.-> C7 & A5
+    C7 -.-> C4
+    C8 --> C1
     A10 --> B1
     B6 --> D1
     C1 -.-> A2
     C2 -.-> A6
     C3 -.-> A3
     C4 -.-> A3
-    C5 -.-> A5
     D1 -.-> C4
     D3 -.-> A1
     D4 -.-> C1
-    
-    classDef completed fill:#d4edda,stroke:#28a745,stroke-width:2px
-    classDef pending fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+
+     A2:::completed
+     A1:::completed
+     A3:::completed
+     A4:::completed
+     A5:::completed
+     A6:::completed
+     A7:::completed
+     A8:::completed
+     A9:::completed
+     A10:::completed
+     B2:::Rose
+     B1:::Rose
+     B3:::Rose
+     B4:::Rose
+     B5:::Rose
+     B6:::Rose
+     D2:::pending
+     D1:::pending
+     D3:::pending
+     D4:::pending
+     D5:::pending
+     D6:::pending
+     C2:::operations
+     C1:::operations
+     C3:::operations
+     C4:::operations
+     C5:::operations
+     C6:::operations
+     C7:::operations
+     C8:::operations
     classDef operations fill:#e7f3ff,stroke:#007bff,stroke-width:2px
-    
-    class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10 completed
-    class B1,B2,B3,B4,B5,B6 completed
-    class D1,D2,D3,D4,D5,D6 completed
-    class C1,C2,C3,C4,C5,C6,C7,C8 operations
-    
-    %% SubGraph styling
-    subgraph "Phase 1: Core Platform (COMPLETED)" fill:transparent
-    end
-    subgraph "Phase 2: Advanced Features (COMPLETED)" fill:transparent
-    end
-    subgraph "Phase 3: Qualified Agnosticism (COMPLETED)" fill:transparent
-    end
-    subgraph "Core Operations Flow" fill:transparent
-    end
+    classDef completed fill:#d4edda, stroke:#28a745, stroke-width:2px
+    classDef pending fill:#fff3cd, stroke:#ffc107, stroke-width:2px
+    classDef Rose stroke-width:1px, stroke-dasharray:none, stroke:#FF5978, fill:#FFDFE5, color:#8E2236
+    classDef Peach stroke-width:1px, stroke-dasharray:none, stroke:#FBB35A, fill:#FFEFDB, color:#8F632D
+    style subGraph0 fill:transparent
+
 ```
 
 ## User Journey - Complete System Interactions
