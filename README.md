@@ -465,102 +465,163 @@ sequenceDiagram
 ## Data Flow Diagram - Complete Platform Data Movement
 
 ```mermaid
-graph TB
-    subgraph "Edge Layer"
-        V1[Vehicle Sensors] --> VA[Vehicle Agent]
-        V2[Vehicle Actuators] <-- VA
-        VA --> CB[Cloud Bridge]
-        CB --> MQ1[MQTT/WebSocket]
-    end
-    
-    subgraph "Ingestion Layer"
-        MQ1 --> KF[Kafka Event Bus]
-        KF --> SR[Schema Registry]
-        SR --> TI[Telemetry Ingestion]
-        TI --> DV[Data Validation]
-    end
-    
-    subgraph "Storage Layer - Hot Path"
-        DV --> CH[ClickHouse]
-        DV --> RD[Redis Cache]
-        CH --> GF[Grafana Dashboards]
-        RD --> CC[Control Center UI]
-    end
-    
-    subgraph "Storage Layer - Cold Path"
-        DV --> MO[MinIO Object Storage]
-        MO --> DL[Data Lineage Service]
-        DL --> NG[Neo4j Graph DB]
-    end
-    
-    subgraph "Core Services Data Flow"
-        AG[API Gateway] <--> PS[Policy Service]
-        AG <--> TS[Mission Management]
-        AG <--> DS[Dispatch Service]
-        AG <--> RS[Routing Service]
-        AG <--> FM[Fleet Manager]
-        AG <--> AS[Auth Service]
-        
-        PS --> PG[(PostgreSQL)]
-        TS --> PG
-        DS --> PG
-        RS --> PG
-        FM --> PG
-        AS --> PG
-    end
-    
-    subgraph "Feature Management"
-        FF[Feature Flags] --> RD
-        FF --> AG
-    end
-    
-    subgraph "Security & Compliance"
-        VT[Vault Secrets] --> AS
-        VT --> PS
-        OPA[Open Policy Agent] --> PS
-        OPA --> AG
-    end
-    
-    subgraph "Monitoring & Observability"
-        PM[Prometheus Metrics] --> GF
-        JG[Jaeger Tracing] --> GF
-        LG[Log Aggregation] --> GF
-        
-        TI --> PM
-        AG --> PM
-        PS --> PM
-        TS --> PM
-        DS --> PM
-        RS --> PM
-        FM --> PM
-    end
-    
-    subgraph "External Integrations"
-        ERP[ERP/WMS/TOS] <--> AG
-        MAP[Map Providers] --> RS
-        WX[Weather Services] --> PS
-        PKI[Certificate Authority] --> VT
-    end
-    
-    subgraph "Analytics & ML Pipeline"
-        CH --> ML[ML Pipeline]
-        MO --> ML
-        ML --> FS[Feature Store]
-        ML --> MR[Model Registry]
-        FS --> PM[Predictive Models]
-        MR --> PM
-    end
-    
-    %% Data Flow Annotations
-    KF -.->|"Real-time Events"| TI
-    CH -.->|"Time-series Queries"| GF
-    MO -.->|"Historical Analysis"| ML
-    NG -.->|"Data Lineage"| DL
-    RD -.->|"Session Data"| CC
-    PG -.->|"Transactional Data"| AG
-    
-    %% Styling
-    classDef edge fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+flowchart TB
+ subgraph subGraph0["Edge Layer"]
+        VA["Vehicle Agent"]
+        V1["Vehicle Sensors"]
+        CB["Cloud Bridge"]
+        V2["Vehicle Actuators"]
+        MQ1["MQTT/WebSocket"]
+  end
+ subgraph subGraph1["Ingestion Layer"]
+        KF["Kafka Event Bus"]
+        SR["Schema Registry"]
+        TI["Telemetry Ingestion"]
+        DV["Data Validation"]
+  end
+ subgraph subGraph2["Storage Layer - Hot Path"]
+        CH["ClickHouse"]
+        RD["Redis Cache"]
+        GF["Grafana Dashboards"]
+        CC["Control Center UI"]
+  end
+ subgraph subGraph3["Storage Layer - Cold Path"]
+        MO["MinIO Object Storage"]
+        DL["Data Lineage Service"]
+        NG["Neo4j Graph DB"]
+  end
+ subgraph subGraph4["Core Services Data Flow"]
+        PS["Policy Service"]
+        AG["API Gateway"]
+        TS["Mission Management"]
+        DS["Dispatch Service"]
+        RS["Routing Service"]
+        FM["Fleet Manager"]
+        AS["Auth Service"]
+        PG[("PostgreSQL")]
+  end
+ subgraph subGraph5["Feature Management"]
+        FF["Feature Flags"]
+  end
+ subgraph subGraph6["Security & Compliance"]
+        VT["Vault Secrets"]
+        OPA["Open Policy Agent"]
+  end
+ subgraph subGraph7["Monitoring & Observability"]
+        PM["Predictive Models"]
+        JG["Jaeger Tracing"]
+        LG["Log Aggregation"]
+  end
+ subgraph subGraph8["External Integrations"]
+        ERP["ERP/WMS/TOS"]
+        MAP["Map Providers"]
+        WX["Weather Services"]
+        PKI["Certificate Authority"]
+  end
+ subgraph subGraph9["Analytics & ML Pipeline"]
+        ML["ML Pipeline"]
+        FS["Feature Store"]
+        MR["Model Registry"]
+  end
+ subgraph subGraph10["Edge Layer fill:transparent"]
+  end
+ subgraph subGraph11["Ingestion Layer fill:transparent"]
+  end
+ subgraph subGraph12["Storage Layer - Hot Path fill:transparent"]
+  end
+ subgraph subGraph13["Storage Layer - Cold Path fill:transparent"]
+  end
+ subgraph subGraph14["Core Services Data Flow fill:transparent"]
+  end
+ subgraph subGraph15["Feature Management fill:transparent"]
+  end
+ subgraph subGraph16["Security & Compliance fill:transparent"]
+  end
+ subgraph subGraph17["Monitoring & Observability fill:transparent"]
+  end
+ subgraph subGraph18["External Integrations fill:transparent"]
+  end
+ subgraph subGraph19["Analytics & ML Pipeline fill:transparent"]
+  end
+    V1 --> VA
+    V2 <-- VA
+        VA --> CB
+    CB --> MQ1
+    MQ1 --> KF
+    KF --> SR
+    SR --> TI
+    TI --> DV & PM
+    DV --> CH & RD & MO
+    CH --> GF & ML
+    RD --> CC
+    MO --> DL & ML
+    DL --> NG
+    AG <--> PS & TS & DS & RS & FM & AS
+    PS --> PG & PM
+    TS --> PG & PM
+    DS --> PG & PM
+    RS --> PG & PM
+    FM --> PG & PM
+    AS --> PG
+    FF --> RD & AG
+    VT --> AS & PS
+    OPA --> PS & AG
+    PM --> GF
+    JG --> GF
+    LG --> GF
+    AG --> PM
+    ERP <--> AG
+    MAP --> RS
+    WX --> PS
+    PKI --> VT
+    ML --> FS & MR
+    FS --> PM
+    MR --> PM
+    KF -. "Real-time Events" .-> TI
+    CH -. "Time-series Queries" .-> GF
+    MO -. Historical Analysis .-> ML
+    NG -. Data Lineage .-> DL
+    RD -. Session Data .-> CC
+    PG -. Transactional Data .-> AG
+
+     VA:::edge
+     V1:::edge
+     CB:::edge
+     V2:::edge
+     MQ1:::edge
+     KF:::ingestion
+     SR:::ingestion
+     TI:::ingestion
+     DV:::ingestion
+     CH:::storage
+     RD:::storage
+     GF:::monitoring
+     CC:::Pine
+     MO:::storage
+     DL:::storage
+     NG:::storage
+     PS:::services
+     AG:::services
+     TS:::services
+     DS:::services
+     RS:::services
+     FM:::services
+     AS:::services
+     PG:::Class_02
+     FF:::services
+     VT:::security
+     OPA:::security
+     PM:::monitoring
+     PM:::analytics
+     JG:::monitoring
+     LG:::monitoring
+     ERP:::external
+     MAP:::external
+     WX:::external
+     PKI:::security
+     ML:::analytics
+     FS:::analytics
+     MR:::analytics
     classDef ingestion fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef storage fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef services fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
@@ -568,37 +629,17 @@ graph TB
     classDef monitoring fill:#f1f8e9,stroke:#33691e,stroke-width:2px
     classDef external fill:#fafafa,stroke:#424242,stroke-width:2px
     classDef analytics fill:#e0f2f1,stroke:#00695c,stroke-width:2px
-    
-    class V1,V2,VA,CB,MQ1 edge
-    class KF,SR,TI,DV ingestion
-    class CH,RD,MO,DL,NG,PG storage
-    class AG,PS,TS,DS,RS,FM,AS,FF services
-    class VT,OPA,PKI security
-    class PM,JG,LG,GF monitoring
-    class ERP,MAP,WX external
-    class ML,FS,MR,PM analytics
-    
-    %% SubGraph styling
-    subgraph "Edge Layer" fill:transparent
-    end
-    subgraph "Ingestion Layer" fill:transparent
-    end
-    subgraph "Storage Layer - Hot Path" fill:transparent
-    end
-    subgraph "Storage Layer - Cold Path" fill:transparent
-    end
-    subgraph "Core Services Data Flow" fill:transparent
-    end
-    subgraph "Feature Management" fill:transparent
-    end
-    subgraph "Security & Compliance" fill:transparent
-    end
-    subgraph "Monitoring & Observability" fill:transparent
-    end
-    subgraph "External Integrations" fill:transparent
-    end
-    subgraph "Analytics & ML Pipeline" fill:transparent
-    end
+    classDef Pine stroke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
+    classDef edge fill:#e1f5fe, stroke:#0277bd, stroke-width:2px
+    classDef Class_02 fill:#3676e8, color:#FFFFFF, stroke:#F0f0f0
+    style subGraph4 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph9 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph7 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph8 fill:transparent
 ```
 
 ## 🚀 Key Features
