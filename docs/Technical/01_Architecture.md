@@ -100,48 +100,55 @@ C4Context
 The Vehicle HAL enables **vehicle-agnostic** operations through config-driven profiles:
 
 ```mermaid
-graph TB
-    subgraph "Vehicle Classes"
-        LightUTV[🚜 Light Industrial UTV]
-        TerminalTractor[🚛 Terminal Tractor]
-        MineHaul[⛏️ Mine Haul Truck]
-        DefenseVehicle[🛡️ Defense Vehicle]
-        RideHailSedan[🚗 Ride-hail Sedan]
-        PublicBus[🚌 Public Transit Bus]
-    end
-    
-    subgraph "Vehicle HAL"
-        ProfileLoader[📋 Profile Loader]
-        HALInterface[🔌 HAL Interface]
-        SafetyMonitor[🛡️ Safety Monitor]
-    end
-    
-    subgraph "Standardized Control"
-        MotionPlanner[🗺️ Motion Planner]
-        PathFollower[🛣️ Path Follower]
-        VehicleController[🎮 Vehicle Controller]
-    end
-    
+flowchart TB
+ subgraph subGraph0["Vehicle Classes"]
+        LightUTV["🚜 Light Industrial UTV"]
+        TerminalTractor["🚛 Terminal Tractor"]
+        MineHaul["⛏️ Mine Haul Truck"]
+        DefenseVehicle["🛡️ Defense Vehicle"]
+        RideHailSedan["🚗 Ride-hail Sedan"]
+        PublicBus["🚌 Public Transit Bus"]
+  end
+ subgraph subGraph1["Vehicle HAL"]
+        ProfileLoader["📋 Profile Loader"]
+        HALInterface["🔌 HAL Interface"]
+        SafetyMonitor["🛡️ Safety Monitor"]
+  end
+ subgraph subGraph2["Standardized Control"]
+        MotionPlanner["🗺️ Motion Planner"]
+        PathFollower["🛣️ Path Follower"]
+        VehicleController["🎮 Vehicle Controller"]
+  end
     LightUTV --> ProfileLoader
     TerminalTractor --> ProfileLoader
     MineHaul --> ProfileLoader
     DefenseVehicle --> ProfileLoader
     RideHailSedan --> ProfileLoader
     PublicBus --> ProfileLoader
-    
     ProfileLoader --> HALInterface
     HALInterface --> SafetyMonitor
     SafetyMonitor --> MotionPlanner
     MotionPlanner --> PathFollower
     PathFollower --> VehicleController
-    
+
+     LightUTV:::vehicle
+     TerminalTractor:::vehicle
+     MineHaul:::vehicle
+     DefenseVehicle:::vehicle
+     RideHailSedan:::vehicle
+     PublicBus:::vehicle
+     ProfileLoader:::hal
+     HALInterface:::hal
+     SafetyMonitor:::hal
+     MotionPlanner:::control
+     PathFollower:::control
+     VehicleController:::control
     classDef vehicle fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
     classDef hal fill:#e1f5fe,stroke:#01579b,stroke-width:3px
     classDef control fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    
-    class LightUTV,TerminalTractor,MineHaul,DefenseVehicle,RideHailSedan,PublicBus vehicle
-    class ProfileLoader,HALInterface,SafetyMonitor hal
-    class MotionPlanner,PathFollower,VehicleController control
+    style subGraph1 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 ### Variant Budget Enforcement
