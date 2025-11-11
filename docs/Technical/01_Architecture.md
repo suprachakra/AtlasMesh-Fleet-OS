@@ -73,13 +73,13 @@ C4Context
     
     System_Boundary(atlasmesh, "AtlasMesh Fleet OS") {
         System(fms, "Fleet Management System", "Orchestrates fleet operations")
-        System(avkit, "CoreX AV Kit", "Vehicle retrofit hardware/software")
+        System(avkit, "Edge AV Kit", "Vehicle retrofit hardware/software")
     }
     
-    System_Ext(enterprise, "Enterprise Systems", "WMS/TOS/ERP")
-    System_Ext(maps, "Map Providers", "HERE/OSM/etc.")
+    System_Ext(enterprise, "Enterprise Systems", "WMS / TOS / ERP")
+    System_Ext(maps, "Map Providers", "HERE / OSM / etc.")
     System_Ext(weather, "Weather Services", "Forecast/nowcast")
-    System_Ext(cloud, "Cloud Infrastructure", "AWS/Azure/GCP/On-prem")
+    System_Ext(cloud, "Cloud Infrastructure", "AWS / Azure / GCP / On-prem")
     
     Rel(operator, fms, "Uses")
     Rel(maintainer, avkit, "Services")
@@ -87,10 +87,10 @@ C4Context
     Rel(rider, fms, "Interacts with")
     
     Rel(fms, avkit, "Controls")
-    Rel(fms, enterprise, "Integrates with")
-    Rel(fms, maps, "Consumes data from")
-    Rel(fms, weather, "Consumes data from")
-    Rel(fms, cloud, "Deployed on")
+    Rel(fms, enterprise, "Integrates <br> with")
+    Rel(fms, maps, "Consumes data <br> from")
+    Rel(fms, weather, "Consumes data <br>  from")
+    Rel(fms, cloud, "Deployed <br> on")
 ```
 
 ## 🎯 **1.1) Qualified Agnosticism Architecture**
