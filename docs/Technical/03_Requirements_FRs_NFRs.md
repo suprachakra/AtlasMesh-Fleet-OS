@@ -12,7 +12,7 @@
 
 <div align="center">
 
-| ✅ **[Definition of Ready/Done](#0-definition-of-ready-dor--definition-of-done-dod)** | 🎯 **[Functional Requirements](#1-functional-requirements-frs)** | 🛡️ **[Non-Functional Requirements](#2-non-functional-requirements-nfrs)** | 📊 **[Success Metrics](#3-success-metrics--slis)** |
+| ✅ **[Definition of Ready/Done](#-definition-of-ready-dor--definition-of-done-dod)** | 🎯 **[Functional Requirements](-2-functional-requirements-frs)** | 🛡️ **[Non-Functional Requirements](#%EF%B8%8F-3-non-functional-requirements-nfrs)** | 📊 **[Success Metrics](#3-success-metrics--slis)** |
 |:---:|:---:|:---:|:---:|
 | **DoR/DoD Criteria** | **Core Functionality** | **Quality Attributes** | **Measurement Framework** |
 
@@ -283,6 +283,15 @@ graph TB
     class Unit,Integration,E2E,Conformance,Simulation testing
     class Sectors,Vehicles,Platforms sectors
     class Traceability,Ownership,Budget governance
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph4 fill:transparent
+    style subGraph5 fill:transparent
+    style subGraph6 fill:transparent
+    style subGraph7 fill:transparent
 ```
 
 ---
