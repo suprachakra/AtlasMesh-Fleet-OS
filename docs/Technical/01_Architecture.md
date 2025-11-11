@@ -26,7 +26,7 @@
 
 ## 🎯 Executive Summary: Qualified Agnosticism
 
-AtlasMesh Fleet Management System implements **"qualified agnosticism"** - a pragmatic approach to vehicle-agnostic, sector-agnostic, and platform-agnostic fleet management operations. Rather than claiming universal compatibility, we achieve **bounded agnosticism** through:
+AtlasMesh Fleet Management System implements **"qualified agnosticism"** - a pragmatic approach to vehicle-agnostic, sector-agnosticand platform-agnostic fleet management operations. Rather than claiming universal compatibility, we achieve **bounded agnosticism** through:
 
 - **🚗 Vehicle-Agnostic**: Class/model-bounded with certified profiles (≤5% code delta)
 - **🏢 Sector-Agnostic**: Policy overlays targeting ≥90% code reuse
@@ -47,13 +47,13 @@ AtlasMesh Fleet Management System implements **"qualified agnosticism"** - a pra
 
 ## 🏗️ **1) System Context (C4 Model)**
 
-AtlasMesh Fleet Management System operates as a **vehicle-agnostic** platform that manages autonomous fleet operations across multiple vehicle classes, sectors, and infrastructure platforms. The system context diagram below illustrates the high-level interactions between AtlasMesh and external entities.
+AtlasMesh Fleet Management System operates as a **vehicle-agnostic** platform that manages autonomous fleet operations across multiple vehicle classes, sectorsand infrastructure platforms. The system context diagram below illustrates the high-level interactions between AtlasMesh and external entities.
 
 ### **Two-Layer Architecture Overview**
 
 AtlasMesh implements a **two-layer architecture** that separates fleet management from vehicle control:
 
-1. **Cloud-Based Fleet Management Platform** - Centralized fleet operations, monitoring, and management
+1. **Cloud-Based Fleet Management Platform** - Centralized fleet operations, monitoringand management
 2. **Vehicle Agent (Edge Software)** - On-vehicle software that runs on customer-owned vehicles
 
 This architecture enables customers to:
@@ -304,12 +304,12 @@ AtlasMesh Fleet OS is built on the following architectural principles:
 
 The system is designed to be agnostic across multiple dimensions:
 
-- **Vehicle-agnostic**: Abstracted drive-by-wire interfaces, sensor fusion, and vehicle capabilities
+- **Vehicle-agnostic**: Abstracted drive-by-wire interfaces, sensor fusionand vehicle capabilities
 - **Platform-agnostic**: Cloud-neutral deployment, containerized services, infrastructure as code
 - **Sector-agnostic**: Policy-driven behavior, configurable workflows, domain-specific overlays
-- **Sensor-agnostic**: Abstracted sensor interfaces, fusion algorithms, and degraded mode operations
+- **Sensor-agnostic**: Abstracted sensor interfaces, fusion algorithmsand degraded mode operations
 - **Map-agnostic**: Multiple map provider support, provenance tracking, freshness/credibility tradeoffs
-- **Weather-agnostic**: Multi-source weather data fusion, confidence scoring, and fallback strategies
+- **Weather-agnostic**: Multi-source weather data fusion, confidence scoringand fallback strategies
 - **Comms-agnostic**: Multi-layer communication stack, store-and-forward capabilities, offline operation
 
 ### 3.2 Service-Oriented Architecture
@@ -318,7 +318,7 @@ The system follows a service-oriented architecture with the following characteri
 
 - **Microservices**: Bounded contexts with clear interfaces and responsibilities
 - **Event-driven**: Event sourcing for state changes, event-based integration patterns
-- **API-first**: Well-defined APIs with versioning, contract tests, and documentation
+- **API-first**: Well-defined APIs with versioning, contract testsand documentation
 - **Stateless services**: Externalized state for scalability and resilience
 - **Idempotent operations**: Safe retries and exactly-once semantics where needed
 
@@ -328,7 +328,7 @@ Security and compliance are fundamental to the architecture:
 
 - **Zero-trust networking**: mTLS for all service communication, SPIFFE/SPIRE for identity
 - **Policy as code**: OPA/Rego policies for authorization and business rules
-- **Evidence generation**: Automated safety case artifacts, audit trails, and compliance documentation
+- **Evidence generation**: Automated safety case artifacts, audit trailsand compliance documentation
 - **Secure by default**: Least privilege, encryption in transit and at rest, secrets management
 - **Verifiable builds**: Reproducible builds, signed artifacts, SBOM generation
 
@@ -897,7 +897,7 @@ AtlasMesh Fleet OS uses a robust eventing architecture for system-wide communica
 - **Kafka Topics**: 16 specialized topics for different event types (vehicle events, fleet commands, system audits, DLQ patterns)
 - **Schema Registry**: Avro schema management for message validation and evolution
 - **Dead Letter Queues**: Comprehensive DLQ patterns for failed message processing
-- **Event Bus Service**: Central event hub with routing, validation, and correlation ID propagation
+- **Event Bus Service**: Central event hub with routing, validationand correlation ID propagation
 
 ## 🔒 **11) Security Architecture**
 
