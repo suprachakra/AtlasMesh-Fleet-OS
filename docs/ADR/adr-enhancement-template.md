@@ -1,7 +1,7 @@
 # ADR Template with Enhancements
 
 * **Status:** [Proposed | Accepted | Deprecated | Superseded]
-* **Date:** YYYY-MM-DD
+* **Date:** DD-MM-YYYY
 * **Proposer:** [Team or Individual]
 * **Approvers:** [List of approvers with roles]
 * **Consulted:** [Teams or individuals consulted]
@@ -106,3 +106,4 @@
 
 1. [Reference 1]
 2. [Reference 2]
+
