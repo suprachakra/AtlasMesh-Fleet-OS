@@ -1,7 +1,7 @@
-# ADR-0002: Platform-Agnostic Architecture
+## ADR-0002: Platform-Agnostic Architecture
 
 * **Status:** Accepted
-* **Date:** 2025-09-14
+* **Date:** 14-06-2025
 * **Proposer:** Platform Engineering Team
 * **Approvers:** CTO, SVP Engineering, SVP Operations
 * **Consulted:** Cloud Infrastructure Team, Security Team, DevOps Team
@@ -10,11 +10,11 @@
 * **Supersedes:** None
 * **Superseded by:** None
 
-## Context
+### Context
 
-AtlasMesh Fleet OS must operate across multiple deployment environments, including various cloud providers and on-premises installations. Customers have diverse infrastructure requirements, security policies, and data residency needs that must be accommodated without compromising functionality or performance.
+AtlasMesh Fleet OS must operate across multiple deployment environments, including various cloud providers(Azure, AWS. GCP) and on-premises installations. Customers have diverse infrastructure requirements, security policies, and data residency needs that must be accommodated without compromising functionality or performance.
 
-### Problem Statement
+#### Problem Statement
 
 1. Customers have different cloud preferences and existing investments
 2. Some sectors (especially defense) require on-premises deployment
@@ -22,7 +22,7 @@ AtlasMesh Fleet OS must operate across multiple deployment environments, includi
 4. Cloud-specific features can create inconsistent behavior across deployments
 5. Operational complexity increases with multiple deployment targets
 
-### Market & Business Drivers
+#### Market & Business Drivers
 
 1. Defense customers require air-gapped and on-premises solutions
 2. Mining operations often have limited connectivity and local infrastructure
@@ -30,7 +30,7 @@ AtlasMesh Fleet OS must operate across multiple deployment environments, includi
 4. Regulatory requirements may dictate data residency in specific regions
 5. Cost optimization requires flexibility to leverage different pricing models
 
-## Decision
+### Decision
 
 We will implement a **platform-agnostic architecture** with the following key components:
 
@@ -57,7 +57,7 @@ We will implement a **platform-agnostic architecture** with the following key co
    - Security controls
    - Operational procedures
 
-## Guardrails
+### Guardrails
 
 | Guardrail | Description | Enforcement Mechanism | Violation Response |
 | --- | --- | --- | --- |
@@ -66,7 +66,7 @@ We will implement a **platform-agnostic architecture** with the following key co
 | **No IAM Baking** | Authentication/authorization must be abstracted, not tied to cloud IAM | Security reviews; authentication framework validation | Security remediation; abstraction layer implementation; access model redesign |
 | **Deployment Interface** | Single deployment interface (`deploy/terraform`) regardless of target | Deployment pipeline validation; infrastructure as code reviews | Infrastructure refactoring; deployment standardization; template updates |
 
-## KPIs/SLOs
+### KPIs/SLOs
 
 | KPI/SLO | Description | Target | Measurement Method | Reporting Frequency | Owner |
 | --- | --- | --- | --- | --- | --- |
@@ -76,7 +76,7 @@ We will implement a **platform-agnostic architecture** with the following key co
 | **Feature Parity** | Consistency of features across platforms | 100% for core capabilities | Feature matrix validation; capability testing | Per release | Product Management |
 | **Cost Efficiency** | Infrastructure cost relative to baseline | Within 15% of optimal provider | Cost tracking; resource utilization analysis | Monthly | FinOps Lead |
 
-## Implementation Paths
+### Implementation Paths
 
 | Component | Path | Description | Responsible Team | Dependencies |
 | --- | --- | --- | --- | --- |
@@ -87,7 +87,7 @@ We will implement a **platform-agnostic architecture** with the following key co
 | **Conformance Tests** | `/testing/conformance/*` | Platform-agnostic validation test suite | QA | Test framework; service contracts; environment profiles |
 | **Adapter Framework** | `/adapters/cloud/*` | Provider-specific adapters and abstractions | Platform | Service interfaces; provider SDKs; abstraction models |
 
-### Integration Points
+#### Integration Points
 
 1. **Identity & Access Management** - Integration with different IAM systems
 2. **Storage Services** - Abstraction over object storage, block storage, databases
@@ -95,9 +95,9 @@ We will implement a **platform-agnostic architecture** with the following key co
 4. **Monitoring & Logging** - Integration with observability platforms
 5. **Secret Management** - Secure storage and retrieval of credentials
 
-## Consequences
+### Consequences
 
-### Positive
+#### Positive
 
 | Consequence | Description | Beneficiaries | Value Proposition |
 | --- | --- | --- | --- |
@@ -107,7 +107,7 @@ We will implement a **platform-agnostic architecture** with the following key co
 | **Hybrid/Multi-Cloud** | Allows for mixed infrastructure strategies | Operations, Customers | Optimal resource allocation; resilience; cost optimization |
 | **Operational Consistency** | Same tools and processes across environments | Operations, Engineering | Reduced complexity; knowledge transfer; operational efficiency |
 
-### Negative
+#### Negative
 
 | Consequence | Description | Mitigation Strategy | Residual Risk |
 | --- | --- | --- | --- |
@@ -116,11 +116,11 @@ We will implement a **platform-agnostic architecture** with the following key co
 | **Feature Lag** | Potential delay in adopting new cloud capabilities | Feature prioritization; abstraction design; provider roadmaps | Medium - Some capabilities will be delayed or limited |
 | **Optimization Limits** | May miss optimization opportunities specific to providers | Performance benchmarking; critical path analysis; selective optimization | Low - Core performance requirements still met |
 
-## Kill-Switch Criteria
+### Kill-Switch Criteria
 
 If a provider consistently blocks SLOs or increases TCO by >25%, we will downgrade it to Tier-B support (limited features, best-effort maintenance).
 
-## Alternatives Considered
+### Alternatives Considered
 
 | Alternative | Description | Pros | Cons | Why Rejected |
 | --- | --- | --- | --- | --- |
@@ -128,7 +128,7 @@ If a provider consistently blocks SLOs or increases TCO by >25%, we will downgra
 | **Lowest common denominator** | Use only features available across all platforms | Maximum portability; Simplified testing; Consistent behavior | Feature limitations; Performance constraints; Competitive disadvantage | Feature limitations too restrictive; Competitive disadvantage; Customer expectations |
 | **Multiple codebases per provider** | Maintain separate implementations for each platform | Optimal use of each platform; No compromise on features; Perfect fit | Extreme maintenance burden; Inconsistent behavior; Duplicated effort | Unsustainable maintenance burden; High risk of divergent behavior; Resource constraints |
 
-## Compliance & Regulatory Considerations
+### Compliance & Regulatory Considerations
 
 1. **Data Residency**: Platform-specific configurations for regional compliance requirements
 2. **Security Controls**: Consistent implementation of security controls across platforms
@@ -136,7 +136,7 @@ If a provider consistently blocks SLOs or increases TCO by >25%, we will downgra
 4. **Certification Boundaries**: Clear documentation of responsibility boundaries with cloud providers
 5. **Disaster Recovery**: Platform-specific but capability-consistent recovery procedures
 
-## Monitoring & Metrics
+### Monitoring & Metrics
 
 | Metric | Description | Target | Warning Threshold | Critical Threshold | Data Source |
 | --- | --- | --- | --- | --- | --- |
@@ -146,16 +146,17 @@ If a provider consistently blocks SLOs or increases TCO by >25%, we will downgra
 | **Resource Utilization** | Efficiency of resource usage across platforms | Within 15% of optimal | 15-25% deviation | >25% deviation | Resource monitoring; cost analysis |
 | **Operational Incidents** | Platform-specific incidents requiring intervention | <1 per month per platform | 1-3 per month | >3 per month | Incident management system |
 
-## Implementation Milestones
+### Implementation Milestones
 
 1. **Q1**: Core infrastructure templates for primary cloud provider and Kubernetes
 2. **Q2**: Adapter framework and first alternative cloud provider support
 3. **Q3**: On-premises deployment capability and conformance test suite
 4. **Q4**: Complete platform parity across all target environments
 
-## References
+### References
 
 1. Cloud Provider Evaluation Matrix (`docs/architecture/cloud-provider-evaluation.md`)
 2. Platform Abstraction Design (`docs/design/platform-abstraction.md`)
 3. Kubernetes Deployment Strategy (`docs/operations/kubernetes-deployment.md`)
 4. Multi-Cloud Security Model (`docs/security/multi-cloud-security.md`)
+
