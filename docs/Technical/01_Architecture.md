@@ -968,6 +968,11 @@ graph TB
     class FleetOrchestrator,CrossFleetManager,ResourcePool,FleetFederation coordinator
     class FleetA,FleetB,FleetC fleet
     class VehiclesA,VehiclesB,VehiclesC vehicle
+
+    style subGraph1 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
 ```
 
 **Key Components:**
@@ -1026,6 +1031,10 @@ graph TB
     class MissionPlanner,MissionTemplates,MissionOrchestrator,MissionScheduler,MissionAnalytics mission
     class SARMission,CombatMission,LogisticsMission,PatrolMission type
     class MissionExecutor,MissionMonitor,MissionRollback execution
+
+    style subGraph1 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 **Key Components:**
@@ -1083,6 +1092,10 @@ graph TB
     class OptimizationEngine,RebalancingEngine,CostOptimizer,EnergyOptimizer,CapacityOptimizer optimization
     class MLPredictor,ConstraintSolver,GeneticAlgorithm,SimulatedAnnealing algorithm
     class FleetUtilization,FleetCost,FleetEnergy,FleetCapacity target
+
+    style subGraph1 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 **Key Components:**
@@ -1144,6 +1157,10 @@ graph TB
     class AnalyticsEngine,HealthScorer,EfficiencyCalculator,CapacityTracker,PerformanceAnalyzer,PredictiveEngine analytics
     class TelemetryData,OperationalData,HistoricalData,ExternalData data
     class HealthMetrics,EfficiencyMetrics,CapacityMetrics,PerformanceMetrics,PredictiveInsights output
+
+    style subGraph1 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 **Key Components:**
@@ -1207,6 +1224,10 @@ graph TB
     class ResourceManager,AllocationEngine,OptimizationEngine,MonitoringEngine,PlanningEngine,ForecastingEngine management
     class VehicleResources,HumanResources,InfrastructureResources,FinancialResources resource
     class ResourceAllocation,ResourceOptimization,ResourceMonitoring,ResourcePlanning,ResourceForecasting operation
+
+    style subGraph1 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 **Key Components:**
@@ -1271,6 +1292,10 @@ graph TB
     class PerformanceManager,MonitoringEngine,OptimizationEngine,ReportingEngine,AnalyticsEngine,BenchmarkingEngine performance
     class SafetyMetrics,EfficiencyMetrics,ReliabilityMetrics,CostMetrics,QualityMetrics metric
     class PerformanceMonitoring,PerformanceOptimization,PerformanceReporting,PerformanceAnalytics,PerformanceBenchmarking operation
+
+    style subGraph1 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 **Key Components:**
