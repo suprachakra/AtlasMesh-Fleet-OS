@@ -1,7 +1,7 @@
-# ADR-0001: Vehicle-Agnostic Architecture
+## ADR-0001: Vehicle-Agnostic Architecture
 
 * **Status:** Accepted
-* **Date:** 2025-09-14
+* **Date:** 14-06-2025
 * **Proposer:** Architecture Team
 * **Approvers:** CTO, SVP Engineering, SVP Safety
 * **Consulted:** Vehicle Integration Team, Safety Team, Regulatory Affairs
@@ -10,11 +10,11 @@
 * **Supersedes:** None
 * **Superseded by:** None
 
-## Context
+### Context
 
 AtlasMesh Fleet OS aims to operate across multiple vehicle classes and models without requiring code forks or custom implementations per vehicle. This requires a clear architecture that separates vehicle-specific concerns from core platform capabilities.
 
-### Problem Statement
+#### Problem Statement
 
 Supporting multiple vehicle types traditionally requires significant customization, leading to:
 1. Code forks and maintenance overhead
@@ -23,7 +23,7 @@ Supporting multiple vehicle types traditionally requires significant customizati
 4. Difficulty maintaining safety certifications across variants
 5. Increased testing matrix complexity
 
-### Market & Business Drivers
+#### Market & Business Drivers
 
 1. Customers demand multi-vehicle fleet support (heterogeneous fleets)
 2. Vehicle OEMs frequently update models and control interfaces
@@ -31,7 +31,7 @@ Supporting multiple vehicle types traditionally requires significant customizati
 4. Retrofit market demands flexibility across vehicle ages and types
 5. TCO improvements require standardized maintenance and operations
 
-## Decision
+### Decision
 
 We will implement a **vehicle-agnostic architecture** with the following key components:
 
@@ -58,7 +58,7 @@ We will implement a **vehicle-agnostic architecture** with the following key com
    - Validates control performance across operating conditions
    - Tests degraded mode behaviors
 
-## Guardrails
+### Guardrails
 
 | Guardrail | Description | Enforcement Mechanism | Violation Response |
 | --- | --- | --- | --- |
@@ -67,7 +67,7 @@ We will implement a **vehicle-agnostic architecture** with the following key com
 | **Safety Case Updates** | Each new vehicle requires safety case deltas and certification | Release gate checks for safety artifacts; compliance validation | Release block; safety review board escalation |
 | **Mandatory Testing** | HiL and closed-course validation for each supported vehicle class | Test coverage reports; validation checklist enforcement | Release block; test plan review; validation requirement |
 
-## KPIs/SLOs
+### KPIs/SLOs
 
 | KPI/SLO | Description | Target | Measurement Method | Reporting Frequency | Owner |
 | --- | --- | --- | --- | --- | --- |
@@ -78,7 +78,7 @@ We will implement a **vehicle-agnostic architecture** with the following key com
 | **Onboarding Efficiency** | Time required to integrate new vehicle models | ≤14 days for supported classes | Project tracking from start to production-ready | Per vehicle onboarding | Integration Team Lead |
 | **Profile Accuracy** | Correlation between profile parameters and actual behavior | ≥95% match on critical parameters | Validation testing; Telemetry comparison | Per profile version | Vehicle Dynamics Lead |
 
-## Implementation Paths
+### Implementation Paths
 
 | Component | Path | Description | Responsible Team | Dependencies |
 | --- | --- | --- | --- | --- |
@@ -89,7 +89,7 @@ We will implement a **vehicle-agnostic architecture** with the following key com
 | **Profile Validator** | `/tools/profile-validator/*` | Tools for validating vehicle profiles against specifications and real-world data | QA & Validation | Test framework; Telemetry processing |
 | **Safety Case Generator** | `/compliance/safety-case/vehicle/*` | Tools for generating vehicle-specific safety case artifacts | Safety & Compliance | Safety framework; Evidence collection |
 
-### Integration Points
+#### Integration Points
 
 1. **Control Systems** - The HAL integrates with vehicle control systems via standardized interfaces
 2. **Perception System** - Vehicle profiles inform perception parameters (sensor placement, field of view)
@@ -97,9 +97,9 @@ We will implement a **vehicle-agnostic architecture** with the following key com
 4. **Diagnostics** - Vehicle-specific diagnostic codes and health monitoring
 5. **OTA Updates** - Vehicle-specific firmware and configuration management
 
-## Consequences
+### Consequences
 
-### Positive
+#### Positive
 
 | Consequence | Description | Beneficiaries | Value Proposition |
 | --- | --- | --- | --- |
@@ -109,7 +109,7 @@ We will implement a **vehicle-agnostic architecture** with the following key com
 | **Fleet Heterogeneity** | Allows customers to operate mixed fleets with consistent behavior | Customers, Operations | Operational flexibility; phased deployment; resilience to supply chain issues |
 | **Knowledge Consolidation** | Centralizes vehicle expertise in profiles rather than scattered code | Engineering, Documentation | Better knowledge management; improved onboarding; reduced bus factor |
 
-### Negative
+#### Negative
 
 | Consequence | Description | Mitigation Strategy | Residual Risk |
 | --- | --- | --- | --- |
@@ -119,13 +119,13 @@ We will implement a **vehicle-agnostic architecture** with the following key com
 | **Performance Overhead** | Small runtime overhead from abstraction layer | Performance optimization; critical path analysis; caching | Very Low - Negligible impact on control loop timing |
 | **Expertise Requirements** | Need for specialized knowledge in vehicle dynamics and control systems | Training program; documentation; expert consulting | Medium - Requires investment in team capabilities |
 
-## Kill-Switch Criteria
+### Kill-Switch Criteria
 
 If any of the following occur, we will pause new vehicle onboarding and revert to Tier-A vehicles only:
 1. ≥2 critical incidents attributable to profile gaps in 2 quarters
 2. >25% schedule slip due to vehicle variance
 
-## Alternatives Considered
+### Alternatives Considered
 
 | Alternative | Description | Pros | Cons | Why Rejected |
 | --- | --- | --- | --- | --- |
@@ -133,14 +133,14 @@ If any of the following occur, we will pause new vehicle onboarding and revert t
 | **Fully generic approach without profiles** | Single codebase with runtime parameter adjustment | Maximum code reuse; Simplified maintenance | Safety concerns with generic parameters; Performance limitations; Difficult certification | Cannot guarantee safety properties across diverse vehicle dynamics |
 | **OEM-provided control systems only** | Rely on OEM interfaces and control systems | Leverages OEM expertise; Simplified integration | Vendor lock-in; Inconsistent capabilities; Limited retrofit options | Strategic constraint; Limits market reach; Inconsistent feature set |
 
-## Compliance & Regulatory Considerations
+### Compliance & Regulatory Considerations
 
 1. **ISO 26262 (Functional Safety)**: Each vehicle profile requires specific HARA/FMEA documentation and safety case deltas
 2. **SOTIF (ISO 21448)**: Performance boundary conditions must be defined per vehicle class
 3. **UNECE R155/R156**: Cybersecurity and OTA updates must account for vehicle-specific parameters
 4. **Regional Certifications**: Profile-specific evidence bundles support regional type approvals
 
-## Monitoring & Metrics
+### Monitoring & Metrics
 
 | Metric | Description | Target | Warning Threshold | Critical Threshold | Data Source |
 | --- | --- | --- | --- | --- | --- |
@@ -150,16 +150,17 @@ If any of the following occur, we will pause new vehicle onboarding and revert t
 | Test Coverage | Percentage of vehicle-specific code paths tested | >95% | 90-95% | <90% | Test coverage reports |
 | Assist Rate | Assists required per 1,000 km attributable to vehicle interface | <1 | 1-2 | >2 | Assist classification data |
 
-## Implementation Milestones
+### Implementation Milestones
 
 1. **Q1**: Base vehicle abstraction layer with support for 2 vehicle classes
 2. **Q2**: Profile system with automated validation; support for 3 vehicle classes
 3. **Q3**: Full safety case integration; support for 4 vehicle classes
 4. **Q4**: Performance optimization; support for 5+ vehicle classes
 
-## References
+### References
 
 1. Vehicle Abstraction Layer Design Document (`docs/design/vehicle-abstraction-layer.md`)
 2. Vehicle Profile Schema (`configs/vehicles/schema.json`)
 3. ISO 26262 Compliance Strategy (`docs/safety/iso-26262-strategy.md`)
 4. Vehicle Onboarding Procedure (`docs/operations/vehicle-onboarding.md`)
+
