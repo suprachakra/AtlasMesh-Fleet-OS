@@ -1,0 +1,144 @@
+---
+title: Vehicle Command Dispatch Flow - AtlasMesh Fleet OS
+---
+sequenceDiagram
+    %% SAFETY CRITICAL: Normal vehicle command validation and dispatch
+    %% Version 1.0 | Generated from: Fleet Manager traces | Safety Level: HIGH
+    %% SAFETY: This diagram shows normal vehicle command dispatch with validation
+    %% INTEGRATION CONTRACT: REST API + gRPC + Kafka + WebSocket chain
+    %% LATENCY BUDGET: <200ms for normal commands, <100ms for safety commands
+    %% COMPLIANCE: All commands logged for audit and safety case generation
+
+    participant OP as 👤 Fleet Operator
+    participant UI as 🖥️ Control Center UI
+    participant GW as 🚪 API Gateway
+    participant AUTH as 🔐 Auth Service
+    participant POL as 📋 Policy Engine
+    participant FM as 🚛 Fleet Manager
+    participant VGW as 🌐 Vehicle Gateway
+    participant KAFKA as 📨 Event Bus (Kafka)
+    participant AGENT as 🤖 Vehicle Agent (ROS2)
+    participant VEH as 🚗 Vehicle Systems
+
+    %% COMMAND INITIATION
+    Note over OP,VEH: COMMAND INITIATION
+    OP->>UI: Select vehicle<br/>Choose command type
+    Note right of OP: BUSINESS: Operator initiates<br/>normal fleet operation
+
+    UI->>UI: Validate command locally<br/>Check vehicle availability
+    Note right of UI: UX: Client-side validation<br/>for immediate feedback
+
+    UI->>GW: POST /api/v1/vehicles/{id}/commands<br/>{command_type, payload, priority}
+    Note right of UI: API CONTRACT: RESTful command<br/>with structured payload
+
+    %% AUTHENTICATION & AUTHORIZATION
+    Note over OP,VEH: AUTHENTICATION & AUTHORIZATION
+    GW->>AUTH: Validate JWT token<br/>Extract user context
+    AUTH->>AUTH: Verify token signature<br/>Check expiration
+    AUTH-->>GW: ✓ Valid user<br/>{user_id, roles, permissions}
+
+    GW->>POL: Evaluate command policy<br/>{user, vehicle, command, context}
+    Note right of GW: POLICY: Policy-as-code evaluation<br/>using OPA/Rego rules
+
+    POL->>POL: **POLICY EVALUATION**<br/>- Check user permissions<br/>- Validate vehicle state<br/>- Assess operational context
+    POL-->>GW: ✓ Command allowed<br/>{decision, constraints}
+
+    %% COMMAND VALIDATION
+    Note over OP,VEH: COMMAND VALIDATION
+    GW->>FM: gRPC: ValidateCommand<br/>{vehicle_id, command, user_context}
+    Note right of GW: SERVICE: Fleet Manager validates<br/>business logic constraints
+
+    FM->>FM: **BUSINESS VALIDATION**<br/>- Vehicle operational status<br/>- Command compatibility<br/>- Fleet policies
+    Note right of FM: BUSINESS LOGIC: Ensure command<br/>is safe and appropriate
+
+    FM->>FM: Check vehicle health score<br/>Minimum threshold: 70%
+    Note right of FM: SAFETY: Unhealthy vehicles<br/>cannot receive commands
+
+    alt Vehicle health < 70%
+        FM-->>GW: ❌ Command rejected<br/>{reason: "Vehicle unhealthy"}
+        GW-->>UI: HTTP 400: Command rejected
+        UI->>OP: Error: Vehicle not ready
+        Note right of UI: SAFETY: Prevent commands<br/>to unhealthy vehicles
+    else Vehicle healthy
+        FM-->>GW: ✓ Command validated<br/>{command_id, estimated_duration}
+    end
+
+    %% COMMAND DISPATCH
+    Note over OP,VEH: COMMAND DISPATCH
+    GW->>VGW: gRPC: DispatchCommand<br/>{command_id, vehicle_id, payload}
+    Note right of GW: INTEGRATION: Hand-off to<br/>vehicle communication layer
+
+    VGW->>VGW: **COMMAND ENRICHMENT**<br/>- Add correlation ID<br/>- Set timeout<br/>- Assign priority queue
+    Note right of VGW: PERF: Command metadata<br/>for tracking and routing
+
+    alt Safety-critical command
+        VGW->>VGW: **DUAL AUTHORIZATION CHECK**<br/>Require two operator tokens
+        Note right of VGW: SAFETY: Critical commands need<br/>dual authorization
+        
+        alt Missing dual auth
+            VGW-->>GW: ❌ Dual auth required
+            GW-->>UI: HTTP 403: Dual authorization needed
+            UI->>OP: Prompt for second operator
+            Note right of UI: SECURITY: Safety-critical commands<br/>require two operators
+        end
+    end
+
+    VGW->>KAFKA: Publish command event<br/>topic: vehicle.commands.{vehicle_id}
+    Note right of VGW: AUDIT: All commands logged<br/>for compliance tracking
+
+    %% VEHICLE COMMUNICATION
+    Note over OP,VEH: VEHICLE COMMUNICATION
+    VGW->>AGENT: WebSocket: Command message<br/>{command_id, type, payload, timeout}
+    Note right of VGW: INTEGRATION: Real-time WebSocket<br/>for reliable delivery
+
+    AGENT->>AGENT: **COMMAND PROCESSING**<br/>- Validate message format<br/>- Check vehicle readiness<br/>- Queue for execution
+    Note right of AGENT: EDGE: On-vehicle validation<br/>and execution planning
+
+    AGENT->>VEH: ROS2: Command topic<br/>{command_data, safety_constraints}
+    Note right of AGENT: ROS2 CONTRACT: Structured command<br/>with safety parameters
+
+    %% COMMAND EXECUTION
+    Note over OP,VEH: COMMAND EXECUTION
+    VEH->>VEH: **EXECUTE COMMAND**<br/>- Validate safety constraints<br/>- Execute vehicle action<br/>- Monitor execution
+    Note right of VEH: SAFETY: Vehicle systems<br/>validate and execute safely
+
+    VEH->>AGENT: ROS2: Execution status<br/>{status: IN_PROGRESS, telemetry}
+    AGENT->>VGW: WebSocket: Status update<br/>{command_id, status, progress}
+
+    %% COMPLETION & FEEDBACK
+    Note over OP,VEH: COMPLETION & FEEDBACK
+    VEH->>AGENT: ROS2: Command completed<br/>{status: SUCCESS, final_state}
+    AGENT->>VGW: WebSocket: Command completed<br/>{command_id, status: COMPLETED, result}
+
+    VGW->>KAFKA: Publish completion event<br/>topic: vehicle.events.command_completed
+    VGW->>FM: gRPC: UpdateCommandStatus<br/>{command_id, status: COMPLETED}
+
+    FM->>FM: Update command history<br/>Record execution metrics
+    FM-->>GW: Command completed<br/>{command_id, execution_time}
+
+    GW-->>UI: HTTP 200: Command executed<br/>{command_id, status, result}
+    UI->>OP: **SUCCESS NOTIFICATION**<br/>Command executed successfully
+
+    %% ERROR HANDLING
+    Note over OP,VEH: ERROR HANDLING
+    alt Command execution fails
+        VEH->>AGENT: ROS2: Execution failed<br/>{error_code, reason}
+        AGENT->>VGW: WebSocket: Command failed<br/>{command_id, error}
+        
+        VGW->>KAFKA: Publish failure event<br/>topic: vehicle.events.command_failed
+        VGW->>FM: gRPC: UpdateCommandStatus<br/>{command_id, status: FAILED}
+        
+        FM-->>GW: Command failed<br/>{command_id, error_reason}
+        GW-->>UI: HTTP 500: Command failed
+        UI->>OP: **ERROR NOTIFICATION**<br/>Command execution failed
+        
+        Note right of UI: ERROR HANDLING: Clear error<br/>messages for operator action
+    end
+
+    %% AUDIT & COMPLIANCE
+    Note over OP,VEH: AUDIT & COMPLIANCE
+    KAFKA->>KAFKA: **AUDIT TRAIL**<br/>Store all command events<br/>for compliance review
+    Note right of KAFKA: COMPLIANCE: Complete audit trail<br/>for safety certification
+
+    %% Styling
+    %%{init: {'theme':'base', 'themeVariables': {'primaryColor': '#3498db', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2980b9', 'lineColor': '#2d3436', 'sectionBkgColor': '#e8f4fd', 'altSectionBkgColor': '#d6eaf8', 'gridColor': '#636e72', 'secondaryColor': '#2ecc71', 'tertiaryColor': '#f39c12'}}}%%

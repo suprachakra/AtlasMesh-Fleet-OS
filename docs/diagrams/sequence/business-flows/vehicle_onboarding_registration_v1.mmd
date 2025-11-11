@@ -1,0 +1,59 @@
+---
+title: Vehicle Onboarding & Registration - AtlasMesh Fleet OS
+---
+sequenceDiagram
+    participant GT as Garage Tools
+    participant FM as Fleet Manager
+    participant PE as Policy Engine
+    participant KS as Key/Secret Management
+    participant ZT as Zero-Trust IAM
+    participant VA as Vehicle Agent
+    participant AL as Audit Log
+    
+    Note over GT,AL: Vehicle Onboarding Process
+    
+    %% Initial Registration
+    GT->>+FM: RegisterVehicle(vehicleProfile, certificates)
+    FM->>FM: Validate vehicle profile
+    FM->>+PE: EvaluatePolicy(vehicleOnboarding)
+    PE->>AL: Log onboarding policy check
+    PE->>-FM: PolicyResult(allowed, constraints)
+    
+    alt Onboarding Allowed
+        FM->>+KS: GenerateVehicleSecrets(vehicleId)
+        KS->>KS: Generate certificates and keys
+        KS->>AL: Log secret generation
+        KS->>-FM: VehicleSecrets(certificates, keys)
+        
+        FM->>+ZT: RegisterVehicleIdentity(vehicleId, certificates)
+        ZT->>ZT: Create SPIFFE identity
+        ZT->>AL: Log identity registration
+        ZT->>-FM: IdentityRegistered(spiffeId)
+        
+        FM->>FM: Create vehicle record
+        FM->>AL: Log vehicle registration
+        FM->>-GT: VehicleRegistered(vehicleId, credentials)
+        
+        %% Vehicle Agent Bootstrap
+        GT->>+VA: Bootstrap(vehicleId, credentials, endpoints)
+        VA->>VA: Initialize secure connections
+        VA->>+ZT: AuthenticateVehicle(spiffeId, certificate)
+        ZT->>ZT: Validate certificate chain
+        ZT->>-VA: AuthenticationSuccess(token, policies)
+        
+        VA->>+FM: RegisterOnline(vehicleId, capabilities)
+        FM->>FM: Update vehicle status to ONLINE
+        FM->>AL: Log vehicle online status
+        FM->>-VA: RegistrationAck(configuration)
+        
+        %% Health Check Establishment
+        loop Continuous Health Monitoring
+            VA->>+FM: SendHeartbeat(vehicleId, healthMetrics)
+            FM->>FM: Update last seen timestamp
+            FM->>-VA: HeartbeatAck()
+        end
+        
+    else Onboarding Denied
+        PE->>AL: Log onboarding denial
+        FM->>-GT: OnboardingDenied(reason, policyViolation)
+    end
