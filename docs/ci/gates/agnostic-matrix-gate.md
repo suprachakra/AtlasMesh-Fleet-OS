@@ -14,9 +14,10 @@ For each PR, the gate calculates:
 - **Core Code Delta**: Percentage of core code changed to support variability
 - **Test-Time Delta**: Percentage increase in test execution time due to matrix testing
 
-PRs are blocked if:
-- Any single tenet exceeds 5% core code delta
-- Any single tenet exceeds 25% test-time delta
+> [!IMPORTANT] 
+> PRs are blocked if:
+> - Any single tenet exceeds 5% core code delta
+> - Any single tenet exceeds 25% test-time delta`
 
 ### Per-Tenet Validation
 
@@ -101,3 +102,4 @@ The gate tracks:
 - Impact on build/test times
 
 This data is used to refine the matrix constraints and identify areas where additional abstraction may be needed.
+
