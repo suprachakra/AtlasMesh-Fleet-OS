@@ -2,7 +2,7 @@
 
 ## Overview
 
-This comprehensive API reference guide covers all available endpoints, authentication methods, data models, and integration patterns for AtlasMesh Fleet Management System. The system provides RESTful APIs with OpenAPI 3.0 specifications for all fleet management services.
+This comprehensive API reference guide covers all available endpoints, authentication methods, data models and integration patterns for AtlasMesh Fleet Management System. The system provides RESTful APIs with OpenAPI 3.0 specifications for all fleet management services.
 
 ### Quick Stats
 - **72 Microservices** with RESTful APIs
@@ -1449,3 +1449,4 @@ class RateLimitedClient {
 **Next Review**: March 2024
 
 For the most up-to-date API specifications, please refer to the OpenAPI documentation at https://api.atlasmesh.ae/docs
+
