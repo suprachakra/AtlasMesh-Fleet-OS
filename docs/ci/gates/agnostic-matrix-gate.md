@@ -1,12 +1,12 @@
-# Agnostic Matrix CI Gate
+## Agnostic Matrix CI Gate
 
 This document describes the CI gate that enforces the Agnostic Decision Matrix requirements across the codebase.
 
-## Purpose
+### Purpose
 
 The Agnostic Matrix Gate ensures that all code changes adhere to the principles and guardrails defined in the [Agnostics Decision Matrix](../../strategy/appendices/Agonistics_Decision_Matrix_v1.0.md). It prevents changes that would violate the established boundaries for each agnostic tenet or exceed the overall Variant Budget.
 
-## Gate Requirements
+### Gate Requirements
 
 ### Variant Budget Enforcement
 
