@@ -1,17 +1,17 @@
-# AtlasMesh Fleet Management System - API Reference Guide
+## AtlasMesh Fleet Management System - API Reference Guide
 
-## Overview
+### Overview
 
 This comprehensive API reference guide covers all available endpoints, authentication methods, data models and integration patterns for AtlasMesh Fleet Management System. The system provides RESTful APIs with OpenAPI 3.0 specifications for all fleet management services.
 
-### Quick Stats
+#### Quick Stats
 - **72 Microservices** with RESTful APIs
 - **OpenAPI 3.0** compliant specifications
 - **Rate Limiting**: 10,000 requests/minute (production)
 - **Response Time**: P95 < 100ms, P99 < 500ms
 - **Uptime SLA**: 99.9% availability guarantee
 
-### Base URLs by Environment
+#### Base URLs by Environment
 | Environment | Base URL | Purpose |
 |-------------|----------|---------|
 | **Production** | `https://api.atlasmesh.ae` | Live production environment |
@@ -19,7 +19,7 @@ This comprehensive API reference guide covers all available endpoints, authentic
 | **Sandbox** | `https://api-sandbox.atlasmesh.ae` | Developer testing |
 | **Local** | `http://localhost:8080` | Local development |
 
-## Table of Contents
+### Table of Contents
 
 1. [Authentication & Authorization](#authentication--authorization)
 2. [Fleet Management APIs](#fleet-management-apis)
@@ -30,29 +30,29 @@ This comprehensive API reference guide covers all available endpoints, authentic
 7. [Webhooks & Events](#webhooks--events)
 8. [Fleet Management Integration Examples](#fleet-management-integration-examples)
 
-## Authentication & Authorization
+### Authentication & Authorization
 
-### Authentication Methods
+#### Authentication Methods
 
-#### JWT Bearer Token
+##### JWT Bearer Token
 ```http
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-#### API Key Authentication
+##### API Key Authentication
 ```http
 X-API-Key: your-api-key-here
 X-API-Secret: your-api-secret-here
 ```
 
-#### OAuth 2.0 (Recommended for third-party integrations)
+##### OAuth 2.0 (Recommended for third-party integrations)
 ```http
 Authorization: Bearer oauth-access-token
 ```
 
-### Authentication Endpoints
+#### Authentication Endpoints
 
-#### Login
+##### Login
 ```http
 POST /api/v1/auth/login
 Content-Type: application/json
@@ -80,7 +80,7 @@ Content-Type: application/json
 }
 ```
 
-#### Token Refresh
+##### Token Refresh
 ```http
 POST /api/v1/auth/refresh
 Content-Type: application/json
@@ -90,13 +90,13 @@ Content-Type: application/json
 }
 ```
 
-#### Logout
+##### Logout
 ```http
 POST /api/v1/auth/logout
 Authorization: Bearer your-access-token
 ```
 
-### Authorization Scopes
+#### Authorization Scopes
 
 | Scope | Description |
 |-------|-------------|
@@ -108,18 +108,18 @@ Authorization: Bearer your-access-token
 | `admin:read` | Read system configuration |
 | `admin:write` | Modify system settings |
 
-## Fleet Management APIs
+### Fleet Management APIs
 
-### Fleet Manager API
+#### Fleet Manager API
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/fleet-manager/v1
 ```
 
-#### Endpoints
+##### Endpoints
 
-##### Get Fleet Status
+###### Get Fleet Status
 ```http
 GET /fleets/{fleet_id}
 Authorization: Bearer your-token
@@ -149,7 +149,7 @@ Authorization: Bearer your-token
 }
 ```
 
-##### Create Vehicle
+###### Create Vehicle
 ```http
 POST /vehicles
 Authorization: Bearer your-token
@@ -174,7 +174,7 @@ Content-Type: application/json
 }
 ```
 
-##### Dispatch Vehicle
+###### Dispatch Vehicle
 ```http
 POST /trips
 Authorization: Bearer your-token
@@ -237,14 +237,14 @@ Content-Type: application/json
 }
 ```
 
-### Vehicle Gateway API
+#### Vehicle Gateway API
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/vehicle-gateway/v1
 ```
 
-#### Real-time Vehicle Data
+##### Real-time Vehicle Data
 ```http
 GET /vehicles/{vehicle_id}/telemetry
 Authorization: Bearer your-token
@@ -289,7 +289,7 @@ Authorization: Bearer your-token
 }
 ```
 
-#### Vehicle Commands
+##### Vehicle Commands
 ```http
 POST /vehicles/{vehicle_id}/commands
 Authorization: Bearer your-token
@@ -308,14 +308,14 @@ Content-Type: application/json
 }
 ```
 
-### Policy Engine API
+#### Policy Engine API
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/policy-engine/v1
 ```
 
-#### Evaluate Policy
+##### Evaluate Policy
 ```http
 POST /policies/evaluate
 Authorization: Bearer your-token
@@ -361,14 +361,14 @@ Content-Type: application/json
 }
 ```
 
-### Weather Fusion API
+#### Weather Fusion API
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/weather-fusion/v1
 ```
 
-#### Current Weather
+##### Current Weather
 ```http
 GET /weather/current?lat=24.4539&lng=54.3773
 Authorization: Bearer your-token
@@ -408,14 +408,14 @@ Authorization: Bearer your-token
 }
 ```
 
-### Telemetry Ingestion API
+#### Telemetry Ingestion API
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/telemetry/v1
 ```
 
-#### Submit Telemetry Data
+##### Submit Telemetry Data
 ```http
 POST /telemetry/batch
 Authorization: Bearer your-token
@@ -450,9 +450,9 @@ Content-Type: application/json
 }
 ```
 
-## Data Models
+### Data Models
 
-### Vehicle Model
+#### Vehicle Model
 ```json
 {
   "vehicle_id": "string",
@@ -491,7 +491,7 @@ Content-Type: application/json
 }
 ```
 
-### Trip Model
+#### Trip Model
 ```json
 {
   "trip_id": "string",
@@ -549,7 +549,7 @@ Content-Type: application/json
 }
 ```
 
-### Fleet Model
+#### Fleet Model
 ```json
 {
   "fleet_id": "string",
@@ -597,9 +597,9 @@ Content-Type: application/json
 }
 ```
 
-## Error Handling
+### Error Handling
 
-### Standard Error Response
+#### Standard Error Response
 ```json
 {
   "error": {
@@ -612,7 +612,7 @@ Content-Type: application/json
 }
 ```
 
-### Error Codes
+#### Error Codes
 
 | Code | HTTP Status | Description |
 |------|-------------|-------------|
@@ -625,7 +625,7 @@ Content-Type: application/json
 | `INTERNAL_ERROR` | 500 | Internal server error |
 | `SERVICE_UNAVAILABLE` | 503 | Service temporarily unavailable |
 
-### Validation Errors
+#### Validation Errors
 ```json
 {
   "error": {
@@ -649,9 +649,9 @@ Content-Type: application/json
 }
 ```
 
-## Rate Limiting
+### Rate Limiting
 
-### Rate Limit Headers
+#### Rate Limit Headers
 ```http
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 999
@@ -659,7 +659,7 @@ X-RateLimit-Reset: 1609459200
 X-RateLimit-Window: 3600
 ```
 
-### Rate Limits by Endpoint Category
+#### Rate Limits by Endpoint Category
 
 | Category | Requests per Hour | Burst Limit |
 |----------|-------------------|-------------|
@@ -669,7 +669,7 @@ X-RateLimit-Window: 3600
 | Telemetry Ingestion | 10000 | 500 |
 | Analytics | 500 | 25 |
 
-### Rate Limit Exceeded Response
+#### Rate Limit Exceeded Response
 ```json
 {
   "error": {
@@ -682,11 +682,11 @@ X-RateLimit-Window: 3600
 }
 ```
 
-## SDK & Client Libraries
+### SDK & Client Libraries
 
-### Official SDKs
+#### Official SDKs
 
-#### JavaScript/TypeScript
+##### JavaScript/TypeScript
 ```bash
 npm install @atlasmesh/fleet-os-sdk
 ```
@@ -711,7 +711,7 @@ const trip = await client.trips.create({
 });
 ```
 
-#### Python
+##### Python
 ```bash
 pip install atlasmesh-fleet-os-sdk
 ```
@@ -725,10 +725,10 @@ client = FleetOSClient(
     api_secret='your-api-secret'
 )
 
-# Get fleet status
+## Get fleet status
 fleet = client.fleets.get('fleet-001')
 
-# Dispatch vehicle
+## Dispatch vehicle
 trip = client.trips.create({
     'trip_type': 'passenger',
     'pickup_location': {'lat': 24.4539, 'lng': 54.3773},
@@ -736,7 +736,7 @@ trip = client.trips.create({
 })
 ```
 
-#### Go
+##### Go
 ```bash
 go get github.com/atlasmesh/fleet-os-sdk-go
 ```
@@ -776,9 +776,9 @@ func main() {
 }
 ```
 
-## Webhooks & Events
+### Webhooks & Events
 
-### Webhook Configuration
+#### Webhook Configuration
 ```http
 POST /api/v1/webhooks
 Authorization: Bearer your-token
@@ -797,9 +797,9 @@ Content-Type: application/json
 }
 ```
 
-### Event Types
+#### Event Types
 
-#### Trip Events
+##### Trip Events
 - `trip.created` - New trip created
 - `trip.dispatched` - Vehicle assigned to trip
 - `trip.started` - Trip started (passenger pickup)
@@ -807,7 +807,7 @@ Content-Type: application/json
 - `trip.cancelled` - Trip cancelled
 - `trip.delayed` - Trip delayed beyond threshold
 
-#### Vehicle Events
+##### Vehicle Events
 - `vehicle.online` - Vehicle came online
 - `vehicle.offline` - Vehicle went offline
 - `vehicle.emergency` - Emergency situation detected
@@ -815,12 +815,12 @@ Content-Type: application/json
 - `vehicle.low_battery` - Battery level below threshold
 - `vehicle.geofence_exit` - Vehicle left authorized area
 
-#### Fleet Events
+##### Fleet Events
 - `fleet.status_changed` - Fleet status updated
 - `fleet.performance_alert` - Performance threshold breached
 - `fleet.capacity_alert` - Fleet capacity issues
 
-### Webhook Payload Example
+#### Webhook Payload Example
 ```json
 {
   "event_id": "evt_123456789",
@@ -843,7 +843,7 @@ Content-Type: application/json
 }
 ```
 
-### Webhook Verification
+#### Webhook Verification
 ```javascript
 const crypto = require('crypto');
 
@@ -860,18 +860,18 @@ function verifyWebhook(payload, signature, secret) {
 }
 ```
 
-## Fleet Management APIs
+### Fleet Management APIs
 
-### Multi-Fleet Coordination
+#### Multi-Fleet Coordination
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/fleet-coordination/v1
 ```
 
-#### Endpoints
+##### Endpoints
 
-##### Get Fleet Federation Status
+###### Get Fleet Federation Status
 ```http
 GET /federation/{federation_id}
 Authorization: Bearer your-token
@@ -907,7 +907,7 @@ Authorization: Bearer your-token
 }
 ```
 
-##### Cross-Fleet Resource Sharing
+###### Cross-Fleet Resource Sharing
 ```http
 POST /federation/{federation_id}/resources/share
 Authorization: Bearer your-token
@@ -923,16 +923,16 @@ Content-Type: application/json
 }
 ```
 
-### Mission Management
+#### Mission Management
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/mission-manager/v1
 ```
 
-#### Endpoints
+##### Endpoints
 
-##### Create Mission Template
+###### Create Mission Template
 ```http
 POST /templates
 Authorization: Bearer your-token
@@ -956,7 +956,7 @@ Content-Type: application/json
 }
 ```
 
-##### Execute Mission
+###### Execute Mission
 ```http
 POST /missions
 Authorization: Bearer your-token
@@ -984,16 +984,16 @@ Content-Type: application/json
 }
 ```
 
-### Fleet Optimization
+#### Fleet Optimization
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/fleet-optimizer/v1
 ```
 
-#### Endpoints
+##### Endpoints
 
-##### Run Fleet Optimization
+###### Run Fleet Optimization
 ```http
 POST /optimize
 Authorization: Bearer your-token
@@ -1027,7 +1027,7 @@ Content-Type: application/json
 }
 ```
 
-##### Get Optimization Results
+###### Get Optimization Results
 ```http
 GET /optimize/{optimization_id}/results
 Authorization: Bearer your-token
@@ -1054,16 +1054,16 @@ Authorization: Bearer your-token
 }
 ```
 
-### Fleet Analytics
+#### Fleet Analytics
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/fleet-analytics/v1
 ```
 
-#### Endpoints
+##### Endpoints
 
-##### Get Fleet Health Score
+###### Get Fleet Health Score
 ```http
 GET /fleets/{fleet_id}/health
 Authorization: Bearer your-token
@@ -1096,7 +1096,7 @@ Authorization: Bearer your-token
 }
 ```
 
-##### Get Predictive Analytics
+###### Get Predictive Analytics
 ```http
 GET /fleets/{fleet_id}/predictions
 Authorization: Bearer your-token
@@ -1133,16 +1133,16 @@ Authorization: Bearer your-token
 }
 ```
 
-### Fleet Resource Management
+#### Fleet Resource Management
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/fleet-resources/v1
 ```
 
-#### Endpoints
+##### Endpoints
 
-##### Allocate Resources
+###### Allocate Resources
 ```http
 POST /allocate
 Authorization: Bearer your-token
@@ -1162,7 +1162,7 @@ Content-Type: application/json
 }
 ```
 
-##### Get Resource Utilization
+###### Get Resource Utilization
 ```http
 GET /fleets/{fleet_id}/utilization
 Authorization: Bearer your-token
@@ -1193,16 +1193,16 @@ Authorization: Bearer your-token
 }
 ```
 
-### Fleet Performance Management
+#### Fleet Performance Management
 
-#### Base URL
+##### Base URL
 ```
 https://api.atlasmesh.ae/fleet-performance/v1
 ```
 
-#### Endpoints
+##### Endpoints
 
-##### Get Fleet Performance Score
+###### Get Fleet Performance Score
 ```http
 GET /fleets/{fleet_id}/performance
 Authorization: Bearer your-token
@@ -1235,7 +1235,7 @@ Authorization: Bearer your-token
 }
 ```
 
-##### Get Performance Benchmarking
+###### Get Performance Benchmarking
 ```http
 GET /fleets/{fleet_id}/benchmarks
 Authorization: Bearer your-token
@@ -1266,9 +1266,9 @@ Authorization: Bearer your-token
 }
 ```
 
-## Integration Examples
+### Integration Examples
 
-### Real-time Fleet Monitoring
+#### Real-time Fleet Monitoring
 ```javascript
 // WebSocket connection for real-time updates
 const ws = new WebSocket('wss://api.atlasmesh.ae/ws/fleet/fleet-001');
@@ -1290,7 +1290,7 @@ ws.onmessage = function(event) {
 };
 ```
 
-### Batch Trip Creation
+#### Batch Trip Creation
 ```python
 import asyncio
 from atlasmesh import FleetOSClient
@@ -1309,7 +1309,7 @@ async def create_multiple_trips(client, trip_requests):
     return successful, failed
 ```
 
-### Custom Analytics Integration
+#### Custom Analytics Integration
 ```go
 package main
 
@@ -1345,9 +1345,9 @@ func generateFleetReport(client *fleetossdk.Client, fleetID string) {
 }
 ```
 
-## Best Practices
+### Best Practices
 
-### API Usage Guidelines
+#### API Usage Guidelines
 
 1. **Authentication**
    - Use OAuth 2.0 for production integrations
@@ -1369,7 +1369,7 @@ func generateFleetReport(client *fleetossdk.Client, fleetID string) {
    - Use HTTPS for all API calls
    - Implement proper CORS policies
 
-### Rate Limiting Best Practices
+#### Rate Limiting Best Practices
 
 ```javascript
 class RateLimitedClient {
@@ -1423,21 +1423,21 @@ class RateLimitedClient {
 }
 ```
 
-## Support & Resources
+### Support & Resources
 
-### Documentation Links
+#### Documentation Links
 - **OpenAPI Specifications**: https://api.atlasmesh.ae/docs
 - **SDK Documentation**: https://docs.atlasmesh.ae/sdks
 - **Integration Guides**: https://docs.atlasmesh.ae/integrations
 - **Changelog**: https://docs.atlasmesh.ae/changelog
 
-### Support Channels
+#### Support Channels
 - **Developer Support**: dev-support@atlasmesh.ae
 - **API Issues**: api-support@atlasmesh.ae
 - **Community Forum**: https://community.atlasmesh.ae
 - **Status Page**: https://status.atlasmesh.ae
 
-### Rate Limits & Quotas
+#### Rate Limits & Quotas
 - **Sandbox Environment**: 1,000 requests/hour
 - **Production Environment**: Contact sales for custom limits
 - **WebSocket Connections**: 100 concurrent per API key
@@ -1447,3 +1447,4 @@ class RateLimitedClient {
 **API Version**: v1.0.0  
 **Last Updated**: June 2025  
 **Next Review**: Dec 2025
+
