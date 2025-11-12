@@ -1445,8 +1445,5 @@ class RateLimitedClient {
 ---
 
 **API Version**: v1.0.0  
-**Last Updated**: December 2023  
-**Next Review**: March 2024
-
-For the most up-to-date API specifications, please refer to the OpenAPI documentation at https://api.atlasmesh.ae/docs
-
+**Last Updated**: June 2025  
+**Next Review**: Dec 2025
