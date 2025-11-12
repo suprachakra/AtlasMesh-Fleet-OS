@@ -59,36 +59,31 @@ This runbook provides comprehensive operational procedures for managing the Atla
 ### Service Dependencies
 
 ```mermaid
-graph TD
-    A[API Gateway] --> B[Fleet Manager]
-    A --> C[Analytics Service]
-    A --> D[External Integrations]
-    A --> E[ML Pipeline]
-    A --> F[Vehicle Gateway]
-    
-    B --> G[PostgreSQL]
-    B --> H[Redis]
-    B --> I[Kafka]
-    
-    C --> J[ClickHouse]
-    C --> K[MinIO]
-    C --> I
-    
-    D --> L[External APIs]
-    D --> H
-    D --> I
-    
-    E --> M[Model Storage]
-    E --> I
-    E --> H
-    
-    F --> H
-    F --> I
-    F --> N[WebSocket]
-    
-    G --> O[Backup Storage]
+flowchart TD
+    A["API Gateway"] --> B["Fleet Manager"] & C["Analytics Service"] & D["External Integrations"] & E["ML Pipeline"] & F["Vehicle Gateway"]
+    B --> G["PostgreSQL"] & H["Redis"] & I["Kafka"]
+    C --> J["ClickHouse"] & K["MinIO"] & I
+    D --> L["External APIs"] & H & I
+    E --> M["Model Storage"] & I & H
+    F --> H & I & N["WebSocket"]
+    G --> O["Backup Storage"]
     J --> O
     K --> O
+
+    style A stroke:#2962FF, fill:transparent
+    style B stroke:#AA00FF, fill:transparent
+    style D stroke:#AA00FF, fill:transparent
+    style E stroke:#AA00FF, fill:transparent
+    style F stroke:#AA00FF, fill:transparent
+    style G stroke:#FFD600, fill:transparent
+    style H stroke:#FFD600, fill:transparent
+    style I stroke:#FFD600, fill:transparent
+    style J stroke:#FFD600, fill:transparent
+    style K stroke:#FFD600, fill:transparent
+    style L stroke:#FFD600, fill:transparent
+    style M stroke:#FFD600, fill:transparent
+    style N stroke:#FFD600, fill:transparent
+    style O stroke:#00C853, fill:transparent
 ```
 
 ## Deployment Procedures
@@ -1208,4 +1203,5 @@ data:
 
 **Last Updated**: June 15, 2025  
 **Version**: 1.0.0
+
 
