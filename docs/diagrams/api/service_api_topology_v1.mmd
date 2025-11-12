@@ -1,172 +1,144 @@
-graph TB
-    %% AtlasMesh Fleet OS - API Topology Diagram
-    %% Generated from: OpenAPI specifications and service dependencies
-    %% Version 1.0 | Integration contracts and API relationships
-    
-    %% External Clients
-    WebUI[🖥️ Control Center UI<br/>React SPA]
-    MobileApp[📱 Mobile App<br/>React Native]
-    ThirdParty[🔗 Third Party<br/>Integrators]
-    
-    %% API Gateway (Entry Point)
-    APIGateway[🚪 API Gateway<br/>Port: 8080<br/>Go + Gin]
-    
-    %% Core Services with APIs
-    FleetMgr[🚛 Fleet Manager<br/>Port: 8081<br/>REST + gRPC]
-    VehicleGW[🚗 Vehicle Gateway<br/>Port: 8082<br/>WebSocket + REST]
-    PolicyEngine[📋 Policy Engine<br/>Port: 8083<br/>gRPC + REST]
-    AuthService[🔐 Auth Service<br/>Port: 8084<br/>REST + JWT]
-    
-    %% Data Services
-    TelemetryIngest[📡 Telemetry Ingest<br/>Port: 8085<br/>gRPC + Kafka]
-    Analytics[📊 Analytics Engine<br/>Port: 8086<br/>REST + GraphQL]
-    DataLineage[🔍 Data Lineage<br/>Port: 8087<br/>REST + Neo4j]
-    
-    %% AI/ML Services
-    MLPipeline[🧠 ML Pipeline<br/>Port: 8088<br/>REST + MLflow]
-    PredMaint[🔧 Predictive Maintenance<br/>Port: 8089<br/>gRPC + TensorFlow]
-    DigitalTwin[🎭 Digital Twin<br/>Port: 8090<br/>REST + CARLA]
-    
-    %% Integration Services
-    UAEGov[🇦🇪 UAE Government<br/>Port: 8091<br/>REST + SOAP]
-    WeatherFusion[🌤️ Weather Fusion<br/>Port: 8092<br/>REST + HTTP]
-    MapContract[🗺️ Map Data Contract<br/>Port: 8093<br/>REST + PostGIS]
-    
-    %% Infrastructure Services
-    EventBus[📨 Event Bus<br/>Kafka Cluster<br/>Ports: 9092-9094]
-    Monitoring[📈 Monitoring<br/>Prometheus: 9090<br/>Grafana: 3000]
-    
-    %% External Systems
-    UAEGovSys[🏛️ UAE Government<br/>Systems]
-    WeatherAPI[🌍 Weather APIs<br/>Multi-source]
-    MapProviders[🗺️ Map Providers<br/>HD Maps]
-    
-    %% Client to API Gateway
-    WebUI -->|HTTPS/REST<br/>JWT Auth| APIGateway
-    MobileApp -->|HTTPS/REST<br/>OAuth 2.0| APIGateway
-    ThirdParty -->|HTTPS/REST<br/>API Keys| APIGateway
-    
-    %% API Gateway to Core Services
-    APIGateway -->|gRPC<br/>Service Mesh| FleetMgr
-    APIGateway -->|gRPC + WebSocket<br/>Real-time| VehicleGW
-    APIGateway -->|gRPC<br/>Policy Eval| PolicyEngine
-    APIGateway -->|gRPC<br/>Token Validation| AuthService
-    
-    %% API Gateway to Data Services
-    APIGateway -->|gRPC<br/>Telemetry Query| TelemetryIngest
-    APIGateway -->|REST + GraphQL<br/>Analytics| Analytics
-    APIGateway -->|REST<br/>Lineage Query| DataLineage
-    
-    %% API Gateway to AI/ML Services
-    APIGateway -->|REST<br/>Model Management| MLPipeline
-    APIGateway -->|gRPC<br/>Maintenance Pred| PredMaint
-    APIGateway -->|REST<br/>Simulation| DigitalTwin
-    
-    %% API Gateway to Integration Services
-    APIGateway -->|REST<br/>Compliance| UAEGov
-    APIGateway -->|REST<br/>Weather Data| WeatherFusion
-    APIGateway -->|REST<br/>Map Updates| MapContract
-    
-    %% Inter-Service Communication
-    FleetMgr -->|gRPC<br/>Policy Check| PolicyEngine
-    FleetMgr -->|gRPC<br/>Vehicle Status| VehicleGW
-    FleetMgr -->|Kafka<br/>Fleet Events| EventBus
-    
-    VehicleGW -->|Kafka<br/>Telemetry Stream| TelemetryIngest
-    VehicleGW -->|Kafka<br/>Command Events| EventBus
-    VehicleGW -->|WebSocket<br/>Vehicle Comms| VehicleGW
-    
-    TelemetryIngest -->|Kafka<br/>Processed Data| Analytics
-    TelemetryIngest -->|gRPC<br/>Data Lineage| DataLineage
-    
-    Analytics -->|REST<br/>ML Features| MLPipeline
-    MLPipeline -->|gRPC<br/>Trained Models| PredMaint
-    PredMaint -->|gRPC<br/>Maintenance Alerts| FleetMgr
-    
-    %% External Integrations
-    UAEGov -->|HTTPS/REST<br/>Gov APIs| UAEGovSys
-    WeatherFusion -->|HTTPS/REST<br/>Weather APIs| WeatherAPI
-    MapContract -->|HTTPS/REST<br/>Map APIs| MapProviders
-    
-    %% Monitoring Integration
-    Monitoring -->|HTTP<br/>Metrics Scraping| APIGateway
-    Monitoring -->|HTTP<br/>Health Checks| FleetMgr
-    Monitoring -->|HTTP<br/>Service Metrics| VehicleGW
-    Monitoring -->|JMX<br/>Kafka Metrics| EventBus
-    
-    %% API Specifications
-    subgraph "API Specifications"
-        FleetAPI[📄 Fleet Manager API<br/>OpenAPI 3.0<br/>/api/fleet/openapi.yaml]
-        VehicleAPI[📄 Vehicle Gateway API<br/>OpenAPI 3.0<br/>/api/vehicle/openapi.yaml]
-        PolicyAPI[📄 Policy Engine API<br/>OpenAPI 3.0<br/>/api/policy/openapi.yaml]
-        AuthAPI[📄 Auth Service API<br/>OpenAPI 3.0<br/>/api/auth/openapi.yaml]
-        TelemetryAPI[📄 Telemetry API<br/>OpenAPI 3.0<br/>/api/telemetry/openapi.yaml]
-        AnalyticsAPI[📄 Analytics API<br/>OpenAPI 3.0<br/>GraphQL Schema]
-    end
-    
-    %% gRPC Contracts
-    subgraph "gRPC Contracts"
-        FleetProto[📋 fleet_manager.proto<br/>Service Definitions]
-        PolicyProto[📋 policy_engine.proto<br/>Policy Evaluation]
-        TelemetryProto[📋 telemetry.proto<br/>Data Ingestion]
-        PredMaintProto[📋 predictive_maintenance.proto<br/>ML Predictions]
-    end
-    
-    %% Event Schemas
-    subgraph "Event Schemas"
-        VehicleEvents[📨 vehicle-events-v1.avsc<br/>Avro Schema]
-        CommandEvents[📨 command-events-v1.avsc<br/>Avro Schema]
-        TelemetryEvents[📨 telemetry-events-v1.avsc<br/>Avro Schema]
-        FleetEvents[📨 fleet-events-v1.avsc<br/>Avro Schema]
-    end
-    
-    %% API Versioning Strategy
-    subgraph "API Versioning"
-        V1[🔢 v1 APIs<br/>Current Stable<br/>Backward Compatible]
-        V2[🔢 v2 APIs<br/>Future Version<br/>Breaking Changes]
-        Deprecation[⚠️ Deprecation Policy<br/>6 months notice<br/>Migration guides]
-    end
-    
-    %% Security Layers
-    subgraph "Security"
-        JWT[🔑 JWT Tokens<br/>RS256 Signing<br/>Short Expiration]
-        OAuth[🔐 OAuth 2.0<br/>Authorization Code<br/>PKCE for Mobile]
-        APIKeys[🗝️ API Keys<br/>Third Party Access<br/>Rate Limited]
-        mTLS[🔒 mTLS<br/>Service-to-Service<br/>Certificate Auth]
-    end
-    
-    %% Rate Limiting
-    subgraph "Rate Limiting"
-        UserLimits[👤 User Limits<br/>1000 req/min<br/>Per JWT token]
-        ServiceLimits[⚙️ Service Limits<br/>10000 req/min<br/>Per service]
-        ThirdPartyLimits[🔗 3rd Party Limits<br/>100 req/min<br/>Per API key]
-    end
-    
-    %% API Gateway Features
-    subgraph "Gateway Features"
-        LoadBalancing[⚖️ Load Balancing<br/>Round Robin<br/>Health Checks]
-        CircuitBreaker[🔌 Circuit Breaker<br/>Fail Fast<br/>Auto Recovery]
-        RequestLogging[📝 Request Logging<br/>Audit Trail<br/>Performance Metrics]
-        CORS[🌐 CORS Policy<br/>Allowed Origins<br/>Preflight Handling]
-    end
-    
-    %% Styling
-    classDef client fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef gateway fill:#fff3e0,stroke:#e65100,stroke-width:3px
+flowchart TB
+ subgraph subGraph0["API Specifications"]
+        FleetAPI["📄 Fleet Manager API<br>OpenAPI 3.0<br>/api/fleet/openapi.yaml"]
+        VehicleAPI["📄 Vehicle Gateway API<br>OpenAPI 3.0<br>/api/vehicle/openapi.yaml"]
+        PolicyAPI["📄 Policy Engine API<br>OpenAPI 3.0<br>/api/policy/openapi.yaml"]
+        AuthAPI["📄 Auth Service API<br>OpenAPI 3.0<br>/api/auth/openapi.yaml"]
+        TelemetryAPI["📄 Telemetry API<br>OpenAPI 3.0<br>/api/telemetry/openapi.yaml"]
+        AnalyticsAPI["📄 Analytics API<br>OpenAPI 3.0<br>GraphQL Schema"]
+  end
+ subgraph subGraph1["gRPC Contracts"]
+        FleetProto["📋 fleet_manager.proto<br>Service Definitions"]
+        PolicyProto["📋 policy_engine.proto<br>Policy Evaluation"]
+        TelemetryProto["📋 telemetry.proto<br>Data Ingestion"]
+        PredMaintProto["📋 predictive_maintenance.proto<br>ML Predictions"]
+  end
+ subgraph subGraph2["Event Schemas"]
+        VehicleEvents["📨 vehicle-events-v1.avsc<br>Avro Schema"]
+        CommandEvents["📨 command-events-v1.avsc<br>Avro Schema"]
+        TelemetryEvents["📨 telemetry-events-v1.avsc<br>Avro Schema"]
+        FleetEvents["📨 fleet-events-v1.avsc<br>Avro Schema"]
+  end
+ subgraph subGraph3["API Versioning"]
+        V1["🔢 v1 APIs<br>Current Stable<br>Backward Compatible"]
+        V2["🔢 v2 APIs<br>Future Version<br>Breaking Changes"]
+        Deprecation["⚠️ Deprecation Policy<br>6 months notice<br>Migration guides"]
+  end
+ subgraph Security["Security"]
+        JWT["🔑 JWT Tokens<br>RS256 Signing<br>Short Expiration"]
+        OAuth["🔐 OAuth 2.0<br>Authorization Code<br>PKCE for Mobile"]
+        APIKeys["🗝️ API Keys<br>Third Party Access<br>Rate Limited"]
+        mTLS["🔒 mTLS<br>Service-to-Service<br>Certificate Auth"]
+  end
+ subgraph subGraph5["Rate Limiting"]
+        UserLimits["👤 User Limits<br>1000 req/min<br>Per JWT token"]
+        ServiceLimits["⚙️ Service Limits<br>10000 req/min<br>Per service"]
+        ThirdPartyLimits["🔗 3rd Party Limits<br>100 req/min<br>Per API key"]
+  end
+ subgraph subGraph6["Gateway Features"]
+        LoadBalancing["⚖️ Load Balancing<br>Round Robin<br>Health Checks"]
+        CircuitBreaker["🔌 Circuit Breaker<br>Fail Fast<br>Auto Recovery"]
+        RequestLogging["📝 Request Logging<br>Audit Trail<br>Performance Metrics"]
+        CORS["🌐 CORS Policy<br>Allowed Origins<br>Preflight Handling"]
+  end
+    WebUI["🖥️ Control Center UI<br>React SPA"] -- HTTPS/REST<br>JWT Auth --> APIGateway["🚪 API Gateway<br>Port: 8080<br>Go + Gin"]
+    MobileApp["📱 Mobile App<br>React Native"] -- "HTTPS/REST<br>OAuth 2.0" --> APIGateway
+    ThirdParty["🔗 Third Party<br>Integrators"] -- HTTPS/REST<br>API Keys --> APIGateway
+    APIGateway -- gRPC<br>Service Mesh --> FleetMgr["🚛 Fleet Manager<br>Port: 8081<br>REST + gRPC"]
+    APIGateway -- "gRPC + WebSocket<br>Real-time" --> VehicleGW["🚗 Vehicle Gateway<br>Port: 8082<br>WebSocket + REST"]
+    APIGateway -- gRPC<br>Policy Eval --> PolicyEngine["📋 Policy Engine<br>Port: 8083<br>gRPC + REST"]
+    APIGateway -- gRPC<br>Token Validation --> AuthService["🔐 Auth Service<br>Port: 8084<br>REST + JWT"]
+    APIGateway -- gRPC<br>Telemetry Query --> TelemetryIngest["📡 Telemetry Ingest<br>Port: 8085<br>gRPC + Kafka"]
+    APIGateway -- REST + GraphQL<br>Analytics --> Analytics["📊 Analytics Engine<br>Port: 8086<br>REST + GraphQL"]
+    APIGateway -- REST<br>Lineage Query --> DataLineage["🔍 Data Lineage<br>Port: 8087<br>REST + Neo4j"]
+    APIGateway -- REST<br>Model Management --> MLPipeline["🧠 ML Pipeline<br>Port: 8088<br>REST + MLflow"]
+    APIGateway -- gRPC<br>Maintenance Pred --> PredMaint["🔧 Predictive Maintenance<br>Port: 8089<br>gRPC + TensorFlow"]
+    APIGateway -- REST<br>Simulation --> DigitalTwin["🎭 Digital Twin<br>Port: 8090<br>REST + CARLA"]
+    APIGateway -- REST<br>Compliance --> UAEGov["🇦🇪 UAE Government<br>Port: 8091<br>REST + SOAP"]
+    APIGateway -- REST<br>Weather Data --> WeatherFusion["🌤️ Weather Fusion<br>Port: 8092<br>REST + HTTP"]
+    APIGateway -- REST<br>Map Updates --> MapContract["🗺️ Map Data Contract<br>Port: 8093<br>REST + PostGIS"]
+    FleetMgr -- gRPC<br>Policy Check --> PolicyEngine
+    FleetMgr -- gRPC<br>Vehicle Status --> VehicleGW
+    FleetMgr -- Kafka<br>Fleet Events --> EventBus["📨 Event Bus<br>Kafka Cluster<br>Ports: 9092-9094"]
+    VehicleGW -- Kafka<br>Telemetry Stream --> TelemetryIngest
+    VehicleGW -- Kafka<br>Command Events --> EventBus
+    VehicleGW -- WebSocket<br>Vehicle Comms --> VehicleGW
+    TelemetryIngest -- Kafka<br>Processed Data --> Analytics
+    TelemetryIngest -- gRPC<br>Data Lineage --> DataLineage
+    Analytics -- REST<br>ML Features --> MLPipeline
+    MLPipeline -- gRPC<br>Trained Models --> PredMaint
+    PredMaint -- gRPC<br>Maintenance Alerts --> FleetMgr
+    UAEGov -- HTTPS/REST<br>Gov APIs --> UAEGovSys["🏛️ UAE Government<br>Systems"]
+    WeatherFusion -- HTTPS/REST<br>Weather APIs --> WeatherAPI["🌍 Weather APIs<br>Multi-source"]
+    MapContract -- HTTPS/REST<br>Map APIs --> MapProviders["🗺️ Map Providers<br>HD Maps"]
+    Monitoring["📈 Monitoring<br>Prometheus: 9090<br>Grafana: 3000"] -- HTTP<br>Metrics Scraping --> APIGateway
+    Monitoring -- HTTP<br>Health Checks --> FleetMgr
+    Monitoring -- HTTP<br>Service Metrics --> VehicleGW
+    Monitoring -- JMX<br>Kafka Metrics --> EventBus
+
+     FleetAPI:::spec
+     VehicleAPI:::spec
+     PolicyAPI:::spec
+     AuthAPI:::spec
+     TelemetryAPI:::spec
+     AnalyticsAPI:::spec
+     VehicleEvents:::Class_04
+     CommandEvents:::Class_04
+     TelemetryEvents:::Class_04
+     FleetEvents:::Class_04
+     V1:::client
+     V2:::spec
+     Deprecation:::client
+     JWT:::Rose
+     OAuth:::Rose
+     APIKeys:::Rose
+     mTLS:::Rose
+     UserLimits:::Ash
+     ServiceLimits:::Ash
+     ThirdPartyLimits:::Ash
+     LoadBalancing:::gateway
+     CircuitBreaker:::gateway
+     RequestLogging:::gateway
+     CORS:::gateway
+     WebUI:::client
+     APIGateway:::gateway
+     MobileApp:::client
+     ThirdParty:::client
+     FleetMgr:::coreService
+     VehicleGW:::coreService
+     PolicyEngine:::coreService
+     AuthService:::coreService
+     TelemetryIngest:::dataService
+     Analytics:::dataService
+     DataLineage:::dataService
+     MLPipeline:::mlService
+     PredMaint:::mlService
+     DigitalTwin:::mlService
+     UAEGov:::integration
+     WeatherFusion:::integration
+     MapContract:::integration
+     EventBus:::infrastructure
+     UAEGovSys:::external
+     WeatherAPI:::external
+     MapProviders:::external
+     Monitoring:::infrastructure
     classDef coreService fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef dataService fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef mlService fill:#fff8e1,stroke:#f57f17,stroke-width:2px
     classDef integration fill:#fce4ec,stroke:#c2185b,stroke-width:2px
     classDef infrastructure fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
     classDef external fill:#fafafa,stroke:#616161,stroke-width:2px
-    classDef spec fill:#e3f2fd,stroke:#1565c0,stroke-width:1px
-    
-    class WebUI,MobileApp,ThirdParty client
-    class APIGateway gateway
-    class FleetMgr,VehicleGW,PolicyEngine,AuthService coreService
-    class TelemetryIngest,Analytics,DataLineage dataService
-    class MLPipeline,PredMaint,DigitalTwin mlService
-    class UAEGov,WeatherFusion,MapContract integration
-    class EventBus,Monitoring infrastructure
-    class UAEGovSys,WeatherAPI,MapProviders external
-    class FleetAPI,VehicleAPI,PolicyAPI,AuthAPI,TelemetryAPI,AnalyticsAPI spec
+    classDef gateway fill:#fff3e0, stroke:#e65100, stroke-width:3px
+    classDef spec fill:#e3f2fd, stroke:#1565c0, stroke-width:1px
+    classDef client fill:#e1f5fe, stroke:#01579b, stroke-width:2px
+    classDef Rose stroke-width:1px, stroke-dasharray:none, stroke:#FF5978, fill:#FFDFE5, color:#8E2236
+    classDef Ash stroke-width:1px, stroke-dasharray:none, stroke:#999999, fill:#EEEEEE, color:#000000
+    classDef Class_03 fill:#c4b1b3, color:#7d5f62, stroke:#7d5f62
+    classDef Class_04 fill:#e5dddd, stroke:#7d5f62, color:#7d5f62
+    style subGraph6 fill:transparent
+    style subGraph5 fill:transparent
+    style Security fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph0 fill:transparent
