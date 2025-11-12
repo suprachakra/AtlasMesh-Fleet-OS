@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AtlasMesh Fleet OS provides a comprehensive REST API for managing autonomous vehicle fleets. This documentation covers all available endpoints, authentication, data models, and integration examples.
+The AtlasMesh Fleet OS provides a comprehensive REST API for managing autonomous vehicle fleets. This documentation covers all available endpoints, authentication, data models and integration examples.
 
 ## Base URL
 
@@ -1042,3 +1042,4 @@ For API support and questions:
 - Core fleet management functionality
 - Basic analytics and reporting
 - Authentication and authorization
+
