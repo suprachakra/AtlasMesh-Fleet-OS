@@ -272,7 +272,7 @@ C4Container
     Rel(adapter_sdk, enterprise, "Integrates with", "Custom protocols")
     
     Rel_Back(analytics_api, event_store, "Analyzes data", "SQL/Spark")
-    Rel(core_services, config_store, "Reads/writes configuration", "SQL/Redis")
+    Rel(mission_management, config_store, "Reads/writes configuration", "SQL/Redis")
     Rel(map_service, geo_store, "Manages geospatial data", "PostGIS/S3")
     
     Rel(telemetry_lakehouse, analytics_store, "Manages hot/cold paths", "ClickHouse/MinIO")
@@ -287,6 +287,7 @@ C4Container
     
     Rel(sector_overlays, tenant_entitlements, "Applies policies", "gRPC")
     Rel(digital_twin_sim, predictive_maint, "Validates models", "gRPC")
+
 ```
 
 ## 🏗️ **3) Component Architecture Principles**
