@@ -242,7 +242,7 @@ Before any Epic enters development, it must meet these criteria:
 
 ---
 
-## 📚 **10) Pointers to PRD & Specs (keep this doc lean)**
+## 📚 **10) Pointers to PRD & Specs **
 
 * Functional/NFR detail, APIs, and test specs: **see PRD v3.0** (sections 3, 4, 7, 11).
 * Financials & comps: **see `07_Business_Model_and_Financials.md`** (for ARR levers, margins).
