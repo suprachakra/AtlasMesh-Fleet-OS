@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📊 AtlasMesh Fleet Management System — Data & Analytics Integration
+## 📊 AtlasMesh Fleet Management System — Data & Analytics Integration
 
 **Comprehensive Data Strategy for Evidence-Based Operations**
 
@@ -639,6 +639,7 @@ flowchart TD
     style subGraph1 fill:transparent
     style subGraph2 fill:transparent
     style subGraph3 fill:transparent   
+    style subGraph4 fill:transparent   
 ```
 
 ### 7.2 Key ML Models
