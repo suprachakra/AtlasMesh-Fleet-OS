@@ -246,6 +246,12 @@ flowchart TD
     PostgreSQL -->|Metadata| DataCatalog
     TimescaleDB -->|Metadata| DataCatalog
     S3 -->|Metadata| DataCatalog
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent   
+    style subGraph4 fill:transparent 
 ```
 
 ## 3) Data Contracts & Schemas
