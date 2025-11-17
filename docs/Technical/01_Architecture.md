@@ -12,11 +12,11 @@
 
 <div align="center">
 
-| 🎯 **[Executive Summary](#executive-summary-qualified-agnosticism)** | 🏗️ **[System Context](#1-system-context-c4-model)** | 🔧 **[Core Components](#2-core-components)** | 📊 **[Data Architecture](#3-data-architecture)** |
+| 🎯 **[Executive Summary](#-executive-summary-qualified-agnosticism)** | 🏗️ **[System Context](#%EF%B8%8F-1-system-context-c4-model)** | 🔧 **[Core Components](#-2-container-diagram-services--components)** | 📊 **[Data Architecture](#-4-data-flow-architecture)** |
 |:---:|:---:|:---:|:---:|
 | **Qualified Agnosticism** | **C4 Model Overview** | **System Components** | **Data Flow & Storage** |
 
-| 🚀 **[Deployment](#4-deployment-architecture)** | 🔒 **[Security](#5-security-architecture)** | 📈 **[Monitoring](#6-monitoring--observability)** | 🧪 **[Testing](#7-testing-strategy)** |
+| 🚀 **[Deployment](#-5-deployment-architecture)** | 🔒 **[Security](#5-security-architecture)** | 📈 **[Monitoring](#6-monitoring--observability)** | 🧪 **[Testing](#7-testing-strategy)** |
 |:---:|:---:|:---:|:---:|
 | **Infrastructure & Scaling** | **Security & Compliance** | **Observability Stack** | **Testing Framework** |
 
