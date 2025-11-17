@@ -24,7 +24,7 @@
 
 ---
 
-## ✅ **0) Definition of Ready (DoR) & Definition of Done (DoD)**
+## ✅ ** Definition of Ready (DoR) & Definition of Done (DoD)**
 
 ### 📊 **Definition of Ready (DoR) - For Epics/FRs/NFRs**
 
@@ -283,6 +283,17 @@ graph TB
     class Unit,Integration,E2E,Conformance,Simulation testing
     class Sectors,Vehicles,Platforms sectors
     class Traceability,Ownership,Budget governance
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph4 fill:transparent
+    style subGraph5 fill:transparent
+    style subGraph6 fill:transparent
+    style subGraph7 fill:transparent
+    
+    
 ```
 
 ---
