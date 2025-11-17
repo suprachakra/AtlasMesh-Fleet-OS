@@ -12,9 +12,9 @@
 
 <div align="center">
 
-| 🎯 **[Epic-to-Problem Mapping](#1-epic-to-problem-mapping)** | 📊 **[Epic Overview](#2-epic-overview--strategic-mapping)** | 🚀 **[Strategic Alignment](#3-strategic-alignment)** | 📈 **[Success Metrics](#4-success-metrics)** |
-|:---:|:---:|:---:|:---:|
-| **Problem-Solution Mapping** | **Epic Details & Impact** | **OKR Alignment** | **Measurement Framework** |
+| 🎯 **[Epic-to-Problem Mapping](#-1-epic-to-problem-mapping)** | 📊 **[Epic Overview](#-2-epic-overview--strategic-mapping)** | 🚀 **[Strategic Alignment](#3-strategic-alignment)** | 📈 **[Success Metrics](#-4-metrics-canon-met--crosswalk)** | 📈 **[Epic to Service Mapping](#%EF%B8%8F-6-epic-to-service-mapping)** |
+|:---:|:---:|:---:|:---:|:---:|
+| **Problem-Solution Mapping** | **Epic Details & Impact** | **OKR Alignment** | **Measurement Framework** | **Service Mapping** |
 
 </div>
 
@@ -29,9 +29,11 @@
 | **Primary Epics** | **Primary Epics** | **Primary Epics** | **Primary Epics** | **Primary Epics** |
 | E3 Dispatch & Dynamic Ops | E1 Vehicle-Agnostic Control | E2 Policy & Compliance | E1 Vehicle-Agnostic | E3 Dispatch & Dynamic Ops |
 | E7 Reliability & Degradation | E5 Sector Packs & Marketplace | E6 Evidence & Safety Case | E5 Sector Packs | E4 Tele-Assist & Control Center |
+| | | | | | 
 | **Secondary Epics** | **Secondary Epics** | **Secondary Epics** | **Secondary Epics** | **Secondary Epics** |
 | E12 Map/Weather/Comms Agnosticism | E12 Interop/Portability | E10 Privacy/Security/Zero-Trust | E12 Map/Weather/Cloud Agnosticism | E11 Cost/Carbon & Analytics |
 | | | | | E8 Data & Digital Twin |
+| | | | | | 
 | **Customer Impact** | **Customer Impact** | **Customer Impact** | **Customer Impact** | **Customer Impact** |
 | ↑ Uptime, safe continuity under dust/heat/GNSS-denied | ↓ Onboarding time & cost; multi-OEM flexibility | Audit-ready by default; lower risk & prep cost | Procurement leverage; avoid single-source risk | ↓ Assists, ↑ throughput, measurable TCO reduction |
 
