@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏗️ AtlasMesh Fleet Management System — Architecture
+## 🏗️ AtlasMesh Fleet Management System - Architecture
 
 **Vehicle-Agnostic Fleet Management Platform for Autonomous Operations**
 
@@ -16,7 +16,7 @@
 |:---:|:---:|:---:|:---:|
 | **Qualified Agnosticism** | **C4 Model Overview** | **System Components** | **Data Flow & Storage** |
 
-| 🚀 **[Deployment](#-5-deployment-architecture)** | 🔒 **[Security](#5-security-architecture)** | 📈 **[Monitoring](#6-monitoring--observability)** | 🧪 **[Testing](#7-testing-strategy)** |
+| 🚀 **[Deployment](#-5-deployment-architecture)** | 🔒 **[Key Interfaces & Integration Points](#-7-key-interfaces--integration-points)** | 📈 **[Advanced Services](#-8-phase-2-advanced-services)** | 🧪 **[Fleet Management Architecture](#-13-fleet-management-architecture)** |
 |:---:|:---:|:---:|:---:|
 | **Infrastructure & Scaling** | **Security & Compliance** | **Observability Stack** | **Testing Framework** |
 
