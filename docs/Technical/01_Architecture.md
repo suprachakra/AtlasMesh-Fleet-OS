@@ -669,6 +669,7 @@ flowchart TD
     style subGraph0 fill:transparent
     style subGraph1 fill:transparent
     style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
 ```
 
 ## 🛡️ **6) Failure Domains & Resilience**
