@@ -16,10 +16,6 @@
 |:---:|:---:|:---:|:---:|
 | **DoR/DoD Criteria** | **Core Functionality** | **Quality Attributes** | **Measurement Framework** |
 
-| 🔗 **[Traceability](#4-traceability--cross-references)** | 🧪 **[Testing Strategy](#5-testing-strategy)** | 📈 **[Acceptance Criteria](#6-acceptance-criteria)** | 📚 **[References](#7-references--related-docs)** |
-|:---:|:---:|:---:|:---:|
-| **Requirements Mapping** | **Test Coverage** | **Validation Gates** | **Supporting Documentation** |
-
 </div>
 
 ---
