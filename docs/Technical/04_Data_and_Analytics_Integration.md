@@ -12,11 +12,11 @@
 
 <div align="center">
 
-| 📊 **[Data Strategy](#1-data-strategy-overview)** | 🏗️ **[Data Architecture](#2-data-architecture)** | 🔄 **[Integration Patterns](#3-integration-patterns)** | 📈 **[Analytics Capabilities](#4-analytics-capabilities)** |
+| 📊 **[Data Strategy](#-1-data-strategy-overview)** | 🏗️ **[Data Architecture](#%EF%B8%8F-2-data-architecture)** | 🔄 **[Data Contracts & Schemas](#-data-contracts--schemas)** | 📈 **[Data Lineage & Provenance](#4-data-lineage--provenance)** |
 |:---:|:---:|:---:|:---:|
 | **Core Principles & Domains** | **Logical & Physical Models** | **Data Flow & Processing** | **ML/AI & Insights** |
 
-| 🔒 **[Data Governance](#5-data-governance)** | 🧪 **[Testing Strategy](#6-testing-strategy)** | 📚 **[References](#7-references--related-docs)** |
+| 🔒 **[Data Privacy & Security](#5-data-privacy--security)** | 🧪 **[Analytics & Reporting](#6-analytics--reporting)** | 📚 **[Machine Learning Integration](#7-machine-learning-integration)** |
 |:---:|:---:|:---:|
 | **Privacy, Security & Compliance** | **Data Quality & Validation** | **Supporting Documentation** |
 
@@ -46,8 +46,10 @@ AtlasMesh Fleet Management System implements a comprehensive data strategy that 
 |:---:|:---:|:---:|:---:|:---:|:---:|
 | **Description** | **Description** | **Description** | **Description** | **Description** | **Description** |
 | Operational data from vehicles | Trip lifecycle and execution | Spatial data and features | Environmental conditions | Evidence and documentation | Business system data |
+| | | | | | | 
 | **Key Entities** | **Key Entities** | **Key Entities** | **Key Entities** | **Key Entities** | **Key Entities** |
 | Sensor readings, status, diagnostics | Routes, assignments, events | Map tiles, routes, POIs | Weather readings, forecasts, alerts | Incidents, decisions, audit trails | Orders, inventory, schedules |
+| | | | | | | 
 | **Primary Consumers** | **Primary Consumers** | **Primary Consumers** | **Primary Consumers** | **Primary Consumers** | **Primary Consumers** |
 | Fleet health, PdM, safety monitoring | Dispatch, routing, analytics | Routing, mission planning | Routing, ODD management | Regulators, safety case | Trip planning, analytics |
 
@@ -626,6 +628,11 @@ flowchart TD
     Shadow --> Monitoring
     
     Monitoring --> Training
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent   
 ```
 
 ### 7.2 Key ML Models
