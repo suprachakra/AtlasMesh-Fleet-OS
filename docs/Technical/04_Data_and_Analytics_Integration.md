@@ -1,6 +1,6 @@
 <div align="center">
 
-## 📊 AtlasMesh Fleet Management System — Data & Analytics Integration
+## 📊 AtlasMesh Fleet Management System - Data & Analytics Integration
 
 **Comprehensive Data Strategy for Evidence-Based Operations**
 
