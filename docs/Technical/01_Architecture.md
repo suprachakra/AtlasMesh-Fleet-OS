@@ -474,49 +474,42 @@ flowchart TD
 ### 4.2 Behavior Tree Decision Framework
 
 ```mermaid
-flowchart TD
-    subgraph "Decision Framework"
-        BT[Behavior Tree Engine]
-        SA[Safety Arbitrator]
-        ML[ML Priors]
-        PE[Policy Engine]
-    end
-
-    subgraph "Inputs"
-        Perception[Perception Data]
-        Localization[Localization Data]
-        Mission[Mission Parameters]
-        Map[Map Data]
-        Weather[Weather Data]
-    end
-
-    subgraph "Outputs"
-        Trajectory[Trajectory]
-        VehicleState[Vehicle State]
-        Diagnostics[Diagnostics]
-    end
-
+flowchart TB
+ subgraph subGraph0["Decision Framework"]
+        BT["Behavior Tree Engine"]
+        SA["Safety Arbitrator"]
+        ML["ML Priors"]
+        PE["Policy Engine"]
+  end
+ subgraph Inputs["Inputs"]
+        Perception["Perception Data"]
+        Localization["Localization Data"]
+        Mission["Mission Parameters"]
+        Map["Map Data"]
+        Weather["Weather Data"]
+  end
+ subgraph Outputs["Outputs"]
+        Trajectory["Trajectory"]
+        VehicleState["Vehicle State"]
+        Diagnostics["Diagnostics"]
+  end
     Perception --> BT
     Localization --> BT
     Mission --> BT
     Map --> BT
     Weather --> BT
-    
-    BT -->|Decision| SA
-    ML -->|Optimization Hints| BT
-    PE -->|Constraints| SA
-    
-    SA -->|Verified Decision| Trajectory
-    SA -->|State Transition| VehicleState
-    BT -->|Performance Metrics| Diagnostics
-    
-    Trajectory -->|Feedback| ML
-    VehicleState -->|Feedback| ML
+    BT -- Decision --> SA
+    ML -- Optimization Hints --> BT
+    PE -- Constraints --> SA
+    SA -- Verified Decision --> Trajectory
+    SA -- State Transition --> VehicleState
+    BT -- Performance Metrics --> Diagnostics
+    Trajectory -- Feedback --> ML
+    VehicleState -- Feedback --> ML
 
     style subGraph0 fill:transparent
-    style subGraph1 fill:transparent
-    style subGraph2 fill:transparent
-
+    style Inputs fill:transparent
+    style Outputs fill:transparent
 ```
 
 ## 🚀 **5) Deployment Architecture**
