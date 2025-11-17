@@ -1258,6 +1258,66 @@ graph LR
 
 ---
 
+## 💼 Go-to-Market & Business Development
+
+**AtlasMesh has an executable 2025 GTM strategy** with 8 lighthouse customers, $6.65M pipeline, and a phased execution plan across 4 sectors.
+
+### **2025 Customer Pipeline**
+
+<div align="center">
+
+**Target: $1M ARR by Q4 2025 from 3 pilot conversions**
+
+| Sector | Customer | Deal Size | Kickoff Date | Status |
+|--------|----------|-----------|--------------|--------|
+| 🏭 Mining | Ma'aden (Saudi Arabia) | $300K | Feb 15, 2025 | Tech eval in progress |
+| 🚛 Logistics | DP World (UAE) | $100K | Mar 1, 2025 | RFI submitted |
+| 🛡️ Defense | UAE Armed Forces | $500K | May 1, 2025 | Procurement inquiry |
+| 🏭 Mining | Emirates Global Aluminium | $750K | Jun 1, 2025 | Active discussions |
+| 🚛 Logistics | Aramex (UAE) | $500K | Q3 2025 | Early conversations |
+| 🛡️ Defense | Edge Group (UAE) | $1M | Q4 2025 | LOI draft in review |
+| 🚗 Ride-Hail | Dubai Taxi Corporation | $1M | Oct 1, 2025 | Authority engagement |
+| 🚗 Ride-Hail | Careem (Uber) | $2.5M | H1 2026 | Initial outreach |
+
+**Total Pipeline**: $6.65M | **Year 1 Investment**: $1.7M ($850K sales + $850K marketing)
+
+</div>
+
+### **Sales & Marketing Strategy**
+
+<div align="center">
+
+| 🎯 **Sales Team** | 📊 **Marketing Focus** | 📅 **Quarterly Milestones** |
+|:---:|:---:|:---:|
+| VP Sales + 6→12→20 AEs | Events (ADIPEC, MINExpo, GITEX) | **Q1**: $100K ARR (3 pilots) |
+| 3 Sales Engineers | Content, ABM, PR | **Q2**: $400K ARR (2 conversions) |
+| Sales Ops | Expected: 275 SQLs → 12 pilots | **Q3**: $750K ARR (5 customers) |
+| | → 9-10 customers | **Q4**: $1M ARR (10 customers) |
+
+</div>
+
+### **Strategic Approach**
+
+<div align="center">
+
+| 🎯 **Land and Expand** | 🤝 **OEM Partnerships** | 🏛️ **Authority Blueprints** |
+|:---:|:---:|:---:|
+| **Pilot → Production** | **FMS Integration** | **Transport Authority** |
+| 55-75% conversion rate | OEM white-label program | Dubai RTA, Abu Dhabi DOT |
+| 50% pilot credit to Year 1 | Revenue share model | Corridor-based deployment |
+
+</div>
+
+**📋 Full GTM Strategy**: [`docs/strategy/06_Go_to_Market_Strategy.md`](docs/strategy/06_Go_to_Market_Strategy.md) - 750-line executable plan with sales org, marketing budget, channel partners, battle cards, and detailed execution timeline.
+
+**📊 Business Model & Financials**: [`docs/strategy/11_Business_Model_and_Financials.md`](docs/strategy/11_Business_Model_and_Financials.md) - Revenue model, unit economics, and 5-year projections.
+
+**🎯 Sector Strategy Overlays**: [`docs/strategy/sector-overlays/`](docs/strategy/sector-overlays/) - Mining, Defense, Logistics, Ride-Hail GTM strategies with customer-specific execution plans.
+
+---
+
+**AtlasMesh Fleet OS - Engineering-Grounded Qualified Agnosticism for Autonomous Fleets** 🚙💨
+---
 **AtlasMesh Fleet OS - Engineering-Grounded Qualified Agnosticism for Autonomous Fleets** 🚙💨
 **📋 Evidence Output**: `testing/conformance/output/conformance_results_*.json`
 
