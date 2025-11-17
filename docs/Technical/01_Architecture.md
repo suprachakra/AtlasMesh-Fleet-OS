@@ -142,6 +142,10 @@ graph TB
     class LightUTV,TerminalTractor,MineHaul,DefenseVehicle,RideHailSedan,PublicBus vehicle
     class ProfileLoader,HALInterface,SafetyMonitor hal
     class MotionPlanner,PathFollower,VehicleController control
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 ### Variant Budget Enforcement
@@ -393,6 +397,12 @@ flowchart TD
     FM -->|Commands| VA
     DS -->|Assignments| VA
     RS -->|Routes| VA
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
+    style subGraph4 fill:transparent
 ```
 
 ### 4.1 ROS2-Based Edge Architecture
@@ -454,6 +464,11 @@ flowchart TD
     SecurityBridge -->|Secure Comms| Cloud[Cloud Services]
     CommsNodes -->|Offline Data| StoreForward
     StoreForward -.->|Reconnection| SecurityBridge
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
 ```
 
 ### 4.2 Behavior Tree Decision Framework
@@ -497,6 +512,11 @@ flowchart TD
     
     Trajectory -->|Feedback| ML
     VehicleState -->|Feedback| ML
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+
 ```
 
 ## 🚀 **5) Deployment Architecture**
@@ -540,6 +560,11 @@ flowchart TD
     VA <-->|MQTT/gRPC| API
     TA <-->|WebRTC/gRPC| API
     DA -->|HTTPS| Data
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+
 ```
 
 ### 5.2 Hybrid Deployment
@@ -588,6 +613,11 @@ flowchart TD
     
     EdgeAPI <-->|Sync| API
     EdgeDB <-->|Replication| CloudDB
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
 ```
 
 ### 5.3 Air-Gapped Deployment
@@ -635,6 +665,10 @@ flowchart TD
     
     DB -->|Scheduled| Export
     Import -->|Controlled| DB
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 ## 🛡️ **6) Failure Domains & Resilience**
@@ -962,6 +996,11 @@ graph TB
     class FleetOrchestrator,CrossFleetManager,ResourcePool,FleetFederation coordinator
     class FleetA,FleetB,FleetC fleet
     class VehiclesA,VehiclesB,VehiclesC vehicle
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
 ```
 
 **Key Components:**
@@ -1020,6 +1059,11 @@ graph TB
     class MissionPlanner,MissionTemplates,MissionOrchestrator,MissionScheduler,MissionAnalytics mission
     class SARMission,CombatMission,LogisticsMission,PatrolMission type
     class MissionExecutor,MissionMonitor,MissionRollback execution
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+
 ```
 
 **Key Components:**
@@ -1077,6 +1121,10 @@ graph TB
     class OptimizationEngine,RebalancingEngine,CostOptimizer,EnergyOptimizer,CapacityOptimizer optimization
     class MLPredictor,ConstraintSolver,GeneticAlgorithm,SimulatedAnnealing algorithm
     class FleetUtilization,FleetCost,FleetEnergy,FleetCapacity target
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 **Key Components:**
@@ -1138,6 +1186,11 @@ graph TB
     class AnalyticsEngine,HealthScorer,EfficiencyCalculator,CapacityTracker,PerformanceAnalyzer,PredictiveEngine analytics
     class TelemetryData,OperationalData,HistoricalData,ExternalData data
     class HealthMetrics,EfficiencyMetrics,CapacityMetrics,PerformanceMetrics,PredictiveInsights output
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+
 ```
 
 **Key Components:**
@@ -1201,6 +1254,10 @@ graph TB
     class ResourceManager,AllocationEngine,OptimizationEngine,MonitoringEngine,PlanningEngine,ForecastingEngine management
     class VehicleResources,HumanResources,InfrastructureResources,FinancialResources resource
     class ResourceAllocation,ResourceOptimization,ResourceMonitoring,ResourcePlanning,ResourceForecasting operation
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
 ```
 
 **Key Components:**
@@ -1265,6 +1322,11 @@ graph TB
     class PerformanceManager,MonitoringEngine,OptimizationEngine,ReportingEngine,AnalyticsEngine,BenchmarkingEngine performance
     class SafetyMetrics,EfficiencyMetrics,ReliabilityMetrics,CostMetrics,QualityMetrics metric
     class PerformanceMonitoring,PerformanceOptimization,PerformanceReporting,PerformanceAnalytics,PerformanceBenchmarking operation
+
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+
 ```
 
 **Key Components:**
