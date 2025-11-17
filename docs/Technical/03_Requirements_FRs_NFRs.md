@@ -12,7 +12,7 @@
 
 <div align="center">
 
-| ✅ **[Definition of Ready/Done](#0-definition-of-ready-dor--definition-of-done-dod)** | 🎯 **[Functional Requirements](#-2-functional-requirements-frs)** | 🛡️ **[Non-Functional Requirements](#%EF%B8%8F-3-non-functional-requirements-nfrs)** | 📊 **[Execution & Readiness Control Plane](#-4-execution--readiness-control-plane)** |
+| ✅ **[Definition of Ready/Done](#--definition-of-ready-dor--definition-of-done-dod)** | 🎯 **[Functional Requirements](#-2-functional-requirements-frs)** | 🛡️ **[Non-Functional Requirements](#%EF%B8%8F-3-non-functional-requirements-nfrs)** | 📊 **[Execution & Readiness Control Plane](#-4-execution--readiness-control-plane)** |
 |:---:|:---:|:---:|:---:|
 | **DoR/DoD Criteria** | **Core Functionality** | **Quality Attributes** | **Measurement Framework** |
 
@@ -24,9 +24,9 @@
 
 ---
 
-## ✅ ** Definition of Ready (DoR) & Definition of Done (DoD)**
+## ✅ Definition of Ready (DoR) & Definition of Done (DoD)
 
-### 📊 **Definition of Ready (DoR) - For Epics/FRs/NFRs**
+### 📊 Definition of Ready (DoR) - For Epics/FRs/NFRs
 
 Before any Epic/FR/NFR enters development, it must meet these criteria:
 
