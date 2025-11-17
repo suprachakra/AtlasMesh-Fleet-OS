@@ -306,8 +306,6 @@ Owner codes: BE, FE, Edge, ML, Maps, Sec, SRE, Data, PM, QA, UX, Gov.
 
 ## 🎯 **2) Functional Requirements (FRs)**
 
-> *All rows from v6.0 preserved; refined where noted; now include Epic/OKR and, where relevant, Gate.*
-
 | FR ID      | Description                                       | Acceptance Criteria (Given/When/Then + negative)                                                                                                                      | Risks & Mitigations                                          | Telemetry (events/fields)                                                                                      | Depts          | Pri | Sector             | Epic          | OKR     | Gate |
 | ---------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- | -------------- | :-: | ------------------ | ------------- | ------- | ---- |
 | **FR-001** | Vehicle profile load ≤30s (agnostic HAL)          | Given vehicle connects When operator selects profile Then mass/dimensions/capabilities shown ≤30s; **Neg:** invalid profile → “validation failed: reason” and blocked | Vendor drift → schema-versioned profiles + conformance tests | `vehicle.profile_load_start`, `profile_load_duration_ms`, `profile_validation_result`                          | Edge, BE, QA   |  P0 | CORE               | **E1**        | O-2/O-1 | G-3  |
