@@ -27,7 +27,7 @@
 ## 2. Prioritization Methods
 
 ### 2.1 RICE Scoring
-**Purpose**: Score features based on Reach, Impact, Confidence, and Effort
+**Purpose**: Score features based on Reach, Impact, Confidence and Effort
 
 #### RICE Formula
 ```
