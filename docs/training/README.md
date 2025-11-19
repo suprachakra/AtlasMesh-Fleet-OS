@@ -2,7 +2,7 @@
 
 ## Overview
 
-This comprehensive training program covers all aspects of the AtlasMesh Fleet OS platform, from basic concepts to advanced operations. The training is designed for different roles and skill levels.
+This comprehensive training program covers all aspects of the AtlasMesh Fleet OS platform; from basic concepts to advanced operations. The training is designed for different roles and skill levels.
 
 ## Table of Contents
 
