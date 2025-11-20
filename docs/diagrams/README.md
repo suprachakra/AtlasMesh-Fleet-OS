@@ -81,7 +81,7 @@ docs/diagrams/
 
 All diagrams must:
 - ✅ Be generated from source-of-truth
-- ✅ Include version, date, and source reference
+- ✅ Include version, date and source reference
 - ✅ Follow AtlasMesh style guide
 - ✅ Pass CI validation checks
 - ✅ Be approved by domain owners (CODEOWNERS)
