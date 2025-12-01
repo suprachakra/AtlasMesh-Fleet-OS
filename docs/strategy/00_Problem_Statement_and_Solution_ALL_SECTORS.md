@@ -35,7 +35,7 @@
 
 ### The Universal Challenge
 
-Every sector faces the same core problem: **Existing vehicle fleets are manual and inefficient, but retrofitting them with autonomy is blocked by vendor lock-in, integration complexity, and lack of unified fleet management.**
+Every sector faces the same core problem: **Existing vehicle fleets are manual and inefficient, but retrofitting them with autonomy is blocked by vendor lock-in, integration complexity and lack of unified fleet management.**
 
 <div align="center">
 
