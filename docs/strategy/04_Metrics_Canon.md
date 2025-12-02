@@ -40,7 +40,7 @@ This is the **single source of truth** for metric IDs, definitions, units, windo
 * **SoT:** dbt views under `analytics/warehouse/views/*` (versioned).
 * **Dimensions:** all metrics must be sliceable by **sector, site, vehicle_class, ODD_segment, software_release**.
 * **Immutability:** IDs are permanent; if logic changes incompatibly, create a new ID or versioned view.
-* **Maturity:** each metric carries **M1–M3** maturity (M1 = provisional; M3 = audited & stable).
+* **Maturity:** each metric carries **M1–M3** maturity (M1 = provisional; M3 = audited & stable)
 
 ---
 
