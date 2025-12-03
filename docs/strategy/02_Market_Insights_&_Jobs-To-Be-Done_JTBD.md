@@ -26,7 +26,7 @@
 
 ## 🎯 **0) Purpose & guardrails (baked in)**
 
-This document maps the market we serve, what buyers hire us to accomplish, and what harsh ODDs demand - so product, GTM, and engineering ship the right things first.
+This document maps the market we serve, what buyers hire us to accomplish, and what harsh ODDs demand - so product, GTM and engineering ship the right things first.
 **Guardrails:**
 
 * Use **Metric IDs (MET.*)** only; formulas/targets live in the Metrics Canon.
