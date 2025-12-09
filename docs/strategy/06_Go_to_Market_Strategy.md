@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 AtlasMesh Fleet OS — Go-to-Market Strategy
+# 🚀 AtlasMesh Fleet OS - Go-to-Market Strategy
 
 **Comprehensive Market Entry and Partnership Strategy**
 
